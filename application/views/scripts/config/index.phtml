@@ -1,0 +1,49 @@
+<?php if($this->notice):?>
+<p><font color="#ff0000"><strong>* <?php echo $this->notice;?></strong></font></p>
+<?php else:?>
+<br />
+<?php endif;?>
+<form action="/config/index" method="post">
+	<table class="width100" cellspacing="1">
+		<tbody>
+			<tr>
+				<td class="form-title" colspan="4">System Configuration<?php echo $this->form->id;?></td>
+			</tr>
+			<tr class="row-2">
+				<td class="category">System Title</td>
+				<td colspan="3"><?php echo $this->form->sys_title;?></td>
+			</tr>
+			<tr class="row-1">
+				<td class="category">System Version</td>
+				<td colspan="3"><?php echo $this->form->sys_ver;?></td>
+			</tr>
+			<tr class="row-2">
+				<td class="category">System Path</td>
+				<td colspan="3"><?php echo $this->form->sys_path;?></td>
+			</tr>
+			<tr class="row-1">
+				<td class="category">SMTP Server</td>
+				<td colspan="3"><?php echo $this->form->smtp_server;?></td>
+			</tr>
+			<tr class="row-2">
+				<td class="category">SMTP Account</td>
+				<td colspan="3"><?php echo $this->form->smtp_account;?></td>
+			</tr>
+			<tr class="row-1">
+				<td class="category">SMTP Password</td>
+				<td colspan="3"><?php echo $this->form->smtp_pw;?></td>
+			</tr>
+			<tr class="row-2">
+				<td class="category">Sender Account</td>
+				<td colspan="3"><?php echo $this->form->sender_account;?></td>
+			</tr>
+			<tr class="row-1">
+				<td class="category">Sender Name</td>
+				<td colspan="3"><?php echo $this->form->sender_name;?></td>
+			</tr>
+			<tr class="row-2">
+				<td colspan="4"><?php echo $this->form->submit;?></td>
+			</tr>
+		</tbody>
+	</table>
+</form>

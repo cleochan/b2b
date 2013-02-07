@@ -1,0 +1,323 @@
+<style>
+ table.unchecked{
+    padding: 4px;       
+    }
+table.checked{
+    padding: 4px;
+    }
+table.unchecked td{
+    padding: 0px;
+    width: 800px;
+}
+table.unchecked td.s_number
+{
+    width:48px;
+    vertical-align:top;
+    text-align: right;
+    float:right;
+}
+table.checked td{
+    color: #888;
+    padding: 0px;
+    width: 800px;
+}
+table.checked td.s_number{
+    width:48px;
+    vertical-align:top;
+    text-align: right;
+    float:right;
+}
+table tr textarea.listContent_textarea
+{
+    width: 400px;
+    resize: none;
+    overflow-y:visible 
+
+}
+span.button
+{
+    
+    font-family: Arial;
+    color: black;
+    cursor:pointer;
+    padding: 1px 10px 1px 10px;
+    width: 28px;
+    border-top: 1px solid #EEEEEE;
+    border-left: 1px solid #EEEEEE;
+    border-bottom: 1px solid #717171;
+    border-right: 1px solid #717171;
+
+}
+span.button:hover
+{
+    color: #821818;
+    padding: 1px 10px 1px 10px;
+    background-color: #e2c4c9;
+    border-top: 1px solid #717171;
+    border-left: 1px solid #717171;
+    border-bottom: 1px solid #EEEEEE;
+    border-right: 1px solid #EEEEEE;
+}
+span.addButton
+{
+    margin-top: 5px;
+    margin-left: 10px;
+    display: block;
+}
+
+#insertItemFieldset
+{
+    margin-top: 5px;
+    margin-left: 10px;
+    width: 500px;
+}
+
+#insertItemFieldset legend
+{
+    font-size: 11px;
+}
+
+#insertItemFieldset input.addItemInput
+{
+    width: 400px;
+}
+
+span#insertItemMessage
+{
+    font-size: 11px;
+    color: red;
+    margin: 2px 0px 3px 0px;
+    display: block;
+}
+
+
+</style>
+<script>
+$(document).ready(function()
+{
+    observeLists()
+});
+function observeLists()
+{
+    // Check (click the checkbox)
+    $('input:checkbox').live('click',function()
+    {
+        if ($(this).attr('checked'))
+        {
+            checkItem($(this));
+        }
+        else
+        {
+            uncheckItem($(this));
+        }
+    });
+    
+    // Edit (click edit button)
+    $('span.editButton').live('click', function()
+    {
+        var node = $(this).parent();
+        $(this).hide();
+        node.find('span.listContent').hide();
+        node.find('textarea.listContent_textarea').show();
+        node.find('span.saveButton').show();
+    });
+    
+    // Update (click save button)
+    $('span.saveButton').live('click', function()
+    {
+        var itemId = $(this).attr('objectid');
+        var tid = $(this).attr('object_tid');
+        var saveButton = $(this);
+//        var spanData = $(this).parent().find('textarea.listContent_textarea').text();
+        $.ajax(
+        {
+            type: "POST",
+            url: "/index/update-item/id/"+itemId+"/tid/"+tid,
+            data: $('#ticketForm').serialize(),
+            success: function(response)
+            {
+               json = $.parseJSON(response);
+               if (json.success)
+               {
+                   var node = saveButton.parent();
+                   var spanNode = node.find('span.listContent');
+                   var textareaNode = node.find('textarea.listContent_textarea')
+                   saveButton.hide();
+                   textareaNode.hide();
+                   var value=textareaNode.val();                  
+                   spanNode.text(value);
+                   spanNode.show();
+               }
+           }    
+       });	
+    });
+    
+    // Add (click the add button)
+    $('span.addButton').live('click', function()
+    {
+        $('#insertItemFieldset').toggle('normal');
+    });
+    
+    // Submit (click the submit button)
+    $('span.insertButton').live('click', function()
+    {
+        if ($('input.addItemInput').attr('value').trim())
+        {
+          $.ajax(
+            {
+                type: "POST",
+                url: "/index/insert-item",
+                data: $('#ticketForm').serialize(),
+                success: function(response)
+                {
+                   $('#checklistContainer')[0].innerHTML = response;
+                }    
+            });	
+        }
+        else
+        {
+            $('#insertItemMessage').text('The fild can not be empty!');
+        }
+    });    
+    //Delete (click delete button)
+    $('span.deleteButton').live('click', function()
+    {
+        var itemId = $(this).attr('objectid');
+        var tid = $(this).attr('object_tid');
+        var toDelete = confirm('Are you sure to delete?');
+        if (toDelete)
+        {
+            $.ajax(
+            {
+                type: "POST",
+                url: "/index/delete-item/id/"+itemId+"/tid/"+tid,
+                data: $('#ticketForm').serialize(),
+                success: function(response)
+                {
+                   $('#checklistContainer')[0].innerHTML = response;
+                }  
+  
+            });	
+        }
+    }); 
+    
+        //mouseover event
+    $("tr.checklist_tr").live("mouseover",function(){
+        $(this).find('.editButton').show();
+        $(this).find('.deleteButton').show();
+    });
+    $("tr.checklist_tr").live("mouseout",function(){
+        $(this).parent().find('.editButton').hide();
+        $(this).parent().find('.deleteButton').hide();
+    });
+}
+function listSort(olist)
+{
+        var mylist = $('#'+olist);
+        var listitems = mylist.children('li').get();         
+        listitems.sort(function(a, b) 
+        {
+               var compA = parseFloat($(a).attr('id'));
+               var compB = parseFloat($(b).attr('id'));
+               return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
+         });        
+         $.each(listitems,function(idx, itm) 
+         {         
+         mylist.append(itm);
+         });
+}
+
+function checkItem(target)
+{
+    var id = target.attr('objectid');
+    $.ajax(
+    {
+        type: "POST",
+        url: "/index/check-item/check/1/lid/"+id,
+        data: $('#ticketForm').serialize(),
+        success: function(response)
+        {
+            $('#checklistContainer')[0].innerHTML = response;
+        }    
+    });	
+}
+function uncheckItem(target)
+{
+    var id = target.attr('objectid');
+    var tid = target.attr('object_tid');
+    $.ajax(
+    {
+        type: "POST",
+        url: "/index/check-item/check/0/lid/"+id,
+        data: $('#ticketForm').serialize(),
+        success: function(response)
+        {
+            $('#checklistContainer')[0].innerHTML = response;
+        }    
+    });	
+}
+</script>
+<span class='addButton button alinks' style="">Add</span>
+<fieldset id='insertItemFieldset' style='display:none;'>
+    <legend>Add a new one</legend>
+    <span id="insertItemMessage" class="message"></span>
+    <input type='text' class='addItemInput' name='newListItem'></input>
+    <span class='insertButton button' style="">Submit</span>
+</fieldset>
+<table class="unchecked" >
+<?php
+foreach ($this->lists['unchecked'] as $id => $detail)
+{
+?>
+    <tr id="<?php echo $detail['list_id'];?>" class="checklist_tr">
+               <td  class="s_number">
+                    <span><?php echo $detail['list_id'].".";?></span>
+                    <input type='checkbox' class='check' objectid ="<?php echo $id;?>" object_tid="<?php echo $detail['t_id'];?>"></input>
+               </td>
+               <td>
+                   <div class="s_content" style="float:left;">
+                        <span name="list[<?php echo $id;?>]" class="listContent" ><?php echo htmlspecialchars($detail['contents']);?></span>
+                        <textarea name="textarea_listContents<?php echo $id;?>" class="listContent_textarea" style="display:none;"><?php echo htmlspecialchars($detail['contents']);?></textarea>
+                        <span  id="<?php echo $id;?>" class='saveButton button' objectid="<?php echo $id;?>" style="display:none;" object_tid="<?php echo $detail['t_id'];?>">Save</span>
+                        <span  id="<?php echo 'b'.$id;?>" class='editButton button' style="display:none;">Edit</span>
+                        <span  id="<?php echo 'b1'.$id;?>" class='deleteButton button' objectid="<?php echo $id;?>" object_tid="<?php echo $detail['t_id'];?>" style="display:none;">Delete</span>
+                              <?php if (isset($detail['modified_date'])){?>
+                        <span >
+                            <?php echo "({$detail['realname']} unchecked at {$detail['modified_date']})"?>
+                        </span>
+                             <?php }?>
+                   </div>
+               </td> 
+    </tr>  
+    <?php } ?>
+</table>
+<table class='checked'>
+<?php
+foreach ($this->lists['checked'] as $id => $detail)
+{ 
+?>
+        <tr id="<?php echo $detail['list_id'];?>" class="checklist_tr">
+            <td class="s_number">
+                        <span><?php echo $detail['list_id'].".";?></span>
+                        <input type='checkbox' class='check' objectid ="<?php echo $id;?>" checked='checked' object_tid="<?php echo $detail['t_id'];?>"></input>
+
+            </td>
+            <td>
+                <div class="s_content">
+                        <span  name="list[<?php echo $id;?>]"  class='listContent'><?php echo htmlspecialchars($detail['contents']);?></span>
+                        <textarea name="textarea_listContents<?php echo $id;?>" class="listContent_textarea" style="display:none;"><?php echo htmlspecialchars($detail['contents']);?></textarea>
+                        <span class='saveButton button' objectid="<?php echo $id;?>" style="display:none;" object_tid="<?php echo $detail['t_id'];?>">Save</span>
+                        <span class='editButton button' id="<?php echo 'b'.$id;?>" style="display:none;">Edit</span>
+                        <span class='deleteButton button' id="<?php echo 'b1'.$id;?>" objectid="<?php echo $id;?>" object_tid="<?php echo $detail['t_id'];?>" style="display:none;">Delete</span>
+                            <?php if (isset($detail['modified_date'])){?>
+                        <span class='comments'>
+                            <?php echo "({$detail['realname']} checked at {$detail['modified_date']})"?>
+                        </span>
+                </div>
+            </td> 
+                            <?}?>
+        </tr>
+<?php }?>
+</table>
+<!--<span id="wholeTextContainer" class='wholeText' style='display:none;'></span>-->
+

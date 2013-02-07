@@ -1,0 +1,215 @@
+<style>
+.mode_trigger_switch {
+    background: none repeat scroll 0 0 #EA9F1E;
+    border: 1px solid #EA9F1E;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}
+</style>
+<script>
+		function Foo(tid)
+		{
+			dojo.xhrPost({
+			url: "/index/change-focus",
+			content: {'tid':tid},
+			handleAs: "text",
+			handle: function(data,args){
+						
+				if(typeof data == "error"){
+					console.warn("error!",args);
+				}else{
+					if(data == 1)
+					{
+						dojo.byId('focus_' + tid).innerHTML = "<img src='/images/star/star.png' border='0' />";
+					}else
+					{
+						dojo.byId('focus_' + tid).innerHTML = "<img src='/images/star/star_empty.png' border='0' />";
+					}
+				}
+			}
+			});
+		}
+	
+		function search(){
+			var a = document.sform.keyword.value;
+			window.location.href = '/index/index/type/search/keyword/' + escape(a);
+		}
+        
+        function switch_mode()
+        {
+            window.location.href = "/tasks/switch-mode/type/<?=$this->type?>/mode/1";
+        }
+	</script>
+	
+	<script>
+		function checkboxselect(itemname,checkstatus) {
+		if(!itemname) return;
+		if(!itemname.length) {
+			itemname.checked=checkstatus;
+		} else {
+			for(var i=0;i<itemname.length;i++) {
+			   itemname[i].checked=checkstatus;
+			}
+		}
+		}
+		
+		function markmove(){
+			$("#form1").attr({ 
+				action:"/index/batch/act/move" 
+			}).submit();
+		}
+		
+		$(function (){
+			$("#markread").click(function (){
+				$("#form1").attr({ 
+					action:"/index/batch/act/read" 
+				}).submit();
+			});
+		});
+        
+        function userpick()
+		{
+			var val = document.uform.ur.value;
+			
+			if(val)
+            {
+                dojo.xhrPost({
+                url: "/index/put-search-session-user",
+                content: {'val':val},
+                handleAs: "text",
+                handle: function(data,args){
+
+                    if(typeof data == "error"){
+                        console.warn("error!",args);
+                    }else{
+                        window.location.reload();
+                    }
+                }
+                });
+            }
+		}
+        
+        function projectpick()
+		{
+			var val = document.pform.pr.value;
+			
+			if(val)
+            {
+                dojo.xhrPost({
+                url: "/index/put-search-session-project",
+                content: {'val':val},
+                handleAs: "text",
+                handle: function(data,args){
+
+                    if(typeof data == "error"){
+                        console.warn("error!",args);
+                    }else{
+                        window.location.reload();
+                    }
+                }
+                });
+            }
+		}
+        
+        function viewpick()
+		{
+			var val = document.uform.vr.value;
+			
+			if(val)
+            {
+                dojo.xhrPost({
+                url: "/index/put-search-session-user",
+                content: {'val':val},
+                handleAs: "text",
+                handle: function(data,args){
+
+                    if(typeof data == "error"){
+                        console.warn("error!",args);
+                    }else{
+                        window.location.reload();
+                    }
+                }
+                });
+            }
+		}
+	</script>
+&nbsp;
+<form method="GET" name="vform" id="vform" onsubmit="viewpick();return false;">
+	<input type="button" value="Switch to task mode" class="mode_trigger_switch" onclick="switch_mode();" />
+</form>
+&nbsp;
+<form method="GET" name="uform" id="uform" onsubmit="userpick();return false;">
+	<select name="ur" class="small" onchange="userpick();">
+        <?php if($this->get_user_list): ?>
+			<?php foreach($this->get_user_list as $user_val):?>
+				<option value="<?=$user_val[0]?>" <?php if($_SESSION['search_ticket_users_current'] == $user_val[0]){echo "selected='selected'";}?>><?=$user_val[1]?></option>
+			<?php endforeach;?>
+		<?php endif;?>
+	</select>
+</form>
+&nbsp;
+<form method="GET" name="pform" id="pform" onsubmit="projectpick();return false;">
+	<select name="pr" class="small" onchange="projectpick();">
+		<option value="0">All Projects</option>
+		<?php if($this->get_project_list): ?>
+			<?php foreach($this->get_project_list as $project_key => $project_val):?>
+				<option value="<?=$project_key?>" <?php if($_SESSION['search_ticket_projects_current'] == $project_key){echo "selected='selected'";}?>><?=$project_val?></option>
+			<?php endforeach;?>
+		<?php endif;?>
+	</select>
+</form>
+<div align="center">
+<form name="form1" id="form1" method="post" />
+	<input type="hidden" name="p_type" value="<?=$this->p_type?>" />
+	<input type="hidden" name="p_page" value="<?=$this->p_page?>" />
+	<table class="hide" border="0" cellpadding="0" cellspacing="1">
+		<tbody>
+			<tr>
+				<td valign="top" width="100%">
+					<table class="width100" cellspacing="1">
+						<tbody>
+							<tr>
+								<td class="form-title" width="40">ID</td>
+								<td class="form-title" style="text-align: left;"><input type="checkbox" onclick="checkboxselect(document.form1.tick, document.form1.zone_checkbox.checked)" value="zone_checkbox" name="zone_checkbox">&nbsp;Subject&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="markread" name="markread" value="Mark as read" /><!--&nbsp;
+									<select name="move" id="move" onchange="markmove()">
+										<option value="">Move to</option>
+										<?php foreach($this->p_status as $p_status_key => $p_status_val):?>
+											<option value="<?=$p_status_key?>"><?=$p_status_val?></option>
+										<?php endforeach;?>
+									</select>-->
+								</td>
+								<td class="form-title" width="100">Last Update</td>
+								<td class="form-title" width="150">Update Time</td>
+								<td class="form-title" width="90">Dead Line</td>
+								<td class="form-title" width="70">Status</td>
+								<td class="form-title" width="70">My Role</a></td>
+							</tr>
+							<?php if($this->list):
+									$n = 1;
+									foreach($this->list as $list):
+							?>
+							<tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+								<td class="center"><span class="small"><?=$list['id']?></span></td>
+								<td class="left"><span class="small"><input type="checkbox" id="tick" name="tick[]" value="<?=$list['id']?>" />&nbsp;<a onclick="javascript:Foo(<?=$list['id']?>);return false;"><em id="focus_<?=$list['id']?>"><?php if($list['is_focus']):?>	<img src='/images/star/star.png' border='0' /><?php else:?><img src='/images/star/star_empty.png' border='0' /><?php endif;?></em></a>&nbsp;[<?=$list['pri_str']?>]&nbsp;<a href="/index/view/type/<?=$this->type;?>/id/<?=$list['id']?>"><?php if(!$list['is_read']){echo "<strong>";} ?><?=$list['composer']?>: <?=$list['title']?><?php echo "</strong>"; ?></a></span></td>
+								<td class="center"><span class="small"><?=$list['update_who_realname']?></span></td>
+								<td class="center"><span class="small"><?=$list['update_when']?></span></td>
+								<td class="center"><span class="small"><?=$list['dead_line']?></span></td>
+								<td class="center"><span class="small"><?=$list['status_str']?></span></td>
+								<td class="center"><span class="small"><?=$list['act']?></span></td>
+							</tr>
+							<?php
+									endforeach;
+								endif;
+							?>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
+</div>
+<div align="right"><?php if($this->can_newer):?><a href="?page=<?=$this->newer?>">< newer</a><?php endif; ?><?php if($this->can_older):?>&nbsp;&nbsp;&nbsp;<a href="?page=<?=$this->older?>">older ></a><?php endif; ?></div>
+<script>setTimeout("self.location.reload();",300000);</script>

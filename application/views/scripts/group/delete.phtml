@@ -1,0 +1,17 @@
+<br />
+<form action="/group/delete/id/<?php echo $this->data->id;?>" method="post">
+	<table class="width100" cellspacing="1">
+		<tbody>
+			<tr>
+				<td class="form-title" colspan="4">You are going to delete the group <strong><?php echo $this->data->gname;?></strong>, are you sure?</td>
+			</tr>		
+			<tr class="row-1">
+				<td colspan="4">
+					<input type="hidden" name="id" value="<?php echo $this->data->id;?>" />
+					<input type="submit" name="del" value="Yes" />
+					<input type="submit" name="del" value="No" />
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>

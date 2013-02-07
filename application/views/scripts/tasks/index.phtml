@@ -1,0 +1,185 @@
+<style>
+.mode_trigger_switch {
+    background: none repeat scroll 0 0 #EA9F1E;
+    border: 1px solid #EA9F1E;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}
+</style>
+<script>
+		function search(){
+			var a = document.sform.keyword.value;
+			window.location.href = '/index/index/type/search/keyword/' + escape(a);
+		}
+        
+        function userpick()
+		{
+			var val = document.uform.ur.value;
+			
+			if(val)
+            {
+                dojo.xhrPost({
+                url: "/index/put-search-session-user",
+                content: {'val':val},
+                handleAs: "text",
+                handle: function(data,args){
+
+                    if(typeof data == "error"){
+                        console.warn("error!",args);
+                    }else{
+                        window.location.reload();
+                    }
+                }
+                });
+            }
+		}
+        
+        function projectpick()
+		{
+			var val = document.pform.pr.value;
+			
+			if(val)
+            {
+                dojo.xhrPost({
+                url: "/index/put-search-session-project",
+                content: {'val':val},
+                handleAs: "text",
+                handle: function(data,args){
+
+                    if(typeof data == "error"){
+                        console.warn("error!",args);
+                    }else{
+                        window.location.reload();
+                    }
+                }
+                });
+            }
+		}
+        
+        function viewpick()
+		{
+			var val = document.uform.vr.value;
+			
+			if(val)
+            {
+                dojo.xhrPost({
+                url: "/index/put-search-session-user",
+                content: {'val':val},
+                handleAs: "text",
+                handle: function(data,args){
+
+                    if(typeof data == "error"){
+                        console.warn("error!",args);
+                    }else{
+                        window.location.reload();
+                    }
+                }
+                });
+            }
+		}
+        
+        function switch_mode()
+        {
+            window.location.href = "/tasks/switch-mode/type/<?=$this->type?>/mode/0";
+        }
+        
+        function move_up(id)
+        {
+            window.location.href = "/tasks/move-up/?id=" + id + "&url=<?=$_SERVER["REQUEST_URI"]?>";
+        }
+        
+        function move_down(id)
+        {
+            window.location.href = "/tasks/move-down/?id=" + id + "&url=<?=$_SERVER["REQUEST_URI"]?>";
+        }
+	</script>
+&nbsp;
+<form method="GET" name="vform" id="vform" onsubmit="viewpick();return false;">
+	<input type="button" value="Switch to ticket mode" class="mode_trigger_switch" onclick="switch_mode();" />
+</form>
+&nbsp;
+<form method="GET" name="uform" id="uform" onsubmit="userpick();return false;">
+	<select name="ur" class="small" onchange="userpick();">
+		<?php if($this->get_user_list): ?>
+			<?php foreach($this->get_user_list as $user_val):?>
+				<option value="<?=$user_val[0]?>" <?php if($_SESSION['search_ticket_users_current'] == $user_val[0]){echo "selected='selected'";}?>><?=$user_val[1]?></option>
+			<?php endforeach;?>
+		<?php endif;?>
+	</select>
+</form>
+&nbsp;
+<form method="GET" name="pform" id="pform" onsubmit="projectpick();return false;">
+	<select name="pr" class="small" onchange="projectpick();">
+		<option value="0">All Projects</option>
+		<?php if($this->get_project_list): ?>
+			<?php foreach($this->get_project_list as $project_key => $project_val):?>
+				<option value="<?=$project_key?>" <?php if($_SESSION['search_ticket_projects_current'] == $project_key){echo "selected='selected'";}?>><?=$project_val?></option>
+			<?php endforeach;?>
+		<?php endif;?>
+	</select>
+</form>
+<div align="center">
+<form name="form1" id="form1" method="post" />
+	<input type="hidden" name="p_type" value="<?=$this->p_type?>" />
+	<input type="hidden" name="p_page" value="<?=$this->p_page?>" />
+	<table class="hide" border="0" cellpadding="0" cellspacing="1">
+		<tbody>
+			<tr>
+				<td valign="top" width="100%">
+					<table class="width100" cellspacing="1">
+						<tbody>
+							<tr>
+								<td class="form-title" width="40">&nbsp;</td>
+                                <td class="form-title" width="80">Staff</td>
+                                <td class="form-title" width="80">Priority</td>
+                                <td class="form-title">Ticket</td>
+                                <td class="form-title">Notes</td>
+                                <td class="form-title">Project</td>
+                                <td class="form-title" width="80">Est. Hour</td>
+                                <td class="form-title" width="80">Actual H.</td>
+                                <td class="form-title" width="100">Deadline</td>
+                                <?php if(in_array($_SESSION["Zend_Auth"]["storage"]->level_mgt, array(2,3))):?>
+                                <td class="form-title" width="50">Move</td>
+                                <?php endif;?>
+							</tr>
+							<?php if($this->list):
+									$n = 1;
+									foreach($this->list as $list):
+							?>
+							<tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+								<td class="center"><span class="small"><?=$list['status']?></span></td>
+								<td class="center"><span class="small"><?=$list['staff']?></span></td>
+								<td class="center"><span class="small"><?=$list['priority']?></span></td>
+								<td class="left"><span class="small">[<?=$list['ticket_id']?>] <?=$list['ticket_title']?></span></td>
+								<td class="left"><span class="small"><?=$list['notes']?></span></td>
+								<td class="center"><span class="small"><?=$list['project']?></span></td>
+								<td class="center"><span class="small"><?=$list['ref_hour']?></span></td>
+								<td class="center">
+                                    <?php if($list['status_id']):?>
+                                        <?php $kpi_time = new KpiTicketsTime();?>
+                                        <iframe src="/index/recent-used-time/uid/<?=$list['table_id'];?>" frameborder="0" width="77" height="18" border="0" marginheight="0" marginwidth="0" scrolling="no" paddingheight="0"></iframe>
+                                    <?php else:?>
+                                        <span class="small"><?=$list['actual_hour']?></span>
+                                    <?php endif;?>
+                                </td>
+								<td class="center"><span class="small"><?=$list['deadline']?></span></td>
+								<?php if(in_array($_SESSION["Zend_Auth"]["storage"]->level_mgt, array(2,3))):?>
+                                <td class="center"><span class="small"><a href="#" onclick="javascript:move_up(<?=$list['table_id']?>);"><img src="/images/up.png" border="0" title="Move Up" /></a>&nbsp;&nbsp;<a href="#" onclick="javascript:move_down(<?=$list['table_id']?>);"><img src="/images/down.png" border="0" title="Move Down" /></a></span></td>
+                                <?php endif;?>
+							</tr>
+							<?php
+									endforeach;
+								endif;
+							?>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
+</div>
+<div align="right"><?php if($this->can_newer):?><a href="?page=<?=$this->newer?>">< newer</a><?php endif; ?><?php if($this->can_older):?>&nbsp;&nbsp;&nbsp;<a href="?page=<?=$this->older?>">older ></a><?php endif; ?></div>
+<script>setTimeout("self.location.reload();",300000);</script>

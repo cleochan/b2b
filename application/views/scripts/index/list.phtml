@@ -1,0 +1,361 @@
+<style>
+ol
+{
+    margin: 5px 0px 10px 30px;
+    padding: 0px;
+    list-style-position: inherit;
+}
+
+ol li input.listContent.list
+{
+    border:none;
+    background-color: #D8D8D8;
+    width: 500px;
+    font-size: 13px;
+    padding: 1px 0px 1px 0px;
+}
+
+ol li input.listContent
+{
+    width: 498px;
+    background-color: #EEE;
+    border: solid 1px #888;
+    font-size: 12px;
+}
+
+ol.checked li
+{
+    color: #888;
+}
+
+ol.checked li input
+{
+    color: #888;
+}
+
+ol li span.comments
+{
+    font-size: 11px;
+    color: #666;
+    display: inline-block;
+    margin-left: 5px;
+}
+span.button
+{
+    margin-left: 5px;
+    font-size: 11px;
+    color: green;
+    cursor:pointer;
+}
+span.button:hover
+{
+    color: white;
+}
+span.addButton
+{
+    margin-top: 5px;
+    margin-left: 10px;
+    display: block;
+}
+
+#insertItemFieldset
+{
+    margin-top: 5px;
+    margin-left: 10px;
+    width: 500px;
+}
+
+#insertItemFieldset legend
+{
+    font-size: 11px;
+    color: #666;
+}
+
+#insertItemFieldset input.addItemInput
+{
+    width: 400px;
+}
+
+span#insertItemMessage
+{
+    font-size: 11px;
+    color: red;
+    margin: 2px 0px 3px 0px;
+    display: block;
+}
+
+#wholeTextContainer
+{
+    position: absolute;
+    border: solid 1px gray;
+    background-color: #FFFFCC;
+    color: black;
+    font-size: 11px;
+    padding: 3px;
+    width: 400px;
+}
+</style>
+<script>
+$(document).ready(function()
+{
+    observeLists()
+});
+
+viewWholeTextTimer = null;
+
+function observeLists()
+{
+    // Check (click the checkbox)
+    $('input.check').live('click',function()
+    {
+        if ($(this).attr('checked'))
+        {
+            checkItem($(this));
+        }
+        else
+        {
+            uncheckItem($(this));
+        }
+    });
+    
+    // Edit (click edit button)
+    $('span.editButton').live('click', function()
+    {
+        var node = $(this).parent();
+        node.find('input.listContent').removeAttr('readonly').removeClass('list');
+        $(this).hide();
+        node.find('span.saveButton').show();
+    });
+    
+    // Update (click save button)
+    $('span.saveButton').live('click', function()
+    {
+        var itemId = $(this).attr('objectid');
+        var tid = $(this).attr('object_tid');
+        var saveButton = $(this);
+        $.ajax(
+        {
+            type: "POST",
+            url: "/index/update-item/id/"+itemId+"/tid/"+tid,
+            data: $('#ticketForm').serialize(),
+            success: function(response)
+            {
+               json = $.parseJSON(response);
+               if (json.success)
+               {
+                   var node = saveButton.parent();
+                   saveButton.hide();
+                   node.find('span.editButton').show();
+                   node.find('input.listContent').attr('readonly','readonly').addClass('list');
+               }
+               else
+               {
+                   alert(json.message);
+               }
+            }    
+        });	
+    });
+    
+    // Add (click the add button)
+    $('span.addButton').live('click', function()
+    {
+        $('#insertItemFieldset').toggle('normal');
+    });
+    
+    // Submit (click the submit button)
+    $('span.insertButton').live('click', function()
+    {
+        if ($('input.addItemInput').attr('value').trim())
+        {
+          
+            $('#insertItemMessage').text('');
+            $.ajax(
+            {
+                type: "POST",
+                url: "/index/insert-item",
+                data: $('#ticketForm').serialize(),
+                success: function(response)
+                {
+                   $('#checklistContainer')[0].innerHTML = response;
+                }    
+            });	
+        }
+        else
+        {
+            $('#insertItemMessage').text('The fild can not be empty!');
+        }
+    });
+    
+    //Delete (click delete button)
+    $('span.deleteButton').live('click', function()
+    {
+        var itemId = $(this).attr('objectid');
+        var tid = $(this).attr('object_tid');
+        var deleteButton = $(this);
+        var toDelete = confirm('Are you sure to delete?');
+        if (toDelete)
+        {
+            $.ajax(
+            {
+                type: "POST",
+                url: "/index/delete-item/id/"+itemId+"/tid/"+tid,
+                data: $('#ticketForm').serialize(),
+                success: function(response)
+                {
+                   json = $.parseJSON(response);
+                   if (json.success)
+                   {
+                       var node = deleteButton.parent();
+                       node.remove();
+                   }
+                   else
+                   {
+                       alert(json.message);
+                   }
+                }    
+            });	
+        }
+    });    
+    $("ol li").live("mouseover",function(event)
+    {
+        $(this).find('.editButton').show();
+        $(this).find('.deleteButton').show();
+        var node = $(this);
+        window.clearTimeout(viewWholeTextTimer);
+        viewWholeTextTimer = window.setTimeout(function()
+        {
+            var position = mousePosition(event);
+            showWholeText(node.find('input.listContent').attr('value'), position.x, position.y);
+        }, 500);
+    });
+    $("ol li").live("mouseout",function()
+    {
+        $(this).find('.editButton').hide();
+        $(this).find('.deleteButton').hide();
+        window.clearTimeout(viewWholeTextTimer);
+        resetWholeText();
+    });
+}
+
+function showWholeText(content, x, y)
+{
+    $('#wholeTextContainer').html(content);
+    $('#wholeTextContainer').css('left', (x+5)+'px');
+    $('#wholeTextContainer').css('top', (y+5)+'px');
+    $('#wholeTextContainer').show();
+}
+
+function resetWholeText()
+{
+    $('#wholeTextContainer').hide();
+}
+
+function mousePosition(ev)
+{
+    if(ev.pageX || ev.pageY)
+    {
+        return {x:ev.pageX, y:ev.pageY};
+    }
+    else
+    {
+         
+        return {x: (ev.clientX + document.body.scrollLeft - document.body.clientLeft), y: (ev.clientY + document.body.scrollTop - document.body.clientTop)};
+    }
+}
+
+function checkItem(target)
+{
+    var id = target.attr('objectid');
+    var tid = target.attr('object_tid');
+    $.ajax(
+    {
+        type: "GET",
+        url: "/index/check-item/check/1/id/"+id+"/tid/"+tid,
+        success: function(response)
+        {
+           json = $.parseJSON(response);
+           if (json.success)
+           {
+               var node = target.parent();
+               node.remove();
+               $('ol.checked').append(node);
+           }
+           else
+           {
+               alert(json.message);
+           }
+        }    
+    });	
+}
+function uncheckItem(target)
+{
+    var id = target.attr('objectid');
+    var tid = target.attr('object_tid');
+    $.ajax(
+    {
+        type: "GET",
+        url: "/index/check-item/check/0/id/"+id+"/tid/"+tid,
+        //data: $("#gcPaymentForm").serialize(),
+        success: function(response)
+        {
+           json = $.parseJSON(response);
+           if (json.success)
+           {
+               var node = target.parent();
+               node.remove();
+               $('ol.unchecked').append(node);
+           }
+           else
+           {
+               alert(json.message);
+           }
+        }    
+    });	
+}
+</script>
+<span class='addButton button' style="">[Add]</span>
+<fieldset id='insertItemFieldset' style='display:none;'>
+    <legend>Add a new one</legend>
+    <span id="insertItemMessage" class="message"></span>
+    <input type='text' class='addItemInput' name='newListItem'></input>
+    <span class='insertButton button' style="">[Submit]</span>
+</fieldset>
+<ol id='' class='unchecked'>
+<?php
+foreach ($this->lists['unchecked'] as $id => $detail)
+{
+    ?>
+    <li id="<?php echo $id;?>">
+        <input type='checkbox' class='check' objectid ="<?php echo $id;?>" object_tid="<?php echo $detail['t_id'];?>"></input>
+        <input readonly="readonly" name="list[<?php echo $id;?>]"  class='listContent list' value="<?php echo htmlspecialchars($detail['contents']);?>" ></input>
+        <span class='saveButton button' id="<?php echo $id;?>" objectid="<?php echo $id;?>" style="display:none;" object_tid="<?php echo $detail['t_id'];?>">[Save]</span>
+        <span class='editButton button' id="<?php echo 'b'.$id;?>" style="display:none;">[Edit]</span>
+        <span class='deleteButton button' id="<?php echo 'b1'.$id;?>" objectid="<?php echo $id;?>" object_tid="<?php echo $detail['t_id'];?>" style="display:none;">[Delete]</span>
+        <?php if (isset($detail['modified_date'])){?>
+        <span class='comments'><?php echo "({$detail['realname']} checked at {$detail['modified_date']})";?></span>
+        <?}?>
+    </li>    
+    <?php
+}
+?>
+</ol>
+<ol id='' class='checked'>
+<?php
+foreach ($this->lists['checked'] as $id => $detail)
+{
+    ?>
+    <li id="<?php echo $id;?>">
+        <input type='checkbox' class='check' objectid ="<?php echo $id;?>" checked='checked' object_tid="<?php echo $detail['t_id'];?>"></input>
+        <input readonly="readonly" name="list[<?php echo $id;?>]" id="<?php echo $id;?>" class='listContent list' value="<?php echo htmlspecialchars($detail['contents']);?>" ></input>       
+        <span class='saveButton button' objectid="<?php echo $id;?>" style="display:none;" object_tid="<?php echo $detail['t_id'];?>">[Save]</span>
+        <span class='editButton button' id="<?php echo 'b'.$id;?>" style="display:none;">[Edit]</span>
+        <span class='deleteButton button' id="<?php echo 'b1'.$id;?>" objectid="<?php echo $id;?>" object_tid="<?php echo $detail['t_id'];?>" style="display:none;">[Delete]</span>
+        <?php if (isset($detail['modified_date'])){?>
+        <span class='comments'><?php echo "({$detail['realname']} modified at {$detail['modified_date']})"?></span>
+        <?}?>
+    </li>    
+    <?php
+}
+?>
+</ol>
+<span id="wholeTextContainer" class='wholeText' style='display:none;'></span>

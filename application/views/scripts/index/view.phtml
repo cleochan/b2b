@@ -1,0 +1,475 @@
+<style>
+.status_trigger_stop {
+    background: none repeat scroll 0 0 #ED6868;
+    border: 1px solid #ED6868;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}
+
+.status_trigger_start {
+    background: none repeat scroll 0 0 #2288A9;
+    border: 1px solid #1A7C9B;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}
+
+
+
+.status_trigger_setup {
+    background: none repeat scroll 0 0 #EA9F1E;
+    border: 1px solid #EA9F1E;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}
+</style>
+
+<script charset="utf-8" src="/scripts/kindeditor/kindeditor.js"></script>
+<script charset="utf-8" src="/scripts/kindeditor/lang/en.js"></script>
+<script type="text/javascript" src="http://download.skype.com/share/skypebuttons/js/skypeCheck.js"></script>
+<script>
+	var editor;
+	KindEditor.ready(function(K) {
+		editor = K.create('textarea[name="comments"]', {
+			allowFileManager : true
+		});
+	});
+</script>
+<script type="text/javascript">
+$(function() 
+{
+    $('#dead_line').datepicker(
+    {
+        numberOfMonths: 2,
+        showButtonPanel: true,
+        dateFormat: 'yy-mm-dd',
+        minDate: 0,
+        maxDate: <?=$this->deadline_max;?>
+    });
+});
+</script>
+<script>
+$(document).ready(function(){
+//listSort();
+/*
+$(":button").live('click',
+            function()
+            {
+                var content = $("#e"+$(this).attr('id')).text();
+	        var change_id = $(this).attr('contentid');                      
+                if($(this).attr('value') == 'Save')
+                {			          
+                        $("#e"+$(this).attr('id')).css("color","green");
+		        $("#e"+$(this).attr('id')).attr('contenteditable',false);
+			$.ajax({
+		           type:"POST",
+			   url : "/index/index/contentid/"+change_id,
+			   data : "content="+content
+				});
+			$(this).hide();
+                        $('#de'+$(this).attr('id')).hide();
+                 }
+                 else if($(this).attr('value') == 'Del')
+                 {
+                      var conf=window.confirm("确定删除?");
+                      if(conf)
+                      {
+				$.ajax({
+					   type:"POST",
+					   url : "/index/index/delid/"+change_id,
+					   data : "deldata="
+					});
+                                 $('#d'+($(this)).attr('id').substr(2)).remove();
+                       }
+                     
+                                
+                 }
+                else if($(this).attr('value')=='Add')
+                {
+//                    var url=window.location.href;
+//                    var addtid=url.substr(51);
+                    var addtid=$("#add_checkList").attr('wid');
+                    var adddata=$("#add_checkList").val();
+                    $.ajax({
+                             type:"POST",
+                             url:"/index/index/addtid/"+addtid,
+                             data: "addData="+adddata,
+                             success: function(data)
+                             {
+                                 
+                                if(($("#sort").children())[0]!=null &&$("#add_checkList").val())
+                                 {                               
+                                     $("<div id='db' dsort='0'><input id='c' type='checkbox' test='"+data+"'/><span class='check_content' id='eb'>"+adddata+"</span><input id='b' type='button' value='Save' style='display:none'/><input id='deb' type='button' value='Del' style='display:none' contentid='"+data+"'/><span id='htc'></span></div>").insertBefore($("#sort div:first"));
+                                 }else if(($("#sort").children())[0]==null &&$("#add_checkList").val())
+                                 {
+                                     $("#sort").append("<div id='db' dsort='0'><input id='c' type='checkbox' test='"+data+"'/><span class='check_content' id='eb'>"+adddata+"</span><input id='b' type='button' value='Save' style='display:none'/><input id='deb' type='button' value='Del' style='display:none' contentid='"+data+"'/><span id='htc'></span></div>");
+                                 }
+                             }
+                    });
+                }
+                
+            }
+           
+);
+$(".check_content").live('dblclick',
+          
+          function ()
+          {
+              $(this).attr('contenteditable',true);
+              $(this).css('color','red');
+              var bId=($(this).attr('id')).substr(1);
+              $('#de'+bId).show();
+              $('#'+bId).show();
+          }
+
+);
+$(":checkbox").live('click',
+        function()
+        {
+	var b=$(this).attr('test');
+	var a=$(this).attr('id');
+	if($(this).attr("checked"))
+		{
+                $(this).parent().attr('dsort', 1);
+                listSort();
+		$.ajax({
+				type:"POST",
+				url :"/index/index/chid/"+b,
+				data : sendCheckBoxData('checked'),
+				success : function(data)
+				{
+					$("#ht"+a).html(data);
+				}
+		});
+		}
+	        else
+		{                
+                $(this).parent().attr('dsort', 0);
+                listSort();
+		$.ajax({
+			type:"POST",
+			url : "/index/index/chid/"+b,
+			data : sendCheckBoxData('unchecked'),
+			success : function(data)
+			{
+				$("#ht"+a).html(data);
+			}
+			});
+		}
+						
+});
+        */
+});
+function listSort()
+{
+        var mylist = $('#sort');
+        var listitems = mylist.children('div').get();         
+        listitems.sort(function(a, b) 
+        {
+               var compA = parseFloat($(a).attr('dsort'));
+               var compB = parseFloat($(b).attr('dsort'));
+               return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
+         });        
+         $.each(listitems,function(idx, itm) 
+         {
+         
+         mylist.append(itm);
+          });
+}
+function sendCheckBoxData(datas)
+{
+    if(datas == "checked")
+    {
+        data ="status="+1;
+    }
+    else if(datas == "unchecked")
+    {
+        data ="status="+0;
+    }
+    return data;
+}
+
+function redirect_division()
+{
+    var ticketForm = document.ticketForm;
+    ticketForm.action = "/index/view/type/<?=$this->type?>/division/1";
+    ticketForm.submit();
+}
+
+function strigger_stop(uid)
+{
+    window.location.href = "/index/status-trigger/saction/0/type/<?=$this->type?>/id/<?=$this->id?>/uid/" + uid;
+}
+
+function strigger_start(uid)
+{
+    window.location.href = "/index/status-trigger/saction/1/type/<?=$this->type?>/id/<?=$this->id?>/uid/" + uid;
+}
+</script>
+<script type="text/javascript">
+$(function() {
+	var availableTags = [<?=$this->users_array?>];
+	function split(val) {
+		return val.split(/,\s*/);
+	}
+	function extractLast(term) {
+		return split(term).pop();
+	}
+	
+	$("#participants").autocomplete({
+		minLength: 0,
+		source: function(request, response) {
+			// delegate back to autocomplete, but extract the last term
+			response($.ui.autocomplete.filter(availableTags, extractLast(request.term)));
+		},
+		focus: function() {
+			// prevent value inserted on focus
+			return false;
+		},
+		select: function(event, ui) {
+			var terms = split( this.value );
+			// remove the current input
+			terms.pop();
+			// add the selected item
+			terms.push( ui.item.value );
+			// add placeholder to get the comma-and-space at the end
+			terms.push("");
+			this.value = terms.join(", ");
+			return false;
+		}
+	});
+});
+</script>
+
+<script>
+function addFileInput() {
+	var get_num = (document.getElementById("atmt_record").value);
+	var new_num = parseFloat(get_num) + 1;
+	var atmt_id = "atmt" + new_num;
+
+ 	document.getElementById("atmt_record").value = new_num;
+ 	document.getElementById(atmt_id).style.display ='block';
+ 	
+ 	if(20 == new_num)
+ 	{
+ 		document.getElementById("atmt_say").style.display ='none';
+ 	}
+}
+
+</script>
+
+<p><a href="/index/index/type/<?=$this->type?>"><< Back</a></p>
+<?php if($this->notice):?>
+<font color="#ff0000"><strong>* <?php echo $this->notice;?></strong></font><br /><br />
+<?php endif;?>
+<form id='ticketForm' name='ticketForm' action="/index/view/type/<?=$this->type?>" method="post" enctype="multipart/form-data">
+	<table class="width100" cellspacing="1">
+		<tbody>
+			<tr>
+				<td class="form-title" colspan="4">#<?=$this->id?><?php echo $this->form->id;?> <font color="#ff0000"><?php echo $this->ticket['composer'].$this->ticket['skype'];?></font>: <?php echo $this->ticket['title'];?> <a href="/index/add/from_ticket/<?=$this->id?>"><img src="/images/duplicate.png" border="0" title="Duplicate this ticket" alt="Duplicate this ticket"></a></td>
+			</tr>
+			<tr class="row-1">
+				<td class="category">Category *</td>
+				<td>
+					<?php if($this->ticket_auth):?>	
+						<?php echo $this->form->category;?>
+					<?php else:?>
+						<?php $ca_model = new Category();
+                              $ca_val = $ca_model->GetOne($this->ticket['category']);
+                        ?>
+                        <?php echo $ca_val['cname'];?>
+					<?php endif;?>
+				</td>
+				<td class="category" width="130">Created Date</td>
+				<td>
+						<?php echo $this->ticket['created_date'];?>
+				</td>
+			</tr>
+			<tr class="row-2">
+				<td class="category">Project</td>
+				<td>
+					<?php if($this->ticket_auth):?>	
+						<?php echo $this->form->project;?>
+					<?php else:?>
+						<?php echo $this->ticket['project'];?>
+					<?php endif;?>
+				</td>
+				<td class="category">Processing Date</td>
+				<td>
+					<?php echo $this->ticket['processing_date'];?>
+				</td>
+			</tr>			
+			<tr class="row-1">
+				<td class="category">Status</td>
+				<td>
+					<?php if($this->ticket_auth):?>	
+						<?php echo $this->form->status;?>
+					<?php else:?>
+						<?php echo $this->ticket['status'];?>
+					<?php endif;?>
+				</td>
+				<td class="category">Closed Date</td>
+				<td>
+					<?php echo $this->ticket['closed_date'];?>
+				</td>
+			</tr>				
+			<tr class="row-2">
+				<td class="category">Priority</td>
+				<td>
+					<?php if($this->ticket_auth):?>	
+						<?php echo $this->form->priority;?>
+					<?php else:?>
+						<?php echo $this->ticket['priority'];?>
+					<?php endif;?>
+                </td>
+				<td class="category">Canceled Date</td>
+				<td>
+					<?php echo $this->ticket['canceled_date'];?>
+				</td>
+			</tr>	
+			<tr class="row-1">
+				<td class="category">Dead Line</td>
+				<td colspan="3">
+					<?php if($this->ticket_auth):?>	
+						<?php echo $this->form->dead_line;?>
+					<?php else:?>
+						<?php echo $this->ticket['dead_line'];?>
+					<?php endif;?>
+				</td>
+			</tr>	
+			<tr class="row-2">
+				<td class="category">Task Division</td>
+				<td colspan="3">
+					<?php if($this->tickets_users_array):?>
+                        <?php $kpi = new Kpi();?>
+                        <?php foreach($this->tickets_users_array as $tickets_users_array):?>
+                            <?php if($tickets_users_array['user_id'] == $_SESSION["Zend_Auth"]["storage"]->id):?>
+                                <?php if($tickets_users_array['status']):?>
+                                    <input type="button" name="status_trigger_stop" id="status_trigger_stop" value="Stop" class="status_trigger_stop" onclick="strigger_stop(<?=$tickets_users_array['uid'];?>);" />
+                                <?php else: ?>
+                                    <input type="button" name="status_trigger_start" id="status_trigger_start" value="Start" class="status_trigger_start" onclick="strigger_start(<?=$tickets_users_array['uid'];?>);" />
+                                <?php endif;?>
+                            <?php else:?>
+                                <?php if($tickets_users_array['status']):?>
+                                    <font color="green">[Started]</font> 
+                                <?php else: ?>
+                                    <font color="red">[Stopped] </font>
+                                <?php endif;?>
+                            <?php endif;?>
+                            <?=$tickets_users_array['user_type'];?>-<?=$tickets_users_array['user_name'];?>
+                            (<?=$tickets_users_array['suggestion_hour'];?> - 
+                            <?php if($tickets_users_array['status']):?>
+                                <iframe src="/index/recent-used-time/uid/<?=$tickets_users_array['uid'];?>" frameborder="0" width="77" height="18" border="0" marginheight="0" marginwidth="0" scrolling="no" paddingheight="0"></iframe>
+                            <?php else:?>
+                                <?=$tickets_users_array['used_time']?>
+                            <?php endif;?>
+                                )
+                            <?=$tickets_users_array['notes'];?>
+                            <br />
+                        <?php endforeach;?>
+                    <?php endif;?>
+                    <?php if(in_array($_SESSION["Zend_Auth"]["storage"]->level_mgt, array(2,3))):?>
+                    <br />
+                    <?php echo $this->form->division;?>
+                    <?php endif;?>
+				</td>
+			</tr>		
+			<tr class="row-1">
+				<td class="category">Participants</td>
+				<td colspan="3">
+					<?php if($this->ticket_auth):?>	
+						<?php echo $this->form->participants;?>
+					<?php else:?>
+						<?php echo $this->ticket['participants'];?>
+					<?php endif;?>
+				</td>
+			</tr>		
+			<tr class="row-2">
+				<td class="category">Title *</td>
+				<td colspan="3">
+					<?php if($this->ticket_auth):?>	
+						<?php echo $this->form->title;?>
+					<?php else:?>
+						<?php echo $this->ticket['title'];?>
+					<?php endif;?>
+				</td>
+			</tr>
+                        <tr class="row-1">
+                            <td class="category">Check Points<br /><a class="alinks" href="/index/export-csv/id/<?php foreach($this->lists['unchecked'] as $key => $value){ } echo $value['t_id'];?>" id="export_datas">Export Detail</a></td>
+                            <td colspan="3" id='checklistContainer'><?php echo $this->render('/index/olist.phtml');?></td>
+			</tr>
+
+			<tr class="row-1">
+				<td class="category">Contents</td>
+				<td colspan="3"><?php echo $this->ticket['contents'];?></td>
+			</tr>		
+			<tr class="row-2">
+				<td class="category">Attachment</td>
+				<td colspan="3"><?php echo $this->attachments;?></td>
+			</tr>	
+			<tr class="row-1">
+				<td class="category">Viewed By</td>
+				<td colspan="3"><?php echo $this->ticket['make_read'];?></td>
+			</tr>	
+			<tr class="row-2">
+				<td colspan="4"><?php echo $this->form->submitx;?></td>
+			</tr>
+			<tr>
+				<td class="form-title" colspan="4">Comments</td>
+			</tr>
+			<?php if($this->comments_data):?>
+			<?php $n = 2;?>
+				<?php foreach($this->comments_data as $comments_data):?>
+					<tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+						<td class="category"><i><?php echo $comments_data['composer'].$comments_data['skype'];?>: </i><div style="font-size: 5pt"><?php echo $comments_data['created_date'];?></div></td>
+						<td colspan="3"><?php echo $comments_data['contents'];?><?php if($comments_data['attachment']):?><br /><br />====== Attachment ======<br /><?php echo $comments_data['attachment'];?><?php endif;?></td>
+					</tr>
+				<?php endforeach;?>
+			<?php endif;?>
+			<tr class="spacer">
+				<td></td>
+			</tr>	
+			<tr class="row-2">
+				<td class="category">Add Comments</td>
+				<td colspan="3"><?php echo $this->form->comments;?></td>
+			</tr>		
+			<tr class="row-1">
+				<td class="category">Add Attachment</td>
+				<td colspan="3">
+					<div id="atmt1"><?php echo $this->form->attachment1;?></div>
+					<div id="atmt2" style="display:none;"><?php echo $this->form->attachment2;?></div>
+					<div id="atmt3" style="display:none;"><?php echo $this->form->attachment3;?></div>
+					<div id="atmt4" style="display:none;"><?php echo $this->form->attachment4;?></div>
+					<div id="atmt5" style="display:none;"><?php echo $this->form->attachment5;?></div>
+					<div id="atmt6" style="display:none;"><?php echo $this->form->attachment6;?></div>
+					<div id="atmt7" style="display:none;"><?php echo $this->form->attachment7;?></div>
+					<div id="atmt8" style="display:none;"><?php echo $this->form->attachment8;?></div>
+					<div id="atmt9" style="display:none;"><?php echo $this->form->attachment9;?></div>
+					<div id="atmt10" style="display:none;"><?php echo $this->form->attachment10;?></div>
+					<div id="atmt11" style="display:none;"><?php echo $this->form->attachment11;?></div>
+					<div id="atmt12" style="display:none;"><?php echo $this->form->attachment12;?></div>
+					<div id="atmt13" style="display:none;"><?php echo $this->form->attachment13;?></div>
+					<div id="atmt14" style="display:none;"><?php echo $this->form->attachment14;?></div>
+					<div id="atmt15" style="display:none;"><?php echo $this->form->attachment15;?></div>
+					<div id="atmt16" style="display:none;"><?php echo $this->form->attachment16;?></div>
+					<div id="atmt17" style="display:none;"><?php echo $this->form->attachment17;?></div>
+					<div id="atmt18" style="display:none;"><?php echo $this->form->attachment18;?></div>
+					<div id="atmt19" style="display:none;"><?php echo $this->form->attachment19;?></div>
+					<div id="atmt20" style="display:none;"><?php echo $this->form->attachment20;?></div>
+					<div id="atmt_say"><a href="javascript:addFileInput();">Attach another File</a></div>
+					<input type="hidden" name="atmt_record" id="atmt_record" value="1" />
+				</td>
+			</tr>
+			<tr class="row-2">
+				<td colspan="4"><?php echo $this->form->submitx;?></td>
+			</tr>	
+		</tbody>
+	</table>
+</form>
+
+<iframe id="callFile" name="callFile" style="width: 0px; height: 0px; border: 0px"></iframe>

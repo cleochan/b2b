@@ -1,0 +1,143 @@
+<script charset="utf-8" src="/scripts/kindeditor/kindeditor.js"></script>
+<script charset="utf-8" src="/scripts/kindeditor/lang/en.js"></script>
+<script>
+	var editor;
+	KindEditor.ready(function(K) {
+		editor = K.create('textarea[name="tcontents"]', {
+			allowFileManager : true
+		});
+	});
+</script>
+<script>
+$('document').ready(function(){
+    $('select[name=workbook_top]').change(function(){
+        var workbookID = $('select[name=workbook_top]').val();
+        ajaxGetWorkbook(workbookID);
+    })
+    
+    $('select[name=workbook]').change(function(){
+        var workID = $('select[name=workbook]').val();
+        ajaxGetStaff(workID);
+    })
+})
+
+function ajaxGetWorkbook(workbookID)
+{
+    $.ajax({
+        type:"POST",
+        url:"<?=$this->base_url?>/index/get-workbook",
+        data:{workbookID:workbookID},
+        success:function(response){
+            if(response != ''){
+                $('select[name=workbook]').html(response);
+                $('select[name=workbook]').show();
+            }
+        }
+    })
+}
+
+function ajaxGetStaff(workID)
+{
+    $.ajax({
+        type:"POST",
+        url:"<?=$this->base_url?>/index/get-staff",
+        data:{workID:workID},
+        success:function(response){
+            if(response != ''){
+                $('select[name=staff]').html(response);
+                $('select[name=staff]').show();
+            }
+        }
+    })
+}
+</script>
+
+<p><a href="/index/fast-ticket"><< Back</a></p>
+<?php if($this->notice):?>
+<font color="#ff0000"><strong>* <?php echo $this->notice;?></strong></font><br /><br />
+<?php endif;?>
+<div align="center"><H3>Create a fast ticket template</H3></div>
+<form id='divisionForm' name='divisionForm' action="/index/fast-ticket-register" method="post">
+	<table class="width100" cellspacing="1">
+		<tbody>
+			<tr class="row-1">
+				<td class="category">Template Title</td>
+				<td><input type="text" name="tname" id="tname" size="70" /> * Will be displayed in the drop down menu.</td>
+            </tr>
+			<tr class="row-2">
+				<td class="category">Ticket Contents</td>
+				<td><textarea name="tcontents" id="tcontents" style="width: 800px; height: 300px; visibility: hidden; display: none; " rows="24" cols="80"></textarea>
+                    <br />
+                    * Will be displayed as the ticket contents. 
+                </td>
+            </tr>
+            <tr class="row-1">
+				<td class="category">Ticket Category</td>
+				<td>
+                    <select name="tcat" id="tcat">
+                        <?php foreach($this->tcat_array as $tcat_array_key => $tcat_array_val):?>
+                        <option value="<?=$tcat_array_key?>"><?=$tcat_array_val?></option>
+                        <?php endforeach;?>
+                    </select>
+                </td>
+            </tr>
+            <tr class="row-2">
+				<td class="category">Difficulty</td>
+				<td>
+                    <select name="diff" id="diff">
+                        <?php foreach($this->diff_array as $diff_array_key => $diff_array_val):?>
+                        <option value="<?=$diff_array_key?>" <?php if(3==$diff_array_key){echo "selected='selected'";}?>><?=$diff_array_val?></option>
+                        <?php endforeach;?>
+                    </select>
+                </td>
+            </tr>
+			<tr class="row-1">
+				<td class="category">Workbook</td>
+				<td>
+                    <select name="workbook_top" id="workbook_top">
+                        <?php foreach($this->workbook_top as $workbook_top_key => $workbook_top_val):?>
+                        <option value="<?=$workbook_top_key?>"><?=$workbook_top_val?></option>
+                        <?php endforeach;?>
+                    </select>
+                </td>
+            </tr>
+			<tr class="row-2">
+				<td class="category">Work</td>
+				<td>
+                    <select name="workbook" id="workbook">
+                    </select>
+                </td>
+            </tr>
+			<tr class="row-1">
+				<td class="category">Staff</td>
+				<td>
+                    <select name="staff" id="staff">
+                    </select>
+                </td>
+            </tr>
+			<tr class="row-2">
+				<td class="category">Staff Type</td>
+				<td>
+                    <select name="stype" id="stype">
+                        <?php foreach($this->stype as $stype_key => $stype_val):?>
+                        <option value="<?=$stype_key?>"><?=$stype_val?></option>
+                        <?php endforeach;?>
+                    </select>
+                </td>
+            </tr>
+			<tr class="row-1">
+				<td class="category">Est. Hour</td>
+				<td>
+                    <select name="shour" id="shour">
+                        <?php foreach($this->shour as $shour_key => $shour_val):?>
+                        <option value="<?=$shour_key?>"><?=$shour_val?></option>
+                        <?php endforeach;?>
+                    </select>
+                </td>
+            </tr>
+			<tr class="row-2">
+				<td colspan="2"><input type="hidden" name="source" value="fm" /><input type="submit" value="Create Template" /></td>
+            </tr>
+		</tbody>
+	</table>
+</form>

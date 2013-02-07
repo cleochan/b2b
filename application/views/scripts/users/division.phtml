@@ -1,0 +1,45 @@
+<div align="center"><H3>Assign Work for User: <?=$this->user_name;?></H3></div>
+&nbsp;&nbsp;
+<?php if($this->note):?>
+<font color="green">* <?=$this->note?></font>
+<br /><br />
+<?php endif;?>
+<?php if($this->top_level): ?>
+    <select name="top_level" onChange="location=this.value">
+        <?php foreach($this->top_level as $top_key => $top_val):?>
+        <option value="/users/division/id/<?=$this->user_id;?>/wb/<?=$top_key?>" <?php if($this->wb == $top_key){echo "selected='selected'";} ?>><?=$top_val?></option>
+        <?php endforeach;?>
+    </select>
+<?php endif; ?>
+<?php if($this->tree):?>
+<br />
+<div>
+<form action="/users/division-submit" name="form1" id="form1" method="POST">
+<input type="hidden" name="user_id" value="<?=$this->user_id;?>" />
+<input type="hidden" name="wb" value="<?=$this->wb;?>" />
+<table class="hide" border="0" cellpadding="0" cellspacing="3">
+	<tbody>
+		<tr>
+			<td valign="top" width="100%">
+				<table class="width100" cellspacing="1">
+					<tbody>
+						<tr>
+							<td><br />
+                                <?php foreach($this->tree as $tree):?>
+                                    <?php foreach($tree as $tree_key => $tree_val):?>
+                                        <input type="hidden" name="a[<?=$tree_key?>]" value="<?=$tree_key?>"><input type="checkbox" name="t[<?=$tree_key?>]" value="ON" <?php if(in_array($tree_key, $this->user_tickets_checked)):?>checked="checked"<?php endif;?>>&nbsp;&nbsp;<?php echo $tree_val."<br />";?>
+                                    <?php endforeach;?>
+                                <?php endforeach;?>
+                                <br />
+                                <input type="submit" value="Submit" />
+                            </td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</form>
+</div>
+<?php endif;?>

@@ -1,0 +1,558 @@
+<script language="JavaScript" src="/scripts/charts/JSClass/FusionCharts.js"></script>
+<?php if("all" == $this->terminal_user):?>
+<?php $p = 0;?>
+<?foreach($this->loop_user as $loop_user):?>
+<?php $p += 1;?>
+<div align="center">
+    <H3>KPI Report of <?=$loop_user['staff_info']['first_name']?> <?=$loop_user['staff_info']['last_name']?></H3>
+    <table class="hide" border="0" cellpadding="0" cellspacing="1">
+		<tbody>
+			<tr>
+				<td valign="top" width="50%">
+					<table class="width900" cellspacing="1" align="center">
+						<tbody>
+							<tr>
+								<td class="form-title" style="text-align: left;" colspan="2">Employee Profile</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right" width="50%"><span class="small">First Name</td>
+								<td class="left" width="50%"><span class="small"><?=$loop_user['staff_info']['first_name']?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Last Name</td>
+								<td class="left"><span class="small"><?=$loop_user['staff_info']['last_name']?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Level</td>
+								<td class="left"><span class="small"><?=$loop_user['staff_info']['level_name']?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Team</td>
+								<td class="left"><span class="small"><?=$loop_user['staff_info']['team_name']?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Department</td>
+								<td class="left"><span class="small"><?=$loop_user['staff_info']['department']?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Position</td>
+								<td class="left"><span class="small"><?=$loop_user['staff_info']['team_title']?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">SuperVisor</td>
+								<td class="left"><span class="small"><?=$loop_user['staff_info']['supervisor']?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="center" colspan="2"><span class="small">&nbsp;</td>
+							</tr>
+							<tr class="row-2">
+								<td class="center" colspan="2"><span class="small"><strong>KPI Period</strong></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">From</td>
+								<td class="left"><span class="small"><?=$this->start_date?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">To</td>
+								<td class="left"><span class="small"><?=$this->end_date?></td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+    <br />
+    
+    <table class="hide" border="0" cellpadding="0" cellspacing="1">
+		<tbody>
+			<tr>
+				<td valign="top" width="50%">
+					<table class="width900" cellspacing="1" align="center">
+						<tbody>
+							<tr>
+								<td class="form-title" style="text-align: left;" colspan="2">KPI Overview</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right" width="50%"><span class="small"><strong>1) Tasks</strong></td>
+								<td class="left" width="50%"><span class="small">-</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Ticket Quantity</td>
+								<td class="left"><span class="small"><?=$loop_user['task_info']['self']['ticket_qty']?> (<?=$loop_user['task_info']['team']['ticket_qty']?>)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Complexity</td>
+								<td class="left"><span class="small"><?=$loop_user['task_info']['self']['complexity']?> (<?=$loop_user['task_info']['team']['complexity']?>)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Efficiency</td>
+								<td class="left"><span class="small"><?=$loop_user['task_info']['self']['efficiency']?> (<?=$loop_user['task_info']['team']['efficiency']?>)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Score</td>
+								<td class="left"><span class="small"><?=$loop_user['task_info']['self']['score']?> (<?=$loop_user['task_info']['team']['score']?>)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">% of Delayed Ticket</td>
+								<td class="left"><span class="small"><?=$loop_user['task_info']['self']['delayed_ticket']?>% (<?=$loop_user['task_info']['team']['delayed_ticket']?>%)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="center" colspan="2"><span class="small">&nbsp;</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right" width="50%"><span class="small"><strong>2) Training</strong></td>
+								<td class="left" width="50%"><span class="small">-</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Training Session</td>
+								<td class="left"><span class="small"><?=$loop_user['training_info']['self']['training_session']?> (<?=$loop_user['training_info']['team']['training_session']?>)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Absence Rate</td>
+								<td class="left"><span class="small"><?=$loop_user['training_info']['self']['absence_rate']?> (<?=$loop_user['training_info']['team']['absence_rate']?>)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Test Score</td>
+								<td class="left"><span class="small"><?=$loop_user['training_info']['self']['score']?> (<?=$loop_user['training_info']['team']['score']?>)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="center" colspan="2"><span class="small">&nbsp;</td>
+							</tr>
+                            <!--
+							<tr class="row-2">
+								<td class="right" width="50%"><span class="small"><strong>3) Attendance</strong></td>
+								<td class="left" width="50%"><span class="small">-</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Late Days</td>
+								<td class="left"><span class="small">-</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">% of Late Days</td>
+								<td class="left"><span class="small">-</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Leave Days</td>
+								<td class="left"><span class="small">-</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">% of Leave Days</td>
+								<td class="left"><span class="small">-</td>
+							</tr>
+							<tr class="row-2">
+								<td class="center" colspan="2"><span class="small">&nbsp;</td>
+							</tr>
+                            -->
+							<tr class="row-2">
+								<td class="right"><span class="small"><strong>Total</strong></td>
+								<td class="left"><span class="small">-</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+    <br />
+    
+    <table class="hide" border="0" cellpadding="0" cellspacing="1">
+		<tbody>
+			<tr>
+				<td valign="top" width="50%">
+					<table class="width900" cellspacing="1" align="center">
+						<tbody>
+							<tr>
+								<td class="form-title" style="text-align: left;" colspan="2">Time Management</td>
+							</tr>
+							<tr class="row-2">
+								<td class="center" width="100%">
+                                    <span id="usageleader<?=$p?>" align="center">UsageLeader</span>
+                                    <script type="text/javascript">
+                                       var chart = new FusionCharts("../scripts/charts/Charts/FCF_Doughnut2D.swf", "ChartId", "250", "200");
+                                       chart.setDataURL("/kpi/kpi-calculation-usage-leader/user/<?=$loop_user['user_id']?>/date_from/<?=$loop_user['start_date']?>/date_to/<?=$loop_user['end_date']?>");		   
+                                       chart.render("usageleader<?=$p?>");
+                                    </script>
+                                    
+                                    <span id="usageuser<?=$p?>" align="center">UsageUser</span>
+                                    <script type="text/javascript">
+                                       var chart = new FusionCharts("../scripts/charts/Charts/FCF_Doughnut2D.swf", "ChartId", "250", "200");
+                                       chart.setDataURL("/kpi/kpi-calculation-usage-user/user/<?=$loop_user['user_id']?>/date_from/<?=$loop_user['start_date']?>/date_to/<?=$loop_user['end_date']?>");		   
+                                       chart.render("usageuser<?=$p?>");
+                                    </script>
+                                    
+                                    <span id="usageavg<?=$p?>" align="center">UsageAvg</span>
+                                    <script type="text/javascript">
+                                       var chart = new FusionCharts("../scripts/charts/Charts/FCF_Doughnut2D.swf", "ChartId", "250", "200");
+                                       chart.setDataURL("/kpi/kpi-calculation-usage-avg/user/<?=$loop_user['user_id']?>/date_from/<?=$loop_user['start_date']?>/date_to/<?=$loop_user['end_date']?>");		   
+                                       chart.render("usageavg<?=$p?>");
+                                    </script>
+                                    <br />
+                                    <div id="bytime<?=$p?>" align="center">ByTime</div>
+                                    <script type="text/javascript">
+                                        var chart = new FusionCharts("../scripts/charts/Charts/FCF_MSColumn2D.swf", "ChartId", "865", "350");
+                                        chart.setDataURL("/kpi/kpi-calculation-task-by-hour/user/<?=$loop_user['user_id']?>/date_from/<?=$loop_user['start_date']?>/date_to/<?=$loop_user['end_date']?>");		   
+                                        chart.render("bytime<?=$p?>");
+                                     </script>
+                                </td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+    <br />
+    
+    <table class="hide" border="0" cellpadding="0" cellspacing="1">
+		<tbody>
+			<tr>
+				<td valign="top" width="50%">
+					<table class="width900" cellspacing="1" align="center">
+						<tbody>
+							<tr>
+								<td class="form-title" style="text-align: left;" colspan="5">Task Details</td>
+							</tr>
+							<tr class="row-2">
+								<td class="center"><span class="small"><strong>Ticket ID</strong></td>
+								<td class="left"><span class="small"><strong>Ticket</strong></td>
+								<td class="center"><span class="small"><strong>Complexity</strong></td>
+								<td class="center"><span class="small"><strong>Efficiency</strong></td>
+								<td class="center"><span class="small"><strong>Score</strong></td>
+							</tr>
+                            <?php if(count($loop_user['task_info']['self']['details'])):?>
+                            <?php $n = 1;?>
+                            <?php foreach($loop_user['task_info']['self']['details'] as $list):?>
+							<tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+								<td class="center"><span class="small"><?=$list['ticket_id']?></td>
+								<td class="left"><span class="small"><?=$list['ticket']?></td>
+								<td class="center"><span class="small"><?=$list['complexity']?></td>
+								<td class="center"><span class="small"><?=$list['efficiency']?></td>
+								<td class="center"><span class="small"><?=$list['score']?></td>
+							</tr>
+                            <?php endforeach;?>
+                            <?php endif;?>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+    <br />
+    
+    <table class="hide" border="0" cellpadding="0" cellspacing="1">
+		<tbody>
+			<tr>
+				<td valign="top" width="50%">
+					<table class="width900" cellspacing="1" align="center">
+						<tbody>
+							<tr>
+								<td class="form-title" style="text-align: left;" colspan="5">Training Details</td>
+							</tr>
+							<tr class="row-2">
+								<td class="center"><span class="small"><strong>Time</strong></td>
+								<td class="center"><span class="small"><strong>Type</strong></td>
+								<td class="center"><span class="small"><strong>Training</strong></td>
+								<td class="center"><span class="small"><strong>Score</strong></td>
+							</tr>
+							<?php if(count($loop_user['training_info']['self']['details'])):?>
+                            <?php $n = 1;?>
+                            <?php foreach($loop_user['training_info']['self']['details'] as $list):?>
+                            <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+								<td class="center"><span class="small"><?=$list['training_time']?></td>
+								<td class="center"><span class="small"><?=$list['training_type']?></td>
+								<td class="center"><span class="small"><?=$list['training']?></td>
+								<td class="center"><span class="small"><?=$list['score']?></td>
+							</tr>
+                            <?php endforeach;?>
+                            <?php endif;?>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+    <br />
+    <H3><i>KPI Report of IT Department</i></H3>
+    <H3><i><?=date("Y.m.d")?></i></H3>
+    <br /><br />
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+</div>
+<br /><br />
+<?php endforeach;?>
+<?php else:?>
+<div align="center">
+    <H3>KPI Report of <?=$this->staff_info['first_name']?> <?=$this->staff_info['last_name']?></H3>
+    <table class="hide" border="0" cellpadding="0" cellspacing="1">
+		<tbody>
+			<tr>
+				<td valign="top" width="50%">
+					<table class="width900" cellspacing="1" align="center">
+						<tbody>
+							<tr>
+								<td class="form-title" style="text-align: left;" colspan="2">Employee Profile</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right" width="50%"><span class="small">First Name</td>
+								<td class="left" width="50%"><span class="small"><?=$this->staff_info['first_name']?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Last Name</td>
+								<td class="left"><span class="small"><?=$this->staff_info['last_name']?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Level</td>
+								<td class="left"><span class="small"><?=$this->staff_info['level_name']?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Team</td>
+								<td class="left"><span class="small"><?=$this->staff_info['team_name']?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Department</td>
+								<td class="left"><span class="small"><?=$this->staff_info['department']?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Position</td>
+								<td class="left"><span class="small"><?=$this->staff_info['team_title']?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">SuperVisor</td>
+								<td class="left"><span class="small"><?=$this->staff_info['supervisor']?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="center" colspan="2"><span class="small">&nbsp;</td>
+							</tr>
+							<tr class="row-2">
+								<td class="center" colspan="2"><span class="small"><strong>KPI Period</strong></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">From</td>
+								<td class="left"><span class="small"><?=$this->start_date?></td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">To</td>
+								<td class="left"><span class="small"><?=$this->end_date?></td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+    <br />
+    
+    <table class="hide" border="0" cellpadding="0" cellspacing="1">
+		<tbody>
+			<tr>
+				<td valign="top" width="50%">
+					<table class="width900" cellspacing="1" align="center">
+						<tbody>
+							<tr>
+								<td class="form-title" style="text-align: left;" colspan="2">KPI Overview</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right" width="50%"><span class="small"><strong>1) Tasks</strong></td>
+								<td class="left" width="50%"><span class="small">-</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Ticket Quantity</td>
+								<td class="left"><span class="small"><?=$this->task_info['self']['ticket_qty']?> (<?=$this->task_info['team']['ticket_qty']?>)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Complexity</td>
+								<td class="left"><span class="small"><?=$this->task_info['self']['complexity']?> (<?=$this->task_info['team']['complexity']?>)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Efficiency</td>
+								<td class="left"><span class="small"><?=$this->task_info['self']['efficiency']?> (<?=$this->task_info['team']['efficiency']?>)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Score</td>
+								<td class="left"><span class="small"><?=$this->task_info['self']['score']?> (<?=$this->task_info['team']['score']?>)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">% of Delayed Ticket</td>
+								<td class="left"><span class="small"><?=$this->task_info['self']['delayed_ticket']?>% (<?=$this->task_info['team']['delayed_ticket']?>%)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="center" colspan="2"><span class="small">&nbsp;</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right" width="50%"><span class="small"><strong>2) Training</strong></td>
+								<td class="left" width="50%"><span class="small">-</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Training Session</td>
+								<td class="left"><span class="small"><?=$this->training_info['self']['training_session']?> (<?=$this->training_info['team']['training_session']?>)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Absence Rate</td>
+								<td class="left"><span class="small"><?=$this->training_info['self']['absence_rate']?> (<?=$this->training_info['team']['absence_rate']?>)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Test Score</td>
+								<td class="left"><span class="small"><?=$this->training_info['self']['score']?> (<?=$this->training_info['team']['score']?>)</td>
+							</tr>
+							<tr class="row-2">
+								<td class="center" colspan="2"><span class="small">&nbsp;</td>
+							</tr>
+                            <!--
+							<tr class="row-2">
+								<td class="right" width="50%"><span class="small"><strong>3) Attendance</strong></td>
+								<td class="left" width="50%"><span class="small">-</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Late Days</td>
+								<td class="left"><span class="small">-</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">% of Late Days</td>
+								<td class="left"><span class="small">-</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">Leave Days</td>
+								<td class="left"><span class="small">-</td>
+							</tr>
+							<tr class="row-2">
+								<td class="right"><span class="small">% of Leave Days</td>
+								<td class="left"><span class="small">-</td>
+							</tr>
+							<tr class="row-2">
+								<td class="center" colspan="2"><span class="small">&nbsp;</td>
+							</tr>
+                            -->
+							<tr class="row-2">
+								<td class="right"><span class="small"><strong>Total</strong></td>
+								<td class="left"><span class="small">-</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+    <br />
+    
+    <table class="hide" border="0" cellpadding="0" cellspacing="1">
+		<tbody>
+			<tr>
+				<td valign="top" width="50%">
+					<table class="width900" cellspacing="1" align="center">
+						<tbody>
+							<tr>
+								<td class="form-title" style="text-align: left;" colspan="2">Time Management</td>
+							</tr>
+							<tr class="row-2">
+								<td class="center" width="100%">
+                                    <span id="usageleader" align="center">UsageLeader</span>
+                                    <script type="text/javascript">
+                                       var chart = new FusionCharts("../scripts/charts/Charts/FCF_Doughnut2D.swf", "ChartId", "250", "200");
+                                       chart.setDataURL("/kpi/kpi-calculation-usage-leader/user/<?=$this->user_id?>/date_from/<?=$this->start_date?>/date_to/<?=$this->end_date?>");		   
+                                       chart.render("usageleader");
+                                    </script>
+                                    
+                                    <span id="usageuser" align="center">UsageUser</span>
+                                    <script type="text/javascript">
+                                       var chart = new FusionCharts("../scripts/charts/Charts/FCF_Doughnut2D.swf", "ChartId", "250", "200");
+                                       chart.setDataURL("/kpi/kpi-calculation-usage-user/user/<?=$this->user_id?>/date_from/<?=$this->start_date?>/date_to/<?=$this->end_date?>");		   
+                                       chart.render("usageuser");
+                                    </script>
+                                    
+                                    <span id="usageavg" align="center">UsageAvg</span>
+                                    <script type="text/javascript">
+                                       var chart = new FusionCharts("../scripts/charts/Charts/FCF_Doughnut2D.swf", "ChartId", "250", "200");
+                                       chart.setDataURL("/kpi/kpi-calculation-usage-avg/user/<?=$this->user_id?>/date_from/<?=$this->start_date?>/date_to/<?=$this->end_date?>");		   
+                                       chart.render("usageavg");
+                                    </script>
+                                    <br />
+                                    <div id="bytime" align="center">ByTime</div>
+                                    <script type="text/javascript">
+                                        var chart = new FusionCharts("../scripts/charts/Charts/FCF_MSColumn2D.swf", "ChartId", "865", "350");
+                                        chart.setDataURL("/kpi/kpi-calculation-task-by-hour/user/<?=$this->user_id?>/date_from/<?=$this->start_date?>/date_to/<?=$this->end_date?>");		   
+                                        chart.render("bytime");
+                                     </script>
+                                </td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+    <br />
+    
+    <table class="hide" border="0" cellpadding="0" cellspacing="1">
+		<tbody>
+			<tr>
+				<td valign="top" width="50%">
+					<table class="width900" cellspacing="1" align="center">
+						<tbody>
+							<tr>
+								<td class="form-title" style="text-align: left;" colspan="5">Task Details</td>
+							</tr>
+							<tr class="row-2">
+								<td class="center"><span class="small"><strong>Ticket ID</strong></td>
+								<td class="left"><span class="small"><strong>Ticket</strong></td>
+								<td class="center"><span class="small"><strong>Complexity</strong></td>
+								<td class="center"><span class="small"><strong>Efficiency</strong></td>
+								<td class="center"><span class="small"><strong>Score</strong></td>
+							</tr>
+                            <?php if(count($this->task_info['self']['details'])):?>
+                            <?php $n = 1;?>
+                            <?php foreach($this->task_info['self']['details'] as $list):?>
+							<tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+								<td class="center"><span class="small"><?=$list['ticket_id']?></td>
+								<td class="left"><span class="small"><?=$list['ticket']?></td>
+								<td class="center"><span class="small"><?=$list['complexity']?></td>
+								<td class="center"><span class="small"><?=$list['efficiency']?></td>
+								<td class="center"><span class="small"><?=$list['score']?></td>
+							</tr>
+                            <?php endforeach;?>
+                            <?php endif;?>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+    <br />
+    
+    <table class="hide" border="0" cellpadding="0" cellspacing="1">
+		<tbody>
+			<tr>
+				<td valign="top" width="50%">
+					<table class="width900" cellspacing="1" align="center">
+						<tbody>
+							<tr>
+								<td class="form-title" style="text-align: left;" colspan="5">Training Details</td>
+							</tr>
+							<tr class="row-2">
+								<td class="center"><span class="small"><strong>Time</strong></td>
+								<td class="center"><span class="small"><strong>Type</strong></td>
+								<td class="center"><span class="small"><strong>Training</strong></td>
+								<td class="center"><span class="small"><strong>Score</strong></td>
+							</tr>
+							<?php if(count($this->training_info['self']['details'])):?>
+                            <?php $n = 1;?>
+                            <?php foreach($this->training_info['self']['details'] as $list):?>
+                            <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+								<td class="center"><span class="small"><?=$list['training_time']?></td>
+								<td class="center"><span class="small"><?=$list['training_type']?></td>
+								<td class="center"><span class="small"><?=$list['training']?></td>
+								<td class="center"><span class="small"><?=$list['score']?></td>
+							</tr>
+                            <?php endforeach;?>
+                            <?php endif;?>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+    <br />
+    <H3><i>KPI Report of IT Department</i></H3>
+    <H3><i><?=date("Y.m.d")?></i></H3>
+</div>
+<br /><br /><br />
+<?php endif;?>

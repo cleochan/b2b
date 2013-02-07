@@ -1,0 +1,20 @@
+<?php if($this->notice):?>
+<p><font color="#ff0000"><strong>* <?php echo $this->notice;?></strong></font></p>
+<?php else:?>
+<br />
+<?php endif;?>
+<table class="width100" cellspacing="1">
+	<tbody>
+		<?php foreach($this->list as $list_key => $list_val):?>
+			<tr>
+				<td class="form-title" colspan="4" style="text-align:left;"><?=$list_key?></td>
+			</tr>
+			<?php $n = 1;?>
+			<?php foreach($list_val as $key=>$val):?>
+				<tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+					<td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;<a href="/report/view/id/<?=$list_key?>-<?=$key?>">Week <?=$key?> ( <?=substr($val['week_start'],0,10)?> to <?=substr($val['week_end'],0,10)?> )</a></td>
+				</tr>
+			<?php endforeach;?>
+		<?php endforeach;?>
+	</tbody>
+</table>

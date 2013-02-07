@@ -1,0 +1,47 @@
+<script>
+function deleteItem()
+{
+    var ttree = document.getElementById("ttree").value;
+    
+    if(ttree)
+    {
+        if(window.confirm('Are you sure to delete this template?'))
+        {
+            location.href="/index/delete-fast-ticket/id/" + ttree;
+        }
+    }else{
+        alert('Please select a template.');
+        return false;
+    }
+
+}
+</script>
+
+<?php if($this->notice):?>
+<font color="#ff0000"><strong>* <?php echo $this->notice;?></strong></font><br /><br />
+<?php endif;?>
+<div align="center"><H3>Create Fast Ticket</H3></div>
+<form id='divisionForm' name='divisionForm' action="/index/fast-ticket" method="post">
+	<table class="width100" cellspacing="1">
+		<tbody>
+            <tr class="row-1">
+				<td class="category">Template</td>
+				<td>
+                    <select name="ttree" id="ttree">
+                        <option value="">Choose..</option>
+                        <?php foreach($this->get_tree as $get_tree_key => $get_tree_val):?>
+                        <option value="<?=$get_tree_key?>"><?=$get_tree_val?></option>
+                        <?php endforeach;?>
+                    </select>&nbsp;&nbsp;&nbsp;<a href="javascript:deleteItem();"><font color="red">Delete</font></a>&nbsp;&nbsp;&nbsp;<a href="/index/fast-ticket-register"><font color="green">Create a template</font></a>
+                </td>
+            </tr>
+			<tr class="row-2">
+				<td class="category">Ticket Title</td>
+				<td><input type="text" name="ttitle" id="ttitle" size="70" /></td>
+            </tr>
+			<tr class="row-1">
+				<td colspan="2"><input type="hidden" name="source" value="fm" /><input type="submit" value="Create Ticket" /></td>
+            </tr>
+		</tbody>
+	</table>
+</form>

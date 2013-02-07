@@ -1,0 +1,92 @@
+<p class="no-print"><a href="/report/index"><< Back</a></p>
+<div align="center">
+<strong><?=$this->title?></strong>
+<table class="hide" border="0" cellpadding="0" cellspacing="3">
+	<tbody>
+		<tr>
+			<td valign="top" width="100%">
+				<table class="width100" cellspacing="1">
+					<tbody>
+						<tr>
+							<td class="form-title" width="30">No.</td>
+							<td class="form-title" style="text-align: left;">&nbsp;Task</td>
+							<td class="form-title" width="60">Begin</td>
+							<td class="form-title" width="60">End</td>
+							<td class="form-title" width="60">Deadline</td>
+							<td class="form-title">Owner</td>
+							<td class="form-title" width="60">(%)</td>
+							<td class="form-title" width="100">Status</td>
+						</tr>
+						<tr class="spacer">
+							<td colspan="8"><strong>Last Week</strong></td>
+						</tr>
+						<?php if($this->list1):
+								$n = 1;
+								$m = 1;
+								foreach($this->list1 as $list1):
+						?>
+						<tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+							<td class="center"><span class="small"><?php echo $m; $m+=1; ?></span></td>
+							<td class="left"><span class="small"><?=$list1['title']?></span></td>
+							<td class="center"><span class="small"><?=$list1['started_dealing_date']?></span></td>
+							<td class="center"><span class="small"><?=$list1['finished_date']?></span></td>
+							<td class="center"><span class="small"><?=$list1['dead_line']?></span></td>
+							<td class="center"><span class="small"><?=$list1['owner']?></span></td>
+							<td class="center"><span class="small"><?=$list1['progress']?>%</span></td>
+							<td class="center"><span class="small"><?=$list1['status']?></span></td>
+						</tr>
+						<?php
+								endforeach;
+							endif;
+						?>
+						<tr class="spacer">
+							<td colspan="8"><strong>This Week</strong></td>
+						</tr>
+						<?php if($this->list2):
+								$n = 1;
+								$m = 1;
+								foreach($this->list2 as $list2):
+						?>
+						<tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+							<td class="center"><span class="small"><?php echo $m; $m+=1; ?></span></td>
+							<td class="left"><span class="small"><?=$list2['title']?></span></td>
+							<td class="center"><span class="small"><?=$list2['started_dealing_date']?></span></td>
+							<td class="center"><span class="small"><?=$list2['finished_date']?></span></td>
+							<td class="center"><span class="small"><?=$list2['dead_line']?></span></td>
+							<td class="center"><span class="small"><?=$list2['owner']?></span></td>
+							<td class="center"><span class="small"><?=$list2['progress']?>%</span></td>
+							<td class="center"><span class="small"><?=$list2['status']?></span></td>
+						</tr>
+						<?php
+								endforeach;
+							endif;
+						?>
+						<tr class="spacer">
+							<td colspan="8"><strong>Future Task</strong></td>
+						</tr>
+						<?php if($this->list3):
+								$n = 1;
+								$m = 1;
+								foreach($this->list3 as $list3):
+						?>
+						<tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+							<td class="center"><span class="small"><?php echo $m; $m+=1; ?></span></td>
+							<td class="left"><span class="small"><?=$list3['title']?></span></td>
+							<td class="center"><span class="small"><?=$list3['started_dealing_date']?></span></td>
+							<td class="center"><span class="small"><?=$list3['finished_date']?></span></td>
+							<td class="center"><span class="small"><?=$list3['dead_line']?></span></td>
+							<td class="center"><span class="small"><?=$list3['owner']?></span></td>
+							<td class="center"><span class="small"><?=$list3['progress']?>%</span></td>
+							<td class="center"><span class="small"><?=$list3['status']?></span></td>
+						</tr>
+						<?php
+								endforeach;
+							endif;
+						?>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</div>

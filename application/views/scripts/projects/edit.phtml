@@ -1,0 +1,22 @@
+<br />
+<?php if($this->notice):?>
+<font color="#ff0000"><strong>* <?php echo $this->notice;?></strong></font><br /><br />
+<?php endif;?>
+<form action="/projects/edit/id/<?php echo $this->data->id;?>" method="post">
+	<table class="width100" cellspacing="1">
+		<tbody>		
+			<tr class="row-1">
+				<td class="category">Project Name</td>
+				<td colspan="3"><?php echo $this->form->project_name;?></td>
+			</tr>
+			<tr class="row-2">
+				<td class="category">Status</td>
+				<td colspan="3"><?php echo $this->form->status;?></td>
+			</tr>
+			</tr>		
+			<tr class="row-1">
+				<td colspan="4"><?php echo $this->form->id;?><?php echo $this->form->submit;?></td>
+			</tr>
+		</tbody>
+	</table>
+</form>

@@ -1,0 +1,32 @@
+<div align="center">
+<table class="hide" border="0" cellpadding="0" cellspacing="3">
+	<tbody>
+		<tr>
+			<td valign="top" width="100%">
+				<table class="width100" cellspacing="1">
+					<tbody>
+						<tr>
+							<td class="form-title">Group Name</td>
+							<td class="form-title">Members</td>
+							<td class="form-title">Action</td>
+						</tr>
+						<?php if($this->list):
+								$n = 1;
+								foreach($this->list as $list):
+						?>
+						<tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+							<td class="center"><span class="small"><?=$list['gname']?></span></td>
+							<td class="center"><span class="small"><?=$list['members']?></span></td>
+							<td class="center"><span class="small"><a href="/group/edit/id/<?=$list['id']?>">Edit</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="/group/delete/id/<?=$list['id']?>">Delete</a></span></td>
+						</tr>
+						<?php
+								endforeach;
+							endif;
+						?>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</div>

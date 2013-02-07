@@ -1,0 +1,74 @@
+<script>
+    function userpick(val)
+	{
+        window.location.href = "/kpi/index/user/" + val;
+	}
+</script>
+&nbsp;
+<?php if(1 != $_SESSION["Zend_Auth"]["storage"]->level_view_tickets):?>
+<form method="GET" name="uform" id="uform" onsubmit="userpick();return false;">
+	<select name="ur" class="small" onchange="userpick(this.value);">
+        <option value="">All Staffs</option>
+        <?php if($this->user_array): ?>
+			<?php foreach($this->user_array as $user_key => $user_val):?>
+				<option value="<?=$user_key?>" <?php if($this->user == $user_key){echo "selected='selected'";}?>><?=$user_val?></option>
+			<?php endforeach;?>
+		<?php endif;?>
+	</select>
+</form>
+<?php endif;?>
+<div align="center">
+<form action="/kpi/index-update/user/<?=$this->user?>" name="form1" id="form1" method="post" />
+	<table class="hide" border="0" cellpadding="0" cellspacing="1">
+		<tbody>
+			<tr>
+				<td valign="top" width="100%">
+					<table class="width100" cellspacing="1">
+						<tbody>
+							<tr>
+                                <td class="form-title" width="100">Staff</td>
+                                <td class="form-title" width="90">Start</td>
+								<td class="form-title" style="text-align: left;">Ticket</td>
+								<td class="form-title" style="text-align: left;">Notes</td>
+								<td class="form-title" width="100">Est. Hour</td>
+								<td class="form-title" width="100">Actual Hour</td>
+								<td class="form-title" width="100">Efficiency</td>
+								<td class="form-title" width="100">Score</a></td>
+							</tr>
+							<?php if($this->list):
+									$n = 1;
+									foreach($this->list as $list):
+							?>
+							<tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+								<td class="center"><span class="small"><?=$list['staff']?></span></td>
+                                <td class="center"><span class="small"><?=substr($list['processing_date'],0,10)?></span></td>
+								<td class="left"><span class="small"><a href="/index/view/type/view/id/<?=$list['ticket_id']?>"><?=$list['ticket']?></a></span></td>
+								<td class="left"><span class="small"><?=$list['notes']?></span></td>
+								<td class="center"><span class="small"><?=$list['ref_hour']?></span></td>
+								<td class="center"><span class="small"><?=$list['actual_hour']?></span></td>
+								<td class="center"><span class="small"><?=$list['efficiency']?></span></td>
+								<td class="center"><span class="small">
+                                    <select name="score[<?=$list['id']?>]">
+                                        <option value="0">Choose..</option>
+                                    <?php foreach($this->score_list as $score_list_key => $score_list_val):?>
+                                        <option value="<?=$score_list_key?>" <?php if($score_list_key==$list['score']):?>selected="selected"<?php endif;?>><?=$score_list_val?></option>
+                                    <?php endforeach;?>
+                                    </select>
+                                </span></td>
+							</tr>
+							<?php
+									endforeach;
+								endif;
+							?>
+                            <tr>
+                                <td class="right" colspan="7"><input type="submit" value="Submit" /></td>
+                            </tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
+</div>
+<div align="right"><?php if($this->can_newer):?><a href="?page=<?=$this->newer?>">< newer</a><?php endif; ?><?php if($this->can_older):?>&nbsp;&nbsp;&nbsp;<a href="?page=<?=$this->older?>">older ></a><?php endif; ?></div>
