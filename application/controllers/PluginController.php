@@ -26,45 +26,34 @@ class PluginController extends Zend_Controller_Action
     function testAction()
     {
         $data = array();
-        $data['email'] = "test2@test.com";
+        $data['email'] = "mark560@gmail.com";
         $data['password'] = "212121";
         $data['user_type'] = 3;
         $data['user_status'] = 4;
         
         $data_xml = Algorithms_Core_Api::Array2Xml($data);
+        $target = "http://demo.local.b2b/plugin/test-terminal";
         
-        
-        $header[] = "Content-type: text/xml"; 
-        
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'http://demo.local.b2b/plugin/test-terminal');
-        curl_setopt($ch, CURLOPT_HEADER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header); 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_xml);
-        $result = curl_exec($ch);
-        curl_close($ch);
-        Algorithms_Extensions_Plugin::FormatArray($result);
+        try{
+            Algorithms_Core_Api::PostXml($data_xml, $target);
+        }  catch (Zend_Exception $exp){
+            var_dump($exp->getMessage());
+        }
         
         die;
     }
     
     function testTerminalAction()
     {
-        $params = $_REQUEST;
-        Databases_Tables_Logs::AddLog($params);
-        $data_array = Algorithms_Core_Api::Xml2Array($params);
-        Algorithms_Extensions_Plugin::FormatArray($data_array);
+        $params = file_get_contents('php://input');
+        $array = Algorithms_Core_Api::Xml2Array($params);
         
-        $databases_tables_users = new Databases_Tables_Users();
-        
-        $databases_tables_users -> email = $data_array['email'];
-        $databases_tables_users -> password = $data_array['password'];
-        $databases_tables_users -> user_type = $data_array['user_type'];
-        $databases_tables_users -> user_status = $data_array['user_status'];
-        
-        $databases_tables_users ->AddUser();
+        $db = new Databases_Tables_Users;
+        $db->email = $array['email'];
+        $db->password = $array['password'];
+        $db->user_type = $array['user_type'];
+        $db->user_status = $array['user_status'];
+        $db->AddUser();
         
         die;
     }
