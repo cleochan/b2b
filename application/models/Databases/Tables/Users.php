@@ -41,8 +41,7 @@ class Databases_Tables_Users extends Zend_Db_Table
             $user = $_SESSION["Zend_Auth"]["storage"]->user_id;
         }
         
-        $data = $this->fetchRow("user_id='".$user."'");
-        $result = $data->toArray();
+        $result = $this->fetchRow("user_id='".$user."'");
         
         return $result;
     }

@@ -2,8 +2,6 @@
 
 class LoginController extends Zend_Controller_Action
 {
-    public $params_val;
-	
     function init()
     {
         $this->db = Zend_Registry::get("db");
@@ -15,7 +13,7 @@ class LoginController extends Zend_Controller_Action
         $this->_helper->layout->disableLayout();
 		
         //get system title
-        $get_title = new Params();
+        $get_title = new Databases_Tables_Params();
         $this->view->system_title = $get_title -> GetVal("system_title");
     }
 	
@@ -29,8 +27,8 @@ class LoginController extends Zend_Controller_Action
             $f = new Zend_Filter_StripTags();
             $email = $f->filter($this->_request->getPost('email'));
             $password = $f->filter($this->_request->getPost('password'));
-            if (empty($username)) {
-                $this->view->msg = "Email/UserName is required.";
+            if (empty($email)) {
+                $this->view->msg = "The email is invalid.";
             } else {
                 Zend_Loader::loadClass('Zend_Auth_Adapter_DbTable');
                 $db = Zend_Registry::get('db');
@@ -68,10 +66,10 @@ class LoginController extends Zend_Controller_Action
                         }
                     }else{
                         Zend_Auth::getInstance()->clearIdentity();
-                        $this->view->msg = "Login failed";
+                        $this->view->msg = "You account is inactivated.";
                     }
                 } else {
-                    $this->view->msg = "Login failed";
+                    $this->view->msg = "Login failed.";
                 }	
             }
         }

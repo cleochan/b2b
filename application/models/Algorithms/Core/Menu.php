@@ -2,25 +2,25 @@
 
 class Algorithms_Core_Menu
 {
-    function MenuForMerchant()
+    function MenuForAdmin()
     {
         $menu = array(
             "Dashboard" => "/admin",
             "Merchants List" => "/admin/merchants",
-            "Help Mgt" => "/admin/help"
+            "Help Mgt" => "/admin/help-mgt"
         );
         
         return $menu;
     }
     
-    function MenuForAdmin()
+    function MenuForMerchant()
     {
         $menu = array(
             "Dashboard" => "/index",
             "Order Report" => "/index/order-report",
             "Financial Report" => "/index/financial-report",
             "Place Order" => "/index/place-order",
-            "Improt Order" => "/index/import-order",
+            "Import Order" => "/index/import-order",
             "Add Value" => "/index/add-value",
             "Help" => "/index/help"
         );
@@ -32,8 +32,32 @@ class Algorithms_Core_Menu
     {
         switch ($current_page_action)
         {
-            case "t1":
+            case "index":
+                $link = "Dashboard";
+                break;
+            case "merchants":
+                $link = "Merchants List";
+                break;
+            case "help-mgt":
+                $link = "Help Mgt";
+                break;
+            case "order-report":
+                $link = "Order Report";
+                break;
+            case "financial-report":
+                $link = "Financial Report";
+                break;
+            case "place-order":
+                $link = "Place Order";
+                break;
+            case "import-order":
+                $link = "Import Order";
+                break;
+            case "add-value":
                 $link = "Add Value";
+                break;
+            case "help":
+                $link = "Help";
                 break;
             default:
                 $link = "Dashboard";

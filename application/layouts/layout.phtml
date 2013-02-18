@@ -9,62 +9,13 @@
 	<link rel="stylesheet" type="text/css" href="/styles/default.css">
 	<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
 	<title><?=$this->title?> - <?=$this->system_title?></title>
-	
-	<script>
-
-	
-		function search(){
-			var a = document.sform.keyword.value;
-			window.location.href = '/index/index/type/777x/keyword/' + escape(a);
-		}
-		
-		is_read = 0;
-		
-		function checkNew(){
-			dojo.xhrPost({
-			url: "/index/check-new",
-			content: {},
-			handleAs: "text",
-			handle: function(data,args){
-						
-				if(typeof data == "error"){
-					console.warn("error!",args);
-				}else{
-					if(data)
-					{
-						function scrollTitle(){
-							window.document.title=data;
-							data=data.substring(1,data.length)+data.substring(0,1);
-							st1 = setTimeout(scrollTitle,300);
-						}
-						scrollTitle();
-					}
-				}
-			}
-			});
-		}
-	</script>
 </head>
-<body onload="checkNew()">
+<body>
 <div class="center"><span class="pagetitle"></span></div>
 <table class="hide no-print">
 	<tbody>
 		<tr>
-			<td class="login-info-left"><strong>Hi <?=$_SESSION["Zend_Auth"]["storage"]->realname?></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?=$this->top_menu?> | | <a href="/login/logout">Logout</a></td>
-		</tr>
-	</tbody>
-</table>
-
-<table class="width100 no-print" cellspacing="0">
-	<tbody>
-		<tr>
-			<td class="menu"><?=$this->menu?></td>
-			<td class="menu right nowrap">
-				<form method="GET" name="sform" id="sform" onsubmit="search();return false;">
-					<input name="keyword" id="keyword" size="20" class="small" value="#ID or Keywords" onfocus="if (this.value == '#ID or Keywords') this.value = ''" onblur="if (this.value == '') this.value = '#ID or Keywords'" type="text">&nbsp;
-					<input class="button-small" value="Search" type="button" onclick="search();">&nbsp;
-				</form>
-			</td>
+			<td class="login-info-left"><strong>Hi <?=$_SESSION["Zend_Auth"]["storage"]->email?></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?=$this->top_menu?> | | <a href="/login/logout">Logout</a></td>
 		</tr>
 	</tbody>
 </table>
