@@ -57,4 +57,10 @@ class PluginController extends Zend_Controller_Action
         
         die;
     }
+    
+    function t1Action()
+    {
+        Algorithms_Extensions_Plugin::FormatArray($this->getRequest()->getActionName());
+        die;
+    }
 }

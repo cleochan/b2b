@@ -3,6 +3,7 @@
 class Databases_Tables_Users extends Zend_Db_Table
 {
     protected $_name = 'users';
+    var $user_id;
     var $email;
     var $password;
     var $user_type;
@@ -29,5 +30,20 @@ class Databases_Tables_Users extends Zend_Db_Table
         }
         
         return $user_id;
+    }
+    
+    function UserInfo()
+    {
+        if($this->user_id)
+        {
+            $user = $this->user_id;
+        }else{
+            $user = $_SESSION["Zend_Auth"]["storage"]->user_id;
+        }
+        
+        $data = $this->fetchRow("user_id='".$user."'");
+        $result = $data->toArray();
+        
+        return $result;
     }
 }

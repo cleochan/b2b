@@ -21,8 +21,8 @@ class IndexController extends Zend_Controller_Action
                 if(!$auth->hasIdentity())
                 { 
                     $this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
-                }elseif(2 != $user_info['user_type']){
-                    $this->_redirect('/admin');
+                }elseif(1 != $user_info['user_type']){
+                    $this->_redirect('/index');
                 }
             }
             //get system title
@@ -31,13 +31,8 @@ class IndexController extends Zend_Controller_Action
             $this->view->system_version = $get_title -> GetVal("system_version");
 
             //make top menu
-            $menu = new Menu();
+            $menu = new Algorithms_Core_Menu();
             $this->view->top_menu = $menu -> GetTopMenu($this->getRequest()->getControllerName());
-
-            //echo "<pre>";
-            //print_r($_SESSION);
-            //echo "<pre>";
-            //die;
     }
 	
     function indexAction()
