@@ -1,0 +1,36 @@
+<div align="center">
+    <table class="hide" border="0" cellpadding="0" cellspacing="1">
+        <tbody>
+            <tr>
+                <td valign="top" width="100%">
+                    <table class="width100" cellspacing="1">
+                        <tbody>
+                            <tr>
+                                <td class="form-title">Time</td>
+                                <td class="form-title">Order ID</td>
+                                <td class="form-title">Order Status</td>
+                                <td class="form-title">Item Title</td>
+                                <td class="form-title">Order Amount</td>
+                            </tr>
+                            <?php if($this->list):
+                                    $n = 1;
+                                    foreach($this->list as $list):
+                            ?>
+                            <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+                                <td class="center"><span class="small"><?=$list['issue_time']?></span></td>
+                                <td class="center"><span class="small"><?=$list['order_id']?></span></td>
+                                <td class="center"><span class="small"><?=$list['order_status']?></span></td>
+                                <td class="center"><span class="small"><?=$list['item_title']?></span></td>
+                                <td class="center"><span class="small"><?=$list['order_amount']?></span></td>
+                            </tr>
+                            <?php
+                                    endforeach;
+                                endif;
+                            ?>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

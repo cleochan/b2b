@@ -302,5 +302,17 @@ class AdminController extends Zend_Controller_Action
             }
         }
     }
+    
+    function adminOrderReportAction()
+    {
+        $this->view->title = "Admin View: Order Report";
+        $params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Merchants List", "Admin - Order Report|".$params['user_id']));
+        
+        $logs_orders_model = new Databases_Tables_LogsOrders();
+        $logs_orders_model->user_id = $params['user_id'];
+        $this->view->list = $logs_orders_model->PushList();
+    }
 }
 

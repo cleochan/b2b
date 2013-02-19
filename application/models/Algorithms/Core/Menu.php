@@ -32,7 +32,11 @@ class Algorithms_Core_Menu
     {
         $menu = array(
             "Add Merchant" => "/admin/merchant-add",
-            "Edit Merchant" => "/admin/merchant-edit",
+            "Edit Merchant" => "/admin/merchant-edit/user_id",
+            "Admin - Order Report" => "/admin/admin-order-report/user_id",
+            "Admin - Financial Report" => "/admin/admin-order-report/user_id",
+            "Admin - Merchant Recharge" => "/admin/admin-merchant-recharge/user_id",
+            "Admin - Feed Generation" => "/admin/admin-feed-generation/user_id"
         );
         
         return $menu;
