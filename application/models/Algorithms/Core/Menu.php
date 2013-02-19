@@ -49,7 +49,7 @@ class Algorithms_Core_Menu
             {
                 $param_val = explode("|", $param);
                 
-                if($param_val[1]) //with parameter
+                if(1 < count($param_val))
                 {
                     $temp_link_a = $link_array[$param_val[0]]."/".$param_val[1];
                 }else{

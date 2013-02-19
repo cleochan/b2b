@@ -1,3 +1,9 @@
+<script>
+    function merchant_add()
+    {
+        window.location.href = "/admin/merchant-add";
+    }
+</script>
 <div align="center">
 <form name="form1" id="form1" method="post" />
 	<table class="hide" border="0" cellpadding="0" cellspacing="1">
@@ -10,6 +16,7 @@
 								<td class="form-title">Company</td>
 								<td class="form-title">Registration Date</td>
 								<td class="form-title">Balance</td>
+								<td class="form-title">Credit</td>
 								<td class="form-title">Status</td>
 								<td class="form-title">Actions</td>
 								<td class="form-title">Reports</td>
@@ -22,6 +29,7 @@
 								<td class="center"><span class="small"><?=$list['company']?></span></td>
 								<td class="center"><span class="small"><?=$list['join_date']?></span></td>
 								<td class="center"><span class="small"><?=$list['balance']?></span></td>
+								<td class="center"><span class="small"><?=$list['credit']?></span></td>
 								<td class="center"><span class="small"><?=$list['user_status']?"<font color='green'>Active</font>":"<font color='red'>Inactive</font>"?></span></td>
 								<td class="center"><span class="small"><a href="/admin/merchant-edit/user_id/<?=$list['user_id']?>">Edit</a> | <a href="/admin/merchant-recharge/user_id/<?=$list['user_id']?>">Recharge</a> | <a href="/admin/merchant-feed-generation/user_id/<?=$list['user_id']?>">Feed</a></span></td>
 								<td class="center"><span class="small"><a href="/admin/merchant-order-report/user_id/<?=$list['user_id']?>">Orders</a> | <a href="/admin/merchant-financial-report/user_id/<?=$list['user_id']?>">Financial</a></span></td>
@@ -38,3 +46,5 @@
 	</table>
 </form>
 </div>
+
+&nbsp;&nbsp;<input class="special_button_style_green" type="button" onclick="merchant_add();" value="Add Merchant">
