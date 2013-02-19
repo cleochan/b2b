@@ -37,15 +37,22 @@ class AdminController extends Zend_Controller_Action
     function indexAction()
     {
         $this->view->title = "Dashboard";
-        $params = $this->_request->getParams();
+        //$params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard"));
     }
     
     function merchantsAction()
     {
         $this->view->title = "Merchants List";
-        $params = $this->_request->getParams();
+        //$params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Merchants List"));
         
+        $data_model = new Databases_Joins_GetUserInfo();
+        $data = $data_model ->GetUserList();
         
+        $this->view->list = $data;
     }
 }
 

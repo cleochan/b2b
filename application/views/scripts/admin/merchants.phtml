@@ -1,0 +1,40 @@
+<div align="center">
+<form name="form1" id="form1" method="post" />
+	<table class="hide" border="0" cellpadding="0" cellspacing="1">
+		<tbody>
+			<tr>
+				<td valign="top" width="100%">
+					<table class="width100" cellspacing="1">
+						<tbody>
+							<tr>
+								<td class="form-title">Company</td>
+								<td class="form-title">Registration Date</td>
+								<td class="form-title">Balance</td>
+								<td class="form-title">Status</td>
+								<td class="form-title">Actions</td>
+								<td class="form-title">Reports</td>
+							</tr>
+							<?php if($this->list):
+									$n = 1;
+									foreach($this->list as $list):
+							?>
+							<tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+								<td class="center"><span class="small"><?=$list['company']?></span></td>
+								<td class="center"><span class="small"><?=$list['join_date']?></span></td>
+								<td class="center"><span class="small"><?=$list['balance']?></span></td>
+								<td class="center"><span class="small"><?=$list['user_status']?"<font color='green'>Active</font>":"<font color='red'>Inactive</font>"?></span></td>
+								<td class="center"><span class="small"><a href="/admin/merchant-edit/user_id/<?=$list['user_id']?>">Edit</a> | <a href="/admin/merchant-recharge/user_id/<?=$list['user_id']?>">Recharge</a> | <a href="/admin/merchant-feed-generation/user_id/<?=$list['user_id']?>">Feed</a></span></td>
+								<td class="center"><span class="small"><a href="/admin/merchant-order-report/user_id/<?=$list['user_id']?>">Orders</a> | <a href="/admin/merchant-financial-report/user_id/<?=$list['user_id']?>">Financial</a></span></td>
+							</tr>
+							<?php
+									endforeach;
+								endif;
+							?>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
+</div>

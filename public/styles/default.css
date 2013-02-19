@@ -131,7 +131,6 @@ td.menu
 { 
 	background-color: #e8e8e8;
 	color: #000000;
-	text-align: center;
 	width: 100%;
 	padding: 5px;
 }
@@ -203,3 +202,23 @@ div.quick-summary-right	{ width: 49%; padding: 2px; text-align: right; float: ri
 @media print{
 	.no-print {display:none}
 } 
+
+.special_button_style_green
+{
+    background: none repeat scroll 0 0 #78D37D;
+    border: 1px solid #78D37D;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}
+
+.special_button_style_red
+{
+    background: none repeat scroll 0 0 #FF0000;
+    border: 1px solid #FF0000;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}

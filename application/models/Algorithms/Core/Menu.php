@@ -28,6 +28,50 @@ class Algorithms_Core_Menu
         return $menu;
     }
     
+    function OtherLinks()
+    {
+        $menu = array(
+            "Add Merchant" => "/admin/merchant-add",
+        );
+        
+        return $menu;
+    }
+    
+    function GetNavigation($params_array)
+    {
+        if(count($params_array))
+        {
+            $temp_link_pool = array();
+            
+            $link_array = array_merge($this->MenuForAdmin(), $this->MenuForMerchant(), $this->OtherLinks());
+            
+            foreach($params_array as $param)
+            {
+                $param_val = explode("|", $param);
+                
+                if($param_val[1]) //with parameter
+                {
+                    $temp_link_a = $link_array[$param_val[0]]."/".$param_val[1];
+                }else{
+                    $temp_link_a = $link_array[$param_val[0]];
+                }
+                
+                if($temp_link_a)
+                {
+                    $temp_link = "<a href='".$temp_link_a."'>".$param_val[0]."</a>";
+                }else{
+                    $temp_link = $param_val[0];
+                }
+                
+                $temp_link_pool[] = $temp_link;
+            }
+            
+            $result = implode("&nbsp;&nbsp;>&nbsp;&nbsp;", $temp_link_pool);
+        }
+        
+        return $result;
+    }
+    
     function FormatMenu($menu_array, $current_page_action)
     {
         switch ($current_page_action)
