@@ -18,4 +18,16 @@ class Databases_Joins_GetUserInfo
         
         return $data;
     }
+    
+    function GetUserInfo($user_id)
+    {
+        $select = $this->db->select();
+        $select->from("users as u", array("user_id", "email", "user_status"));
+        $select->joinLeft("users_extension as e", "u.user_id=e.user_id", array("company", "contact_name", "contact_phone", "join_date", "balance", "credit"));
+        $select->where("u.user_id = ?", $user_id);
+        
+        $data = $this->db->fetchRow($select);
+        
+        return $data;
+    }
 }

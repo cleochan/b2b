@@ -32,6 +32,7 @@ class Algorithms_Core_Menu
     {
         $menu = array(
             "Add Merchant" => "/admin/merchant-add",
+            "Edit Merchant" => "/admin/merchant-edit",
         );
         
         return $menu;

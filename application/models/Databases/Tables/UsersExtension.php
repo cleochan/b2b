@@ -32,6 +32,21 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
         }
     }
     
+    function EditUserExtension()
+    {
+        if($this->user_id)
+        {
+            $user = $this->fetchRow("user_id='".$this->user_id."'");
+            
+            $user->company = $this->company;
+            $user->contact_name = $this->contact_name;
+            $user->contact_phone = $this->contact_phone;
+            $user->credit = $this->credit;
+            
+            $user->save();
+        }
+    }
+    
     function UserInfo()
     {
         if($this->user_id)

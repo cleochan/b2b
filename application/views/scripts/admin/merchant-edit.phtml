@@ -1,0 +1,49 @@
+<br />
+<?php if($this->notice):?>
+<font color="#ff0000"><strong>* <?php echo $this->notice;?></strong></font><br /><br />
+<?php endif;?>
+<form action="/admin/merchant-edit/user-id/<?php echo $this->data['user_id'];?>" method="post">
+	<table class="width100" cellspacing="1">
+		<tbody>
+			<tr>
+				<td class="form-title" colspan="4">Edit Merchant: <?php echo $this->data['company'];?><?php echo $this->form->user_id;?></td>
+			</tr>		
+			<tr class="row-1">
+				<td class="category">Email *</td>
+				<td colspan="3"><?php echo $this->form->email;?></td>
+			</tr>			
+			<tr class="row-2">
+				<td class="category">Password *</td>
+				<td colspan="3"><?php echo $this->form->password;?>   * Left it blank if you don't want to update password</td>
+			</tr>
+			<tr class="row-1">
+				<td class="category">Repeat it *</td>
+				<td colspan="3"><?php echo $this->form->password_r;?></td>
+			</tr>
+			<tr class="row-2">
+				<td class="category">Company</td>
+				<td colspan="3"><?php echo $this->form->company;?></td>
+			</tr>
+			<tr class="row-1">
+				<td class="category">Contact Name</td>
+				<td colspan="3"><?php echo $this->form->contact_name;?></td>
+			</tr>
+			<tr class="row-2">
+				<td class="category">Contact Phone</td>
+				<td colspan="3"><?php echo $this->form->contact_phone;?></td>
+			</tr>
+			<tr class="row-1">
+				<td class="category">Credit</td>
+				<td colspan="3"><?php echo $this->form->credit;?></td>
+			</tr>
+			<tr class="row-2">
+				<td class="category">Status</td>
+				<td colspan="3"><?php echo $this->form->user_status;?></td>
+			</tr>
+			</tr>		
+			<tr class="row-1">
+				<td colspan="4"><?php echo $this->form->submitx;?></td>
+			</tr>
+		</tbody>
+	</table>
+</form>
