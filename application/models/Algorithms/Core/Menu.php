@@ -34,7 +34,7 @@ class Algorithms_Core_Menu
             "Add Merchant" => "/admin/merchant-add",
             "Edit Merchant" => "/admin/merchant-edit/user_id",
             "Admin - Order Report" => "/admin/admin-order-report/user_id",
-            "Admin - Financial Report" => "/admin/admin-order-report/user_id",
+            "Admin - Financial Report" => "/admin/admin-financial-report/user_id",
             "Admin - Merchant Recharge" => "/admin/admin-merchant-recharge/user_id",
             "Admin - Feed Generation" => "/admin/admin-feed-generation/user_id"
         );

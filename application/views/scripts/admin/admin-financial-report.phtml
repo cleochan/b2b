@@ -20,10 +20,10 @@ $(function()
 </script>
 <br />
 <div align="center">
-    <form action="/admin/admin-order-report/user_id/<?=$this->user_id?>" method="GET">
+    <form action="/admin/admin-financial-report/user_id/<?=$this->user_id?>" method="GET">
         From <input type="text" name="start_date" id="start_date" size="5"  <?php if($this->start_date){echo "value= '".$this->start_date."'";} ?> />&nbsp;&nbsp;
         To <input type="text" name="end_date" id="end_date" size="5"  <?php if($this->end_date){echo "value= '".$this->end_date."'";} ?> />&nbsp;&nbsp;
-        Order ID <input type="text" name="order_id" id="order_id" size="5" <?php if($this->order_id){echo "value= '".$this->order_id."'";} ?> />&nbsp;&nbsp;
+        Action Type <input type="text" name="action_type" id="action_type" size="5" <?php if($this->action_type){echo "value= '".$this->action_type."'";} ?> />&nbsp;&nbsp;
         <input type="submit" value="Search" />
     </form>
 </div>
@@ -37,10 +37,10 @@ $(function()
                         <tbody>
                             <tr>
                                 <td class="form-title">Time</td>
-                                <td class="form-title">Order ID</td>
-                                <td class="form-title">Order Status</td>
-                                <td class="form-title">Item Title</td>
-                                <td class="form-title">Order Amount</td>
+                                <td class="form-title">Type</td>
+                                <td class="form-title">Transaction ID</td>
+                                <td class="form-title">Value</td>
+                                <td class="form-title">Balance</td>
                             </tr>
                             <?php if($this->list):
                                     $n = 1;
@@ -48,10 +48,10 @@ $(function()
                             ?>
                             <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
                                 <td class="center"><span class="small"><?=$list['issue_time']?></span></td>
-                                <td class="center"><span class="small"><?=$list['order_id']?></span></td>
-                                <td class="center"><span class="small"><?=$list['order_status']?></span></td>
-                                <td class="center"><span class="small"><?=$list['item_title']?></span></td>
-                                <td class="center"><span class="small"><?=$list['order_amount']?></span></td>
+                                <td class="center"><span class="small"><?=$list['action_type']?></span></td>
+                                <td class="center"><span class="small"><?=$list['trans_id']?></span></td>
+                                <td class="center"><span class="small"><?=$list['action_value']?></span></td>
+                                <td class="center"><span class="small"><?=$list['instant_balance']?></span></td>
                             </tr>
                             <?php
                                     endforeach;
