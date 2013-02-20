@@ -312,7 +312,14 @@ class AdminController extends Zend_Controller_Action
         
         $logs_orders_model = new Databases_Tables_LogsOrders();
         $logs_orders_model->user_id = $params['user_id'];
+        if($params['p_current_page'])
+        {
+            $logs_orders_model->p_current_page = $params['p_current_page'];
+        }else{
+            $logs_orders_model->p_current_page = 1; //from the first page
+        }
         $this->view->list = $logs_orders_model->PushList();
+        $this->view->pagination = $logs_orders_model->Pagination();
     }
 }
 
