@@ -376,5 +376,126 @@ class AdminController extends Zend_Controller_Action
         $financial_action_type = $financial_action_type_model -> GetType();
         $this->view->financial_action_type = $financial_action_type;
     }
+    
+    function helpMgtAction()
+    {
+        $this->view->title = "Help Management";
+        //$params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Help Mgt"));
+        
+        $get_contents = new Databases_Tables_Helpdesk();
+        $this->view->list = $get_contents->PushList();
+        
+        $get_category = new Databases_Tables_HelpdeskCategory();
+        $this->view->category_array = $get_category->GetCategory();
+    }
+    
+    function helpAddAction()
+    {
+        $this->view->title = "Add Topic";
+        $params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Help Mgt", "Add Help"));
+        
+        $form = new Forms_Help();
+	$form->submitx->setLabel('Create Topic');
+	$this->view->form = $form;
+		
+	if($this->_request->isPost()){
+            $formData = $this->_request->getPost();
+            if($form->isValid($formData)){
+                $form->getValues();
+
+                if(!$error)
+                {
+                    //insert to db
+                    $help_model = new Databases_Tables_Helpdesk();
+                    $help_model->category = $form->getValue('category');
+                    $help_model->h_subject = $form->getValue('h_subject');
+                    $help_model->h_contents = $form->getValue('h_contents');
+                    $help_model->AddHelp();
+                    
+                    $this->_redirect('admin/help-mgt');
+                }
+            }else{
+                $this->view->notice="Some information are inValid";
+                $form->populate($formData);
+            }
+        }
+    }
+    
+    function helpEditAction()
+    {
+        $this->view->title = "Edit Topic";
+        $params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Help Mgt", "Edit Help|".$params['user_id']));
+		
+        $form = new Forms_Help();
+        $form->submitx->setLabel('Update');
+        $this->view->form = $form;
+
+        if($this->_request->isPost()){
+            $formData = $this->_request->getPost();
+            if($form->isValid($formData)){
+                $form->getValues();
+
+                if(!$error)
+                {
+                    $help_model = new Databases_Tables_Helpdesk();
+                    
+                    //update to db
+                    $help_model->helpdesk_id = $form->getValue('helpdesk_id');
+                    $help_model->category = $form->getValue('category');
+                    $help_model->h_subject = $form->getValue('h_subject');
+                    $help_model->h_contents = $form->getValue('h_contents');
+                    $help_model->EditHelp();
+                    
+                    //unset session
+                    $theid = $form->getValue('helpdesk_id');
+                    unset($_SESSION['help_contents'][$theid]);
+                    //redirect
+                    $this->_redirect('admin/help-mgt');
+                }
+            }else{
+                $this->view->notice="Some information are inValid";
+                $form->populate($formData);
+            }
+
+            //push static data
+            $theid = $form->getValue('helpdesk_id');
+            if($_SESSION['help_contents'][$theid])
+            {
+                $this->view->data = $_SESSION['help_contents'][$theid];
+            }
+        }else
+        {
+            if($params['helpdesk_id'])
+            {
+                $theid = $params['helpdesk_id'];
+                $get_help_info = new Databases_Tables_Helpdesk();
+                $get_help_info->helpdesk_id = $theid;
+                $help_info = $get_help_info->GetHelpInfo();
+                $form->populate($help_info);
+                $this->view->data = $help_info;
+                $_SESSION['help_contents'][$theid] = $help_info;
+            }
+        }
+    }
+    
+    function updateHelpStatusAction()
+    {
+        $params = $this->_request->getParams();
+        
+        if($params['helpdesk_id'])
+        {
+            $help_model = new Databases_Tables_Helpdesk();
+            $help_model->helpdesk_id = $params['helpdesk_id'];
+            $help_model->UpdateStatus();
+            //redirect
+            $this->_redirect('admin/help-mgt');
+        }
+    }
 }
 

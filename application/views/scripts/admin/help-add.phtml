@@ -1,0 +1,38 @@
+<script charset="utf-8" src="/scripts/kindeditor/kindeditor.js"></script>
+<script charset="utf-8" src="/scripts/kindeditor/lang/en.js"></script>
+<script>
+	var editor;
+	KindEditor.ready(function(K) {
+		editor = K.create('textarea[name="h_contents"]', {
+			allowFileManager : true
+		});
+	});
+</script>
+<br />
+<?php if($this->notice):?>
+<font color="#ff0000"><strong>* <?php echo $this->notice;?></strong></font><br /><br />
+<?php endif;?>
+<form action="/admin/help-add" method="post">
+	<table class="width100" cellspacing="1">
+		<tbody>
+			<tr>
+				<td class="form-title" colspan="4">Add Topic</td>
+			</tr>		
+			<tr class="row-1">
+				<td class="category">Category</td>
+				<td colspan="3"><?php echo $this->form->category;?></td>
+			</tr>			
+			<tr class="row-2">
+				<td class="category">Subject</td>
+				<td colspan="3"><?php echo $this->form->h_subject;?></td>
+			</tr>
+			<tr class="row-1">
+				<td class="category">Contents</td>
+				<td colspan="3"><?php echo $this->form->h_contents;?></td>
+			</tr>		
+			<tr class="row-2">
+				<td colspan="4"><?php echo $this->form->submitx;?></td>
+			</tr>
+		</tbody>
+	</table>
+</form>
