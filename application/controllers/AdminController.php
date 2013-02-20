@@ -345,7 +345,7 @@ class AdminController extends Zend_Controller_Action
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Merchants List", "Admin - Financial Report|".$params['user_id']));
         
-        $logs_orders_model = new Databases_Tables_LogsOrders();
+        $logs_orders_model = new Databases_Tables_LogsFinancial();
         $logs_orders_model->user_id = $params['user_id'];
         if($params['start_date'])
         {
@@ -357,10 +357,10 @@ class AdminController extends Zend_Controller_Action
             $logs_orders_model->end_date = $params['end_date'];
             $this->view->end_date = $params['end_date'];
         }
-        if($params['order_id'])
+        if($params['action_type'])
         {
-            $logs_orders_model->order_id = $params['order_id'];
-            $this->view->order_id = $params['order_id'];
+            $logs_orders_model->action_type = $params['action_type'];
+            $this->view->action_type = $params['action_type'];
         }
         if($params['p_current_page'])
         {
@@ -371,6 +371,10 @@ class AdminController extends Zend_Controller_Action
         $this->view->list = $logs_orders_model->PushList();
         $this->view->pagination = $logs_orders_model->Pagination();
         $this->view->user_id = $params['user_id'];
+        
+        $financial_action_type_model = new Databases_Tables_FinancialActionType();
+        $financial_action_type = $financial_action_type_model -> GetType();
+        $this->view->financial_action_type = $financial_action_type;
     }
 }
 

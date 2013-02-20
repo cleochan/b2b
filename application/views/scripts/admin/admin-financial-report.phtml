@@ -23,7 +23,13 @@ $(function()
     <form action="/admin/admin-financial-report/user_id/<?=$this->user_id?>" method="GET">
         From <input type="text" name="start_date" id="start_date" size="5"  <?php if($this->start_date){echo "value= '".$this->start_date."'";} ?> />&nbsp;&nbsp;
         To <input type="text" name="end_date" id="end_date" size="5"  <?php if($this->end_date){echo "value= '".$this->end_date."'";} ?> />&nbsp;&nbsp;
-        Action Type <input type="text" name="action_type" id="action_type" size="5" <?php if($this->action_type){echo "value= '".$this->action_type."'";} ?> />&nbsp;&nbsp;
+        Action Type <select name="action_type" id="action_type">
+            <option value="">All</option>
+            <?php foreach($this->financial_action_type as $f_key => $f_val):?>
+                <option value="<?=$f_key?>"  <?php if($f_key == $this->action_type){echo "selected='selected'";} ?>><?=$f_val?></option>
+            <?php endforeach;?>
+        </select>
+        &nbsp;&nbsp;
         <input type="submit" value="Search" />
     </form>
 </div>
@@ -48,7 +54,7 @@ $(function()
                             ?>
                             <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
                                 <td class="center"><span class="small"><?=$list['issue_time']?></span></td>
-                                <td class="center"><span class="small"><?=$list['action_type']?></span></td>
+                                <td class="center"><span class="small"><?=$this->financial_action_type[$list['action_type']]?></span></td>
                                 <td class="center"><span class="small"><?=$list['trans_id']?></span></td>
                                 <td class="center"><span class="small"><?=$list['action_value']?></span></td>
                                 <td class="center"><span class="small"><?=$list['instant_balance']?></span></td>
