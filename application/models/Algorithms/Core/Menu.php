@@ -21,7 +21,7 @@ class Algorithms_Core_Menu
             "Financial Report" => "/merchant/financial-report",
             "Place Order" => "/merchant/place-order",
             "Import Order" => "/merchant/import-order",
-            "Add Value" => "/merchant/add-value",
+            "Recharge" => "/merchant/recharge",
             "Help" => "/merchant/help"
         );
         

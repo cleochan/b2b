@@ -152,5 +152,10 @@ class MerchantController extends Zend_Controller_Action
         
         $this->view->help_info = $help_info;
     }
+    
+    function rechargeAction()
+    {
+        
+    }
 }
 
