@@ -62,7 +62,7 @@ class LoginController extends Zend_Controller_Action
                         }elseif(1 == $data->user_type){ //admin
                             $this->_redirect('/admin');
                         }elseif(2 == $data->user_type){ //merchant
-                            $this->_redirect('/index');
+                            $this->_redirect('/merchant');
                         }
                     }else{
                         Zend_Auth::getInstance()->clearIdentity();

@@ -1,0 +1,73 @@
+<script type="text/javascript">
+$(function() 
+{
+    $('#start_date').datepicker(
+    {
+        numberOfMonths: 1,
+        showButtonPanel: true,
+        dateFormat: 'yy-mm-dd'
+    });
+});
+$(function() 
+{
+    $('#end_date').datepicker(
+    {
+        numberOfMonths: 1,
+        showButtonPanel: true,
+        dateFormat: 'yy-mm-dd'
+    });
+});
+</script>
+<br />
+<div align="center">
+    <form action="/merchant/financial-report" method="GET">
+        From <input type="text" name="start_date" id="start_date" size="5"  <?php if($this->start_date){echo "value= '".$this->start_date."'";} ?> />&nbsp;&nbsp;
+        To <input type="text" name="end_date" id="end_date" size="5"  <?php if($this->end_date){echo "value= '".$this->end_date."'";} ?> />&nbsp;&nbsp;
+        Action Type <select name="action_type" id="action_type">
+            <option value="">All</option>
+            <?php foreach($this->financial_action_type as $f_key => $f_val):?>
+                <option value="<?=$f_key?>"  <?php if($f_key == $this->action_type){echo "selected='selected'";} ?>><?=$f_val?></option>
+            <?php endforeach;?>
+        </select>
+        &nbsp;&nbsp;
+        <input type="submit" value="Search" />
+    </form>
+</div>
+<br />
+<div align="center">
+    <table class="hide" border="0" cellpadding="0" cellspacing="1">
+        <tbody>
+            <tr>
+                <td valign="top" width="100%">
+                    <table class="width100" cellspacing="1">
+                        <tbody>
+                            <tr>
+                                <td class="form-title">Time</td>
+                                <td class="form-title">Type</td>
+                                <td class="form-title">Transaction ID</td>
+                                <td class="form-title">Value</td>
+                                <td class="form-title">Balance</td>
+                            </tr>
+                            <?php if($this->list):
+                                    $n = 1;
+                                    foreach($this->list as $list):
+                            ?>
+                            <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+                                <td class="center"><span class="small"><?=$list['issue_time']?></span></td>
+                                <td class="center"><span class="small"><?=$this->financial_action_type[$list['action_type']]?></span></td>
+                                <td class="center"><span class="small"><?=$list['trans_id']?></span></td>
+                                <td class="center"><span class="small"><?=$list['action_value']?></span></td>
+                                <td class="center"><span class="small"><?=$list['instant_balance']?></span></td>
+                            </tr>
+                            <?php
+                                    endforeach;
+                                endif;
+                            ?>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div align="right"><?=$this->pagination?>&nbsp;&nbsp;</div>

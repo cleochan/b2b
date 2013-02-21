@@ -16,13 +16,13 @@ class Algorithms_Core_Menu
     function MenuForMerchant()
     {
         $menu = array(
-            "Dashboard" => "/index",
-            "Order Report" => "/index/order-report",
-            "Financial Report" => "/index/financial-report",
-            "Place Order" => "/index/place-order",
-            "Import Order" => "/index/import-order",
-            "Add Value" => "/index/add-value",
-            "Help" => "/index/help"
+            "Dashboard" => "/merchant",
+            "Order Report" => "/merchant/order-report",
+            "Financial Report" => "/merchant/financial-report",
+            "Place Order" => "/merchant/place-order",
+            "Import Order" => "/merchant/import-order",
+            "Add Value" => "/merchant/add-value",
+            "Help" => "/merchant/help"
         );
         
         return $menu;
@@ -38,7 +38,8 @@ class Algorithms_Core_Menu
             "Admin - Merchant Recharge" => "/admin/admin-merchant-recharge/user_id",
             "Admin - Feed Generation" => "/admin/admin-feed-generation/user_id",
             "Add Help" => "/admin/help-add",
-            "Edit Help" => "/admin/help-edit/helpdesk_id"
+            "Edit Help" => "/admin/help-edit/helpdesk_id",
+            "Help Details" => "/merchant/help-details/helpdesk_id"
         );
         
         return $menu;

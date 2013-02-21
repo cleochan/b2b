@@ -20,7 +20,7 @@ class AdminController extends Zend_Controller_Action
             { 
                 $this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
             }elseif(1 != $user_info['user_type']){
-                $this->_redirect('/index');
+                $this->_redirect('/merchant');
             }
             
             //get system title

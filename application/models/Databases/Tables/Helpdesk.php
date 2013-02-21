@@ -12,6 +12,18 @@ class Databases_Tables_Helpdesk extends Zend_Db_Table
     function PushList()
     {
         $select = $this->select();
+        if($this->category)
+        {
+            $select->where("category = ?", $this->category);
+        }
+        if($this->helpdesk_id)
+        {
+            $select->where("helpdesk_id = ?", $this->helpdesk_id);
+        }
+        if($this->h_status)
+        {
+            $select->where("h_status = ?", $this->h_status);
+        }
         $select ->order(array("category ASC", "h_status DESC", "issue_time DESC"));
         $data = $this->fetchAll($select);
         $result = $data->toArray();
