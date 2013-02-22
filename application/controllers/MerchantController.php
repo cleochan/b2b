@@ -155,7 +155,11 @@ class MerchantController extends Zend_Controller_Action
     
     function rechargeAction()
     {
+        $user_info = new Databases_Joins_GetUserInfo();
+        $this->view->user = $user_info->GetUserInfo($this->params['user_id']);
         
+        $bpay_model = new Algorithms_Extensions_Bpay();
+        $this->view->biller_code = $bpay_model->GetBillerCode();
     }
 }
 

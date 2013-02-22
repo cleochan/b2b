@@ -6,10 +6,14 @@ class Databases_Tables_LogsFinancial extends Zend_Db_Table
     var $start_date;
     var $end_date;
     var $user_id;
-    var $action_type;
     var $p_query_order = "issue_time|DESC";
     var $p_qty_per_page = 50; //50 data / page
     var $p_current_page = 1; // start from the first page
+    var $action_type;
+    var $action_affect;
+    var $trans_id;
+    var $action_value;
+    var $instant_balance;
     
     
     function Pagination()
@@ -110,6 +114,55 @@ class Databases_Tables_LogsFinancial extends Zend_Db_Table
         
         $data = $this->fetchAll($select);
         $result = $data->toArray();
+        
+        return $result;
+    }
+    
+    function AddLog()
+    {
+        if($this->user_id && $this->action_type && $this->action_affect && $this->action_value)
+        {
+            //Get current balance
+            $user_model = new Databases_Joins_GetUserInfo();
+            $user_info = $user_model->GetUserInfo($this->user_id);
+            
+            if(1 == $this->action_affect) //recharge
+            {
+                $new_balance = $user_info['balance'] + $this->action_value;
+            }elseif(2 == $this->action_affect) //deduct
+            {
+                $new_balance = $user_info['balance'] - $this->action_value;
+            }
+            
+            
+            //Add Log
+            $data = array(
+                "user_id" => $this->user_id,
+                "action_type" => $this->action_type,
+                "action_affect" => $this->action_affect,
+                "trans_id" => $this->trans_id,
+                "action_value" => $this->action_value,
+                "instant_balance" => $new_balance,
+                "issue_time" => date("Y-m-d H:i:s"),
+                "operator_id" => $_SESSION["Zend_Auth"]["storage"]->user_id,
+                "ip" => $_SERVER['REMOTE_ADDR']
+            );
+            
+            if($this->insert($data))
+            {
+                $user_extension = new Databases_Tables_UsersExtension();
+                $user_extension->user_id = $this->user_id;
+                $user_extension->balance = $new_balance;
+                if($user_extension->UpdateBalance())
+                {
+                    $result = TRUE;
+                }else{
+                    $result = FALSE;
+                }
+            }else{
+                $result = FALSE;
+            }
+        }
         
         return $result;
     }

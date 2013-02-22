@@ -12,20 +12,20 @@
                                 <td class="form-title" width="220">Contact Us</td>
                             </tr>
                             <tr class="row-2">
-                                <td class="left"><span class="small">
+                                <td class="left">
                                         <?php if($this->documentation):?>
                                             <?php foreach($this->documentation as $documentation):?>
                                                 <a href="/merchant/help-details/helpdesk_id/<?=$documentation['helpdesk_id']?>"><?=$documentation['h_subject']?></a><br />
                                             <?php endforeach;?>
                                         <?php endif;?>
-                                    </span></td>
-                                <td class="left"><span class="small">
+                                </td>
+                                <td class="left">
                                         <?php if($this->faq):?>
                                             <?php foreach($this->faq as $faq):?>
                                                 <a href="/merchant/help-details/helpdesk_id/<?=$faq['helpdesk_id']?>"><?=$faq['h_subject']?></a><br />
                                             <?php endforeach;?>
                                         <?php endif;?>
-                                    </span></td>
+                                </td>
                                 <td class="left"><span class="small"><?=$this->ct?></span></td>
                             </tr>
                         </tbody>

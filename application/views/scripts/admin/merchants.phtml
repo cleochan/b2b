@@ -15,6 +15,7 @@
 							<tr>
 								<td class="form-title">Company</td>
 								<td class="form-title">Registration Date</td>
+								<td class="form-title">Bpay Ref</td>
 								<td class="form-title">Balance</td>
 								<td class="form-title">Credit</td>
 								<td class="form-title">Status</td>
@@ -28,6 +29,7 @@
 							<tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
 								<td class="center"><span class="small"><?=$list['company']?></span></td>
 								<td class="center"><span class="small"><?=$list['join_date']?></span></td>
+								<td class="center"><span class="small"><?=$list['bpay_ref']?></span></td>
 								<td class="center"><span class="small"><?=$list['balance']?></span></td>
 								<td class="center"><span class="small"><?=$list['credit']?></span></td>
 								<td class="center"><span class="small"><?=$list['user_status']?"<font color='green'>Active</font>":"<font color='red'>Inactive</font>"?></span></td>

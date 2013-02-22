@@ -73,7 +73,7 @@ class PluginController extends Zend_Controller_Action
     function testGeneratorAction()
     {
         $g = new Algorithms_Extensions_Bpay();
-        echo $g->refcode_generator(98125789);
+        echo $g->RefGenerator(1003);
         
         die;
     }

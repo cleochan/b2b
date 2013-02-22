@@ -1,0 +1,38 @@
+<br />
+<div align="center"><H2><font color="red">Please confirm your action.</font></H2></div>
+<br />
+<div align="center">
+    <form action="/admin/merchant-recharge-preview/update/1" method="POST">
+        <table class="hide" border="0" cellpadding="0" cellspacing="1">
+            <tbody>
+                <tr>
+                    <td valign="top" width="100%">
+                        <table class="width100" cellspacing="1">
+                            <tbody>
+                                <tr class="row-1">
+                                    <td class="right" width="50%">Current Balance</td>
+                                    <td class="left" width="50%"><?=$this->current_balance?></td>
+                                </tr>
+                                <tr class="row-2">
+                                    <td class="right" width="50%">Action</td>
+                                    <td class="left" width="50%"><?=$this->action_type?><?=$this->adjust_value?></td>
+                                </tr>
+                                <tr class="row-1">
+                                    <td class="right" width="50%">New Balance</td>
+                                    <td class="left" width="50%"><?=$this->new_balance?></td>
+                                </tr>
+                                <tr class="row-2">
+                                    <td class="center" colspan="2">
+                                        <input type="hidden" name="adj" id="adj" value="<?=$this->action_type?>" />
+                                        <input type="hidden" name="val" id="val" value="<?=$this->adjust_value?>" />
+                                        <input type="hidden" name="user_id" id="user_id" value="<?=$this->user['user_id']?>" />
+                                        <input type="submit" value="Confirm Update" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>

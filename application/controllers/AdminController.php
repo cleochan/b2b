@@ -497,5 +497,75 @@ class AdminController extends Zend_Controller_Action
             $this->_redirect('admin/help-mgt');
         }
     }
+    
+    function merchantRechargeAction()
+    {
+        $params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Merchants List", "Adjust Balance|".$params['user_id']));
+        
+        $user_model = new Databases_Joins_GetUserInfo();
+        $this->view->user = $user_model->GetUserInfo($params['user_id']);
+        
+        $this->view->title = "Adjust balance for merchant";
+    }
+    
+    function merchantRechargePreviewAction()
+    {
+        $params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Merchants List", "Adjust Balance|".$params['user_id']));
+        
+        $user_model = new Databases_Joins_GetUserInfo();
+        $this->view->user = $user_model->GetUserInfo($params['user_id']);
+        
+        if(1 == $params['update'])
+        {
+            if($params['adj'] && $params['val'] && $params['user_id'])
+            {
+                //Action
+                $logs_financial = new Databases_Tables_LogsFinancial();
+                $logs_financial->user_id = $params['user_id'];
+                $logs_financial->action_type = 3; //Adjustment
+                if("+" == $params['adj'])
+                {
+                    $logs_financial->action_affect = 1; //Recharge
+                }elseif("-" == $params['adj'])
+                {
+                    $logs_financial->action_affect = 2; //Deduct
+                }else{
+                    $logs_financial->action_affect = 0; //Error
+                }
+                $logs_financial->action_value = $params['val'];
+                if($logs_financial->AddLog())
+                {
+                    $this->_redirect("/admin/merchants");
+                }else{
+                    echo "Action is rejected, please contact system administrator.";die;
+                }
+                
+            }else{
+                echo "Invalid Action.";
+                die;
+            }
+        }else{
+            $this->view->title = "Adjust balance preview";
+            $this->view->current_balance = $this->view->user['balance'];
+            if(1 == $params['adj'])
+            {
+                $this->view->action_type = "+";
+                $this->view->new_balance = round(($this->view->user['balance'] +$params['val']), 2);
+            }elseif(2 == $params['adj']){
+                $this->view->action_type = "-";
+                $this->view->new_balance = round(($this->view->user['balance'] - $params['val']), 2);
+            }else
+            {
+                echo "Invalid Action.";
+                die;
+            }
+            $this->view->adjust_value = $params['val'];
+            $this->view->user_id = $params['user_id'];
+        }
+    }
 }
 

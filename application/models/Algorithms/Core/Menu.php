@@ -39,7 +39,8 @@ class Algorithms_Core_Menu
             "Admin - Feed Generation" => "/admin/admin-feed-generation/user_id",
             "Add Help" => "/admin/help-add",
             "Edit Help" => "/admin/help-edit/helpdesk_id",
-            "Help Details" => "/merchant/help-details/helpdesk_id"
+            "Help Details" => "/merchant/help-details/helpdesk_id",
+            "Adjust Balance" => "/admin/merchant-recharge/user_id"
         );
         
         return $menu;
