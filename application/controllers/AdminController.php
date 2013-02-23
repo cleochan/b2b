@@ -653,5 +653,13 @@ class AdminController extends Zend_Controller_Action
         
         $this->_redirect("/admin/bpay-import/result/1");
     }
+    
+    function merchantFeedGenerationAction()
+    {
+        $this->view->title = "Feed Generation";
+        $params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Merchants List", "Feed Generation|".$params['user_id']));
+    }
 }
 

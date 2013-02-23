@@ -42,7 +42,8 @@ class Algorithms_Core_Menu
             "Edit Help" => "/admin/help-edit/helpdesk_id",
             "Help Details" => "/merchant/help-details/helpdesk_id",
             "Adjust Balance" => "/admin/merchant-recharge/user_id",
-            "BPay Import Preview" => "/admin/bpay-import-preview"
+            "BPay Import Preview" => "/admin/bpay-import-preview",
+            "Feed Generation" => "/admin/merchant-feed-generation/user_id",
         );
         
         return $menu;
@@ -113,6 +114,18 @@ class Algorithms_Core_Menu
                 break;
             case "help":
                 $link = "Help";
+                break;
+            case "bpay-import":
+                $link = "BPay Import";
+                break;
+            case "bpay-import-preview":
+                $link = "BPay Import";
+                break;
+            case "help-edit":
+                $link = "Help Mgt";
+                break;
+            case "help-add":
+                $link = "Help Mgt";
                 break;
             default:
                 $link = "Dashboard";

@@ -1,0 +1,9 @@
+Payment date,Biller code,Customer reference number,Receivable type,Payment method,BPAY type,Transaction reference,Settlement date,Amount
+14/FEB/13,696732,10035,BPAY Data,Debit Account,Original submission,CBA201302140447664523,14/FEB/13,-26.12
+13/FEB/13,696732,10035,BPAY Data,Debit Account,Original submission,CBA201302140144193784,14/FEB/13,0
+13/FEB/13,696732,20000,BPAY Data,Debit Account,Original submission,CBA201302140144205291,14/FEB/13,12.7
+13/FEB/13,696732,10035,BPAY Data,Debit Account,Original submission,CBA201302140144211922,14/FEB/13,155.37
+13/FEB/13,696732,10099,BPAY Data,Debit Account,Original submission,CBA201302140144211922,14/FEB/13,179.91
+13/FEB/13,696732,10099,BPAY Data,Debit Account,Original submission,CBA201302140144254906,14/FEB/13,219.43
+14/FEB/13,696732,10099,BPAY Data,Debit Account,Original submission,CBA201302140144272415,14/FEB/13,61.84
+14/FEB/13,696732,10099,BPAY Data,Debit Account,Original submission,CBA201302140644487793,14/FEB/13,129.53

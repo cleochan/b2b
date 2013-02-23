@@ -155,11 +155,32 @@ class MerchantController extends Zend_Controller_Action
     
     function rechargeAction()
     {
+        $this->view->title = "Recharge";
+        //$params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Recharge"));
+        
         $user_info = new Databases_Joins_GetUserInfo();
         $this->view->user = $user_info->GetUserInfo($this->params['user_id']);
         
         $bpay_model = new Algorithms_Extensions_Bpay();
         $this->view->biller_code = $bpay_model->GetBillerCode();
+    }
+    
+    function placeOrderAction()
+    {
+        $this->view->title = "Place Order";
+        $params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Place Order"));
+    }
+    
+    function importOrderAction()
+    {
+        $this->view->title = "Import Order";
+        $params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Import Order"));
     }
 }
 
