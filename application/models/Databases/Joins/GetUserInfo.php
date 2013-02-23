@@ -30,4 +30,21 @@ class Databases_Joins_GetUserInfo
         
         return $data;
     }
+    
+    function MerchantRefArray()
+    {
+        $data = $this->GetUserList();
+        
+        $ref_array = array();
+        
+        if(count($data))
+        {
+            foreach($data as $d)
+            {
+                $ref_array[] = $d['bpay_ref'];
+            }
+        }
+        
+        return $ref_array;
+    }
 }

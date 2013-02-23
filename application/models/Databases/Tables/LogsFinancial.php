@@ -166,4 +166,11 @@ class Databases_Tables_LogsFinancial extends Zend_Db_Table
         
         return $result;
     }
+    
+    function CheckCustomerRefExist($ref)
+    {
+        $row = $this->fetchRow("trans_id='".$ref."'");
+        
+        return $row['logs_financial_id'];
+    }
 }

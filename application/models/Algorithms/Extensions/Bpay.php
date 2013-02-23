@@ -63,4 +63,75 @@ class Algorithms_Extensions_Bpay
         
         return $result;
     }
+    
+    function CheckCSV($csv_array)
+    {
+        $check_csv_format = $this->CheckCsvFormat($csv_array);
+        Algorithms_Extensions_Plugin::FormatArray($check_csv_format);die;
+        if($check_csv_format)
+        {
+            $get_all_customer_ref = new Databases_Joins_GetUserInfo();
+            $all_customer_ref = $get_all_customer_ref->MerchantRefArray();
+            $logs_financial = new Databases_Tables_LogsFinancial();
+            
+            foreach($check_csv_format as $array_key => $array_val)
+            {
+                if("Y" == $array_val['result'])
+                {
+                    //Step 1: check customer ref
+                    if(!in_array($array_val['customer_ref'], $all_customer_ref))
+                    {
+                        $check_csv_format[$array_key]['result'] = "N";
+                        $check_csv_format[$array_key]['reason'] = "Invalid Customer Ref";
+                    }elseif(0 >= $array_val['amount']) //Step 2: check amount
+                    {
+                        $check_csv_format[$array_key]['result'] = "N";
+                        $check_csv_format[$array_key]['reason'] = "Invalid Amount";
+                    }elseif($logs_financial->CheckCustomerRefExist($array_val['transaction_ref']))
+                    {
+                        $check_csv_format[$array_key]['result'] = "N";
+                        $check_csv_format[$array_key]['reason'] = "Transaction Ref is existed";
+                    }
+                }
+            }
+        }else{
+            $check_csv_format = array();
+        }
+        
+        return $check_csv_format;
+    }
+    
+    function CheckCsvFormat($csv_array)
+    {
+        $result = array();
+        $row = 1;
+        Algorithms_Extensions_Plugin::FormatArray($csv_array);die;
+        foreach ($csv_array as $csv_val)
+        {
+            if(8 != count($csv_val))
+            {
+                $result[] = array(
+                    "row" => $row,
+                    "customer_ref" => $csv_val[1],
+                    "transaction_ref" => $csv_val[6],
+                    "amount" => $csv_val[8],
+                    "result" => "N",
+                    "reason" => "Format Invalid"
+                );
+            }else{
+                $result[] = array(
+                    "row" => $row,
+                    "customer_ref" => $csv_val[1],
+                    "transaction_ref" => $csv_val[6],
+                    "amount" => $csv_val[8],
+                    "result" => "Y",
+                    "reason" => "Passed"
+                );
+            }
+            
+            $row += 1;
+        }
+        
+        return $result;
+    }
 }

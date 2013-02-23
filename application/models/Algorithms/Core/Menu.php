@@ -7,6 +7,7 @@ class Algorithms_Core_Menu
         $menu = array(
             "Dashboard" => "/admin",
             "Merchants List" => "/admin/merchants",
+            "BPay Import" => "/admin/bpay-import",
             "Help Mgt" => "/admin/help-mgt"
         );
         
@@ -40,7 +41,8 @@ class Algorithms_Core_Menu
             "Add Help" => "/admin/help-add",
             "Edit Help" => "/admin/help-edit/helpdesk_id",
             "Help Details" => "/merchant/help-details/helpdesk_id",
-            "Adjust Balance" => "/admin/merchant-recharge/user_id"
+            "Adjust Balance" => "/admin/merchant-recharge/user_id",
+            "BPay Import Preview" => "/admin/bpay-import-preview"
         );
         
         return $menu;

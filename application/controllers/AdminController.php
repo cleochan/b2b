@@ -567,5 +567,42 @@ class AdminController extends Zend_Controller_Action
             $this->view->user_id = $params['user_id'];
         }
     }
+    
+    function bpayImportAction()
+    {
+        $this->view->title = "Import BPay CSV Files";
+        //$params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "BPay Import"));
+    }
+    
+    function bpayImportPreviewAction()
+    {
+        $this->view->title = "Import BPay CSV Files Preview";
+        //$params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "BPay Import Preview"));
+        
+        if ($_FILES["csvf"]["error"] > 0)
+        {
+            $this->view->notice = $_FILES["csvf"]["error"];
+        }else{
+            if('text/csv' != $_FILES["csvf"]["type"])
+            {
+                $this->view->notice = "File type is invalid.";
+            }else{
+                //Action
+                $bpay_model = new Algorithms_Extensions_Bpay();
+                if (($handle = fopen($_FILES["csvf"]["tmp_name"], "r")) !== FALSE) {
+                    while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
+                        $this->view->list = $bpay_model->CheckCSV($data);
+                    }
+                    fclose($handle);
+                }else{
+                    $this->view->notice = "Error.";
+                }
+            }
+        }
+    }
 }
 

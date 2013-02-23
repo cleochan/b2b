@@ -1,0 +1,56 @@
+<br />
+<div align="center"><H2>CSV import preview</H2></div>
+<?php if($this->notice):?>
+<br />
+<div align="center"><font color="red"><?=$this->notice?></font></div>
+<?php else: ?>
+<br />
+<div align="center">
+    <form action="/admin/bpay-import-confirm" method="POST">
+        <table class="hide" border="0" cellpadding="0" cellspacing="1">
+            <tbody>
+                <tr>
+                    <td valign="top" width="100%">
+                        <table class="width100" cellspacing="1">
+                            <tbody>
+                                <tr>
+                                    <td class="form-title">Row</td>
+                                    <td class="form-title">Customer Reference</td>
+                                    <td class="form-title">Transaction Reference</td>
+                                    <td class="form-title">Amount</td>
+                                    <td class="form-title">Result</td>
+                                    <td class="form-title">Reason</td>
+				</tr>
+                                <?php if($this->list):
+                                        $n = 1;
+                                        foreach($this->list as $list):
+				?>
+                                <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+                                    <td class="center"><?=$list['row']?></td>
+                                    <td class="center"><?=$list['customer_ref']?></td>
+                                    <td class="center"><?=$list['transaction_ref']?></td>
+                                    <td class="center"><?=$list['amount']?></td>
+                                    <?php if("Y" == $list['result']):?>
+                                        <td class="center"><font color="green">Passed</font></td>
+                                        <td class="center">&nbsp;</td>
+                                    <?php else:?>
+                                        <td class="center"><font color="red">Rejected</font></td>
+                                        <td class="center"><?=$list['reason']?></td>
+                                    <?php endif;?>
+                                </tr>
+				<?php
+                                            endforeach;
+                                    endif;
+				?>
+                                <tr>
+                                    <td class="form-title" colspan="6"><input type="submit" value="Confirm Update" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+<?php endif;?>
