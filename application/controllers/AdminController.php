@@ -516,6 +516,11 @@ class AdminController extends Zend_Controller_Action
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Merchants List", "Adjust Balance|".$params['user_id']));
         
+        if(0 >= $params['val'])
+        {
+            echo "Error: The value must be a positive number.";die;
+        }
+        
         $user_model = new Databases_Joins_GetUserInfo();
         $this->view->user = $user_model->GetUserInfo($params['user_id']);
         
@@ -541,11 +546,11 @@ class AdminController extends Zend_Controller_Action
                 {
                     $this->_redirect("/admin/merchants");
                 }else{
-                    echo "Action is rejected, please contact system administrator.";die;
+                    echo "Error: Action is rejected, please contact system administrator.";die;
                 }
                 
             }else{
-                echo "Invalid Action.";
+                echo "Error: Invalid Action.";
                 die;
             }
         }else{
@@ -560,7 +565,7 @@ class AdminController extends Zend_Controller_Action
                 $this->view->new_balance = round(($this->view->user['balance'] - $params['val']), 2);
             }else
             {
-                echo "Invalid Action.";
+                echo "Error: Invalid Action.";
                 die;
             }
             $this->view->adjust_value = $params['val'];
@@ -571,17 +576,21 @@ class AdminController extends Zend_Controller_Action
     function bpayImportAction()
     {
         $this->view->title = "Import BPay CSV Files";
-        //$params = $this->_request->getParams();
+        $params = $this->_request->getParams();
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "BPay Import"));
+        
+        if(1 == $params['result'])
+        {
+            $this->view->notice = "<font color='green'>Action completed.</font>";
+        }
     }
     
     function bpayImportPreviewAction()
     {
         $this->view->title = "Import BPay CSV Files Preview";
-        //$params = $this->_request->getParams();
         $menu_model = new Algorithms_Core_Menu;
-        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "BPay Import Preview"));
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "BPay Import"));
         
         if ($_FILES["csvf"]["error"] > 0)
         {
@@ -593,16 +602,56 @@ class AdminController extends Zend_Controller_Action
             }else{
                 //Action
                 $bpay_model = new Algorithms_Extensions_Bpay();
+                $data_array = array();
                 if (($handle = fopen($_FILES["csvf"]["tmp_name"], "r")) !== FALSE) {
                     while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
-                        $this->view->list = $bpay_model->CheckCSV($data);
+                        $data_array[] = $data;
                     }
                     fclose($handle);
+                    
+                    $this->view->list = $bpay_model->CheckCSV($data_array);
+                    
                 }else{
                     $this->view->notice = "Error.";
                 }
             }
         }
+    }
+    
+    function bpayImportConfirmAction()
+    {
+        $this->view->title = "Import BPay CSV Files";
+        $params = $this->_request->getParams();
+        
+        $tmp_data = array();
+        $logs_financial = new Databases_Tables_LogsFinancial();
+        $user_extension = new Databases_Tables_UsersExtension();
+        
+        $row = count($params['customer_ref']);
+        
+        for($n=2;$n<=$row;$n++) //ignore title
+        {
+            $tmp_data[] = array(
+                "customer_ref" => $params['customer_ref'][$n],
+                "transaction_ref" => $params['transaction_ref'][$n],
+                "amount" => $params['amount'][$n]
+            );
+        }
+        
+        if(count($tmp_data))
+        {
+            foreach($tmp_data as $data)
+            {
+                $logs_financial->user_id = $user_extension->GetUserId(1, $data['customer_ref']);
+                $logs_financial->action_type = 2; //recharge
+                $logs_financial->action_affect = 1; //plus
+                $logs_financial->action_value = $data['amount'];
+                $logs_financial->trans_id = $data['transaction_ref'];
+                $logs_financial->AddLog();
+            }
+        }
+        
+        $this->_redirect("/admin/bpay-import/result/1");
     }
 }
 

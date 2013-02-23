@@ -27,15 +27,16 @@
 				?>
                                 <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
                                     <td class="center"><?=$list['row']?></td>
-                                    <td class="center"><?=$list['customer_ref']?></td>
-                                    <td class="center"><?=$list['transaction_ref']?></td>
-                                    <td class="center"><?=$list['amount']?></td>
+                                    <td class="center"><?=$list['customer_ref']?><input type="hidden" name="customer_ref[<?=$list['row']?>]" value="<?=$list['customer_ref']?>" /></td>
+                                    <td class="center"><?=$list['transaction_ref']?><input type="hidden" name="transaction_ref[<?=$list['row']?>]" value="<?=$list['transaction_ref']?>" /></td>
+                                    <td class="center"><?=$list['amount']?><input type="hidden" name="amount[<?=$list['row']?>]" value="<?=$list['amount']?>" /></td>
                                     <?php if("Y" == $list['result']):?>
                                         <td class="center"><font color="green">Passed</font></td>
                                         <td class="center">&nbsp;</td>
                                     <?php else:?>
                                         <td class="center"><font color="red">Rejected</font></td>
                                         <td class="center"><?=$list['reason']?></td>
+                                        <?php $is_rejected = 1;?>
                                     <?php endif;?>
                                 </tr>
 				<?php
@@ -43,7 +44,7 @@
                                     endif;
 				?>
                                 <tr>
-                                    <td class="form-title" colspan="6"><input type="submit" value="Confirm Update" /></td>
+                                    <td class="form-title" colspan="6"><input type="submit" value="Confirm Update" <?php if($is_rejected){echo "disabled='disabled'";}?> /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?></td>
                                 </tr>
                             </tbody>
                         </table>

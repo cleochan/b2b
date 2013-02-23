@@ -94,4 +94,14 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
         
         return $result;
     }
+    
+    function GetUserId($type, $value) //type 1 = from customer_ref
+    {
+        if(1 == $type)
+        {
+            $row = $this->fetchRow("bpay_ref = '".$value."'");
+        }
+        
+        return $row['user_id'];
+    }
 }

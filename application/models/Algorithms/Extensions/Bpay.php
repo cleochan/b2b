@@ -25,6 +25,18 @@ class Algorithms_Extensions_Bpay
         18 => 2
     );
     
+    var $csv_title = array(
+        0 => "Payment date",
+        1 => "Biller code",
+        2 => "Customer reference number",
+        3 => "Receivable type",
+        4 => "Payment method",
+        5 => "BPAY type",
+        6 => "Transaction reference",
+        7 => "Settlement date",
+        8 => "Amount"
+    );
+    
     function GetBillerCode()
     {
         return $this->biller_code;
@@ -67,16 +79,16 @@ class Algorithms_Extensions_Bpay
     function CheckCSV($csv_array)
     {
         $check_csv_format = $this->CheckCsvFormat($csv_array);
-        Algorithms_Extensions_Plugin::FormatArray($check_csv_format);die;
         if($check_csv_format)
         {
             $get_all_customer_ref = new Databases_Joins_GetUserInfo();
             $all_customer_ref = $get_all_customer_ref->MerchantRefArray();
             $logs_financial = new Databases_Tables_LogsFinancial();
+            $trans_id_temp = array();
             
             foreach($check_csv_format as $array_key => $array_val)
             {
-                if("Y" == $array_val['result'])
+                if("Y" == $array_val['result'] && $array_key != 0)
                 {
                     //Step 1: check customer ref
                     if(!in_array($array_val['customer_ref'], $all_customer_ref))
@@ -87,12 +99,18 @@ class Algorithms_Extensions_Bpay
                     {
                         $check_csv_format[$array_key]['result'] = "N";
                         $check_csv_format[$array_key]['reason'] = "Invalid Amount";
-                    }elseif($logs_financial->CheckCustomerRefExist($array_val['transaction_ref']))
+                    }elseif($array_val['transaction_ref'] && in_array($array_val['transaction_ref'], $trans_id_temp))
+                    {
+                        $check_csv_format[$array_key]['result'] = "N";
+                        $check_csv_format[$array_key]['reason'] = "Transaction Ref Duplicated";
+                    }elseif($array_val['transaction_ref'] && $logs_financial->CheckCustomerRefExist($array_val['transaction_ref']))
                     {
                         $check_csv_format[$array_key]['result'] = "N";
                         $check_csv_format[$array_key]['reason'] = "Transaction Ref is existed";
                     }
                 }
+                
+                $trans_id_temp[] = $array_val['transaction_ref'];
             }
         }else{
             $check_csv_format = array();
@@ -105,14 +123,47 @@ class Algorithms_Extensions_Bpay
     {
         $result = array();
         $row = 1;
-        Algorithms_Extensions_Plugin::FormatArray($csv_array);die;
+        
+        //Check Title
+        for($n=0;$n<9;$n++)
+        {
+            if(strtolower($this->csv_title[$n]) != strtolower($csv_array[0][$n]))
+            {
+                $title_invalid = 1;
+            }
+        }
+        
+        if($title_invalid)
+        {
+            $result[] = array(
+                    "row" => $row,
+                    "customer_ref" => "-",
+                    "transaction_ref" => "-",
+                    "amount" => "-",
+                    "result" => "N",
+                    "reason" => "Title Invalid"
+                );
+        }else{
+            $result[] = array(
+                    "row" => $row,
+                    "customer_ref" => "-",
+                    "transaction_ref" => "Title Check",
+                    "amount" => "-",
+                    "result" => "Y",
+                    "reason" => "Title Check"
+                );
+        }
+        
+        $row += 1;
+        unset($csv_array[0]); //remove title from array
+        
         foreach ($csv_array as $csv_val)
         {
-            if(8 != count($csv_val))
+            if(9 != count($csv_val))
             {
                 $result[] = array(
                     "row" => $row,
-                    "customer_ref" => $csv_val[1],
+                    "customer_ref" => $csv_val[2],
                     "transaction_ref" => $csv_val[6],
                     "amount" => $csv_val[8],
                     "result" => "N",
@@ -121,7 +172,7 @@ class Algorithms_Extensions_Bpay
             }else{
                 $result[] = array(
                     "row" => $row,
-                    "customer_ref" => $csv_val[1],
+                    "customer_ref" => $csv_val[2],
                     "transaction_ref" => $csv_val[6],
                     "amount" => $csv_val[8],
                     "result" => "Y",
