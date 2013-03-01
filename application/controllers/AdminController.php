@@ -660,6 +660,27 @@ class AdminController extends Zend_Controller_Action
         $params = $this->_request->getParams();
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Merchants List", "Feed Generation|".$params['user_id']));
+        
+        if($params['user_id'])
+        {
+            $user_model = new Databases_Joins_GetUserInfo();
+            $this->view->user_info = $user_model->GetUserInfo($params['user_id']);
+            
+            $users_feed = new Databases_Tables_UsersFeed();
+            $this->view->users_feed = $users_feed->GetFeedInfo($params['user_id']);
+            
+            if($this->view->users_feed['users_feed_id'])
+            {
+                $get_feed_path = new Algorithms_Extensions_Plugin();
+                $this->view->feed_path = $get_feed_path->GetFeedPath($this->view->users_feed['feed_name']);
+            }else{
+                $this->view->notice = "No feed existed, please create a new one.";
+            }
+            
+        }else{
+            echo "Invalid Action.";
+            die;
+        }
     }
 }
 

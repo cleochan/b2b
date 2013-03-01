@@ -1,2 +1,83 @@
+<style>
+#sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+#sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+#sortable li span { position: absolute; margin-left: -1.3em; }
+</style>
+<script>
+$(function() {
+$( "#sortable" ).sortable();
+$( "#sortable" ).disableSelection();
+});
+</script>
 <br />
-<div align="center"><img src="/samples/feed.png" border="0" /></div>
+<?php if($this->notice):?>
+<font color="#ff0000"><strong>* <?php echo $this->notice;?></strong></font><br /><br />
+<?php endif;?>
+<form action="/admin/merchant-feed-generation-confirm/user_id/<?=$this->user_info['user_id']?>" method="post">
+	<table class="width100" cellspacing="1">
+		<tbody>
+			<tr>
+				<td class="form-title" colspan="4">Generate Feed for <?=$this->user_info['company']?></td>
+			</tr>		
+			<tr class="row-1">
+				<td class="category">URL</td>
+				<td colspan="3"><?=$this->feed_path?></td>
+			</tr>			
+			<tr class="row-2">
+				<td class="category">Feed Name</td>
+				<td colspan="3"><input type="text" name="feed_name" id="feed_name" value="<?=$this->users_feed['feed_name']?>" /></td>
+			</tr>
+			<tr class="row-1">
+				<td class="category">Extension</td>
+				<td colspan="3">
+                                    <input type="radio" name="feed_extension" id="feed_extension" value="1" <?php if(1==$this->users_feed['feed_extension']):?>checked="checked"<?php endif;?> />CSV&nbsp;&nbsp;
+                                    <input type="radio" name="feed_extension" id="feed_extension" value="2" <?php if(2==$this->users_feed['feed_extension']):?>checked="checked"<?php endif;?> />TXT&nbsp;&nbsp;
+                                    <input type="radio" name="feed_extension" id="feed_extension" value="3" <?php if(3==$this->users_feed['feed_extension']):?>checked="checked"<?php endif;?> />XML
+                                </td>
+			</tr>				
+			<tr class="row-2">
+				<td class="category">Delimeter</td>
+				<td colspan="3">
+                                    <input type="radio" name="feed_delimeter" id="feed_delimeter" value="1" <?php if(1==$this->users_feed['feed_delimeter']):?>checked="checked"<?php endif;?> />Tab&nbsp;&nbsp;
+                                    <input type="radio" name="feed_delimeter" id="feed_delimeter" value="2" <?php if(2==$this->users_feed['feed_delimeter']):?>checked="checked"<?php endif;?> />Semicolon(;)&nbsp;&nbsp;
+                                    <input type="radio" name="feed_delimeter" id="feed_delimeter" value="3" <?php if(3==$this->users_feed['feed_delimeter']):?>checked="checked"<?php endif;?> />Comma(,)&nbsp;&nbsp;
+                                    <input type="radio" name="feed_delimeter" id="feed_delimeter" value="4" <?php if(4==$this->users_feed['feed_delimeter']):?>checked="checked"<?php endif;?> />Space&nbsp;&nbsp;
+                                    <input type="radio" name="feed_delimeter" id="feed_delimeter" value="5" <?php if(5==$this->users_feed['feed_delimeter']):?>checked="checked"<?php endif;?> /> <input type="text" name="special_delimeter" id="special_delimeter" size="1" />
+                                </td>
+			</tr>	
+			<tr class="row-1">
+				<td class="category">Qualifier</td>
+				<td colspan="3">
+                                    <input type="radio" name="feed_qualifier" id="feed_qualifier" value="1" <?php if(1==$this->users_feed['feed_qualifier']):?>checked="checked"<?php endif;?> />None&nbsp;&nbsp;
+                                    <input type="radio" name="feed_qualifier" id="feed_qualifier" value="2" <?php if(2==$this->users_feed['feed_qualifier']):?>checked="checked"<?php endif;?> />( " )&nbsp;&nbsp;
+                                    <input type="radio" name="feed_qualifier" id="feed_qualifier" value="3" <?php if(3==$this->users_feed['feed_qualifier']):?>checked="checked"<?php endif;?> />( ' )
+                                </td>
+			</tr>		
+			<tr class="row-2">
+				<td class="category">Column Definition</td>
+				<td colspan="3">
+                                    <ul id="sortable">
+                                        <li><input type="text" name="1" id="1" value="1" /></li>
+                                        <li><input type="text" name="2" id="2" value="2" /></li>
+                                        <li><input type="text" name="3" id="3" value="3" /></li>
+                                    </ul>
+                                </td>
+			</tr>
+			<tr class="row-1">
+				<td class="category">Category</td>
+				<td colspan="3"></td>
+			</tr>				
+			<tr class="row-2">
+				<td class="category">SKUs included</td>
+				<td colspan="3"></td>
+			</tr>
+			<tr class="row-1">
+				<td class="category">SKUs excluded</td>
+				<td colspan="3"></td>
+			</tr>	
+			<tr class="row-2">
+				<td colspan="4"><input type="submit" value="Save" /></td>
+			</tr>
+		</tbody>
+	</table>
+</form>

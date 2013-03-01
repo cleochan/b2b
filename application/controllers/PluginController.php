@@ -77,4 +77,10 @@ class PluginController extends Zend_Controller_Action
         
         die;
     }
+    
+    function getPathAction()
+    {
+        echo $_SERVER['HTTP_HOST'];
+        die;
+    }
 }

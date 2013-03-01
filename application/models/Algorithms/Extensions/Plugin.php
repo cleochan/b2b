@@ -23,4 +23,14 @@ class Algorithms_Extensions_Plugin
 
         return $ret;
     } 
+    
+    function GetFeedPath($feed_name)
+    {
+        $domain = $_SERVER['HTTP_HOST'];
+        
+        $params_table = new Databases_Tables_Params();
+        $path = $params_table->GetVal($feed_name);
+        
+        return $domain.$path.$feed_name;
+    }
 }
