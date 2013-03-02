@@ -33,4 +33,12 @@ class Algorithms_Extensions_Plugin
         
         return $domain.$path.$feed_name;
     }
+    
+    function GenerateInitialFeedName($str)
+    {
+        $str = preg_replace("/[^a-zA-Z0-9]+/", "_", $str);
+        $result = strtolower($str);
+        
+        return $result;
+    }
 }

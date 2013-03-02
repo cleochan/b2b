@@ -669,18 +669,38 @@ class AdminController extends Zend_Controller_Action
             $users_feed = new Databases_Tables_UsersFeed();
             $this->view->users_feed = $users_feed->GetFeedInfo($params['user_id']);
             
+            $feed_dictionary = new Databases_Tables_FeedDictionary();
+            $dump_feed_dictionary = $feed_dictionary->DumpAll(1);
+            
+            $user_feed_definition = new Databases_Tables_UsersFeedDefinition();
+            $this->view->get_column_info = $user_feed_definition->ElementsForList($dump_feed_dictionary, $this->view->users_feed['users_feed_id']);
+             
             if($this->view->users_feed['users_feed_id'])
             {
                 $get_feed_path = new Algorithms_Extensions_Plugin();
                 $this->view->feed_path = $get_feed_path->GetFeedPath($this->view->users_feed['feed_name']);
             }else{
                 $this->view->notice = "No feed existed, please create a new one.";
+                
+                $plugin_model = new Algorithms_Extensions_Plugin();
+                $this->view->initial_feed_name = $plugin_model->GenerateInitialFeedName($this->view->user_info['company']);
             }
             
         }else{
             echo "Invalid Action.";
             die;
         }
+    }
+    
+    function merchantFeedGenerationConfirmAction()
+    {
+        $this->view->title = "Feed Generation Confirmation";
+        $params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Merchants List", "Feed Generation|".$params['user_id']));
+        
+        Algorithms_Extensions_Plugin::FormatArray($params);
+        die;
     }
 }
 

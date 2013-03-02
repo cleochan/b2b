@@ -1,12 +1,66 @@
-<style>
-#sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-#sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
-#sortable li span { position: absolute; margin-left: -1.3em; }
-</style>
+<link rel="stylesheet" href="/styles/zTreeStyle/zTreeStyle.css" type="text/css">
+<script type="text/javascript" src="/scripts/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" src="/scripts/jquery.ztree.excheck-3.5.js"></script>
+	<SCRIPT type="text/javascript">
+		<!--
+		var setting = {
+			check: {
+				enable: true
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+
+		var zNodes =[
+			{ id:1, pId:0, name:"can check 1", open:true},
+			{ id:11, pId:1, name:"can check 1-1", open:true},
+			{ id:111, pId:11, name:"can check 1-1-1"},
+			{ id:112, pId:11, name:"can check 1-1-2"},
+			{ id:12, pId:1, name:"can check 1-2", open:true},
+			{ id:121, pId:12, name:"can check 1-2-1"},
+			{ id:122, pId:12, name:"can check 1-2-2"},
+			{ id:2, pId:0, name:"can check 2", checked:true, open:true},
+			{ id:21, pId:2, name:"can check 2-1"},
+			{ id:22, pId:2, name:"can check 2-2", checked:true},
+			{ id:221, pId:22, name:"can check 2-2-1", checked:true},
+			{ id:222, pId:22, name:"can check 2-2-2", checked:true},
+			{ id:23, pId:2, name:"can check 2-3"}
+		];
+
+		var code;
+
+		function setCheck() {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			py = $("#py").attr("checked")? "p":"",
+			sy = $("#sy").attr("checked")? "s":"",
+			pn = $("#pn").attr("checked")? "p":"",
+			sn = $("#sn").attr("checked")? "s":"",
+			type = { "Y":"ps", "N":"ps"};
+			zTree.setting.check.chkboxType = type;
+			showCode('setting.check.chkboxType = { "Y" : "' + type.Y + '", "N" : "' + type.N + '" };');
+		}
+		function showCode(str) {
+			if (!code) code = $("#code");
+			code.empty();
+			code.append("<li>"+str+"</li>");
+		}
+
+		$(document).ready(function(){
+			$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+			setCheck();
+			$("#py").bind("change", setCheck);
+			$("#sy").bind("change", setCheck);
+			$("#pn").bind("change", setCheck);
+			$("#sn").bind("change", setCheck);
+		});
+		//-->
+	</SCRIPT>
 <script>
 $(function() {
 $( "#sortable" ).sortable();
-$( "#sortable" ).disableSelection();
 });
 </script>
 <br />
@@ -25,12 +79,12 @@ $( "#sortable" ).disableSelection();
 			</tr>			
 			<tr class="row-2">
 				<td class="category">Feed Name</td>
-				<td colspan="3"><input type="text" name="feed_name" id="feed_name" value="<?=$this->users_feed['feed_name']?>" /></td>
+				<td colspan="3"><input type="text" name="feed_name" id="feed_name" value="<?=($this->users_feed['feed_name']?$this->users_feed['feed_name']:$this->initial_feed_name)?>" /></td>
 			</tr>
 			<tr class="row-1">
 				<td class="category">Extension</td>
 				<td colspan="3">
-                                    <input type="radio" name="feed_extension" id="feed_extension" value="1" <?php if(1==$this->users_feed['feed_extension']):?>checked="checked"<?php endif;?> />CSV&nbsp;&nbsp;
+                                    <input type="radio" name="feed_extension" id="feed_extension" value="1" <?php if(1==$this->users_feed['feed_extension'] || !$this->users_feed['users_feed_id']):?>checked="checked"<?php endif;?> />CSV&nbsp;&nbsp;
                                     <input type="radio" name="feed_extension" id="feed_extension" value="2" <?php if(2==$this->users_feed['feed_extension']):?>checked="checked"<?php endif;?> />TXT&nbsp;&nbsp;
                                     <input type="radio" name="feed_extension" id="feed_extension" value="3" <?php if(3==$this->users_feed['feed_extension']):?>checked="checked"<?php endif;?> />XML
                                 </td>
@@ -40,15 +94,15 @@ $( "#sortable" ).disableSelection();
 				<td colspan="3">
                                     <input type="radio" name="feed_delimeter" id="feed_delimeter" value="1" <?php if(1==$this->users_feed['feed_delimeter']):?>checked="checked"<?php endif;?> />Tab&nbsp;&nbsp;
                                     <input type="radio" name="feed_delimeter" id="feed_delimeter" value="2" <?php if(2==$this->users_feed['feed_delimeter']):?>checked="checked"<?php endif;?> />Semicolon(;)&nbsp;&nbsp;
-                                    <input type="radio" name="feed_delimeter" id="feed_delimeter" value="3" <?php if(3==$this->users_feed['feed_delimeter']):?>checked="checked"<?php endif;?> />Comma(,)&nbsp;&nbsp;
+                                    <input type="radio" name="feed_delimeter" id="feed_delimeter" value="3" <?php if(3==$this->users_feed['feed_delimeter'] || !$this->users_feed['users_feed_id']):?>checked="checked"<?php endif;?> />Comma(,)&nbsp;&nbsp;
                                     <input type="radio" name="feed_delimeter" id="feed_delimeter" value="4" <?php if(4==$this->users_feed['feed_delimeter']):?>checked="checked"<?php endif;?> />Space&nbsp;&nbsp;
                                     <input type="radio" name="feed_delimeter" id="feed_delimeter" value="5" <?php if(5==$this->users_feed['feed_delimeter']):?>checked="checked"<?php endif;?> /> <input type="text" name="special_delimeter" id="special_delimeter" size="1" />
                                 </td>
 			</tr>	
 			<tr class="row-1">
-				<td class="category">Qualifier</td>
+				<td class="category">Qusalifier</td>
 				<td colspan="3">
-                                    <input type="radio" name="feed_qualifier" id="feed_qualifier" value="1" <?php if(1==$this->users_feed['feed_qualifier']):?>checked="checked"<?php endif;?> />None&nbsp;&nbsp;
+                                    <input type="radio" name="feed_qualifier" id="feed_qualifier" value="1" <?php if(1==$this->users_feed['feed_qualifier'] || !$this->users_feed['users_feed_id']):?>checked="checked"<?php endif;?> />None&nbsp;&nbsp;
                                     <input type="radio" name="feed_qualifier" id="feed_qualifier" value="2" <?php if(2==$this->users_feed['feed_qualifier']):?>checked="checked"<?php endif;?> />( " )&nbsp;&nbsp;
                                     <input type="radio" name="feed_qualifier" id="feed_qualifier" value="3" <?php if(3==$this->users_feed['feed_qualifier']):?>checked="checked"<?php endif;?> />( ' )
                                 </td>
@@ -56,16 +110,38 @@ $( "#sortable" ).disableSelection();
 			<tr class="row-2">
 				<td class="category">Column Definition</td>
 				<td colspan="3">
-                                    <ul id="sortable">
-                                        <li><input type="text" name="1" id="1" value="1" /></li>
-                                        <li><input type="text" name="2" id="2" value="2" /></li>
-                                        <li><input type="text" name="3" id="3" value="3" /></li>
-                                    </ul>
+                                    <div class="tsale">
+                                        <div class="ulwrap">
+                                            <div>
+                                                <ul class="shuzi">
+                                                    <li class="first">Sequence</li>
+                                                </ul>
+                                                <ul class="contentlist">
+                                                    <li class="first">Column Alias / Value / Value Adjustment / Change Sequence *</li>
+                                                </ul>
+                                            </div>
+                                            <ul class="shuzi">
+                                                <?php for($n=1;$n<=$this->get_column_info[1];$n++): ?>
+                                                    <li><?=$n?></li>
+                                                <?php endfor;?>
+                                            </ul>
+                                            <ul id="sortable" class="contentlist">
+                                                <?php foreach($this->get_column_info[2] as $column_info):?>
+                                                    <li><input type="checkbox" name="ckd[<?=$column_info['feed_dictionary_id']?>]" <?php if($column_info['checked'] || !$this->users_feed['users_feed_id']):?>checked="checked"<?php endif;?> /><input type="text" name="column_alias[<?=$column_info['feed_dictionary_id']?>]" value="<?=$column_info['column_alias']?>" /><input type="text" name="column_value[<?=$column_info['feed_dictionary_id']?>]" value="<?=$column_info['column_value']?>" /><input type="text" name="column_value_adjustment[<?=$column_info['feed_dictionary_id']?>]" value="<?=$column_info['column_value_adjustment']?>" />&nbsp;&nbsp;&nbsp;<span class="ui-icon ui-icon-arrowthick-2-n-s"></span></li>
+                                                <?php endforeach;?>
+                                            </ul>
+                                            <div class="clear"></div>
+                                        </div>
+                                    </div>
                                 </td>
 			</tr>
 			<tr class="row-1">
 				<td class="category">Category</td>
-				<td colspan="3"></td>
+				<td colspan="3">
+                                    <div class="zTreeDemoBackground left">
+                                        <ul id="treeDemo" class="ztree"></ul>
+                                    </div>
+                                </td>
 			</tr>				
 			<tr class="row-2">
 				<td class="category">SKUs included</td>
