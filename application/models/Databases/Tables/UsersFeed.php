@@ -69,6 +69,14 @@ class Databases_Tables_UsersFeed extends Zend_Db_Table
         $user_feed_definition_model = new Databases_Tables_UsersFeedDefinition();
         $user_feed_definition_model->users_feed_id = $users_feed_id;
         $user_feed_definition_model->feed_column_definition = $this->feed_column_definition;
-        $user_feed_definition_model->UpdateFeedDefinition();
+        
+        if($user_feed_definition_model->UpdateFeedDefinition())
+        {
+            $result = 1;
+        }else{
+            $result = 0;
+        }
+        
+        return $result;
     }
 }

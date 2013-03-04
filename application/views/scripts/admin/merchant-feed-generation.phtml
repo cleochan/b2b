@@ -70,6 +70,17 @@ $(function() {
 $( "#sortable" ).sortable();
 });
 </script>
+<script language="JavaScript">
+		$(document).ready(function() {
+			$(".selectall").click(function() {
+				var checked_status = this.checked;
+				var checkbox_name = this.name;
+				$("input[id=" + checkbox_name + "]").each(function() {
+					this.checked = checked_status;
+				});
+			});
+		});
+</script>
 <br />
 <?php if($this->notice):?>
 <?php echo $this->notice;?><br /><br />
@@ -82,7 +93,7 @@ $( "#sortable" ).sortable();
 			</tr>		
 			<tr class="row-1">
 				<td class="category">URL</td>
-				<td colspan="3"><?=$this->feed_path?></td>
+				<td colspan="3"><a href="<?=$this->feed_path?>" target="_blank"><?=$this->feed_path?></a></td>
 			</tr>			
 			<tr class="row-2">
 				<td class="category">Feed Name</td>
@@ -124,7 +135,7 @@ $( "#sortable" ).sortable();
                                                     <li class="first">Sequence</li>
                                                 </ul>
                                                 <ul class="contentlist">
-                                                    <li class="first">Column Alias / Value / Value Adjustment / Change Sequence *</li>
+                                                    <li class="first"><input type="checkbox" class="selectall" name="ckd" /> / Column Alias / Value / Value Adjustment / Change Sequence *</li>
                                                 </ul>
                                             </div>
                                             <ul class="shuzi">
@@ -134,7 +145,7 @@ $( "#sortable" ).sortable();
                                             </ul>
                                             <ul id="sortable" class="contentlist">
                                                 <?php foreach($this->get_column_info[2] as $column_info):?>
-                                                    <li><input type="checkbox" name="ckd[<?=$column_info['feed_dictionary_id']?>]" <?php if($column_info['checked'] || !$this->users_feed['users_feed_id']):?>checked="checked"<?php endif;?> /><input type="text" name="column_alias[<?=$column_info['feed_dictionary_id']?>]" value="<?=$column_info['column_alias']?>" /><input type="text" name="column_value[<?=$column_info['feed_dictionary_id']?>]" value="<?=$column_info['column_value']?>" /><input type="text" name="column_value_adjustment[<?=$column_info['feed_dictionary_id']?>]" value="<?=$column_info['column_value_adjustment']?>" />&nbsp;&nbsp;&nbsp;<span class="ui-icon ui-icon-arrowthick-2-n-s"></span></li>
+                                                    <li><input type="checkbox" name="ckd[<?=$column_info['feed_dictionary_id']?>]" id="ckd" <?php if($column_info['checked'] || !$this->users_feed['users_feed_id']):?>checked="checked"<?php endif;?> /><input type="text" name="column_alias[<?=$column_info['feed_dictionary_id']?>]" value="<?=$column_info['column_alias']?>" /><input type="text" name="column_value[<?=$column_info['feed_dictionary_id']?>]" value="<?=$column_info['column_value']?>" /><input type="text" name="column_value_adjustment[<?=$column_info['feed_dictionary_id']?>]" value="<?=$column_info['column_value_adjustment']?>" />&nbsp;&nbsp;&nbsp;<span class="ui-icon ui-icon-arrowthick-2-n-s"></span></li>
                                                 <?php endforeach;?>
                                             </ul>
                                             <div class="clear"></div>
@@ -152,11 +163,11 @@ $( "#sortable" ).sortable();
 			</tr>				
 			<tr class="row-2">
 				<td class="category">SKUs included</td>
-                                <td colspan="3"><textarea name="sku_included" id="sku_included" cols="100" rows="3"></textarea></td>
+                                <td colspan="3"><textarea name="sku_included" id="sku_included" cols="100" rows="3"><?=$this->users_feed['sku_included']?></textarea></td>
 			</tr>
 			<tr class="row-1">
 				<td class="category">SKUs excluded</td>
-				<td colspan="3"><textarea name="sku_excluded" id="sku_excluded" cols="100" rows="3"></textarea></td>
+				<td colspan="3"><textarea name="sku_excluded" id="sku_excluded" cols="100" rows="3"><?=$this->users_feed['sku_excluded']?></textarea></td>
 			</tr>
 			<tr class="row-2">
 				<td class="category">Stock</td>

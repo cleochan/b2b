@@ -9,7 +9,7 @@ class Databases_Tables_UsersFeedDefinition extends Zend_Db_Table
     
     /**
      *  $feed_column_definition = array(
-     *              "chk" =>
+     *              "chd" =>
      *              "column_alias" =>
      *              "column_value" =>
      *              "column_value_adjustment" =>
@@ -105,11 +105,11 @@ class Databases_Tables_UsersFeedDefinition extends Zend_Db_Table
             $this->delete("users_feed_id = '".$this->users_feed_id."'");
             
             //insert new data
-            if($this->feed_column_definition['chk'])
+            if($this->feed_column_definition['ckd'])
             {
                 $sequence = 1;
                 
-                foreach($this->feed_column_definition['chk'] as $id => $val)
+                foreach($this->feed_column_definition['ckd'] as $id => $val)
                 {
                     $row = array(
                         "users_feed_id" => $this->users_feed_id,
@@ -123,6 +123,12 @@ class Databases_Tables_UsersFeedDefinition extends Zend_Db_Table
                     $this->insert($row);
                 }
             }
+            
+            $result = 1;
+        }else{
+            $result = 0;
         }
+        
+        return $result;
     }
 }

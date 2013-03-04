@@ -6,7 +6,7 @@ class Databases_Tables_ProductCategories extends Zend_Db_Table
     
     function BuildTree()
     {
-        $rows = $this->fetchAll("category_id != 174"); //without special category
+        $rows = $this->fetchAll("(category_id != 174 and parent_id != 174) or parent_id is NULL"); //without special category
         $data = $rows->toArray();
         
         $result = array();
@@ -57,7 +57,7 @@ class Databases_Tables_ProductCategories extends Zend_Db_Table
             if(in_array($val['category_id'], $checked_array))
             {
                 $entire_tree[$key]['checked'] = "true";
-                $entire_tree[$key]['open'] = "true";
+                $entire_tree[$key]['open'] = "false";
             }else{
                 $entire_tree[$key]['checked'] = "false";
                 $entire_tree[$key]['open'] = "false";
@@ -137,7 +137,7 @@ class Databases_Tables_ProductCategories extends Zend_Db_Table
     {
         $data = $this->select();
         $data->from($this->_name, array("count('category_id') as ct"));
-        $data->where("category_id != ?", 174);
+        $data->where("(category_id != 174 and parent_id != 174) or parent_id is NULL");
         $d = $this->fetchRow($data);
         return ($d['ct']==$num?true:false);
     }

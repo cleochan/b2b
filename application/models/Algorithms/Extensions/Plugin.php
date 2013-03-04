@@ -22,16 +22,32 @@ class Algorithms_Extensions_Plugin
         }
 
         return $ret;
-    } 
+    }
     
-    function GetFeedPath($feed_name)
+    function GetFeedPath($feed_name, $feed_extension)
     {
+        $pro = "http://";
         $domain = $_SERVER['HTTP_HOST'];
         
-        $params_table = new Databases_Tables_Params();
-        $path = $params_table->GetVal($feed_name);
+        switch ($feed_extension)
+        {
+            case 1:
+                $ext = ".csv";
+                break;
+            case 2:
+                $ext = ".txt";
+                break;
+            case 3:
+                $ext = ".xml";
+                break;
+            default :
+                break;
+        }
         
-        return $domain.$path.$feed_name;
+        $params_table = new Databases_Tables_Params();
+        $path = $params_table->GetVal("feed_path");
+        
+        return $pro.$domain.$path.$feed_name.$ext;
     }
     
     function GenerateInitialFeedName($str)

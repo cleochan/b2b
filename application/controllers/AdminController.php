@@ -683,7 +683,7 @@ class AdminController extends Zend_Controller_Action
             if($this->view->users_feed['users_feed_id'])
             {
                 $get_feed_path = new Algorithms_Extensions_Plugin();
-                $this->view->feed_path = $get_feed_path->GetFeedPath($this->view->users_feed['feed_name']);
+                $this->view->feed_path = $get_feed_path->GetFeedPath($this->view->users_feed['feed_name'], $this->view->users_feed['feed_extension']);
             }else{
                 $this->view->notice = "<font color='#ff0000'><strong>No feed existed, please create a new one.</strong></font>";
                 
@@ -734,7 +734,7 @@ class AdminController extends Zend_Controller_Action
         $users_feed_model->sku_excluded = $params['sku_excluded'];
         $users_feed_model->stock = $params['stock'];
         $users_feed_model->feed_column_definition = array(
-            "chk" => $params['chk'],
+            "ckd" => $params['ckd'],
             "column_alias" => $params['column_alias'],
             "column_value" =>$params['column_value'],
             "column_value_adjustment" =>$params['column_value_adjustment']
