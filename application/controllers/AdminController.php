@@ -675,15 +675,32 @@ class AdminController extends Zend_Controller_Action
             $user_feed_definition = new Databases_Tables_UsersFeedDefinition();
             $this->view->get_column_info = $user_feed_definition->ElementsForList($dump_feed_dictionary, $this->view->users_feed['users_feed_id']);
              
+            //Generate Category
+            $product_categories_model = new Databases_Tables_ProductCategories();
+            $this->view->product_categories = $product_categories_model->TreeForMerchant($this->view->users_feed['feed_category']);
+            $_SESSION['b2b']['merchant_feed_generation'][$params['user_id']] = $this->view->product_categories;
+            
             if($this->view->users_feed['users_feed_id'])
             {
                 $get_feed_path = new Algorithms_Extensions_Plugin();
                 $this->view->feed_path = $get_feed_path->GetFeedPath($this->view->users_feed['feed_name']);
             }else{
-                $this->view->notice = "No feed existed, please create a new one.";
+                $this->view->notice = "<font color='#ff0000'><strong>No feed existed, please create a new one.</strong></font>";
                 
                 $plugin_model = new Algorithms_Extensions_Plugin();
                 $this->view->initial_feed_name = $plugin_model->GenerateInitialFeedName($this->view->user_info['company']);
+            }
+            
+            switch ($params['result'])
+            {
+                case 1:
+                    $this->view->notice = "<font color='green'>* Data saved succesfully.</strong></font>";
+                    break;
+                case 2:
+                    $this->view->notice = "<font color='#ff0000'><strong>* Data saved failed.</strong></font>";
+                    break;
+                default:
+                    break;
             }
             
         }else{
@@ -699,8 +716,36 @@ class AdminController extends Zend_Controller_Action
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Merchants List", "Feed Generation|".$params['user_id']));
         
-        Algorithms_Extensions_Plugin::FormatArray($params);
-        die;
+//        Algorithms_Extensions_Plugin::FormatArray($params);
+//        echo "<br />===================<br />";
+//        Algorithms_Extensions_Plugin::FormatArray($_SESSION['b2b']['merchant_feed_generation']);
+//        die;
+        
+        $product_categories_model = new Databases_Tables_ProductCategories();
+        
+        $users_feed_model = new Databases_Tables_UsersFeed();
+        $users_feed_model->user_id = $params['user_id'];
+        $users_feed_model->feed_name = $params['feed_name'];
+        $users_feed_model->feed_extension = $params['feed_extension'];
+        $users_feed_model->feed_delimeter = $params['feed_delimeter'];
+        $users_feed_model->feed_qualifier = $params['feed_qualifier'];
+        $users_feed_model->feed_category = $product_categories_model->CheckedArray($_SESSION['b2b']['merchant_feed_generation'][$params['user_id']]);
+        $users_feed_model->sku_included = $params['sku_included'];
+        $users_feed_model->sku_excluded = $params['sku_excluded'];
+        $users_feed_model->stock = $params['stock'];
+        $users_feed_model->feed_column_definition = array(
+            "chk" => $params['chk'],
+            "column_alias" => $params['column_alias'],
+            "column_value" =>$params['column_value'],
+            "column_value_adjustment" =>$params['column_value_adjustment']
+        );
+        
+        if($users_feed_model->UpdateFeed())
+        {
+            $this->_redirect("/admin/merchant-feed-generation/user_id/".$params['user_id']."/result/1");
+        }else{
+            $this->_redirect("/admin/merchant-feed-generation/user_id/".$params['user_id']."/result/2");
+        }
     }
 }
 

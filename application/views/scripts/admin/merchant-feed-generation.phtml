@@ -3,7 +3,21 @@
 <script type="text/javascript" src="/scripts/jquery.ztree.excheck-3.5.js"></script>
 	<SCRIPT type="text/javascript">
 		<!--
-		var setting = {
+		function zTreeOnCheck(event, treeId, treeNode) {
+                    
+                    $.ajax({
+                        url:"/ajax/tree-affect-of-category",
+                        type:"POST",
+                        data:{"TreeID":treeNode.id,"ParentID":treeNode.pId, "Checked":treeNode.checked, "UserID":<?=$this->user_info['user_id']?>},
+                        datatype:"json",
+                        success:function(data)
+                        {
+                            //happy
+                        }
+                    });
+                };
+        
+                var setting = {
 			check: {
 				enable: true
 			},
@@ -11,29 +25,22 @@
 				simpleData: {
 					enable: true
 				}
-			}
+			},
+                        callback: {
+                            onCheck: zTreeOnCheck
+                        }
 		};
 
 		var zNodes =[
-			{ id:1, pId:0, name:"can check 1", open:true},
-			{ id:11, pId:1, name:"can check 1-1", open:true},
-			{ id:111, pId:11, name:"can check 1-1-1"},
-			{ id:112, pId:11, name:"can check 1-1-2"},
-			{ id:12, pId:1, name:"can check 1-2", open:true},
-			{ id:121, pId:12, name:"can check 1-2-1"},
-			{ id:122, pId:12, name:"can check 1-2-2"},
-			{ id:2, pId:0, name:"can check 2", checked:true, open:true},
-			{ id:21, pId:2, name:"can check 2-1"},
-			{ id:22, pId:2, name:"can check 2-2", checked:true},
-			{ id:221, pId:22, name:"can check 2-2-1", checked:true},
-			{ id:222, pId:22, name:"can check 2-2-2", checked:true},
-			{ id:23, pId:2, name:"can check 2-3"}
+                    <?php foreach($this->product_categories as $product_categories):?>
+                            { id:<?=$product_categories['category_id']?>, pId:<?=$product_categories['parent_id']?>, name:"<?=$product_categories['category_name']?>", checked:<?=$product_categories['checked']?>, open:<?=$product_categories['open']?>},
+                    <?php endforeach;?>
 		];
 
 		var code;
 
 		function setCheck() {
-			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			var zTree = $.fn.zTree.getZTreeObj("categoryTree"),
 			py = $("#py").attr("checked")? "p":"",
 			sy = $("#sy").attr("checked")? "s":"",
 			pn = $("#pn").attr("checked")? "p":"",
@@ -49,7 +56,7 @@
 		}
 
 		$(document).ready(function(){
-			$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+			$.fn.zTree.init($("#categoryTree"), setting, zNodes);
 			setCheck();
 			$("#py").bind("change", setCheck);
 			$("#sy").bind("change", setCheck);
@@ -65,7 +72,7 @@ $( "#sortable" ).sortable();
 </script>
 <br />
 <?php if($this->notice):?>
-<font color="#ff0000"><strong>* <?php echo $this->notice;?></strong></font><br /><br />
+<?php echo $this->notice;?><br /><br />
 <?php endif;?>
 <form action="/admin/merchant-feed-generation-confirm/user_id/<?=$this->user_info['user_id']?>" method="post">
 	<table class="width100" cellspacing="1">
@@ -138,21 +145,31 @@ $( "#sortable" ).sortable();
 			<tr class="row-1">
 				<td class="category">Category</td>
 				<td colspan="3">
-                                    <div class="zTreeDemoBackground left">
-                                        <ul id="treeDemo" class="ztree"></ul>
+                                    <div>
+                                        <ul id="categoryTree" class="ztree"></ul>
                                     </div>
                                 </td>
 			</tr>				
 			<tr class="row-2">
 				<td class="category">SKUs included</td>
-				<td colspan="3"></td>
+                                <td colspan="3"><textarea name="sku_included" id="sku_included" cols="100" rows="3"></textarea></td>
 			</tr>
 			<tr class="row-1">
 				<td class="category">SKUs excluded</td>
-				<td colspan="3"></td>
-			</tr>	
+				<td colspan="3"><textarea name="sku_excluded" id="sku_excluded" cols="100" rows="3"></textarea></td>
+			</tr>
 			<tr class="row-2">
-				<td colspan="4"><input type="submit" value="Save" /></td>
+				<td class="category">Stock</td>
+                                <td colspan="3">
+                                    <input type="radio" name="stock" id="stock" value="1" <?php if(1==$this->users_feed['stock'] || !$this->users_feed['users_feed_id']):?>checked="checked"<?php endif;?> />All&nbsp;&nbsp;
+                                    <input type="radio" name="stock" id="stock" value="2" <?php if(2==$this->users_feed['stock']):?>checked="checked"<?php endif;?> />In Stock&nbsp;&nbsp;
+                                    <input type="radio" name="stock" id="stock" value="3" <?php if(3==$this->users_feed['stock']):?>checked="checked"<?php endif;?> />Out of Stock
+                                </td>
+			</tr>	
+			<tr class="row-1">
+				<td colspan="4">
+                                    <input type="submit" value="Save" />
+                                </td>
 			</tr>
 		</tbody>
 	</table>
