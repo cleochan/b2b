@@ -7,6 +7,7 @@ class Databases_Tables_UsersFeed extends Zend_Db_Table
     var $feed_name;
     var $feed_extension;
     var $feed_delimeter;
+    var $special_delimeter;
     var $feed_qualifier;
     var $feed_category; //array
     var $sku_included;
@@ -41,6 +42,7 @@ class Databases_Tables_UsersFeed extends Zend_Db_Table
             $row->feed_name = $this->feed_name;
             $row->feed_extension = $this->feed_extension;
             $row->feed_delimeter = $this->feed_delimeter;
+            $row->special_delimeter = $this->special_delimeter;
             $row->feed_qualifier = $this->feed_qualifier;
             $row->feed_category = $category_string;
             $row->sku_included = $this->sku_included;
@@ -55,6 +57,7 @@ class Databases_Tables_UsersFeed extends Zend_Db_Table
                 "feed_name" => $this->feed_name,
                 "feed_extension" => $this->feed_extension,
                 "feed_delimeter" => $this->feed_delimeter,
+                "special_delimeter" => $this->special_delimeter,
                 "feed_qualifier" => $this->feed_qualifier,
                 "feed_category" => $category_string,
                 "sku_included" => $this->sku_included,

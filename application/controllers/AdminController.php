@@ -796,6 +796,7 @@ class AdminController extends Zend_Controller_Action
         $users_feed_model->feed_name = $params['feed_name'];
         $users_feed_model->feed_extension = $params['feed_extension'];
         $users_feed_model->feed_delimeter = $params['feed_delimeter'];
+        $users_feed_model->special_delimeter = $params['special_delimeter'];
         $users_feed_model->feed_qualifier = $params['feed_qualifier'];
         $users_feed_model->feed_category = $product_categories_model->CheckedArray($_SESSION['b2b']['merchant_feed_generation'][$params['user_id']]);
         $users_feed_model->sku_included = $params['sku_included'];

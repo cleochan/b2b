@@ -17,4 +17,19 @@ class Databases_Tables_FeedDictionary extends Zend_Db_Table
         
         return $data->toArray();
     }
+    
+    function ArrayForReplacement()
+    {
+        $rows = $this->fetchAll();
+        
+        $result = array();
+        
+        foreach($rows as $row)
+        {
+            $key = "<{".$row['column_param']."}>";
+            $result[$key] = $row['column_product_mapping'];
+        }
+        
+        return $result;
+    }
 }

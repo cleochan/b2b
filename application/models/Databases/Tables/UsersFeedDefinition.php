@@ -128,6 +128,7 @@ class Databases_Tables_UsersFeedDefinition extends Zend_Db_Table
                     );
                     
                     $this->insert($row);
+                    $sequence += 1;
                 }
             }
             
@@ -137,12 +138,5 @@ class Databases_Tables_UsersFeedDefinition extends Zend_Db_Table
         }
         
         return $result;
-    }
-    
-    function GetFeedInfo($users_feed_id)
-    {
-        $rows = $this->fetchAll("users_feed_id='".$users_feed_id."'");
-        
-        return $rows->toArray();
     }
 }

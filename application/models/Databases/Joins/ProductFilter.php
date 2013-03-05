@@ -66,6 +66,22 @@ class Databases_Joins_ProductFilter
             $select->order("p.brand ASC");
 
             $data = $this->db->fetchAll($select);
+        }else{
+            $data = array();
         }
+        
+        return $data;
+    }
+    
+    function GetFeedDefinitionInfo($users_feed_id)
+    {
+        $rows = $this->db->select();
+        $rows->from("users_feed_definition as f", "*");
+        $rows->joinLeft("feed_dictionary as d", "f.feed_dictionary_id=d.feed_dictionary_id", "column_product_mapping");
+        $rows->where("f.users_feed_id = ?", $users_feed_id);
+        $rows->order("f.sequence ASC");
+        $data = $this->db->fetchAll($rows);
+        
+        return $data;
     }
 }
