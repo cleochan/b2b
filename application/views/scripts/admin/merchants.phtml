@@ -18,6 +18,7 @@
 								<td class="form-title">Bpay Ref</td>
 								<td class="form-title">Balance</td>
 								<td class="form-title">Credit</td>
+								<td class="form-title">Discount</td>
 								<td class="form-title">Status</td>
 								<td class="form-title">Actions</td>
 								<td class="form-title">Reports</td>
@@ -32,6 +33,7 @@
 								<td class="center"><span class="small"><?=$list['bpay_ref']?></span></td>
 								<td class="center"><span class="small"><?=$list['balance']?></span></td>
 								<td class="center"><span class="small"><?=$list['credit']?></span></td>
+								<td class="center"><span class="small"><?=$list['discount']?>%</span></td>
 								<td class="center"><span class="small"><?=$list['user_status']?"<font color='green'>Active</font>":"<font color='red'>Inactive</font>"?></span></td>
 								<td class="center"><span class="small"><a href="/admin/merchant-edit/user_id/<?=$list['user_id']?>">Edit</a> | <a href="/admin/merchant-recharge/user_id/<?=$list['user_id']?>">Recharge</a> | <a href="/admin/merchant-feed-generation/user_id/<?=$list['user_id']?>">Feed</a></span></td>
 								<td class="center"><span class="small"><a href="/admin/admin-order-report/user_id/<?=$list['user_id']?>">Orders</a> | <a href="/admin/admin-financial-report/user_id/<?=$list['user_id']?>">Financial</a></span></td>

@@ -29,7 +29,7 @@ class Databases_Tables_UsersFeed extends Zend_Db_Table
         //just stock 0 as ALL to save storage
         if($is_all)
         {
-            $category_string = 0;
+            $category_string = NULL;
         }else{
             $category_string = implode(",", $this->feed_category);
         }
@@ -56,7 +56,7 @@ class Databases_Tables_UsersFeed extends Zend_Db_Table
                 "feed_extension" => $this->feed_extension,
                 "feed_delimeter" => $this->feed_delimeter,
                 "feed_qualifier" => $this->feed_qualifier,
-                "feed_category" => $this->feed_category,
+                "feed_category" => $category_string,
                 "sku_included" => $this->sku_included,
                 "sku_excluded" => $this->sku_excluded,
                 "stock" => $this->stock

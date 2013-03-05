@@ -8,6 +8,7 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
     var $contact_name;
     var $contact_phone;
     var $credit;
+    var $discount;
     var $balance;
     
     function AddUserExtension()
@@ -23,6 +24,7 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
                 'contact_phone' => $this->contact_phone,
                 'join_date' => date("Y-m-d"),
                 'credit' => round($this->credit, 2),
+                'discount' => round($this->discount, 2),
                 'bpay_ref' => $bpay_generator->RefGenerator(1000+$this->user_id)
             );
             
@@ -46,6 +48,7 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
             $user->contact_name = $this->contact_name;
             $user->contact_phone = $this->contact_phone;
             $user->credit = $this->credit;
+            $user->discount = $this->discount;
             
             $user->save();
         }

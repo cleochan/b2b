@@ -94,7 +94,14 @@ class Databases_Tables_UsersFeedDefinition extends Zend_Db_Table
         $header = "<{";
         $ending = "}>";
         
-        return $header.$val.$ending;
+        if($val)
+        {
+            $result = $header.$val.$ending;
+        }else{
+            $result = $val;
+        }
+        
+        return $result;
     }
     
     function UpdateFeedDefinition() // Don't call this function individually
@@ -130,5 +137,12 @@ class Databases_Tables_UsersFeedDefinition extends Zend_Db_Table
         }
         
         return $result;
+    }
+    
+    function GetFeedInfo($users_feed_id)
+    {
+        $rows = $this->fetchAll("users_feed_id='".$users_feed_id."'");
+        
+        return $rows->toArray();
     }
 }

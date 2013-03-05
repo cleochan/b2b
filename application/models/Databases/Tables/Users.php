@@ -12,6 +12,7 @@ class Databases_Tables_Users extends Zend_Db_Table
     var $contact_name;
     var $contact_phone;
     var $credit;
+    var $discount;
     
     function AddUser()
     {
@@ -42,6 +43,7 @@ class Databases_Tables_Users extends Zend_Db_Table
             $user_ext->contact_name = $this->contact_name;
             $user_ext->contact_phone = $this->contact_phone;
             $user_ext->credit = $this->credit;
+            $user_ext->discount = $this->discount;
             
              try{
                 $user_ext ->AddUserExtension();
@@ -60,7 +62,10 @@ class Databases_Tables_Users extends Zend_Db_Table
             $user = $this->fetchRow("user_id='".$this->user_id."'");
             
             $user->email = $this->email;
-            $user->password = $this->password;
+            if($this->password)
+            {
+                $user->password = $this->password;
+            }
             $user->user_status = $this->user_status;
             
             $user->save();
@@ -72,6 +77,7 @@ class Databases_Tables_Users extends Zend_Db_Table
             $user_ext->contact_name = $this->contact_name;
             $user_ext->contact_phone = $this->contact_phone;
             $user_ext->credit = $this->credit;
+            $user_ext->discount = $this->discount;
             $user_ext->EditUserExtension();
             
         }
@@ -95,7 +101,12 @@ class Databases_Tables_Users extends Zend_Db_Table
     {
         if($this->email)
         {
-            $result = $this->fetchRow("email='".$this->email."'");
+            if($this->user_id) //exculde the self
+            {
+                $result = $this->fetchRow("email='".$this->email."' and user_id != '".$this->user_id."'");
+            }else{
+                $result = $this->fetchRow("email='".$this->email."'");
+            }
         }
         
         return $result['user_id'];

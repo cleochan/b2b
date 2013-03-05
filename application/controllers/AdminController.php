@@ -64,6 +64,7 @@ class AdminController extends Zend_Controller_Action
         
         $form = new Forms_Merchant();
         $form->credit->setValue('0.00');
+        $form->discount->setValue('0.00');
 	$form->submitx->setLabel('Create Merchant');
 	$this->view->form = $form;
 		
@@ -99,6 +100,22 @@ class AdminController extends Zend_Controller_Action
                     $error = 1;
                 }
                 
+                //Credit
+                if(0 > $form->getValue('credit'))
+                {
+                    $this->view->notice="The credit is out of range.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                
+                //Discount
+                if(0 > $form->getValue('discount') || 100 < $form->getValue('discount'))
+                {
+                    $this->view->notice="The discount is out of range.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                
                 //new users
                 $check_user_string = new Databases_Tables_Users();
 
@@ -126,6 +143,7 @@ class AdminController extends Zend_Controller_Action
                     $check_user_string->contact_name = $form->getValue('contact_name');
                     $check_user_string->contact_phone = $form->getValue('contact_phone');
                     $check_user_string->credit = $form->getValue('credit');
+                    $check_user_string->discount = $form->getValue('discount');
                     $check_user_string ->AddUser();
                     
                     $this->_redirect('admin/merchants');
@@ -158,6 +176,22 @@ class AdminController extends Zend_Controller_Action
                 if(!trim($formData['password_r']))
                 {
                     $this->view->notice="Password is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                
+                //Credit
+                if(0 > $formData['credit'])
+                {
+                    $this->view->notice="The credit is out of range.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                
+                //Discount
+                if(0 > $formData['discount'] || 100 < $formData['discount'])
+                {
+                    $this->view->notice="The discount is out of range.";
                     $form->populate($formData);
                     $error = 1;
                 }
@@ -216,11 +250,28 @@ class AdminController extends Zend_Controller_Action
                     $error = 1;
                 }
                 
+                //Credit
+                if(0 > $form->getValue('credit'))
+                {
+                    $this->view->notice="The credit is out of range.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                
+                //Discount
+                if(0 > $form->getValue('discount') || 100 < $form->getValue('discount'))
+                {
+                    $this->view->notice="The discount is out of range.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                
                 //new users
                 $check_user_string = new Databases_Tables_Users();
 
                 //username exist
                 $check_user_string->email = $form->getValue('email');
+                $check_user_string->user_id = $form->getValue('user_id');
                 $check_user_exist = $check_user_string ->IsUserExist();
                 if($check_user_exist)
                 {
@@ -236,7 +287,7 @@ class AdminController extends Zend_Controller_Action
                 {
                     //update to db
                     $check_user_string->user_id = $form->getValue('user_id');
-                    $check_user_string->email = $form->getValue('user_id');
+                    $check_user_string->email = $form->getValue('email');
                     if(!$password_not_changed)
                     {
                         $check_user_string->password = $form->getValue('password');
@@ -246,6 +297,7 @@ class AdminController extends Zend_Controller_Action
                     $check_user_string->contact_name = $form->getValue('contact_name');
                     $check_user_string->contact_phone = $form->getValue('contact_phone');
                     $check_user_string->credit = $form->getValue('credit');
+                    $check_user_string->discount = $form->getValue('discount');
                     $check_user_string->EditUser();
                     
                     //unset session
@@ -268,6 +320,22 @@ class AdminController extends Zend_Controller_Action
                 if(!Algorithms_Extensions_Plugin::EmailCheck($formData['email']))
                 {
                     $this->view->notice="Email format is incorrect.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                
+                //Credit
+                if(0 > $formData['credit'])
+                {
+                    $this->view->notice="The credit is out of range.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                
+                //Discount
+                if(0 > $formData['discount'] || 100 < $formData['discount'])
+                {
+                    $this->view->notice="The discount is out of range.";
                     $form->populate($formData);
                     $error = 1;
                 }
@@ -746,6 +814,11 @@ class AdminController extends Zend_Controller_Action
         }else{
             $this->_redirect("/admin/merchant-feed-generation/user_id/".$params['user_id']."/result/2");
         }
+    }
+    
+    function merchantFeedPublishAction()
+    {
+        
     }
 }
 

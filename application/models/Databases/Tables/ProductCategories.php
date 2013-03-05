@@ -41,7 +41,7 @@ class Databases_Tables_ProductCategories extends Zend_Db_Table
             
             foreach ($merchant_array as $m_val)
             {
-                if(!in_array($m_val, $checked_array))
+                if(!in_array($m_val, $checked_array) && $m_val)
                 {
                     $checked_array[] = $m_val;
                 }
@@ -54,7 +54,7 @@ class Databases_Tables_ProductCategories extends Zend_Db_Table
         
         foreach($entire_tree as $key=>$val)
         {
-            if(in_array($val['category_id'], $checked_array))
+            if(in_array($val['category_id'], $checked_array) || empty($checked_array))
             {
                 $entire_tree[$key]['checked'] = "true";
                 $entire_tree[$key]['open'] = "false";

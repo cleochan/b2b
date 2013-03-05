@@ -40,6 +40,9 @@ class Forms_Merchant extends Zend_Form
         
                 $credit = new Zend_Form_Element_Text('credit');
 		$credit -> setDecorators(array(array('ViewHelper'),));
+        
+                $discount = new Zend_Form_Element_Text('discount');
+		$discount -> setDecorators(array(array('ViewHelper'),));
 
 		$submitx = new Zend_Form_Element_Submit('submitx');
 		$submitx -> setDecorators(array(array('ViewHelper'),));
@@ -55,6 +58,7 @@ class Forms_Merchant extends Zend_Form
                                                                 $contact_name,
                                                                 $contact_phone,
                                                                 $credit,
+                                                                $discount,
 								$submitx
 							)
 						);
