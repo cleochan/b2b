@@ -88,7 +88,9 @@ class PluginController extends Zend_Controller_Action
     {
         $model = new Algorithms_Core_Feed();
         $model->user_id_array = array(3);
-        $model->Publish();
+        $result = $model->Publish();
+        echo $result;
+        die;
     }
     
     function csvTestAction()

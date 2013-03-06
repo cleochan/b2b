@@ -11,6 +11,12 @@ class Databases_Joins_ProductFilter
         $get_data_source = new Databases_Tables_Params();
         $data_source = $get_data_source->GetVal("product_info_table");
         
+        $brand_model = new Databases_Tables_ProductBrands();
+        $brands_array = $brand_model->GetAllBrands();
+        
+        $category_model = new Databases_Tables_ProductCategories();
+        $categories_array = $category_model->GetAllCategories();
+        
         if($data_source) // 1 or 2
         {
             $feed_category = $feed_info_array['users_feed']['feed_category'];
@@ -66,6 +72,17 @@ class Databases_Joins_ProductFilter
             $select->order("p.brand ASC");
 
             $data = $this->db->fetchAll($select);
+            
+            //update brand and category
+            if(!empty($data))
+            {
+                foreach($data as $d_key => $d_val)
+                {
+                    $data[$d_key]['brand'] = $brands_array[$d_val['brand']];
+                    $data[$d_key]['category'] = $categories_array[$d_val['category']];
+                }
+            }
+                
         }else{
             $data = array();
         }

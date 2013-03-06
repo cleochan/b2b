@@ -79,15 +79,20 @@ class Algorithms_Core_Feed
                         $contents .= implode($delimeter, $contents_tmp_array)."\n\r";
                     }
                     
-                    echo $contents;
-                    die;
+                    $export_model = new Algorithms_Core_Export();
+                    $plugin_model = new Algorithms_Extensions_Plugin();
+                    $export_model->file_name = $plugin_model->GetFeedPath($collect_feed_info['users_feed']['feed_name'], $collect_feed_info['users_feed']['feed_extension'], 1);
+                    $export_model->contents = $contents;
+                    
+                    //Create Feed
+                    $result = $export_model->Push();
                 }
             }
         }else{
             $result = "Error: Key parameter missed.";
         }
         
-        return $result;
+        return $result." ".date("Y-m-d H:i:s");
         
     }
     
@@ -109,13 +114,11 @@ class Algorithms_Core_Feed
     
     function StringReplacement($product_row, $feed_column_value, $array_for_replacement)
     {
-        
-        
         foreach($array_for_replacement as $key => $val)
         {
-            $result = preg_replace("/".$key."/", $product_row[$val], $feed_column_value);
+            $feed_column_value = str_replace($key, $product_row[$val], $feed_column_value);
         }
         
-        return $result;
+        return $feed_column_value;
     }
 }

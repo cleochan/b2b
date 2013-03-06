@@ -24,7 +24,7 @@ class Algorithms_Extensions_Plugin
         return $ret;
     }
     
-    function GetFeedPath($feed_name, $feed_extension)
+    function GetFeedPath($feed_name, $feed_extension, $name_only=NULL)
     {
         $pro = "http://";
         $domain = $_SERVER['HTTP_HOST'];
@@ -46,8 +46,15 @@ class Algorithms_Extensions_Plugin
         
         $params_table = new Databases_Tables_Params();
         $path = $params_table->GetVal("feed_path");
+                
+        if($name_only)
+        {
+            $result = $feed_name.$ext;
+        }else{
+            $result = $pro.$domain.$path.$feed_name.$ext;
+        }
         
-        return $pro.$domain.$path.$feed_name.$ext;
+        return $result;
     }
     
     function GenerateInitialFeedName($str)
