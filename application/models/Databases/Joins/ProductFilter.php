@@ -6,16 +6,19 @@ class Databases_Joins_ProductFilter
         $this->db = Zend_Registry::get("db");
     }
     
-    function Push($feed_info_array)
+    function Push($feed_info_array, $user_id)
     {
+        $get_user_info = new Databases_Joins_GetUserInfo();
+        $user_info = $get_user_info->GetUserInfo($user_id);
+        
+        $discount = (100 - $user_info['discount']) / 100; //get percentage
+        
+        //get markup
+        $params_model = new Databases_Tables_Params();
+        $cost_markup = $params_model->GetVal("cost_markup");
+        
         $get_data_source = new Databases_Tables_Params();
         $data_source = $get_data_source->GetVal("product_info_table");
-        
-        $brand_model = new Databases_Tables_ProductBrands();
-        $brands_array = $brand_model->GetAllBrands();
-        
-        $category_model = new Databases_Tables_ProductCategories();
-        $categories_array = $category_model->GetAllCategories();
         
         if($data_source) // 1 or 2
         {
@@ -23,6 +26,7 @@ class Databases_Joins_ProductFilter
             $sku_included = $feed_info_array['users_feed']['sku_included'];
             $sku_excluded = $feed_info_array['users_feed']['sku_excluded'];
             $stock = $feed_info_array['users_feed']['stock'];
+            $cost_protection = $feed_info_array['users_feed']['cost_protection'];
             
             if($feed_category)
             {
@@ -42,9 +46,7 @@ class Databases_Joins_ProductFilter
             $source_table = "product_info_".$data_source;
 
             $select = $this->db->select();
-            $select->from($source_table." as p", "*");
-            $select->joinLeft("product_brands as b", "b.brand_id=p.brand", "brand_name");
-            $select->joinLeft("product_categories as c", "c.category_id=p.category", "category_name");
+            $select->from($source_table, "*");
             if($category_array)
             {
                 $select->where("category IN (?)", $category_array);
@@ -68,21 +70,26 @@ class Databases_Joins_ProductFilter
                 default :
                     break;
             }
-            $select->order("p.category ASC");
-            $select->order("p.brand ASC");
+            $select->order("category_name ASC");
+            $select->order("brand_name ASC");
 
             $data = $this->db->fetchAll($select);
             
-            //update brand and category
+            //update for discount/cost protection
             if(!empty($data))
             {
                 foreach($data as $d_key => $d_val)
                 {
-                    $data[$d_key]['brand'] = $brands_array[$d_val['brand']];
-                    $data[$d_key]['category'] = $categories_array[$d_val['category']];
+                    $cal_result = $this->OfferPriceCalculation($d_val['offer_price'], $d_val['cost_price'], $discount, ($cost_markup/100));
+                    
+                    $data[$d_key]['offer_price'] = $cal_result[1]; //update price
+                    
+                    if($cost_protection && $cal_result[0])
+                    {
+                        $data[$d_key]['stock'] = 0; //erase stock
+                    }
                 }
             }
-                
         }else{
             $data = array();
         }
@@ -100,5 +107,35 @@ class Databases_Joins_ProductFilter
         $data = $this->db->fetchAll($rows);
         
         return $data;
+    }
+    
+    function OfferPriceCalculation($original_offer_price, $original_cost_price, $merchant_discount, $cost_markup) //discount and markup are percentages and < 1
+    {
+        $offer_price_with_discount = $original_offer_price * $merchant_discount;
+        
+        $cost_price_with_markup = $original_cost_price * (1 + $cost_markup);
+        
+        $final_price = $offer_price_with_discount;
+        
+        if($offer_price_with_discount < $cost_price_with_markup)
+        {
+            $final_price = $cost_price_with_markup;
+            
+            if($final_price > $original_offer_price)
+            {
+                $final_price = $original_offer_price;
+            }
+        }
+        
+        if(($final_price / $original_offer_price) > $merchant_discount)
+        {
+            $affect_stock = 1;
+        }else{
+            $affect_stock = 0;
+        }
+        
+        $result = array(0=>$affect_stock, 1=>$final_price);
+        
+        return $result;
     }
 }

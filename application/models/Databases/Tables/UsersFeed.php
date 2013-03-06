@@ -13,6 +13,7 @@ class Databases_Tables_UsersFeed extends Zend_Db_Table
     var $sku_included;
     var $sku_excluded;
     var $stock;
+    var $cost_protection;
     var $feed_column_definition; //array
     
     function GetFeedInfo($user_id)
@@ -48,6 +49,7 @@ class Databases_Tables_UsersFeed extends Zend_Db_Table
             $row->sku_included = $this->sku_included;
             $row->sku_excluded = $this->sku_excluded;
             $row->stock = $this->stock;
+            $row->cost_protection = $this->cost_protection;
             $row->save();
             
             $users_feed_id = $row->users_feed_id;
@@ -62,7 +64,8 @@ class Databases_Tables_UsersFeed extends Zend_Db_Table
                 "feed_category" => $category_string,
                 "sku_included" => $this->sku_included,
                 "sku_excluded" => $this->sku_excluded,
-                "stock" => $this->stock
+                "stock" => $this->stock,
+                "cost_protection" => $this->cost_protection
             );
             
             $users_feed_id = $this->insert($data);

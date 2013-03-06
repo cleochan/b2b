@@ -802,6 +802,7 @@ class AdminController extends Zend_Controller_Action
         $users_feed_model->sku_included = $params['sku_included'];
         $users_feed_model->sku_excluded = $params['sku_excluded'];
         $users_feed_model->stock = $params['stock'];
+        $users_feed_model->cost_protection = $params['cost_protection'];
         $users_feed_model->feed_column_definition = array(
             "ckd" => $params['ckd'],
             "column_alias" => $params['column_alias'],
@@ -815,11 +816,6 @@ class AdminController extends Zend_Controller_Action
         }else{
             $this->_redirect("/admin/merchant-feed-generation/user_id/".$params['user_id']."/result/2");
         }
-    }
-    
-    function merchantFeedPublishAction()
-    {
-        
     }
 }
 

@@ -70,98 +70,41 @@ class PluginController extends Zend_Controller_Action
         die;
     }
     
-    function testGeneratorAction()
+    function stringTestAction()
     {
-        $g = new Algorithms_Extensions_Bpay();
-        echo $g->RefGenerator(1003);
+        $string = "[1|OK][2|NO]";
         
-        die;
-    }
-    
-    function getPathAction()
-    {
-        echo $_SERVER['HTTP_HOST'];
+        $length = strlen($string);
+        
+        $result_1 = array();
+        
+        while($length)
+        {
+            $from = strpos($string, "[");
+            $to = strpos($string, "]");
+            
+            if(FALSE !== $from && FALSE !== $to && $from < $to)
+            {
+                $result_1[] = substr($string, $from+1, $to-$from-1);
+
+                $string = substr($string, $to+1);
+
+                $length = strlen($string);
+            }else{
+                $length = 0; // Exit
+            }
+        }
+        
+        //Algorithms_Extensions_Plugin::FormatArray($result_1);
+        
         die;
     }
     
     function feedTestAction()
     {
         $model = new Algorithms_Core_Feed();
-        $model->user_id_array = array(3);
-        $result = $model->Publish();
-        echo $result;
-        die;
-    }
-    
-    function csvTestAction()
-    {
-        $filename = 'feeds/test.csv';
-        $fp = fopen($filename,'w');
-        if(!$fp){
-         echo "不能打开文件 $filename";
-         exit;
-        }
-        $data = array(
-          array(
-         'id'=>'1',
-         'cid'=>'2',
-         'name'=>'这是第一个开户名称',
-         'account'=>'3323423432432',
-         'bank'=>'建设银行'  ,
-          ),
-        array(
-         'id'=>'2',
-         'cid'=>'3',
-         'name'=>'这是第二个开户名称',
-         'account'=>'3323423432433',
-         'bank'=>'工商银行'  ,
-          ),
-        );
-        //我的编码是gbk,如果是utf-8,使用转码语句 mb_convert_encoding('申请ID','gb2312','UTF-8').',';
-        $csv_content = '';
-        $csv_content .= '申请ID,';
-        $csv_content .= '合同编号,';
-        $csv_content .= '开户名称,';
-        $csv_content .= '银行账号,';
-        $csv_content .= '开户行';
-        $csv_content .= "\n\r";
-        foreach ($data as  $ditem){
-         //echo $ditem['id'];
-
-            $csv_content .= $ditem['id'].',';
-         $csv_content .= $ditem['cid'].',';
-         $csv_content .= $ditem['name'].',';
-            $csv_content .= $ditem['account'].',';
-         $csv_content .= $ditem['bank'];
-            $csv_content .= "\n\r";
-
-
-        }
-
-        if (fwrite($fp, $csv_content) === FALSE) {
-                echo "不能写入到文件 $filename";
-                exit;
-           }
-        fclose($fp);
-        echo "<br />End<br />";
-        die;
-    }
-    
-    function randTestAction()
-    {
-        $table = new Databases_Tables_ProductInfo1();
-        $table->Abc();
-        echo "End.";
-        die;
-    }
-    
-    function replaceTestAction()
-    {
-        $a = "/<{abc}>/";
-        $b = "hahaha";
-        $c = "111111111111111<{abc}>1111111111111111111";
-        
-        echo preg_replace($a, $b, $c);
+        $model->user_id_array = array(4);
+        $model->Publish();
         die;
     }
 }

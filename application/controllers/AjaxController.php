@@ -65,5 +65,22 @@ class AjaxController extends Zend_Controller_Action
             die;
         }
     }
+    
+    function refreshFeedAction()
+    {
+        $params = $this->_request->getParams();
+        
+        if($params['UserId'])
+        {
+            $model = new Algorithms_Core_Feed();
+            $model->user_id_array = array($params['UserId']);
+            $result = $model->Publish();
+            echo $result;
+        }else{
+            echo "Error: UserId missed.";
+        }
+        
+        die;
+    }
 }
 

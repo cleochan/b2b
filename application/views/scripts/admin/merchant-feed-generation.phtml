@@ -81,6 +81,22 @@ $( "#sortable" ).sortable();
 			});
 		});
 </script>
+<script>
+jQuery(function($){
+  $('#publish').click(function(){
+        $.ajax({
+            url:"/ajax/refresh-feed",
+            type:"POST",
+            data:{"UserId":<?=$this->user_info['user_id']?>},
+            datatype:"json",
+            success:function(data)
+            {
+                alert(data);
+            }
+        });
+  });
+});
+</script>
 <br />
 <?php if($this->notice):?>
 <?php echo $this->notice;?><br /><br />
@@ -176,10 +192,17 @@ $( "#sortable" ).sortable();
                                     <input type="radio" name="stock" id="stock" value="2" <?php if(2==$this->users_feed['stock']):?>checked="checked"<?php endif;?> />In Stock&nbsp;&nbsp;
                                     <input type="radio" name="stock" id="stock" value="3" <?php if(3==$this->users_feed['stock']):?>checked="checked"<?php endif;?> />Out of Stock
                                 </td>
-			</tr>	
+			</tr>
 			<tr class="row-1">
+				<td class="category">Discount Protection</td>
+                                <td colspan="3">
+                                    <input type="radio" name="cost_protection" id="cost_protection" value="1" <?php if(1==$this->users_feed['cost_protection']):?>checked="checked"<?php endif;?> />ON
+                                    <input type="radio" name="cost_protection" id="cost_protection" value="0" <?php if(!$this->users_feed['cost_protection'] || !$this->users_feed['users_feed_id']):?>checked="checked"<?php endif;?> />OFF
+                                </td>
+			</tr>	
+			<tr class="row-2">
 				<td colspan="4">
-                                    <input type="submit" value="Save" />
+                                    <input type="submit" value="Save" />&nbsp;&nbsp;&nbsp;<input type="button" id="publish" value="Publish" />
                                 </td>
 			</tr>
 		</tbody>
