@@ -54,30 +54,54 @@ class Algorithms_Core_Feed
                             break;
                     }
                     
-                    //Create Title
-                    foreach($collect_feed_info['users_feed_definition'] as $users_feed_definition)
-                    {
-                        $contents_tmp_array[] = $qualifier.$users_feed_definition['column_alias'].$qualifier;
-                    }
-                    
-                    $contents .= implode($delimeter, $contents_tmp_array)."\n\r";
-                    
-                    //==== Make Title Finished ====//
-                    
                     $feed_dictionary = new Databases_Tables_FeedDictionary();
                     $array_for_replacement = $feed_dictionary->ArrayForReplacement();
                     
-                    foreach($product_list as $pl)
+                    if(in_array($collect_feed_info['users_feed']['feed_extension'], array(1,2))) //csv or txt
                     {
-                        $contents_tmp_array = array();
-                        
+                        //Make Title
                         foreach($collect_feed_info['users_feed_definition'] as $users_feed_definition)
                         {
-                            $contents_tmp_array[] = $qualifier.$this->StringReplacement($pl, $users_feed_definition['column_value'], $array_for_replacement, $users_feed_definition['column_value_adjustment']).$qualifier;
+                            $contents_tmp_array[] = $qualifier.$users_feed_definition['column_alias'].$qualifier;
+                        }
+
+                        $contents .= implode($delimeter, $contents_tmp_array)."\n\r";
+                        //==== Make Title Finished ====//
+
+                        foreach($product_list as $pl)
+                        {
+                            $contents_tmp_array = array();
+
+                            foreach($collect_feed_info['users_feed_definition'] as $users_feed_definition)
+                            {
+                                $contents_tmp_array[] = $qualifier.$this->StringReplacement($pl, $users_feed_definition['column_value'], $array_for_replacement, $users_feed_definition['column_value_adjustment']).$qualifier;
+                            }
+
+                            $contents .= implode($delimeter, $contents_tmp_array)."\n\r";
+                        }
+                    }elseif(3 == $collect_feed_info['users_feed']['feed_extension']) //xml
+                    {
+                        $api_model = new Algorithms_Core_Api();
+                        $xml_array = array();
+                            
+                        $key_header = 'Product';
+                        $key_value = 1;
+                        
+                         foreach($product_list as $pl)
+                        {
+                            foreach($collect_feed_info['users_feed_definition'] as $users_feed_definition)
+                            {
+                                $contents_tmp_array[($api_model->XmlKeyFilter($users_feed_definition['column_alias']))] = $api_model->XmlValueFilter($this->StringReplacement($pl, $users_feed_definition['column_value'], $array_for_replacement, $users_feed_definition['column_value_adjustment']));
+                            }
+                            
+                            $xml_array[$key_header.$key_value] = $contents_tmp_array;
+                            $key_value += 1;
                         }
                         
-                        $contents .= implode($delimeter, $contents_tmp_array)."\n\r";
+                        $contents = $api_model->Array2Xml($xml_array);
                     }
+                    
+
                     
                     $export_model = new Algorithms_Core_Export();
                     $plugin_model = new Algorithms_Extensions_Plugin();
@@ -86,6 +110,7 @@ class Algorithms_Core_Feed
                     
                     //Create Feed
                     $result = $export_model->Push();
+                    
                 }
             }
         }else{
@@ -115,9 +140,13 @@ class Algorithms_Core_Feed
     function StringReplacement($product_row, $feed_column_value, $array_for_replacement, $column_value_adjustment)
     {
         // Format with the value in database
+        
         foreach($array_for_replacement as $key => $val)
         {
-            $feed_column_value = str_replace($key, $product_row[$val], $feed_column_value);
+            if(isset($product_row[$val]))
+            {
+                $feed_column_value = str_replace($key, $product_row[$val], $feed_column_value);
+            }
         }
         
         // Format if there is value adjustment
@@ -157,12 +186,12 @@ class Algorithms_Core_Feed
     {
         $string = trim($column_value_adjustment);
         
+        $result = array();
+        
         if($string)
         {
             $length = strlen($string);
-
-            $result = array();
-
+            
             while($length)
             {
                 $from = strpos($string, "[");

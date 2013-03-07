@@ -31,31 +31,37 @@ class Databases_Joins_ProductFilter
             if($feed_category)
             {
                 $category_array = explode(",", $feed_category);
+            }else{
+                $category_array = array();
             }
             
             if($sku_included)
             {
                 $sku_included_array = explode(",", $sku_included);
+            }else{
+                $sku_included_array = array();
             }
             
             if($sku_excluded)
             {
                 $sku_excluded_array = explode(",", $sku_excluded);
+            }else{
+                $sku_excluded_array = array();
             }
             
             $source_table = "product_info_".$data_source;
 
             $select = $this->db->select();
             $select->from($source_table, "*");
-            if($category_array)
+            if(!empty($category_array))
             {
-                $select->where("category IN (?)", $category_array);
+                $select->where("category_id IN (?)", $category_array);
             }
-            if($sku_included_array)
+            if(!empty($sku_included_array))
             {
                 $select->where("supplier_sku IN (?)", $sku_included_array);
             }
-            if($sku_excluded_array)
+            if(!empty($sku_excluded_array))
             {
                 $select->where("supplier_sku NOT IN (?)", $sku_excluded_array);
             }

@@ -10,7 +10,7 @@ class Algorithms_Core_Api
         foreach ($arr as $k => $v) 
         {
             is_array($v)
-                ? self::from_array($v, $xml->addChild($k))
+                ? self::Array2Xml($v, $xml->addChild($k))
                 : $xml->addChild($k, $v);
         }
         return ($first === NULL) ? $xml->asXML() : $xml;
@@ -44,5 +44,19 @@ class Algorithms_Core_Api
         }
         
         return $result;
+    }
+    
+    function XmlKeyFilter($xml) //remove space
+    {
+        return str_replace(' ', '', $xml);
+    }
+    
+    function XmlValueFilter($xml) //remove special characters
+    {
+        $xml = str_replace('&', '&amp;', $xml);
+        $xml = str_replace('<', '&lt;', $xml);
+        $xml = str_replace('>', '&gt;', $xml);
+        
+        return $xml;
     }
 }

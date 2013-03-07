@@ -104,7 +104,48 @@ class PluginController extends Zend_Controller_Action
     {
         $model = new Algorithms_Core_Feed();
         $model->user_id_array = array(4);
-        $model->Publish();
+        $result = $model->Publish();
+        echo $result;
         die;
+    }
+    
+    function testXmlAction()
+    {
+        $result = array();
+        
+        $a = array(
+            "Category" => "Baby",
+            "Brand" => "Adidas",
+            "Product Name" => "ABC"
+        );
+        
+        $result[] = $a;
+        
+        $b = array(
+            "Category" => "Man",
+            "Brand" => "Nike",
+            "Product Name" => "DEF"
+        );
+        
+        $result[] = $b;
+        
+        $aip = new Algorithms_Core_Api();
+        
+        //$xml = $aip->Array2Xml($result);
+        
+$xml2 = <<<XML
+<?xml version='1.0'?> 
+<document>
+    <a>
+        <Brand>Cool</Brand>
+        <Category>Category 1</Category>
+        <Colour>Colour 150</Colour>
+        <Dimension>D"ime"n&amp;sion 150</Dimension>
+        <ListPrice>1250.00</ListPrice>
+    </a>
+</document>
+XML;
+        
+        Algorithms_Extensions_Plugin::FormatArray($aip->Xml2Array($xml2));die;
     }
 }
