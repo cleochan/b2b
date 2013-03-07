@@ -566,6 +566,20 @@ class AdminController extends Zend_Controller_Action
         }
     }
     
+    function helpPreviewAction()
+    {
+        $params = $this->_request->getParams();
+        $helpdesk_model = new Databases_Tables_Helpdesk();
+        $helpdesk_model->helpdesk_id = $params['helpdesk_id'];
+        $help_info = $helpdesk_model->GetHelpInfo();
+        
+        $this->view->title = "Help Preview - ".$help_info['h_subject'];
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Help Mgt", "Help Preview|".$params['helpdesk_id']));
+        
+        $this->view->help_info = $help_info;
+    }
+    
     function merchantRechargeAction()
     {
         $params = $this->_request->getParams();
