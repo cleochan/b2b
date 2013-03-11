@@ -2,6 +2,10 @@
 
 class Algorithms_Core_Api
 {
+    var $original_xml_array;
+    var $api_type;
+    var $api_target;
+
     //Switch array to xml
     public static function Array2Xml($arr, $xml = NULL)
     {
@@ -58,5 +62,17 @@ class Algorithms_Core_Api
         $xml = str_replace('>', '&gt;', $xml);
         
         return $xml;
+    }
+    
+    function Decolaction()
+    {
+        $result = array();
+        
+        if($this->api_target && $this->api_type && $this->original_xml_array)
+        {
+            
+        }
+        
+        return $result;
     }
 }

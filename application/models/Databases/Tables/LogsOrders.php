@@ -274,11 +274,6 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
         unset($data['order_status']);
         unset($data['shipping_email']);
         
-        $pro = "http://";
-        $domain = $_SERVER['HTTP_HOST'];
-        $path = "api/place-order";
-        
-        $data['return_url'] = $pro.$domain.$path;
         $data['b2b_ref'] = $logs_orders_id;
     }
     
