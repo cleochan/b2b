@@ -8,11 +8,15 @@ class ApiController extends Zend_Controller_Action
         die;
     }
     
-    function PortAAction()
+    function portAAction() // Port for B2B transaction with main site
     {
-        $params = $this->_request->getParams();
+        $params =  file_get_contents('php://input');
         
+        $tmpa = new Databases_Tables_Tmpa();
+        $data = array("contents" => $params);
+        $tmpa->insert($data);
         
+        die;
     }
 }
 

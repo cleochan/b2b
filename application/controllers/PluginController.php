@@ -148,4 +148,15 @@ XML;
         
         Algorithms_Extensions_Plugin::FormatArray($aip->Xml2Array($xml2));die;
     }
+    
+    function apiTestAction()
+    {
+        $api_model = new Algorithms_Core_Api();
+        
+        $api_model->api_target = 1;
+        $api_model->api_type = 1;
+        $api_model->original_xml_array = array("a","b","c");
+        $api_model->Push();
+        die;
+    }
 }
