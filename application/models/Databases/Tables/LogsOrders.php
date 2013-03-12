@@ -33,11 +33,13 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
     var $shipping_instruction;
     var $tracking_number;
     var $serial_no;
+    var $comments;
     var $product_name;
     var $order_amount;
     var $issue_time;
     var $operator_id;
     var $ip;
+    var $group_instance_balance_array;
     
     function Pagination()
     {
@@ -163,69 +165,89 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
             $result = array(1 => "N",
                                     2 => "Shipping first name is required."
                                     );
-        }
-        
-        if(!trim($this->shipping_last_name))
+            $error = 1;
+        }elseif(!trim($this->shipping_last_name))
         {
             $result = array(1 => "N",
                                     2 => "Shipping last name is required."
                                     );
-        }
-        
-        if(!trim($this->shipping_address_1))
+            $error = 1;
+        }elseif(!trim($this->shipping_address_1))
         {
             $result = array(1 => "N",
                                     2 => "Shipping address 1 is required"
                                     );
-        }
-        
-        if(!trim($this->shipping_suburb))
+            $error = 1;
+        }elseif(!trim($this->shipping_suburb))
         {
             $result = array(1 => "N",
                                     2 => "Shipping suburb is required"
                                     );
-        }
-        
-        if(!trim($this->shipping_state))
+            $error = 1;
+        }elseif(!trim($this->shipping_state))
         {
             $result = array(1 => "N",
                                     2 => "Shipping state is required"
                                     );
-        }
-        
-        if(!trim($this->shipping_postcode))
+            $error = 1;
+        }elseif(!trim($this->shipping_postcode))
         {
             $result = array(1 => "N",
                                     2 => "Shipping postcode is required"
                                     );
-        }
-        
-        if(!trim($this->shipping_country))
+            $error = 1;
+        }elseif(!trim($this->shipping_country))
         {
             $result = array(1 => "N",
                                     2 => "Shipping country is required"
                                     );
-        }
-        
-        if(!trim($this->supplier_sku))
+            $error = 1;
+        }elseif(!trim($this->supplier_sku))
         {
             $result = array(1 => "N",
                                     2 => "Supplier SKU is required"
                                     );
-        }
-        
-        if(!trim($this->quantity))
+            $error = 1;
+        }elseif(!trim($this->quantity))
         {
             $result = array(1 => "N",
                                     2 => "Quantity is required and above zero."
                                     );
-        }
-        
-        if(!trim($this->operator_id))
+            $error = 1;
+        }elseif(!trim($this->operator_id))
         {
             $result = array(1 => "N",
                                     2 => "Operator ID is required"
                                     );
+            $error = 1;
+        }elseif(!trim($this->company))
+        {
+            $result = array(1 => "N",
+                                    2 => "Company is required"
+                                    );
+            $error = 1;
+        }
+        
+        if(!$error) //passed all above then:
+        {
+            //calculate item price
+            
+            
+            $users_extension_model = new Databases_Tables_UsersExtension();
+            $users_extension_model->company = $this->company;
+            $user_info = $users_extension_model->CheckCompanyInCsv();
+            
+            $result['user_id'] = $user_info['user_id'];
+            $result['credit'] = $user_info['credit'];
+             
+            if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
+            {
+                $result['instant_balance'] = $this->group_instance_balance_array[$user_info['user_id']] - $order_amount;
+            }else{
+                $result['instant_balance'] = $user_info['balance'];
+            }
+            
+            
         }
         
         return $result;
@@ -254,6 +276,7 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
             "shipping_method" => $this->shipping_method,
             "shipping_instruction" => $this->shipping_instruction,
             "serial_no" => $this->serial_no,
+            "comments" => $this->comments,
             "order_status" => $this->order_status,
             "product_name" => $this->product_name,
             "order_amount" => $this->order_amount,
@@ -275,6 +298,13 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
         unset($data['shipping_email']);
         
         $data['b2b_ref'] = $logs_orders_id;
+        
+        $api_model = new Algorithms_Core_Api();
+        $api_model->api_target = 1; //Internal Admin
+        $api_model->api_type = 2; //PlaceOrder
+        $api_model->original_xml_array = $data;
+        
+        return $api_model->Push();
     }
     
     function UpdateOrder($type)

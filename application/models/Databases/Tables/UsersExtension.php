@@ -107,4 +107,14 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
         
         return $row['user_id'];
     }
+    
+    function CheckCompanyInCsv()
+    {
+        if($this->company)
+        {
+            $row = $this->fetchRow("company = '".trim($this->company)."'");
+            
+            return $row->toArray();
+        }
+    }
 }

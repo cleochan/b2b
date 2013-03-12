@@ -175,12 +175,139 @@ class MerchantController extends Zend_Controller_Action
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Place Order"));
     }
     
+    
+    
     function importOrderAction()
     {
         $this->view->title = "Import Order";
         $params = $this->_request->getParams();
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Import Order"));
+        
+        if(1 == $params['result'])
+        {
+            $this->view->notice = "<font color='green'>Action completed.</font>";
+        }
+    }
+    
+    function importOrderPreviewAction()
+    {
+        /**
+         *  Column A: $data[0] = Your Record #
+         *  Column B: $data[1] = First Name
+         *  Column C: $data[2] = Last Name
+         *  Column D: $data[3] = Company
+         *  Column E: $data[4] = Address 1
+         *  Column F: $data[5] = Address 2
+         *  Column G: $data[6] = Suburb
+         *  Column H: $data[7] = State
+         *  Column I: $data[8] = Postcode
+         *  Column J: $data[9] = Country
+         *  Column K: $data[10] = Phone
+         *  Column L: $data[11] = Fax
+         *  Column M: $data[12] = Supplier Item Code
+         *  Column N: $data[13] = Topbuy SKU
+         *  Column O: $data[14] = Qty
+         *  Column P: $data[15] = Shipping Method
+         *  Column Q: $data[16] = Shipping Instruction
+         *  Column R: $data[17] = Tracking Number
+         *  Column S: $data[18] = Serials No
+         *  Column T: $data[19] = Comments
+         */
+        
+        $this->view->title = "Order Import Preview";
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Import Order"));
+        
+        if ($_FILES["csvf"]["error"] > 0)
+        {
+            $this->view->notice = $_FILES["csvf"]["error"];
+        }else{
+            if('text/csv' != $_FILES["csvf"]["type"])
+            {
+                $this->view->notice = "File type is invalid.";
+            }else{
+                //Action
+                $logs_orders_model = new Databases_Tables_LogsOrders();
+                $data_array = array();
+                if (($handle = fopen($_FILES["csvf"]["tmp_name"], "r")) !== FALSE) {
+                    while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
+                        $data_array[] = $data;
+                    }
+                    fclose($handle);
+                    
+                    if(!empty($data_array))
+                    {
+                        foreach($data_array as $da_key => $da_val)
+                        {
+                            $count_column = count($da_val);
+                            
+                            if(20 != $count_column) //Reject due to the column amount
+                            {
+                                $data_array[$da_key]['result'] = "N";
+                                $data_array[$da_key]['reason'] = "Column Amount Error.";
+                            }else{ //check contents
+                                $logs_orders_model->shipping_first_name = $da_val[1];
+                                $logs_orders_model->shipping_last_name = $da_val[2];
+                                $logs_orders_model->shipping_address_1 = $da_val[4];
+                                $logs_orders_model->shipping_suburb = $da_val[6];
+                                $logs_orders_model->shipping_state = $da_val[7];
+                                $logs_orders_model->shipping_postcode = $da_val[8];
+                                $logs_orders_model->shipping_country = $da_val[9];
+                                $logs_orders_model->supplier_sku = $da_val[12];
+                                $logs_orders_model->quantity = $da_val[14];
+                                $logs_orders_model->operator_id = $this->params['user_id'];
+                                $check_result = $logs_orders_model->PlaceOrderCheck();
+                                
+                                $data_array[$da_key]['result'] = $check_result[1];
+                                $data_array[$da_key]['reason'] = $check_result[2];
+                            }
+                        }
+                    }
+                    
+                    $this->view->list = $data_array;
+                    
+                }else{
+                    $this->view->notice = "Error.";
+                }
+            }
+        }
+    }
+    
+    function importOrderConfirmAction()
+    {
+        $this->view->title = "Import BPay CSV Files";
+        $params = $this->_request->getParams();
+        
+        $tmp_data = array();
+        $logs_financial = new Databases_Tables_LogsFinancial();
+        $user_extension = new Databases_Tables_UsersExtension();
+        
+        $row = count($params['customer_ref']);
+        
+        for($n=2;$n<=$row;$n++) //ignore title
+        {
+            $tmp_data[] = array(
+                "customer_ref" => $params['customer_ref'][$n],
+                "transaction_ref" => $params['transaction_ref'][$n],
+                "amount" => $params['amount'][$n]
+            );
+        }
+        
+        if(count($tmp_data))
+        {
+            foreach($tmp_data as $data)
+            {
+                $logs_financial->user_id = $user_extension->GetUserId(1, $data['customer_ref']);
+                $logs_financial->action_type = 2; //recharge
+                $logs_financial->action_affect = 1; //plus
+                $logs_financial->action_value = $data['amount'];
+                $logs_financial->trans_id = $data['transaction_ref'];
+                $logs_financial->AddLog();
+            }
+        }
+        
+        $this->_redirect("/admin/bpay-import/result/1");
     }
 }
 

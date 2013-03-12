@@ -16,9 +16,7 @@ class Databases_Joins_ProductFilter
         //get markup
         $params_model = new Databases_Tables_Params();
         $cost_markup = $params_model->GetVal("cost_markup");
-        
-        $get_data_source = new Databases_Tables_Params();
-        $data_source = $get_data_source->GetVal("product_info_table");
+        $data_source = $params_model->GetVal("product_info_table");
         
         if($data_source) // 1 or 2
         {
@@ -143,5 +141,23 @@ class Databases_Joins_ProductFilter
         $result = array(0=>$affect_stock, 1=>$final_price);
         
         return $result;
+    }
+    
+    function GetSkuPrices($sku, $user_id)
+    {
+        $get_user_info = new Databases_Joins_GetUserInfo();
+        $user_info = $get_user_info->GetUserInfo($user_id);
+        
+        $discount = (100 - $user_info['discount']) / 100; //get percentage
+        
+        //get markup
+        $params_model = new Databases_Tables_Params();
+        $cost_markup = $params_model->GetVal("cost_markup");
+        $data_source = $params_model->GetVal("product_info_table");
+        
+        if($data_source) // 1 or 2
+        {
+            $product_model = new Databases_Tables_ProductInfo1();
+        }
     }
 }

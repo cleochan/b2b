@@ -31,7 +31,7 @@
                                     <td class="center"><?=$list['transaction_ref']?><input type="hidden" name="transaction_ref[<?=$list['row']?>]" value="<?=$list['transaction_ref']?>" /></td>
                                     <td class="center"><?=$list['amount']?><input type="hidden" name="amount[<?=$list['row']?>]" value="<?=$list['amount']?>" /></td>
                                     <?php if("Y" == $list['result']):?>
-                                        <td class="center"><font color="green">Passed</font></td>
+                                        <td class="center"><font color="green">Approved</font></td>
                                         <td class="center">&nbsp;</td>
                                     <?php else:?>
                                         <td class="center"><font color="red">Rejected</font></td>
