@@ -145,6 +145,8 @@ class Databases_Joins_ProductFilter
     
     function GetSkuPrices($sku, $user_id)
     {
+        $result = array();
+        
         $get_user_info = new Databases_Joins_GetUserInfo();
         $user_info = $get_user_info->GetUserInfo($user_id);
         
@@ -155,9 +157,22 @@ class Databases_Joins_ProductFilter
         $cost_markup = $params_model->GetVal("cost_markup");
         $data_source = $params_model->GetVal("product_info_table");
         
-        if($data_source) // 1 or 2
+        if($data_source && $sku) // 1 or 2
         {
-            $product_model = new Databases_Tables_ProductInfo1();
+            $product_select = $this->db->select();
+            $product_select->from("product_info_".$data_source, array("supplier_sku", "offer_price", "cost_price", "shipping"));
+            $product_select->where("supplier_sku = ?", $sku);
+            $product = $this->db->fetchRow($product_select);
+            
+            if($product['supplier_sku'])
+            {
+                $offer_price_cal = $this->OfferPriceCalculation($product['offer_price'], $product['cost_price'], $discount, $cost_markup);
+                
+                $result['offer_price'] = $offer_price_cal[1];
+                $result['shipping'] = $product['shipping'];
+            }
         }
+        
+        return $result;
     }
 }

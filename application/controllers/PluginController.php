@@ -159,4 +159,9 @@ XML;
         $api_model->Push();
         die;
     }
+    
+    function numTestAction()
+    {
+        echo number_format(-1000, 2);die;
+    }
 }

@@ -220,7 +220,7 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
                                     2 => "Operator ID is required"
                                     );
             $error = 1;
-        }elseif(!trim($this->company))
+        }elseif(!trim($this->shipping_company))
         {
             $result = array(1 => "N",
                                     2 => "Company is required"
@@ -230,24 +230,48 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
         
         if(!$error) //passed all above then:
         {
-            //calculate item price
-            
-            
             $users_extension_model = new Databases_Tables_UsersExtension();
-            $users_extension_model->company = $this->company;
+            $users_extension_model->company = $this->shipping_company;
             $user_info = $users_extension_model->CheckCompanyInCsv();
             
-            $result['user_id'] = $user_info['user_id'];
-            $result['credit'] = $user_info['credit'];
-             
-            if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
+            if($user_info['user_id'])
             {
-                $result['instant_balance'] = $this->group_instance_balance_array[$user_info['user_id']] - $order_amount;
+                $result['user_id'] = $user_info['user_id'];
+                $result['credit'] = $user_info['credit'];
+
+                //calculate item price
+                $product_filter_model = new Databases_Joins_ProductFilter();
+                $prices = $product_filter_model->GetSkuPrices(trim($this->supplier_sku), $user_info['user_id']);
+                
+                if(NULL !== $prices['offer_price'])
+                {
+                    $order_amount = ( $prices['offer_price'] + $prices['shipping'] ) * trim($this->quantity);
+                    $result['order_amount'] = $order_amount;
+
+                    if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
+                    {
+                        $result['instant_balance'] = $this->group_instance_balance_array[$user_info['user_id']] - $order_amount;
+                    }else{
+                        $result['instant_balance'] = $user_info['balance'] - $order_amount;
+                    }
+
+                    if($result['credit'] < (0 - $result['instant_balance']))
+                    {
+                        $result[1] =  "N";
+                        $result[2] =  "Out of balance";
+                        $error = 1;
+                    }
+                }else{
+                    $result[1] =  "N";
+                    $result[2] =  "SKU is not found";
+                    $error = 1;
+                }
+
             }else{
-                $result['instant_balance'] = $user_info['balance'];
+                    $result[1] =  "N";
+                    $result[2] =  "Company is not found";
+                    $error = 1;
             }
-            
-            
         }
         
         return $result;

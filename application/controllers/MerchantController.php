@@ -228,6 +228,7 @@ class MerchantController extends Zend_Controller_Action
                 $this->view->notice = "File type is invalid.";
             }else{
                 //Action
+                $group_instance_balance_array = array();
                 $logs_orders_model = new Databases_Tables_LogsOrders();
                 $data_array = array();
                 if (($handle = fopen($_FILES["csvf"]["tmp_name"], "r")) !== FALSE) {
@@ -238,6 +239,9 @@ class MerchantController extends Zend_Controller_Action
                     
                     if(!empty($data_array))
                     {
+                        //ignore title
+                        unset($data_array[0]);
+                        
                         foreach($data_array as $da_key => $da_val)
                         {
                             $count_column = count($da_val);
@@ -249,6 +253,7 @@ class MerchantController extends Zend_Controller_Action
                             }else{ //check contents
                                 $logs_orders_model->shipping_first_name = $da_val[1];
                                 $logs_orders_model->shipping_last_name = $da_val[2];
+                                $logs_orders_model->shipping_company = $da_val[3];
                                 $logs_orders_model->shipping_address_1 = $da_val[4];
                                 $logs_orders_model->shipping_suburb = $da_val[6];
                                 $logs_orders_model->shipping_state = $da_val[7];
@@ -257,10 +262,18 @@ class MerchantController extends Zend_Controller_Action
                                 $logs_orders_model->supplier_sku = $da_val[12];
                                 $logs_orders_model->quantity = $da_val[14];
                                 $logs_orders_model->operator_id = $this->params['user_id'];
+                                $logs_orders_model->group_instance_balance_array = $group_instance_balance_array;
+                                
                                 $check_result = $logs_orders_model->PlaceOrderCheck();
                                 
                                 $data_array[$da_key]['result'] = $check_result[1];
                                 $data_array[$da_key]['reason'] = $check_result[2];
+                                $data_array[$da_key]['order_amount'] = $check_result['order_amount'];
+                                $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
+                                $data_array[$da_key]['credit'] = $check_result['credit'];
+                                
+                                //update instant balance
+                                $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
                             }
                         }
                     }
@@ -276,9 +289,9 @@ class MerchantController extends Zend_Controller_Action
     
     function importOrderConfirmAction()
     {
-        $this->view->title = "Import BPay CSV Files";
+        $this->view->title = "Order Import Confirmation";
         $params = $this->_request->getParams();
-        
+        Algorithms_Extensions_Plugin::FormatArray($params);die;
         $tmp_data = array();
         $logs_financial = new Databases_Tables_LogsFinancial();
         $user_extension = new Databases_Tables_UsersExtension();
