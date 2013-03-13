@@ -14,13 +14,13 @@
                         <table class="width100" cellspacing="1">
                             <tbody>
                                 <tr>
-                                    <td class="form-title">Company</td>
+                                    <td class="form-title">Merchant</td>
                                     <td class="form-title">First Name</td>
                                     <td class="form-title">Last Name</td>
                                     <td class="form-title">Supplier SKU</td>
                                     <td class="form-title">Merchant SKU</td>
                                     <td class="form-title">Qty</td>
-                                    <td class="form-title">Order Amount</td>
+                                    <td class="form-title">Amount</td>
                                     <td class="form-title">Balance</td>
                                     <td class="form-title">Credit</td>
                                     <td class="form-title">Result</td>
@@ -31,7 +31,7 @@
                                         foreach($this->list as $list_key => $list_val):
 				?>
                                 <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
-                                    <td class="center"><?=$list_val[3]?></td>
+                                    <td class="center"><?=$list_val[20]?></td>
                                     <td class="center"><?=$list_val[1]?></td>
                                     <td class="center"><?=$list_val[2]?></td>
                                     <td class="center"><?=$list_val[12]?></td>
@@ -52,12 +52,14 @@
                                 <input type="hidden" name="merchant_ref[<?=$list_key?>]" value="<?=$list_val[0]?>" />
                                 <input type="hidden" name="shipping_first_name[<?=$list_key?>]" value="<?=$list_val[1]?>" />
                                 <input type="hidden" name="shipping_last_name[<?=$list_key?>]" value="<?=$list_val[2]?>" />
+                                <input type="hidden" name="shipping_company[<?=$list_key?>]" value="<?=$list_val[3]?>" />
+                                <input type="hidden" name="merchant_company[<?=$list_key?>]" value="<?=$list_val[20]?>" />
                                 <input type="hidden" name="user_id[<?=$list_key?>]" value="<?=$list_val['user_id']?>" />
                                 <input type="hidden" name="shipping_address_1[<?=$list_key?>]" value="<?=$list_val[4]?>" />
                                 <input type="hidden" name="shipping_address_2[<?=$list_key?>]" value="<?=$list_val[5]?>" />
                                 <input type="hidden" name="shipping_suburb[<?=$list_key?>]" value="<?=$list_val[6]?>" />
                                 <input type="hidden" name="shipping_state[<?=$list_key?>]" value="<?=$list_val[7]?>" />
-                                <input type="hidden" name="shipping_post_code[<?=$list_key?>]" value="<?=$list_val[8]?>" />
+                                <input type="hidden" name="shipping_postcode[<?=$list_key?>]" value="<?=$list_val[8]?>" />
                                 <input type="hidden" name="shipping_country[<?=$list_key?>]" value="<?=$list_val[9]?>" />
                                 <input type="hidden" name="shipping_phone[<?=$list_key?>]" value="<?=$list_val[10]?>" />
                                 <input type="hidden" name="shipping_fax[<?=$list_key?>]" value="<?=$list_val[11]?>" />

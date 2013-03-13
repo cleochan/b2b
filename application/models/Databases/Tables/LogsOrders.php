@@ -17,6 +17,7 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
     var $shipping_first_name;
     var $shipping_last_name;
     var $shipping_company;
+    var $merchant_company;
     var $shipping_address_1;
     var $shipping_address_2;
     var $shipping_suburb;
@@ -220,10 +221,10 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
                                     2 => "Operator ID is required"
                                     );
             $error = 1;
-        }elseif(!trim($this->shipping_company))
+        }elseif(!trim($this->merchant_company))
         {
             $result = array(1 => "N",
-                                    2 => "Company is required"
+                                    2 => "Merchant company is required"
                                     );
             $error = 1;
         }
@@ -231,7 +232,7 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
         if(!$error) //passed all above then:
         {
             $users_extension_model = new Databases_Tables_UsersExtension();
-            $users_extension_model->company = $this->shipping_company;
+            $users_extension_model->company = $this->merchant_company;
             $user_info = $users_extension_model->CheckCompanyInCsv();
             
             if($user_info['user_id'])
@@ -269,7 +270,7 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
 
             }else{
                     $result[1] =  "N";
-                    $result[2] =  "Company is not found";
+                    $result[2] =  "Merchant company is not found";
                     $error = 1;
             }
         }
@@ -282,6 +283,11 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
         //Step 1: Insert into local db
         $data = array(
             "merchant_ref" => $this->merchant_ref,
+            "order_amount" => $this->order_amount,
+            "issue_time" => date("Y-m-d H:i:s"),
+            "user_id" => $this->user_id,
+            "operator_id" => $_SESSION["Zend_Auth"]["storage"]->user_id,
+            "ip" => $this->ip,
             "shipping_first_name" => $this->shipping_first_name,
             "shipping_last_name" => $this->shipping_last_name,
             "shipping_company" => $this->shipping_company,
@@ -289,46 +295,40 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
             "shipping_address_2" => $this->shipping_address_2,
             "shipping_suburb" => $this->shipping_suburb,
             "shipping_state" => $this->shipping_state,
-            "shipping_post_code" => $this->shipping_post_code,
+            "shipping_postcode" => $this->shipping_postcode,
             "shipping_country" => $this->shipping_country,
             "shipping_phone" => $this->shipping_phone,
             "shipping_fax" => $this->shipping_fax,
-            "shipping_email" => $this->shipping_email,
             "supplier_sku" => $this->supplier_sku,
             "merchant_sku" => $this->merchant_sku,
             "quantity" => $this->quantity,
             "shipping_method" => $this->shipping_method,
             "shipping_instruction" => $this->shipping_instruction,
             "serial_no" => $this->serial_no,
-            "comments" => $this->comments,
-            "order_status" => $this->order_status,
-            "product_name" => $this->product_name,
-            "order_amount" => $this->order_amount,
-            "issue_time" => $this->issue_time,
-            "user_id" => $this->user_id,
-            "operator_id" => $this->operator_id,
-            "ip" => $this->ip
+            "comments" => $this->comments
         );
         
         $logs_orders_id = $this->insert($data);
         
+        return $logs_orders_id;
+        
         //Step 2: Send XML via API
-        unset($data['ip']);
-        unset($data['operator_id']);
-        unset($data['issue_time']);
-        unset($data['order_amount']);
-        unset($data['product_name']);
-        unset($data['order_status']);
-        unset($data['shipping_email']);
-        
-        $data['b2b_ref'] = $logs_orders_id;
-        
-        $api_model = new Algorithms_Core_Api();
-        $api_model->api_target = 1; //Internal Admin
-        $api_model->api_type = 2; //PlaceOrder
-        $api_model->original_xml_array = $data;
-        
-        return $api_model->Push();
+//        unset($data['ip']);
+//        unset($data['operator_id']);
+//        unset($data['issue_time']);
+//        unset($data['order_amount']);
+//        unset($data['product_name']);
+//        unset($data['order_status']);
+//        unset($data['shipping_email']);
+//        
+//        $data['b2b_ref'] = $logs_orders_id;
+//        
+//        $api_model = new Algorithms_Core_Api();
+//        $api_model->api_target = 1; //Internal Admin
+//        $api_model->api_type = 2; //PlaceOrder
+//        $api_model->original_xml_array = $data;
+//        
+//        return $api_model->Push();
     }
     
     function UpdateOrder($type)
