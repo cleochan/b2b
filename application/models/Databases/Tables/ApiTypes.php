@@ -4,6 +4,7 @@ class Databases_Tables_ApiTypes extends Zend_Db_Table
 {
     protected $_name = 'api_types';
     var $api_types_id;
+    var $api_types_name;
     
     function GetType()
     {
@@ -16,6 +17,19 @@ class Databases_Tables_ApiTypes extends Zend_Db_Table
         }
         
         return $result;
+    }
+    
+    function GetTypeId()
+    {
+        $result = array();
+        
+        if($this->api_types_name)
+        {
+            $row = $this->fetchRow("api_types_name='".$this->api_types_name."'");
+            $result = $row->toArray();
+        }
+        
+        return $result['api_types_id'];
     }
     
 }

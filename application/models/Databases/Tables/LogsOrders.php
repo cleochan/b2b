@@ -42,6 +42,9 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
     var $ip;
     var $group_instance_balance_array;
     
+    var $logs_orders_id;
+    var $api_response;
+    
     function Pagination()
     {
         //Get amount page qty
@@ -311,28 +314,92 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
         $logs_orders_id = $this->insert($data);
         
         return $logs_orders_id;
-        
-        //Step 2: Send XML via API
-//        unset($data['ip']);
-//        unset($data['operator_id']);
-//        unset($data['issue_time']);
-//        unset($data['order_amount']);
-//        unset($data['product_name']);
-//        unset($data['order_status']);
-//        unset($data['shipping_email']);
-//        
-//        $data['b2b_ref'] = $logs_orders_id;
-//        
-//        $api_model = new Algorithms_Core_Api();
-//        $api_model->api_target = 1; //Internal Admin
-//        $api_model->api_type = 2; //PlaceOrder
-//        $api_model->original_xml_array = $data;
-//        
-//        return $api_model->Push();
     }
     
-    function UpdateOrder($type)
+    function PostXmlToPlaceOrder()
     {
+        $row_qty = 50;
         
+        $select = $this->select();
+        $select->where("order_status = ?", 0); //Pending
+        $select->where("api_trying_times < ?", 2); //no more than twice
+        $select->order("issue_time ASC");
+        $select->limit($row_qty);
+        $data = $this->fetchAll($select);
+        
+        $count = 0;
+        $api_model = new Algorithms_Core_Api();
+        
+        if(!empty($data))
+        {
+            foreach($data as $d)
+            {
+                $original_xml_array = array(
+                    "b2b_order_id" => $d['logs_orders_id'],
+                    "merchant_ref" => $d['merchant_ref'],
+                    "merchant_id" => $d['user_id'],
+                    "supplier_sku" => $d['supplier_sku'],
+                    "merchant_sku" => $d['merchant_sku'],
+                    "quantity" => $d['quantity'],
+                    "order_amount" => $d['order_amount'],
+                    "buyer_first_name" => $d['shipping_first_name'],
+                    "buyer_last_name" => $d['shipping_last_name'],
+                    "buyer_company" => $d['shipping_company'],
+                    "buyer_address_1" => $d['shipping_address_1'],
+                    "buyer_address_2" => $d['shipping_address_2'],
+                    "buyer_suburb" => $d['shipping_suburb'],
+                    "buyer_state" => $d['shipping_state'],
+                    "buyer_postcode" => $d['shipping_postcode'],
+                    "buyer_country" => $d['shipping_country'],
+                    "buyer_phone" => $d['shipping_phone'],
+                    "buyer_fax" => $d['shipping_fax'],
+                    "shipping_method" => $d['shipping_method'],
+                    "shipping_instruction" => $d['shipping_instruction'],
+                    "serial_no" => $d['serial_no'],
+                    "comments" => $d['comments']
+                );
+                
+                $api_model->api_target = 1; //Internal Admin
+                $api_model->api_type = 2; //PlaceOrder
+                $api_model->original_xml_array = $original_xml_array;
+
+                $api_model->Push();
+                
+                //update trying times
+                $get_row = $this->fetchRow("logs_orders_id = '".$d['logs_orders_id']."'");
+                $get_row->api_trying_times += 1;
+                $get_row->save();
+            }
+        }
+        
+        return $count;
     }
+    
+    function GetResponseToUpdateOrder($type) //$type 1=Update Status, 2=Others
+    {
+        $result = FALSE;
+        
+        if(1 == $type)
+        {
+            /**
+             * $this->logs_orders_id
+             * $this->order_status
+             * $this->api_response
+             * $this->tracking_number
+             */
+            
+            if($this->logs_orders_id && $this->order_status)
+            {
+                $row = $this->fetchRow("logs_orders_id = '".$this->logs_orders_id."'");
+                $row->order_status = $this->order_status;
+                $row->api_response = $this->api_response;
+                $row->tracking_number = $this->tracking_number;
+                $row->save();
+                $result = TRUE;
+            }
+        }
+        
+        return $result;
+    }
+    
 }
