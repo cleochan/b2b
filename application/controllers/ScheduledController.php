@@ -15,5 +15,10 @@ class ScheduledController extends Zend_Controller_Action
         
         die;
     }
+    
+    function refreshProductsAction()
+    {
+        
+    }
 }
 

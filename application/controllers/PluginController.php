@@ -111,42 +111,56 @@ class PluginController extends Zend_Controller_Action
     
     function testXmlAction()
     {
-        $result = array();
-        
-        $a = array(
-            "Category" => "Baby",
-            "Brand" => "Adidas",
-            "Product Name" => "ABC"
-        );
-        
-        $result[] = $a;
-        
-        $b = array(
-            "Category" => "Man",
-            "Brand" => "Nike",
-            "Product Name" => "DEF"
-        );
-        
-        $result[] = $b;
-        
-        $aip = new Algorithms_Core_Api();
-        
-        //$xml = $aip->Array2Xml($result);
-        
-$xml2 = <<<XML
-<?xml version='1.0'?> 
-<document>
-    <a>
-        <Brand>Cool</Brand>
-        <Category>Category 1</Category>
-        <Colour>Colour 150</Colour>
-        <Dimension>D"ime"n&amp;sion 150</Dimension>
-        <ListPrice>1250.00</ListPrice>
-    </a>
-</document>
+$xml = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+   <common>
+      <version>1.0</version>
+      <action>PlaceOrder</action>
+      <merchantid>1</merchantid>
+      <publickey>l23khu23KJH34kjl</publickey>
+   </common>
+   <params>
+      <b2b_order_id>4</b2b_order_id>
+      <merchant_ref>567708</merchant_ref>
+      <merchant_id>3</merchant_id>
+      <supplier_sku>SKU 835</supplier_sku>
+      <merchant_sku>LS3228</merchant_sku>
+      <quantity>2</quantity>
+      <order_amount>3756.00</order_amount>
+      <buyer_first_name>Testtt</buyer_first_name>
+      <buyer_last_name>Hello</buyer_last_name>
+      <buyer_company>BBB</buyer_company>
+      <buyer_address_1>1 Villa Rd</buyer_address_1>
+      <buyer_address_2>aaa</buyer_address_2>
+      <buyer_suburb>Springvale</buyer_suburb>
+      <buyer_state>VIC</buyer_state>
+      <buyer_postcode>3179</buyer_postcode>
+      <buyer_country>AU</buyer_country>
+      <buyer_phone>aaa</buyer_phone>
+      <buyer_fax>aaa</buyer_fax>
+      <shipping_method>standard</shipping_method>
+      <shipping_instruction>aa</shipping_instruction>
+      <serial_no>aa</serial_no>
+      <comments>aa</comments>
+   </params>
+   <response>
+      <order_status>2</order_status>
+      <reject_reason>DDDDD</reject_reason>
+      <tracking_number>EEEEEE</tracking_number>
+   </response>
+</root>
 XML;
         
-        Algorithms_Extensions_Plugin::FormatArray($aip->Xml2Array($xml2));die;
+        $api_model = new Algorithms_Core_Api();
+        $xml_array = $api_model->Xml2Array($xml);
+        //Algorithms_Extensions_Plugin::FormatArray($xml_array);die;
+        $api_model->api_target = 1;
+        $api_model->api_type = 2;
+        $api_model->original_xml_array = $xml_array;
+        $api_model->Push();
+
+        die;
     }
     
     function apiTestAction()

@@ -158,7 +158,7 @@ class Algorithms_Core_Api
                 
                 $common['version'] = $api_type['api_types_version'];
                 $common['action'] = $api_type['api_types_name'];
-                $common['merchantid'] = $api_target['user_id'];
+                //$common['merchantid'] = $api_target['user_id'];
                 $common['publickey'] = $api_target['public_key_1'];
                 
                 $result['common'] = $common;
