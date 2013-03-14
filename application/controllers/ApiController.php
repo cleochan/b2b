@@ -47,14 +47,16 @@ class ApiController extends Zend_Controller_Action
                         //update products
                         $product_filter_model = new Databases_Joins_ProductFilter();
                         $product_filter_model->xml_array = $xml_array['response'];
-                        $product_filter_model->InsertNewProductsFromApi();
                         
-                        if($product_request_page < $product_request_page_amount)//continue to require if it's not finished
+                        if($product_filter_model->InsertNewProductsFromApi())
                         {
-                            $product_filter_model->PostXmlToRefreshProducts();
-                        }else{ // loop finished, switch product table
-                            $secondary = $params_model->GetSecondaryProductTableName();
-                            $params_model->SwitchProductTableTo($secondary['table_num']);
+                            if($product_request_page < $product_request_page_amount)//continue to require if it's not finished
+                            {
+                                $product_filter_model->PostXmlToRefreshProducts();
+                            }else{ // loop finished, switch product table
+                                $secondary = $params_model->GetSecondaryProductTableName();
+                                $params_model->SwitchProductTableTo($secondary['table_num']);
+                            }
                         }
                         break;
                     case 2: //PlaceOrder
