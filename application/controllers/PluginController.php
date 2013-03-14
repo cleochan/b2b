@@ -178,4 +178,10 @@ XML;
     {
         echo number_format(-1000, 2);die;
     }
+    
+    function postProductTestAction()
+    {
+        $product_filter = new Databases_Joins_ProductFilter();
+        $product_filter->PostXmlToRefreshProducts();
+    }
 }
