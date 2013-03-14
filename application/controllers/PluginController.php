@@ -111,55 +111,161 @@ class PluginController extends Zend_Controller_Action
     
     function testXmlAction()
     {
-$xml = <<<XML
+$xml_data = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
    <common>
       <version>1.0</version>
-      <action>PlaceOrder</action>
-      <merchantid>1</merchantid>
+      <action>GetProductList</action>
       <publickey>l23khu23KJH34kjl</publickey>
    </common>
    <params>
-      <b2b_order_id>4</b2b_order_id>
-      <merchant_ref>567708</merchant_ref>
-      <merchant_id>3</merchant_id>
-      <supplier_sku>SKU 835</supplier_sku>
-      <merchant_sku>LS3228</merchant_sku>
-      <quantity>2</quantity>
-      <order_amount>3756.00</order_amount>
-      <buyer_first_name>Testtt</buyer_first_name>
-      <buyer_last_name>Hello</buyer_last_name>
-      <buyer_company>BBB</buyer_company>
-      <buyer_address_1>1 Villa Rd</buyer_address_1>
-      <buyer_address_2>aaa</buyer_address_2>
-      <buyer_suburb>Springvale</buyer_suburb>
-      <buyer_state>VIC</buyer_state>
-      <buyer_postcode>3179</buyer_postcode>
-      <buyer_country>AU</buyer_country>
-      <buyer_phone>aaa</buyer_phone>
-      <buyer_fax>aaa</buyer_fax>
-      <shipping_method>standard</shipping_method>
-      <shipping_instruction>aa</shipping_instruction>
-      <serial_no>aa</serial_no>
-      <comments>aa</comments>
+      <product_request_qty_per_page>100</product_request_qty_per_page>
+      <product_request_page_amount>500</product_request_page_amount>
+      <product_request_page>500</product_request_page>
    </params>
    <response>
-      <order_status>2</order_status>
-      <reject_reason>DDDDD</reject_reason>
-      <tracking_number>EEEEEE</tracking_number>
+      <product_1>
+         <supplier_sku>A1</supplier_sku>
+         <brand_id>1</brand_id>
+         <brand_name>B1</brand_name>
+         <mpn>C1</mpn>
+         <stock>2</stock>
+         <offer_price>100.00</offer_price>
+         <cost_price>60.00</cost_price>
+         <product_name>D1</product_name>
+         <features1>E1</features1>
+         <features2>F1</features2>
+         <features3>G1</features3>
+         <features4>H1</features4>
+         <features5>I1</features5>
+         <product_details>J1</product_details>
+         <specification>K1</specification>
+         <dimension>L1</dimension>
+         <colour>M1</colour>
+         <size>N1</size>
+         <factory_url>O1</factory_url>
+         <package_content>P1</package_content>
+         <warranty>Q1</warranty>
+         <category_id>3</category_id>
+         <category_name>R1</category_name>
+         <weight>S1</weight>
+         <image_url_1>T1</image_url_1>
+         <image_url_2>U1</image_url_2>
+         <image_url_3>V1</image_url_3>
+         <image_url_4>W1</image_url_4>
+         <image_url_5>X1</image_url_5>
+         <pm>Y1</pm>
+         <options>Z1</options>
+         <search_keyword>AA1</search_keyword>
+         <list_price>120.00</list_price>
+         <shipping>10.00</shipping>
+      </product_1>
+      <product_2>
+         <supplier_sku>A2</supplier_sku>
+         <brand_id>1</brand_id>
+         <brand_name>B1</brand_name>
+         <mpn>C1</mpn>
+         <stock>2</stock>
+         <offer_price>100.00</offer_price>
+         <cost_price>60.00</cost_price>
+         <product_name>D1</product_name>
+         <features1>E1</features1>
+         <features2>F1</features2>
+         <features3>G1</features3>
+         <features4>H1</features4>
+         <features5>I1</features5>
+         <product_details>J1</product_details>
+         <specification>K1</specification>
+         <dimension>L1</dimension>
+         <colour>M1</colour>
+         <size>N1</size>
+         <factory_url>O1</factory_url>
+         <package_content>P1</package_content>
+         <warranty>Q1</warranty>
+         <category_id>3</category_id>
+         <category_name>R1</category_name>
+         <weight>S1</weight>
+         <image_url_1>T1</image_url_1>
+         <image_url_2>U1</image_url_2>
+         <image_url_3>V1</image_url_3>
+         <image_url_4>W1</image_url_4>
+         <image_url_5>X1</image_url_5>
+         <pm>Y1</pm>
+         <options>Z1</options>
+         <search_keyword>AA1</search_keyword>
+         <list_price>120.00</list_price>
+         <shipping>10.00</shipping>
+      </product_2>
+      <product_3>
+         <supplier_sku>A3</supplier_sku>
+         <brand_id>1</brand_id>
+         <brand_name>B1</brand_name>
+         <mpn>C1</mpn>
+         <stock>2</stock>
+         <offer_price>100.00</offer_price>
+         <cost_price>60.00</cost_price>
+         <product_name>D1</product_name>
+         <features1>E1</features1>
+         <features2>F1</features2>
+         <features3>G1</features3>
+         <features4>H1</features4>
+         <features5>I1</features5>
+         <product_details>J1</product_details>
+         <specification>K1</specification>
+         <dimension>L1</dimension>
+         <colour>M1</colour>
+         <size>N1</size>
+         <factory_url>O1</factory_url>
+         <package_content>P1</package_content>
+         <warranty>Q1</warranty>
+         <category_id>3</category_id>
+         <category_name>R1</category_name>
+         <weight>S1</weight>
+         <image_url_1>T1</image_url_1>
+         <image_url_2>U1</image_url_2>
+         <image_url_3>V1</image_url_3>
+         <image_url_4>W1</image_url_4>
+         <image_url_5>X1</image_url_5>
+         <pm>Y1</pm>
+         <options>Z1</options>
+         <search_keyword>AA1</search_keyword>
+         <list_price>120.00</list_price>
+         <shipping>10.00</shipping>
+      </product_3>
    </response>
 </root>
 XML;
-        
-        $api_model = new Algorithms_Core_Api();
-        $xml_array = $api_model->Xml2Array($xml);
-        //Algorithms_Extensions_Plugin::FormatArray($xml_array);die;
-        $api_model->api_target = 1;
-        $api_model->api_type = 2;
-        $api_model->original_xml_array = $xml_array;
-        $api_model->Push();
 
+            //post
+            $headers = array(
+                "Content-type: text/xml"
+                ,"Content-length: ".strlen($xml_data)
+                ,"Connection: close"
+            );
+
+            $ch = curl_init(); 
+            curl_setopt($ch, CURLOPT_URL,"http://demo.local.b2b/api/port-a");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $xml_data);
+            $response = curl_exec($ch); 
+            
+            if(curl_errno($ch))
+            {
+                print curl_error($ch);
+            }else{
+                curl_close($ch);
+                $result = TRUE;
+            }
+if($result)
+{
+    echo "True";
+}else{
+    echo "False";
+}
         die;
     }
     

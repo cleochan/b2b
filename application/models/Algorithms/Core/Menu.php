@@ -8,6 +8,7 @@ class Algorithms_Core_Menu
             "Dashboard" => "/admin",
             "Merchants List" => "/admin/merchants",
             "BPay Import" => "/admin/bpay-import",
+            "Admin Order Import" => "/admin/admin-import-order",
             "Help Mgt" => "/admin/help-mgt"
         );
         
@@ -126,6 +127,9 @@ class Algorithms_Core_Menu
                 break;
             case "help-add":
                 $link = "Help Mgt";
+                break;
+            case "admin-import-order":
+                $link = "Admin Order Import";
                 break;
             default:
                 $link = "Dashboard";

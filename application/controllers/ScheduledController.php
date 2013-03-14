@@ -33,5 +33,8 @@ class ScheduledController extends Zend_Controller_Action
                 $product_filter_model->PostXmlToRefreshProducts();
             }
         }
+        
+        echo "End.";
+        die;
     }
 }

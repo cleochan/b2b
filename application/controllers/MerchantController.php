@@ -195,8 +195,6 @@ class MerchantController extends Zend_Controller_Action
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Place Order"));
     }
     
-    
-    
     function importOrderAction()
     {
         $this->view->title = "Import Order";

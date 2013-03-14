@@ -20,10 +20,12 @@ class ApiController extends Zend_Controller_Action
     
     function portAAction() // Port for B2B transaction with main site
     {
+        $params =  file_get_contents('php://input');
+
         //exchange xml to array
         $api_model = new Algorithms_Core_Api();
         $xml_array = $api_model->Xml2Array($params);
-        //Algorithms_Extensions_Plugin::FormatArray($xml_array);die;
+        
         if(is_array($xml_array))
         {
             $api_types_model = new Databases_Tables_ApiTypes();
