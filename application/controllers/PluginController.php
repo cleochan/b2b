@@ -290,4 +290,31 @@ if($result)
         $product_filter = new Databases_Joins_ProductFilter();
         $product_filter->PostXmlToRefreshProducts();
     }
+    
+    function testWsdlClientAction()
+    {
+        $client = new SoapClient("http://10.0.0.186:8743/OrderService.svc?wsdl");
+
+        Algorithms_Extensions_Plugin::FormatArray($client->S1());
+        
+        die;
+    }
+    
+    function testWsdlServerAction()
+    {
+            function S1()
+            {
+                return array("a","b","c");
+            }
+
+        ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
+
+        $server = new SoapServer("http://demo.local.b2b/wsdl/s1.wsdl");
+
+        $server->addFunction("S1");
+
+        $server->handle();
+        
+        die;
+    }
 }

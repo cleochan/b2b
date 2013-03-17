@@ -1,0 +1,83 @@
+<?xml version ='1.0' encoding ='UTF-8' ?>
+
+<definitions name='S1'
+
+  targetNamespace='http://example.org/StockQuote'
+
+  xmlns:tns=' http://example.org/StockQuote '
+
+  xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/'
+
+  xmlns:xsd='http://www.w3.org/2001/XMLSchema'
+
+  xmlns:soapenc='http://schemas.xmlsoap.org/soap/encoding/'
+
+  xmlns:wsdl='http://schemas.xmlsoap.org/wsdl/'
+
+  xmlns='http://schemas.xmlsoap.org/wsdl/'>
+
+<message name='getQuoteRequest'>
+
+  <part name='symbol' type='xsd:string'/>
+
+</message>
+
+<message name='getQuoteResponse'>
+
+  <part name='Result' type='xsd:array'/>
+
+</message>
+
+<portType name='S1PortType'>
+
+  <operation name='S1'>
+
+    <input message='tns:getQuoteRequest'/>
+
+    <output message='tns:getQuoteResponse'/>
+
+  </operation>
+
+</portType>
+
+<binding name='S1Binding' type='tns:S1PortType'>
+
+  <soap:binding style='rpc'
+
+    transport='http://schemas.xmlsoap.org/soap/http'/>
+
+  <operation name='S1'>
+
+    <soap:operation soapAction='urn:xmethods-delayed-quotes#S1'/>
+
+    <input>
+
+      <soap:body use='encoded' namespace='urn:xmethods-delayed-quotes'
+
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+
+    </input>
+
+    <output>
+
+      <soap:body use='encoded' namespace='urn:xmethods-delayed-quotes'
+
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+
+    </output>
+
+  </operation>
+
+</binding>
+
+<service name='S1Service'>
+
+  <port name='S1Port' binding='S1Binding'>
+
+    <soap:address location='http://demo.local.b2b/plugin/test-wsdl-server'/>
+
+  </port>
+
+</service>
+
+</definitions>

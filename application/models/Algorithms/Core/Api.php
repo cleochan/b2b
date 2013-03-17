@@ -168,4 +168,9 @@ class Algorithms_Core_Api
         
         return $result;
     }
+    
+    function WsdlServer()
+    {
+        
+    }
 }

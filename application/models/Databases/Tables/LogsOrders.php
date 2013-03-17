@@ -402,4 +402,15 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
         return $result;
     }
     
+    function GroupMultiItemsInToOneOrder($csv_array)
+    {
+        if(!empty($csv_array))
+        {
+            foreach($csv_array as $key => $val)
+            {
+                
+            }
+        }
+    }
+    
 }
