@@ -255,6 +255,9 @@ class MerchantController extends Zend_Controller_Action
                         //ignore title
                         unset($data_array[0]);
                         
+                        //initial num
+                        $ref_init = time();
+                        
                         foreach($data_array as $da_key => $da_val)
                         {
                             $count_column = count($da_val);
@@ -286,6 +289,13 @@ class MerchantController extends Zend_Controller_Action
                                 $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
                                 $data_array[$da_key]['credit'] = $check_result['credit'];
                                 $data_array[$da_key]['user_id'] = $check_result['user_id'];
+                                
+                                //update merchant reference
+                                if(!$da_val[0])
+                                {
+                                	$data_array[$da_key][0] = $ref_init;
+                                	$ref_init += 1;
+                                }
                                 
                                 //update instant balance
                                 $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];

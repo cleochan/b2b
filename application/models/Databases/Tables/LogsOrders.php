@@ -41,6 +41,7 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
     var $operator_id;
     var $ip;
     var $group_instance_balance_array;
+    var $main_db_item_id;
     
     var $logs_orders_id;
     var $api_response;
