@@ -7,8 +7,6 @@ class AdminController extends Zend_Controller_Action
     function init()
     {
         $this->db = Zend_Registry::get("db");
-        						
-
     }
 	
     function preDispatch()
@@ -461,7 +459,8 @@ class AdminController extends Zend_Controller_Action
     
     function helpAddAction()
     {
-        $this->view->title = "Add Topic";
+        $error = NULL;
+    	$this->view->title = "Add Topic";
         $params = $this->_request->getParams();
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Help Mgt", "Add Help"));
@@ -495,7 +494,8 @@ class AdminController extends Zend_Controller_Action
     
     function helpEditAction()
     {
-        $this->view->title = "Edit Topic";
+        $error = NULL;
+    	$this->view->title = "Edit Topic";
         $params = $this->_request->getParams();
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Help Mgt", "Edit Help|".$params['user_id']));
