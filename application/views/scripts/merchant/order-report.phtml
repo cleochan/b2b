@@ -54,14 +54,14 @@ $(function()
                             ?>
                             <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
                                 <td class="center"><span class="small"><?=$list['issue_time']?></span></td>
-                                <td class="center"><span class="small"><?=$list['order_id']?></span></td>
+                                <td class="center"><span class="small"><?=$list['main_db_order_id']?></span></td>
                                 <td class="center"><span class="small"><?=$list['merchant_ref']?></span></td>
                                 <td class="center"><span class="small"><?=$list['supplier_sku']?></span></td>
                                 <td class="center"><span class="small"><?=$list['merchant_sku']?></span></td>
-                                <td class="center"><span class="small"><?=$list['order_amount']?></span></td>
+                                <td class="center"><span class="small"><?=$list['item_amount']?></span></td>
                                 <td class="center"><span class="small">
                                         <?php 
-                                        switch ($list['order_status'])
+                                        switch ($list['item_status'])
                                         {
                                             case 0:
                                                 echo "<font color='red'>Pending</font>";

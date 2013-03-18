@@ -82,35 +82,36 @@ class MerchantController extends Zend_Controller_Action
     
     function orderReportAction()
     {
-        $this->view->title = "Order Report";
+    	$this->view->title = "Order Report";
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Order Report"));
-        
-        $logs_orders_model = new Databases_Tables_LogsOrders();
-        $logs_orders_model->user_id = $this->params['user_id'];
+        echo "b";die;
+        $getorders_model = new Databases_Joins_GetOrders();
+        $getorders_model->user_id = $this->params['user_id'];
         if($this->params['start_date'])
         {
-            $logs_orders_model->start_date = $this->params['start_date'];
+            $getorders_model->start_date = $this->params['start_date'];
             $this->view->start_date = $this->params['start_date'];
         }
         if($this->params['end_date'])
         {
-            $logs_orders_model->end_date = $this->params['end_date'];
+            $getorders_model->end_date = $this->params['end_date'];
             $this->view->end_date = $this->params['end_date'];
         }
-        if($this->params['order_id'])
+        if($this->params['merchant_ref'])
         {
-            $logs_orders_model->order_id = $this->params['order_id'];
-            $this->view->order_id = $this->params['order_id'];
+            $getorders_model->merchant_ref = $this->params['merchant_ref'];
+            $this->view->merchant_ref = $this->params['merchant_ref'];
         }
         if($this->params['p_current_page'])
         {
-            $logs_orders_model->p_current_page = $this->params['p_current_page'];
+            $getorders_model->p_current_page = $this->params['p_current_page'];
         }else{
-            $logs_orders_model->p_current_page = 1; //from the first page
+            $getorders_model->p_current_page = 1; //from the first page
         }
-        $this->view->list = $logs_orders_model->PushList();
-        $this->view->pagination = $logs_orders_model->Pagination();
+        echo "a";die;
+        $this->view->list = $getorders_model->PushList();
+        $this->view->pagination = $getorders_model->Pagination();
         
         if($this->params['notice'])
         {
