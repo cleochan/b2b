@@ -336,7 +336,7 @@ class Databases_Joins_GetOrders
             "comments" => $this->comments
         );
         
-        $logs_orders_id = $this->db->insert($item_data);
+        $logs_orders_id = $this->db->insert("logs_orders", $item_data);
         
         $result = array();
         $result['purchase_order_id'] = $merchant_ref_pool[$this->merchant_ref];

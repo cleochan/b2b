@@ -243,7 +243,7 @@ class MerchantController extends Zend_Controller_Action
             }else{
                 //Action
                 $group_instance_balance_array = array();
-                $logs_orders_model = new Databases_Tables_LogsOrders();
+                $getorders_model = new Databases_Joins_GetOrders();
                 $data_array = array();
                 if (($handle = fopen($_FILES["csvf"]["tmp_name"], "r")) !== FALSE) {
                     while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
@@ -265,21 +265,21 @@ class MerchantController extends Zend_Controller_Action
                                 $data_array[$da_key]['result'] = "N";
                                 $data_array[$da_key]['reason'] = "Column Amount Error.";
                             }else{ //check contents
-                                $logs_orders_model->shipping_first_name = $da_val[1];
-                                $logs_orders_model->shipping_last_name = $da_val[2];
-                                $logs_orders_model->shipping_company = $da_val[3];
-                                $logs_orders_model->merchant_company = $da_val[20]; // REQUIRED AND IMPORTANT !!!
-                                $logs_orders_model->shipping_address_1 = $da_val[4];
-                                $logs_orders_model->shipping_suburb = $da_val[6];
-                                $logs_orders_model->shipping_state = $da_val[7];
-                                $logs_orders_model->shipping_postcode = $da_val[8];
-                                $logs_orders_model->shipping_country = $da_val[9];
-                                $logs_orders_model->supplier_sku = $da_val[12];
-                                $logs_orders_model->quantity = $da_val[14];
-                                $logs_orders_model->operator_id = $this->params['user_id'];
-                                $logs_orders_model->group_instance_balance_array = $group_instance_balance_array;
+                                $getorders_model->shipping_first_name = $da_val[1];
+                                $getorders_model->shipping_last_name = $da_val[2];
+                                $getorders_model->shipping_company = $da_val[3];
+                                $getorders_model->merchant_company = $da_val[20]; // REQUIRED AND IMPORTANT !!!
+                                $getorders_model->shipping_address_1 = $da_val[4];
+                                $getorders_model->shipping_suburb = $da_val[6];
+                                $getorders_model->shipping_state = $da_val[7];
+                                $getorders_model->shipping_postcode = $da_val[8];
+                                $getorders_model->shipping_country = $da_val[9];
+                                $getorders_model->supplier_sku = $da_val[12];
+                                $getorders_model->quantity = $da_val[14];
+                                $getorders_model->operator_id = $this->params['user_id'];
+                                $getorders_model->group_instance_balance_array = $group_instance_balance_array;
                                 
-                                $check_result = $logs_orders_model->PlaceOrderCheck();
+                                $check_result = $getorders_model->PlaceOrderCheck();
                                 
                                 $data_array[$da_key]['result'] = $check_result[1];
                                 $data_array[$da_key]['reason'] = $check_result[2];
@@ -316,7 +316,7 @@ class MerchantController extends Zend_Controller_Action
         $this->view->title = "Order Import Confirmation";
         $params = $this->_request->getParams();
         //Algorithms_Extensions_Plugin::FormatArray($params);die;
-        $logs_orders = new Databases_Tables_LogsOrders();
+        $getorders_model = new Databases_Joins_GetOrders();
         $logs_financial = new Databases_Tables_LogsFinancial();
         $plugin_model = new Algorithms_Extensions_Plugin();
         $ip = $plugin_model->GetIp();
@@ -325,25 +325,26 @@ class MerchantController extends Zend_Controller_Action
         if(count($params['supplier_sku']))
         {
             $group_instance_balance_array = array();
+            $merchant_ref_pool = array();
             
             foreach($params['supplier_sku'] as $loop_key => $supplier_sku)
             {
                 //Validation
-                $logs_orders->shipping_first_name = $params['shipping_first_name'][$loop_key];
-                $logs_orders->shipping_last_name = $params['shipping_last_name'][$loop_key];
-                $logs_orders->shipping_company = $params['shipping_company'][$loop_key];
-                $logs_orders->merchant_company = $params['merchant_company'][$loop_key];
-                $logs_orders->shipping_address_1 = $params['shipping_address_1'][$loop_key];
-                $logs_orders->shipping_suburb = $params['shipping_suburb'][$loop_key];
-                $logs_orders->shipping_state = $params['shipping_state'][$loop_key];
-                $logs_orders->shipping_postcode = $params['shipping_postcode'][$loop_key];
-                $logs_orders->shipping_country = $params['shipping_country'][$loop_key];
-                $logs_orders->supplier_sku = $supplier_sku;
-                $logs_orders->quantity = $params['quantity'][$loop_key];
-                $logs_orders->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
-                $logs_orders->group_instance_balance_array = $group_instance_balance_array;
+                $getorders_model->shipping_first_name = $params['shipping_first_name'][$loop_key];
+                $getorders_model->shipping_last_name = $params['shipping_last_name'][$loop_key];
+                $getorders_model->shipping_company = $params['shipping_company'][$loop_key];
+                $getorders_model->merchant_company = $params['merchant_company'][$loop_key];
+                $getorders_model->shipping_address_1 = $params['shipping_address_1'][$loop_key];
+                $getorders_model->shipping_suburb = $params['shipping_suburb'][$loop_key];
+                $getorders_model->shipping_state = $params['shipping_state'][$loop_key];
+                $getorders_model->shipping_postcode = $params['shipping_postcode'][$loop_key];
+                $getorders_model->shipping_country = $params['shipping_country'][$loop_key];
+                $getorders_model->supplier_sku = $supplier_sku;
+                $getorders_model->quantity = $params['quantity'][$loop_key];
+                $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
+                $getorders_model->group_instance_balance_array = $group_instance_balance_array;
 
-                $check_result = $logs_orders->PlaceOrderCheck();
+                $check_result = $getorders_model->PlaceOrderCheck();
 
                 if("Y" == $check_result[1]) //passed the validation
                 {
@@ -355,42 +356,45 @@ class MerchantController extends Zend_Controller_Action
                     $group_instance_balance_array[$user_id] = $instant_balance;
                     
                     //Insert Into Orders
-                    $logs_orders->merchant_ref = $params['merchant_ref'][$loop_key];
-                    $logs_orders->order_amount = $order_amount;
-                    $logs_orders->user_id = $user_id;
-                    $logs_orders->ip = $ip;
-                    $logs_orders->shipping_first_name = $params['shipping_first_name'][$loop_key];
-                    $logs_orders->shipping_last_name = $params['shipping_last_name'][$loop_key];
-                    $logs_orders->shipping_company = $params['shipping_company'][$loop_key];
-                    $logs_orders->shipping_address_1 = $params['shipping_address_1'][$loop_key];
-                    $logs_orders->shipping_address_2 = $params['shipping_address_2'][$loop_key];
-                    $logs_orders->shipping_suburb = $params['shipping_suburb'][$loop_key];
-                    $logs_orders->shipping_state = $params['shipping_state'][$loop_key];
-                    $logs_orders->shipping_postcode = $params['shipping_postcode'][$loop_key];
-                    $logs_orders->shipping_country = $params['shipping_country'][$loop_key];
-                    $logs_orders->shipping_phone = $params['shipping_phone'][$loop_key];
-                    $logs_orders->shipping_fax = $params['shipping_fax'][$loop_key];
-                    $logs_orders->supplier_sku = $params['supplier_sku'][$loop_key];
-                    $logs_orders->merchant_sku = $params['merchant_sku'][$loop_key];
-                    $logs_orders->quantity = $params['quantity'][$loop_key];
-                    $logs_orders->shipping_method = $params['shipping_method'][$loop_key];
-                    $logs_orders->shipping_instruction = $params['shipping_instruction'][$loop_key];
-                    $logs_orders->serial_no = $params['serial_no'][$loop_key];
-                    $logs_orders->comments = $params['comments'][$loop_key];
+                    $getorders_model->merchant_ref = $params['merchant_ref'][$loop_key];
+                    $getorders_model->order_amount = $order_amount;
+                    $getorders_model->user_id = $user_id;
+                    $getorders_model->ip = $ip;
+                    $getorders_model->shipping_first_name = $params['shipping_first_name'][$loop_key];
+                    $getorders_model->shipping_last_name = $params['shipping_last_name'][$loop_key];
+                    $getorders_model->shipping_company = $params['shipping_company'][$loop_key];
+                    $getorders_model->shipping_address_1 = $params['shipping_address_1'][$loop_key];
+                    $getorders_model->shipping_address_2 = $params['shipping_address_2'][$loop_key];
+                    $getorders_model->shipping_suburb = $params['shipping_suburb'][$loop_key];
+                    $getorders_model->shipping_state = $params['shipping_state'][$loop_key];
+                    $getorders_model->shipping_postcode = $params['shipping_postcode'][$loop_key];
+                    $getorders_model->shipping_country = $params['shipping_country'][$loop_key];
+                    $getorders_model->shipping_phone = $params['shipping_phone'][$loop_key];
+                    $getorders_model->shipping_fax = $params['shipping_fax'][$loop_key];
+                    $getorders_model->supplier_sku = $params['supplier_sku'][$loop_key];
+                    $getorders_model->merchant_sku = $params['merchant_sku'][$loop_key];
+                    $getorders_model->quantity = $params['quantity'][$loop_key];
+                    $getorders_model->shipping_method = $params['shipping_method'][$loop_key];
+                    $getorders_model->shipping_instruction = $params['shipping_instruction'][$loop_key];
+                    $getorders_model->serial_no = $params['serial_no'][$loop_key];
+                    $getorders_model->comments = $params['comments'][$loop_key];
+                    $getorders_model->merchant_ref_pool = $merchant_ref_pool;
 
-                    $logs_orders_id = $logs_orders->PlaceOrder(); // Transaction ID for financial table
+                    $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
+                    
+                    //update merchant ref pool
+                    $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
 
                     //Update Financial Info
                     $logs_financial->user_id = $user_id;
                     $logs_financial->action_type = 1; //place order
                     $logs_financial->action_affect = 2; //deduct
                     $logs_financial->action_value = $order_amount;
-                    $logs_financial->trans_id = $logs_orders_id;
+                    $logs_financial->trans_id = $place_order_return['logs_orders_id'];
 
                     $logs_financial->AddLog();
                 }else{
                     $notice = "E2";
-                    Algorithms_Extensions_Plugin::FormatArray($check_result);die;
                 }
             }
         }else{
