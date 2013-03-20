@@ -1,9 +1,30 @@
-<br />
+<script type="text/javascript" src="/scripts/jquery.ui.core.js"></script>
+<script type="text/javascript" src="/scripts/jquery.ui.dialog.js"></script>
+
+<script>
+$(document).ready(function()
+{
+    $( "#dialog:ui-dialog" ).dialog( "destroy" );
+    
+    var dialog_modal=document.getElementById('dialog-modal');
+	dialog_modal.style.display="none";  
+
+    $('#add_item_href').click(function() {
+		$( "#dialog-modal" ).dialog({
+                    height: 400,
+                    width: 550,
+                    modal: true
+		});
+	});
+});
+</script>
+<br />&nbsp;&nbsp;
 <?php if($this->notice):?>
 <strong>* <?php echo $this->notice;?></strong><br />
 <?php endif;?>
 <br />
 <div align="center">
+    <form action="/merchant/place-order-preview" method="POST">
     <table class="hide" border="0" cellpadding="0" cellspacing="1">
         <tbody>
             <tr>
@@ -11,38 +32,30 @@
                     <table class="width100" cellspacing="1">
                         <tbody>
                             <tr>
-                                <td class="form-title" colspan="7" align="left">Items [<a href="/merchants/place-order-add-item/sid/<?=$sid?>">Add Item</a>]</td>
+                                <td class="form-title" colspan="7" align="left">Items <a href="#" id="add_item_href"><img src="/images/add.png" border="0" title="Add new item" alt="Add new item" /></a></td>
                             </tr>
                             <tr class="row-2">
+                                <td class="center"><span class="small">Merchant Ref</span></td>
                                 <td class="center"><span class="small">Supplier SKU</span></td>
                                 <td class="center"><span class="small">Merchant SKU</span></td>
-                                <td class="center"><span class="small">Product Name</span></td>
-                                <td class="center"><span class="small">Price</span></td>
-                                <td class="center"><span class="small">Shipping</span></td>
                                 <td class="center"><span class="small">Qty.</span></td>
-                                <td class="center"><span class="small">Subtotal</span></td>
+                                <td class="center" width="50"><span class="small">Action</span></td>
                             </tr>
-                            <?php if($this->items):
+                            <?php if($_SESSION['place_order']['items']):
                                     $n = 1;
-                                    foreach($this->items as $items):
+                                    foreach($_SESSION['place_order']['items'] as $ikey => $items):
                             ?>
                             <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+                                <td class="center"><span class="small"><?=$items['merchant_ref']?></span></td>
                                 <td class="center"><span class="small"><?=$items['supplier_sku']?></span></td>
                                 <td class="center"><span class="small"><?=$items['merchant_sku']?></span></td>
-                                <td class="center"><span class="small"><?=$items['product_name']?></span></td>
-                                <td class="center"><span class="small"><?=$items['price']?></span></td>
-                                <td class="center"><span class="small"><?=$items['shipping']?></span></td>
-                                <td class="center"><span class="small"><?=$items['qty']?></span></td>
-                                <td class="center"><span class="small"><?=$items['subtotal']?></span></td>
+                                <td class="center"><span class="small"><?=$items['quantity']?></span></td>
+                                <td class="center"><span class="small"><a href="/merchant/place-order-remove-item/ikey/<?=$ikey?>"><img src="/images/del.png" border="0" /></a></span></td>
                             </tr>
                             <?php
                                     endforeach;
                                 endif;
                             ?>
-                            <tr class="row-2">
-                                <td class="right" colspan="6"><span class="small"><strong>Total</strong></span></td>
-                                <td class="center"><span class="small"><?=$items['total']?></span></td>
-                            </tr>
                         </tbody>
                     </table>
                 </td>
@@ -56,51 +69,49 @@
                     <table class="width100" cellspacing="1">
                         <tbody>
                             <tr>
-                                <td class="form-title" colspan="2">Delivery</td>
+                                <td class="form-title" colspan="4">Delivery</td>
                             </tr>
                             <tr class="row-2">
-                                <td class="right" width="50%"><span class="small">Shipping First Name</span></td>
-                                <td class="left" width="50%"><span class="small"><input type="text" name="shipping_first_name" /></span></td>
-                            </tr>
-                            <tr class="row-1">
+                                <td class="right" width="200"><span class="small">Shipping First Name</span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_first_name" value="<?=$_SESSION['place_order']['delivery']['shipping_first_name']?>" /> *</span></td>
                                 <td class="right"><span class="small">Shipping Last Name</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_last_name" /></span></td>
-                            </tr>
-                            <tr class="row-2">
-                                <td class="right"><span class="small">Shipping Company</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_company" /></span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_last_name" value="<?=$_SESSION['place_order']['delivery']['shipping_last_name']?>" /> *</span></td>
                             </tr>
                             <tr class="row-1">
                                 <td class="right"><span class="small">Shipping Address 1</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_address_1" /></span></td>
-                            </tr>
-                            <tr class="row-2">
+                                <td class="left"><span class="small"><input type="text" name="shipping_address_1" value="<?=$_SESSION['place_order']['delivery']['shipping_address_1']?>" /> *</span></td>
                                 <td class="right"><span class="small">Shipping Address 2</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_address_2" /></span></td>
-                            </tr>
-                            <tr class="row-1">
-                                <td class="right"><span class="small">Shipping Suburb</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_suburb" /></span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_address_2" value="<?=$_SESSION['place_order']['delivery']['shipping_address_2']?>" /></span></td>
                             </tr>
                             <tr class="row-2">
-                                <td class="right"><span class="small">Shipping State</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_state" /></span></td>
+                                <td class="right"><span class="small">Shipping Company</span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_company" value="<?=$_SESSION['place_order']['delivery']['shipping_company']?>" /> *</span></td>
+                                <td class="right"><span class="small">Shipping Suburb</span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_suburb" value="<?=$_SESSION['place_order']['delivery']['shipping_suburb']?>" /> *</span></td>
                             </tr>
                             <tr class="row-1">
+                                <td class="right"><span class="small">Shipping State</span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_state" value="<?=$_SESSION['place_order']['delivery']['shipping_state']?>" /> *</span></td>
                                 <td class="right"><span class="small">Shipping Postcode</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_postcode" /></span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_postcode" value="<?=$_SESSION['place_order']['delivery']['shipping_postcode']?>" /> *</span></td>
                             </tr>
                             <tr class="row-2">
                                 <td class="right"><span class="small">Shipping Country</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_country" /></span></td>
+                                <td class="left"><span class="small">
+                                        <select name="shipping_country">
+                                            <?php foreach($this->countries as $ct_key => $ct_val):?>
+                                            <option value="<?=$ct_key?>" <?php if($ct_key==$_SESSION['place_order']['delivery']['shipping_country']){echo "selected='selected'";}?>><?=$ct_val?></option>
+                                            <?php endforeach;?>
+                                        </select> *
+                                    </span></td>
+                                <td class="right"><span class="small">Shipping Phone</span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_phone" value="<?=$_SESSION['place_order']['delivery']['shipping_phone']?>" /></span></td>
                             </tr>
                             <tr class="row-1">
-                                <td class="right"><span class="small">Shipping Phone</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_phone" /></span></td>
-                            </tr>
-                            <tr class="row-2">
                                 <td class="right"><span class="small">Shipping Fax</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_fax" /></span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_fax" value="<?=$_SESSION['place_order']['delivery']['shipping_fax']?>" /></span></td>
+                                <td class="right">&nbsp;</td>
+                                <td class="left">&nbsp;</td>
                             </tr>
                         </tbody>
                     </table>
@@ -123,4 +134,51 @@
             </tr>
         </tbody>
     </table>
+    </form>
+</div>
+
+<div id="dialog-modal" title="Add Item">
+    <form action="/merchant/place-order-add-item" method="POST" id="add_item_form" name="add_item_form">
+        <table width="100%" border="0">
+            <tr>
+                <td>Supplier SKU:</td>
+                <td><input type="text" name="supplier_sku" /> *</td>
+            </tr>
+            <tr>
+                <td>Merchant SKU:</td>
+                <td><input type="text" name="merchant_sku" /></td>
+            </tr>
+            <tr>
+                <td>Quantity:</td>
+                <td><input type="text" name="quantity" /> *</td>
+            </tr>
+            <tr>
+                <td>Merchant Ref:</td>
+                <td><input type="text" name="merchant_ref" /></td>
+            </tr>
+            <tr>
+                <td>Shipping Method:</td>
+                <td><input type="text" name="shipping_method" /></td>
+            </tr>
+            <tr>
+                <td>Shipping Instruction:</td>
+                <td><input type="text" name="shipping_instruction" /></td>
+            </tr>
+            <tr>
+                <td>Tracking #:</td>
+                <td><input type="text" name="tracking_number" /></td>
+            </tr>
+            <tr>
+                <td>Serial #:</td>
+                <td><input type="text" name="serial_no" /></td>
+            </tr>
+            <tr>
+                <td>Comments:</td>
+                <td><input type="text" name="comments" /></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="submit" value="Add" /></td>
+            </tr>
+        </table>
+    </form>
 </div>
