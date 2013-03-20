@@ -38,9 +38,11 @@ $(function()
                             <tr>
                                 <td class="form-title">Time</td>
                                 <td class="form-title">Order ID</td>
-                                <td class="form-title">Order Status</td>
-                                <td class="form-title">Item Title</td>
+                                <td class="form-title">Merchant Ref</td>
+                                <td class="form-title">Supplier SKU</td>
+                                <td class="form-title">Merchant SKU</td>
                                 <td class="form-title">Order Amount</td>
+                                <td class="form-title">Status</td>
                             </tr>
                             <?php if($this->list):
                                     $n = 1;
@@ -48,10 +50,28 @@ $(function()
                             ?>
                             <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
                                 <td class="center"><span class="small"><?=$list['issue_time']?></span></td>
-                                <td class="center"><span class="small"><?=$list['order_id']?></span></td>
-                                <td class="center"><span class="small"><?=$list['order_status']?></span></td>
-                                <td class="center"><span class="small"><?=$list['item_title']?></span></td>
-                                <td class="center"><span class="small"><?=$list['order_amount']?></span></td>
+                                <td class="center"><span class="small"><?=$list['main_db_order_id']?></span></td>
+                                <td class="center"><span class="small"><?=$list['merchant_ref']?></span></td>
+                                <td class="center"><span class="small"><?=$list['supplier_sku']?></span></td>
+                                <td class="center"><span class="small"><?=$list['merchant_sku']?></span></td>
+                                <td class="center"><span class="small"><?=$list['item_amount']?></span></td>
+                                <td class="center"><span class="small">
+                                        <?php 
+                                        switch ($list['item_status'])
+                                        {
+                                            case 0:
+                                                echo "<font color='red'>Pending</font>";
+                                                break;
+                                            case 1:
+                                                echo "<font color='green'>Approved</font>";
+                                                break;
+                                            case 2:
+                                                echo "<font color='red'>Rejected<br />(".$list['api_response'].")</font>";
+                                                break;
+                                        }
+                                        ?>
+                                        
+                                    </span></td>
                             </tr>
                             <?php
                                     endforeach;

@@ -378,31 +378,31 @@ class AdminController extends Zend_Controller_Action
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Merchants List", "Admin - Order Report|".$params['user_id']));
         
-        $logs_orders_model = new Databases_Tables_LogsOrders();
-        $logs_orders_model->user_id = $params['user_id'];
+        $getorders_model = new Databases_Joins_GetOrders();
+        $getorders_model->user_id = $params['user_id'];
         if($params['start_date'])
         {
-            $logs_orders_model->start_date = $params['start_date'];
+            $getorders_model->start_date = $params['start_date'];
             $this->view->start_date = $params['start_date'];
         }
         if($params['end_date'])
         {
-            $logs_orders_model->end_date = $params['end_date'];
+            $getorders_model->end_date = $params['end_date'];
             $this->view->end_date = $params['end_date'];
         }
-        if($params['order_id'])
+        if($params['merchant_ref'])
         {
-            $logs_orders_model->order_id = $params['order_id'];
-            $this->view->order_id = $params['order_id'];
+            $getorders_model->merchant_ref = $params['merchant_ref'];
+            $this->view->merchant_ref = $params['merchant_ref'];
         }
         if($params['p_current_page'])
         {
-            $logs_orders_model->p_current_page = $params['p_current_page'];
+            $getorders_model->p_current_page = $params['p_current_page'];
         }else{
-            $logs_orders_model->p_current_page = 1; //from the first page
+            $getorders_model->p_current_page = 1; //from the first page
         }
-        $this->view->list = $logs_orders_model->PushList();
-        $this->view->pagination = $logs_orders_model->Pagination();
+        $this->view->list = $getorders_model->PushList();
+        $this->view->pagination = $getorders_model->Pagination();
         $this->view->user_id = $params['user_id'];
     }
     

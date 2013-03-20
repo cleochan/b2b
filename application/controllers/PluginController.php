@@ -317,4 +317,62 @@ if($result)
         
         die;
     }
+    
+    function importProductAction()
+    {
+        $select = $this->db->select();
+        $select->from("ss_products as p", array("productID as product_id", "product_code as supplier_sku", "brand as brand_name", "MPN as mpn", "in_stock as stock", "Price as offer_price", "name as product_name", "categoryID as category_id"));
+        $select->joinLeft("ss_product_additional as a", "a.productID=p.productID", array("cost as cost_price"));
+        $data = $this->db->fetchAll($select);
+        
+        //Algorithms_Extensions_Plugin::FormatArray($data);die;
+        
+        foreach($data as $d)
+        {
+            $random1 = mt_rand(1000, 9999);
+            $random2 = mt_rand(10, 99);
+            
+            $new = array(
+                "product_id" => $d['product_id'],
+                "supplier_sku" => $d['supplier_sku'],
+                "brand_name" => $d['brand_name'],
+                "mpn" => $d['mpn'],
+                "stock" => $d['stock'],
+                "offer_price" => $d['offer_price'],
+                "cost_price" => $d['cost_price'],
+                "product_name" => $d['product_name'],
+                "features1" => "features1 - ".$random1,
+                "features2" => "features2 - ".$random1,
+                "features3" => "features3 - ".$random1,
+                "features4" => "features4 - ".$random1,
+                "features5" => "features5 - ".$random1,
+                "product_details" => "product_details - ".$random1,
+                "specification" => "specification - ".$random1,
+                "dimension" => "dimension - ".$random1,
+                "colour" => "colour - ".$random1,
+                "size" => "size - ".$random1,
+                "factory_url" => "http://cdn.crazysales.com.au/factory_url/".$random1.".jpg",
+                "package_content" => "package_content - ".$random1,
+                "warranty" => "warranty - ".$random1,
+                "category_id" => $d['category_id'],
+                "category_name" => NULL,
+                "weight" => $random1,
+                "image_url_1" => "http://cdn.crazysales.com.au/image_url_1/".$random1.".jpg",
+                "image_url_2" => "http://cdn.crazysales.com.au/image_url_2/".$random1.".jpg",
+                "image_url_3" => "http://cdn.crazysales.com.au/image_url_3/".$random1.".jpg",
+                "image_url_4" => "http://cdn.crazysales.com.au/image_url_4/".$random1.".jpg",
+                "image_url_5" => "http://cdn.crazysales.com.au/image_url_5/".$random1.".jpg",
+                "pm" => "pm - ".$random1,
+                "options" => "options - ".$random1,
+                "search_keyword" => "search_keyword - ".$random1,
+                "list_price" => $d['offer_price']+200,
+                "shipping" => $random2
+            );
+
+            $this->db->insert("product_info_3", $new);
+        }
+        
+        echo "End.";
+        die;
+    }
 }
