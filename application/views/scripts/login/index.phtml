@@ -10,7 +10,7 @@
 <br /><br />
 <div align="center"><H1><?=$this->system_title?></H1></div>
 <br /><br />
-<table class="width100 no-print" cellspacing="0">
+<table class="width50 no-print" cellspacing="0" align="center">
 	<tbody>
 		<tr>
 			<td class="menu">
@@ -19,15 +19,15 @@
                 <form action="/login/index" method="POST" name="form1" id="form1"><input type="hidden" name="url" value="<?=$this->url?>" />
                     <table border="0" width="100%">
                         <tr>
-                            <td>Email</td>
-                            <td><input name="email" type="text" id="email" /></td>
+                            <td align="right" width="50%">Email&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td align="left" width="50%"><input name="email" type="text" id="email" /></td>
                         </tr>
                         <tr>
-                            <td>Password</td>
-                            <td><input type="password" name="password" id="password" style="margin-top:5px;" /></td>
+                            <td align="right">Password&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td align="left"><input type="password" name="password" id="password" style="margin-top:5px;" /></td>
                         </tr>
                         <tr>
-                            <td colspan="2"><input type="submit" name="button" id="button" value="Login" /></td>
+                            <td colspan="2"  align="center"><input type="submit" name="button" id="button" value="Login" /></td>
                         </tr>
                     </table>
               </form>
