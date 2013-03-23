@@ -109,9 +109,9 @@ class AdminController extends Zend_Controller_Action
                 }
                 
                 //Discount
-                if(0 > $form->getValue('discount') || 100 < $form->getValue('discount'))
+                if(0 > $form->getValue('discount') || 25 < $form->getValue('discount'))
                 {
-                    $this->view->notice="The discount is out of range.";
+                    $this->view->notice="The discount is out of range. (0~25)";
                     $form->populate($formData);
                     $error = 1;
                 }
@@ -189,9 +189,9 @@ class AdminController extends Zend_Controller_Action
                 }
                 
                 //Discount
-                if(0 > $formData['discount'] || 100 < $formData['discount'])
+                if(0 > $formData['discount'] || 25 < $formData['discount'])
                 {
-                    $this->view->notice="The discount is out of range.";
+                    $this->view->notice="The discount is out of range. (0~25)";
                     $form->populate($formData);
                     $error = 1;
                 }
