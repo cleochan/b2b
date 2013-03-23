@@ -65,7 +65,7 @@ class Algorithms_Core_Feed
                             $contents_tmp_array[] = $qualifier.$users_feed_definition['column_alias'].$qualifier;
                         }
 
-                        $contents .= implode($delimeter, $contents_tmp_array)."\n\r";
+                        $contents .= implode($delimeter, $contents_tmp_array)."\r\n";
                         //==== Make Title Finished ====//
 
                         foreach($product_list as $pl)
@@ -77,7 +77,7 @@ class Algorithms_Core_Feed
                                 $contents_tmp_array[] = $qualifier.$this->StringReplacement($pl, $users_feed_definition['column_value'], $array_for_replacement, $users_feed_definition['column_value_adjustment']).$qualifier;
                             }
 
-                            $contents .= implode($delimeter, $contents_tmp_array)."\n\r";
+                            $contents .= implode($delimeter, $contents_tmp_array)."\r\n";
                         }
                     }elseif(3 == $collect_feed_info['users_feed']['feed_extension']) //xml
                     {
@@ -143,10 +143,7 @@ class Algorithms_Core_Feed
         
         foreach($array_for_replacement as $key => $val)
         {
-            if(isset($product_row[$val]))
-            {
-                $feed_column_value = str_replace($key, $product_row[$val], $feed_column_value);
-            }
+            $feed_column_value = str_replace($key, $product_row[$val], $feed_column_value);
         }
         
         // Format if there is value adjustment
@@ -170,6 +167,24 @@ class Algorithms_Core_Feed
                     {
                         $feed_column_value = $cond[1];
                     }
+                }elseif("VAL" == $cond[0] && "VAL" == substr($cond[1], 0, 3))
+                {
+                    if("+" === substr($cond[1], 3, 1))
+                    {
+                        $feed_column_value += substr($cond[1], 4);
+                    }elseif("-" === substr($cond[1], 3, 1))
+                    {
+                        $feed_column_value -= substr($cond[1], 4);
+                    }elseif("*" === substr($cond[1], 3, 1))
+                    {
+                        $feed_column_value = $feed_column_value * substr($cond[1], 4);
+                    }elseif("/" === substr($cond[1], 3, 1) && 0 !== substr($cond[1], 4))
+                    {
+                        $feed_column_value = $feed_column_value / substr($cond[1], 4);
+                    }
+                }elseif("ROUND" == $cond[0])
+                {
+                    $feed_column_value = round($feed_column_value);
                 }else{
                     if($feed_column_value === $cond[0])
                     {
@@ -206,17 +221,6 @@ class Algorithms_Core_Feed
                     $length = strlen($string);
                 }else{
                     $length = 0; // Exit
-                }
-            }
-        }
-        
-        if(count($result))
-        {
-            foreach($result as $r_key => $r_val)
-            {
-                if(FALSE === strpos($r_val, "|"))
-                {
-                    unset($result[$r_key]);
                 }
             }
         }

@@ -25,9 +25,9 @@ $(function()
 <br />
 <div align="center">
     <form action="/merchant/order-report" method="GET">
-        From <input type="text" name="start_date" id="start_date" size="5"  <?php if($this->start_date){echo "value= '".$this->start_date."'";} ?> />&nbsp;&nbsp;
-        To <input type="text" name="end_date" id="end_date" size="5"  <?php if($this->end_date){echo "value= '".$this->end_date."'";} ?> />&nbsp;&nbsp;
-        Order ID <input type="text" name="order_id" id="order_id" size="5" <?php if($this->order_id){echo "value= '".$this->order_id."'";} ?> />&nbsp;&nbsp;
+        From <input type="text" name="start_date" id="start_date" size="10"  <?php if($this->start_date){echo "value= '".$this->start_date."'";} ?> />&nbsp;&nbsp;
+        To <input type="text" name="end_date" id="end_date" size="10"  <?php if($this->end_date){echo "value= '".$this->end_date."'";} ?> />&nbsp;&nbsp;
+        Merchant Ref <input type="text" name="merchant_ref" id="merchant_ref" size="10" <?php if($this->order_id){echo "value= '".$this->order_id."'";} ?> />&nbsp;&nbsp;
         <input type="submit" value="Search" />
     </form>
 </div>

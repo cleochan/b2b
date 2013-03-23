@@ -94,6 +94,11 @@ class Databases_Joins_ProductFilter
                     {
                         $data[$d_key]['stock'] = 0; //erase stock
                     }
+                    
+                    //format the other prices
+                    $data[$d_key]['shipping'] = number_format($d_val['shipping'], 2);
+                    $data[$d_key]['list_price'] = number_format($d_val['list_price'], 2);
+                    $data[$d_key]['stock'] = (0 < $d_val['stock'])?$d_val['stock']:0;
                 }
             }
         }else{
@@ -115,6 +120,7 @@ class Databases_Joins_ProductFilter
         return $data;
     }
     
+    // Very sensitive function, don't change anything if you are not 100% sure.
     function OfferPriceCalculation($original_offer_price, $original_cost_price, $merchant_discount, $cost_markup) //discount and markup are percentages and < 1
     {
         $offer_price_with_discount = $original_offer_price * $merchant_discount;
@@ -140,9 +146,14 @@ class Databases_Joins_ProductFilter
             $affect_stock = 0;
         }
         
-        $result = array(0=>$affect_stock, 1=>$final_price);
+        $result = array(0=>$affect_stock, 1=>number_format($final_price, 2));
         
         return $result;
+    }
+    
+    function PriceFormat($val)
+    {
+        return number_format($val, 2);
     }
     
     function GetSkuPrices($sku, $user_id)
