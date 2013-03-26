@@ -21,6 +21,7 @@ class Databases_Tables_PurchaseOrder extends Zend_Db_Table
     var $order_amount;
     var $order_amount_change_value;
     var $order_amount_action; //1=Plus 2=Deduct
+    var $pickup;
     
     
     function AddPurchaseOrder()
@@ -45,6 +46,10 @@ class Databases_Tables_PurchaseOrder extends Zend_Db_Table
                 "shipping_fax" => $this->shipping_fax,
                 "order_amount" => $this->order_amount
             );
+            if($this->pickup)
+            {
+                $data['pickup'] = $this->pickup;
+            }
             
             $purchase_order_id = $this->insert($data);
             

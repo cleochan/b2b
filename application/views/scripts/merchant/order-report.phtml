@@ -46,6 +46,7 @@ $(function()
                                 <td class="form-title">Supplier SKU</td>
                                 <td class="form-title">Merchant SKU</td>
                                 <td class="form-title">Order Amount</td>
+                                <td class="form-title">Pick Up</td>
                                 <td class="form-title">Status</td>
                             </tr>
                             <?php if($this->list):
@@ -59,6 +60,7 @@ $(function()
                                 <td class="center"><span class="small"><?=$list['supplier_sku']?></span></td>
                                 <td class="center"><span class="small"><?=$list['merchant_sku']?></span></td>
                                 <td class="center"><span class="small"><?=$list['item_amount']?></span></td>
+                                <td class="center"><span class="small"><?=$list['pickup']?"<font color='red'>Yes</font>":"<font color='green'>No</font>"?></span></td>
                                 <td class="center"><span class="small">
                                         <?php 
                                         switch ($list['item_status'])

@@ -109,9 +109,9 @@ class AdminController extends Zend_Controller_Action
                 }
                 
                 //Discount
-                if(0 > $form->getValue('discount') || 25 < $form->getValue('discount'))
+                if(0 > $form->getValue('discount') || 30 < $form->getValue('discount'))
                 {
-                    $this->view->notice="The discount is out of range. (0~25)";
+                    $this->view->notice="The discount is out of range. (0~30)";
                     $form->populate($formData);
                     $error = 1;
                 }
@@ -189,9 +189,9 @@ class AdminController extends Zend_Controller_Action
                 }
                 
                 //Discount
-                if(0 > $formData['discount'] || 25 < $formData['discount'])
+                if(0 > $formData['discount'] || 30 < $formData['discount'])
                 {
-                    $this->view->notice="The discount is out of range. (0~25)";
+                    $this->view->notice="The discount is out of range. (0~30)";
                     $form->populate($formData);
                     $error = 1;
                 }
@@ -259,9 +259,9 @@ class AdminController extends Zend_Controller_Action
                 }
                 
                 //Discount
-                if(0 > $form->getValue('discount') || 25 < $form->getValue('discount'))
+                if(0 > $form->getValue('discount') || 30 < $form->getValue('discount'))
                 {
-                    $this->view->notice="The discount is out of range. (0 ~ 25)";
+                    $this->view->notice="The discount is out of range. (0 ~ 30)";
                     $form->populate($formData);
                     $error = 1;
                 }
@@ -333,9 +333,9 @@ class AdminController extends Zend_Controller_Action
                 }
                 
                 //Discount
-                if(0 > $formData['discount'] || 25 < $formData['discount'])
+                if(0 > $formData['discount'] || 30 < $formData['discount'])
                 {
-                    $this->view->notice="The discount is out of range. (0 ~ 25)";
+                    $this->view->notice="The discount is out of range. (0 ~ 30)";
                     $form->populate($formData);
                     $error = 1;
                 }
@@ -863,6 +863,7 @@ class AdminController extends Zend_Controller_Action
          *  Column S: $data[18] = Serials No
          *  Column T: $data[19] = Comments
          *  Column U: $data[20] = Merchant Company  // REQUIRED AND IMPORTANT !!!
+         *  Column V: $data[21] = Pick Up // Y or N
          */
         
         $this->view->title = "Admin Order Import Preview";
@@ -896,7 +897,7 @@ class AdminController extends Zend_Controller_Action
                         {
                             $count_column = count($da_val);
                             
-                            if(21 != $count_column) //Reject due to the column amount
+                            if(22 != $count_column) //Reject due to the column amount
                             {
                                 $data_array[$da_key]['result'] = "N";
                                 $data_array[$da_key]['reason'] = "Column Amount Error.";
@@ -912,7 +913,8 @@ class AdminController extends Zend_Controller_Action
                                 $getorders_model->shipping_country = $da_val[9];
                                 $getorders_model->supplier_sku = $da_val[12];
                                 $getorders_model->quantity = $da_val[14];
-                                $getorders_model->operator_id = $this->params['user_id'];
+                                $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
+                                $getorders_model->pick_up = $da_val[21];
                                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
                                 
                                 $check_result = $getorders_model->PlaceOrderCheck();
@@ -978,6 +980,7 @@ class AdminController extends Zend_Controller_Action
                 $getorders_model->supplier_sku = $supplier_sku;
                 $getorders_model->quantity = $params['quantity'][$loop_key];
                 $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
+                $getorders_model->pick_up = $params['pick_up'][$loop_key];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
 
                 $check_result = $getorders_model->PlaceOrderCheck();
@@ -1014,6 +1017,7 @@ class AdminController extends Zend_Controller_Action
                     $getorders_model->shipping_instruction = $params['shipping_instruction'][$loop_key];
                     $getorders_model->serial_no = $params['serial_no'][$loop_key];
                     $getorders_model->comments = $params['comments'][$loop_key];
+                    $getorders_model->pick_up = $params['pick_up'][$loop_key];
                     $getorders_model->merchant_ref_pool = $merchant_ref_pool;
 
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table

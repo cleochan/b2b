@@ -173,16 +173,17 @@ class Databases_Joins_ProductFilter
         if($data_source && $sku) // 1 or 2
         {
             $product_select = $this->db->select();
-            $product_select->from("product_info_".$data_source, array("supplier_sku", "offer_price", "cost_price", "shipping"));
+            $product_select->from("product_info_".$data_source, array("supplier_sku", "offer_price", "cost_price", "shipping", "handling_fee"));
             $product_select->where("supplier_sku = ?", $sku);
             $product = $this->db->fetchRow($product_select);
             
             if($product['supplier_sku'])
             {
-                $offer_price_cal = $this->OfferPriceCalculation($product['offer_price'], $product['cost_price'], $discount, $cost_markup);
+                $offer_price_cal = $this->OfferPriceCalculation($product['offer_price'], $product['cost_price'], $discount, $cost_markup/100);
                 
                 $result['offer_price'] = $offer_price_cal[1];
                 $result['shipping'] = $product['shipping'];
+                $result['handling_fee'] = $product['handling_fee'];
             }
         }
         

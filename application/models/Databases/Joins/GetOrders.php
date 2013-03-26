@@ -40,6 +40,7 @@ class Databases_Joins_GetOrders
     var $issue_time;
     var $operator_id;
     var $ip;
+    var $pick_up;
     var $group_instance_balance_array;
     var $main_db_item_id;
     
@@ -123,7 +124,7 @@ class Databases_Joins_GetOrders
     {
         //Get amount page qty
         $select = $this->db->select();
-        $select->from("purchase_order as p", array("main_db_order_id", "issue_time", "user_id", "order_amount"));
+        $select->from("purchase_order as p", array("main_db_order_id", "issue_time", "user_id", "order_amount", "pickup"));
         $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("merchant_ref", "item_status", "api_response", "item_amount", "supplier_sku", "merchant_sku", "quantity"));
         $cond = array();
         if($this->start_date)
@@ -173,49 +174,54 @@ class Databases_Joins_GetOrders
                                 2 => "Approved"
                                 );
         
-        if(!trim($this->shipping_first_name))
+        if("Y" != $this->pick_up)
         {
-            $result = array(1 => "N",
-                                    2 => "Shipping first name is required."
-                                    );
-            $error = 1;
-        }elseif(!trim($this->shipping_last_name))
-        {
-            $result = array(1 => "N",
-                                    2 => "Shipping last name is required."
-                                    );
-            $error = 1;
-        }elseif(!trim($this->shipping_address_1))
-        {
-            $result = array(1 => "N",
-                                    2 => "Shipping address 1 is required"
-                                    );
-            $error = 1;
-        }elseif(!trim($this->shipping_suburb))
-        {
-            $result = array(1 => "N",
-                                    2 => "Shipping suburb is required"
-                                    );
-            $error = 1;
-        }elseif(!trim($this->shipping_state))
-        {
-            $result = array(1 => "N",
-                                    2 => "Shipping state is required"
-                                    );
-            $error = 1;
-        }elseif(!trim($this->shipping_postcode))
-        {
-            $result = array(1 => "N",
-                                    2 => "Shipping postcode is required"
-                                    );
-            $error = 1;
-        }elseif(!trim($this->shipping_country))
-        {
-            $result = array(1 => "N",
-                                    2 => "Shipping country is required"
-                                    );
-            $error = 1;
-        }elseif(!trim($this->supplier_sku))
+            if(!trim($this->shipping_first_name))
+            {
+                $result = array(1 => "N",
+                                        2 => "Shipping first name is required."
+                                        );
+                $error = 1;
+            }elseif(!trim($this->shipping_last_name))
+            {
+                $result = array(1 => "N",
+                                        2 => "Shipping last name is required."
+                                        );
+                $error = 1;
+            }elseif(!trim($this->shipping_address_1))
+            {
+                $result = array(1 => "N",
+                                        2 => "Shipping address 1 is required"
+                                        );
+                $error = 1;
+            }elseif(!trim($this->shipping_suburb))
+            {
+                $result = array(1 => "N",
+                                        2 => "Shipping suburb is required"
+                                        );
+                $error = 1;
+            }elseif(!trim($this->shipping_state))
+            {
+                $result = array(1 => "N",
+                                        2 => "Shipping state is required"
+                                        );
+                $error = 1;
+            }elseif(!trim($this->shipping_postcode))
+            {
+                $result = array(1 => "N",
+                                        2 => "Shipping postcode is required"
+                                        );
+                $error = 1;
+            }elseif(!trim($this->shipping_country))
+            {
+                $result = array(1 => "N",
+                                        2 => "Shipping country is required"
+                                        );
+                $error = 1;
+            }
+        }
+        
+        if(!trim($this->supplier_sku))
         {
             $result = array(1 => "N",
                                     2 => "Supplier SKU is required"
@@ -247,6 +253,9 @@ class Databases_Joins_GetOrders
             $users_extension_model->company = $this->merchant_company;
             $user_info = $users_extension_model->CheckCompanyInCsv();
             
+            $params_model = new Databases_Tables_Params();
+            $document_fee = $params_model->GetVal("document_fee");
+            
             if($user_info['user_id'])
             {
                 $result['user_id'] = $user_info['user_id'];
@@ -258,7 +267,18 @@ class Databases_Joins_GetOrders
                 
                 if(NULL !== $prices['offer_price'])
                 {
-                    $order_amount = ( $prices['offer_price'] + $prices['shipping'] ) * trim($this->quantity);
+                    if("Y" == $this->pick_up)
+                    {
+                        if(NULL !== $this->group_instance_balance_array[$user_info['user_id']]) //has calculated document fee already
+                        {
+                            $order_amount = ( $prices['offer_price'] + $prices['handling_fee'] ) * trim($this->quantity);
+                        }else{
+                            $order_amount = ( $prices['offer_price'] + $prices['handling_fee'] ) * trim($this->quantity) + $document_fee;
+                        }
+                    }else{
+                        $order_amount = ( $prices['offer_price'] + $prices['shipping'] ) * trim($this->quantity);
+                    }
+                    
                     $result['order_amount'] = $order_amount;
 
                     if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
@@ -312,6 +332,10 @@ class Databases_Joins_GetOrders
             $purchase_order_model->shipping_phone = $this->shipping_phone;
             $purchase_order_model->shipping_fax = $this->shipping_fax;
             $purchase_order_model->order_amount = $this->order_amount;
+            if("Y" == $this->pick_up)
+            {
+                $purchase_order_model->pickup = 1;
+            }
             
             $purchase_order_id = $purchase_order_model->AddPurchaseOrder();
             
