@@ -275,7 +275,8 @@ class MerchantController extends Zend_Controller_Action
             "shipping_postcode" => $this->params['shipping_postcode'],
             "shipping_country" => $this->params['shipping_country'],
             "shipping_phone" => $this->params['shipping_phone'],
-            "shipping_fax" => $this->params['shipping_fax']
+            "shipping_fax" => $this->params['shipping_fax'],
+            "pickup" => $this->params['pickup']
         );
         
         if($_SESSION['place_order']['items'])
@@ -304,7 +305,8 @@ class MerchantController extends Zend_Controller_Action
                     "shipping_instruction" => $items['shipping_instruction'],
                     "tracking_number" => $items['tracking_number'],
                     "serial_no" => $items['serial_no'],
-                    "comments" => $items['comments']
+                    "comments" => $items['comments'],
+                    "pick_up" => $this->params['pickup']
                 );
             }
         }
@@ -315,7 +317,7 @@ class MerchantController extends Zend_Controller_Action
             {
                 $count_column = count($da_val);
 
-                if(21 != $count_column) //Reject due to the column amount
+                if(22 != $count_column) //Reject due to the column amount
                 {
                     $data_array[$da_key]['result'] = "N";
                     $data_array[$da_key]['reason'] = "Column Amount Error.";
@@ -332,6 +334,7 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->supplier_sku = $da_val['supplier_sku'];
                     $getorders_model->quantity = $da_val['quantity'];
                     $getorders_model->operator_id = $this->params['user_id'];
+                    $getorders_model->pick_up = $this->params['pickup']?"Y":"N";
                     $getorders_model->group_instance_balance_array = $group_instance_balance_array;
 
                     $check_result = $getorders_model->PlaceOrderCheck();
@@ -391,10 +394,11 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->supplier_sku = $supplier_sku;
                 $getorders_model->quantity = $params['quantity'][$loop_key];
                 $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
+                $getorders_model->pick_up = $params['pick_up'][$loop_key]?"Y":"N";
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
 
                 $check_result = $getorders_model->PlaceOrderCheck();
-
+                
                 if("Y" == $check_result[1]) //passed the validation
                 {
                     $order_amount = $check_result['order_amount'];
@@ -427,6 +431,7 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->shipping_instruction = $params['shipping_instruction'][$loop_key];
                     $getorders_model->serial_no = $params['serial_no'][$loop_key];
                     $getorders_model->comments = $params['comments'][$loop_key];
+                    $getorders_model->pick_up = $params['pick_up'][$loop_key];
                     $getorders_model->merchant_ref_pool = $merchant_ref_pool;
 
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table

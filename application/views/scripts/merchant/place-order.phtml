@@ -18,6 +18,55 @@ $(document).ready(function()
 	});
 });
 </script>
+<script language="JavaScript">
+		$(document).ready(function() {
+			$(".pickup").click(function() {
+                                var checked_status = this.checked;
+
+                                if(checked_status==true)
+                                {
+                                    document.getElementById('shipping_first_name').disabled='disabled';
+                                    document.getElementById('shipping_last_name').disabled='disabled';
+                                    document.getElementById('shipping_address_1').disabled='disabled';
+                                    document.getElementById('shipping_address_2').disabled='disabled';
+                                    document.getElementById('shipping_company').disabled='disabled';
+                                    document.getElementById('shipping_suburb').disabled='disabled';
+                                    document.getElementById('shipping_state').disabled='disabled';
+                                    document.getElementById('shipping_postcode').disabled='disabled';
+                                    document.getElementById('shipping_country').disabled='disabled';
+                                    document.getElementById('shipping_phone').disabled='disabled';
+                                    document.getElementById('shipping_fax').disabled='disabled';
+                                }else{
+                                    document.getElementById('shipping_first_name').disabled=false;
+                                    document.getElementById('shipping_last_name').disabled=false;
+                                    document.getElementById('shipping_address_1').disabled=false;
+                                    document.getElementById('shipping_address_2').disabled=false;
+                                    document.getElementById('shipping_company').disabled=false;
+                                    document.getElementById('shipping_suburb').disabled=false;
+                                    document.getElementById('shipping_state').disabled=false;
+                                    document.getElementById('shipping_postcode').disabled=false;
+                                    document.getElementById('shipping_country').disabled=false;
+                                    document.getElementById('shipping_phone').disabled=false;
+                                    document.getElementById('shipping_fax').disabled=false;
+                                }
+				
+			});
+        
+                        <?php if($_SESSION['place_order']['delivery']['pickup']):?>
+                        document.getElementById('shipping_first_name').disabled='disabled';
+                        document.getElementById('shipping_last_name').disabled='disabled';
+                        document.getElementById('shipping_address_1').disabled='disabled';
+                        document.getElementById('shipping_address_2').disabled='disabled';
+                        document.getElementById('shipping_company').disabled='disabled';
+                        document.getElementById('shipping_suburb').disabled='disabled';
+                        document.getElementById('shipping_state').disabled='disabled';
+                        document.getElementById('shipping_postcode').disabled='disabled';
+                        document.getElementById('shipping_country').disabled='disabled';
+                        document.getElementById('shipping_phone').disabled='disabled';
+                        document.getElementById('shipping_fax').disabled='disabled';
+                        <?php endif;?>
+		});
+</script>
 <br />&nbsp;&nbsp;
 <?php if($this->notice):?>
 <strong>* <?php echo $this->notice;?></strong><br />
@@ -69,47 +118,47 @@ $(document).ready(function()
                     <table class="width100" cellspacing="1">
                         <tbody>
                             <tr>
-                                <td class="form-title" colspan="4">Delivery</td>
+                                <td class="form-title" colspan="4">Delivery ( Pick Up<input type="checkbox" name="pickup" id="pickup" class="pickup" <?php if($_SESSION['place_order']['delivery']['pickup']){echo "checked='checked'";}?> />)</td>
                             </tr>
                             <tr class="row-2">
                                 <td class="right" width="200"><span class="small">Shipping First Name</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_first_name" value="<?=$_SESSION['place_order']['delivery']['shipping_first_name']?>" /> *</span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_first_name" id="shipping_first_name" value="<?=$_SESSION['place_order']['delivery']['shipping_first_name']?>" /> *</span></td>
                                 <td class="right"><span class="small">Shipping Last Name</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_last_name" value="<?=$_SESSION['place_order']['delivery']['shipping_last_name']?>" /> *</span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_last_name" id="shipping_last_name" value="<?=$_SESSION['place_order']['delivery']['shipping_last_name']?>" /> *</span></td>
                             </tr>
                             <tr class="row-1">
                                 <td class="right"><span class="small">Shipping Address 1</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_address_1" value="<?=$_SESSION['place_order']['delivery']['shipping_address_1']?>" /> *</span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_address_1" id="shipping_address_1" value="<?=$_SESSION['place_order']['delivery']['shipping_address_1']?>" /> *</span></td>
                                 <td class="right"><span class="small">Shipping Address 2</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_address_2" value="<?=$_SESSION['place_order']['delivery']['shipping_address_2']?>" /></span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_address_2" id="shipping_address_2" value="<?=$_SESSION['place_order']['delivery']['shipping_address_2']?>" /></span></td>
                             </tr>
                             <tr class="row-2">
                                 <td class="right"><span class="small">Shipping Company</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_company" value="<?=$_SESSION['place_order']['delivery']['shipping_company']?>" /> *</span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_company" id="shipping_company" value="<?=$_SESSION['place_order']['delivery']['shipping_company']?>" /> *</span></td>
                                 <td class="right"><span class="small">Shipping Suburb</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_suburb" value="<?=$_SESSION['place_order']['delivery']['shipping_suburb']?>" /> *</span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_suburb" id="shipping_suburb" value="<?=$_SESSION['place_order']['delivery']['shipping_suburb']?>" /> *</span></td>
                             </tr>
                             <tr class="row-1">
                                 <td class="right"><span class="small">Shipping State</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_state" value="<?=$_SESSION['place_order']['delivery']['shipping_state']?>" /> *</span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_state" id="shipping_state" value="<?=$_SESSION['place_order']['delivery']['shipping_state']?>" /> *</span></td>
                                 <td class="right"><span class="small">Shipping Postcode</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_postcode" value="<?=$_SESSION['place_order']['delivery']['shipping_postcode']?>" /> *</span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_postcode" id="shipping_postcode" value="<?=$_SESSION['place_order']['delivery']['shipping_postcode']?>" /> *</span></td>
                             </tr>
                             <tr class="row-2">
                                 <td class="right"><span class="small">Shipping Country</span></td>
                                 <td class="left"><span class="small">
-                                        <select name="shipping_country">
+                                        <select name="shipping_country" id="shipping_country">
                                             <?php foreach($this->countries as $ct_key => $ct_val):?>
                                             <option value="<?=$ct_key?>" <?php if($ct_key==$_SESSION['place_order']['delivery']['shipping_country']){echo "selected='selected'";}?>><?=$ct_val?></option>
                                             <?php endforeach;?>
                                         </select> *
                                     </span></td>
                                 <td class="right"><span class="small">Shipping Phone</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_phone" value="<?=$_SESSION['place_order']['delivery']['shipping_phone']?>" /></span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_phone" id="shipping_phone" value="<?=$_SESSION['place_order']['delivery']['shipping_phone']?>" /></span></td>
                             </tr>
                             <tr class="row-1">
                                 <td class="right"><span class="small">Shipping Fax</span></td>
-                                <td class="left"><span class="small"><input type="text" name="shipping_fax" value="<?=$_SESSION['place_order']['delivery']['shipping_fax']?>" /></span></td>
+                                <td class="left"><span class="small"><input type="text" name="shipping_fax" id="shipping_fax" value="<?=$_SESSION['place_order']['delivery']['shipping_fax']?>" /></span></td>
                                 <td class="right">&nbsp;</td>
                                 <td class="left">&nbsp;</td>
                             </tr>
