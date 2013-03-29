@@ -468,4 +468,35 @@ if($result)
         echo "End.";
         die;
     }
+    
+    function wsdlTest2Action()
+    {
+        $url = 'http://10.0.0.186:8743/OrderService.svc?wsdl';
+        $client = new SoapClient($url, 
+            array(
+                'trace' => true, 
+                'exceptions' => true,
+                ''
+            )
+        );
+        
+        // 2. Pass Array 
+         $response = $client->SetOrderStatus(array(
+            'request' => array('OrderStatus' => array(
+                array(
+                    'OrderNumber' => 37344470,
+                    'StatusID' => 3,
+                    'Status' => 'Processing',	
+                )
+            ))
+        ));
+
+        echo '<pre>';
+        var_dump($response);
+        var_dump($client->__getLastRequestHeaders());
+        echo $client->__getLastRequest();
+        echo '</pre>';
+        
+        die;
+    }
 }
