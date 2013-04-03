@@ -6,48 +6,38 @@
 	<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
 	<title><?=$this->title?> - <?=$this->system_title?></title>
 </head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<link rel="SHORTCUT ICON" href="/images/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="/styles/default.css">
+	<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+	<title><?=$this->title?> - <?=$this->system_title?></title>
+</head>
 <body>
-<br /><br />
-<div align="center"><H1><?=$this->system_title?></H1></div>
-<br /><br />
-<table class="width50 no-print" cellspacing="0" align="center">
-	<tbody>
-		<tr>
-			<td class="menu">
-                <font color="red"><?=$this->msg;?></font>
-                <br /><br />
-                <form action="/login/index" method="POST" name="form1" id="form1"><input type="hidden" name="url" value="<?=$this->url?>" />
-                    <table border="0" width="100%">
-                        <tr>
-                            <td align="right" width="50%">Email&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td align="left" width="50%"><input name="email" type="text" id="email" /></td>
-                        </tr>
-                        <tr>
-                            <td align="right">Password&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td align="left"><input type="password" name="password" id="password" style="margin-top:5px;" /></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"  align="center"><input type="submit" name="button" id="button" value="Login" /></td>
-                        </tr>
-                    </table>
-              </form>
-            </td>
-		</tr>
-	</tbody>
-</table>
+<div class="login_topbg">
+    <div class="login_logo"></div>
+</div>
+<!--<div align="center"><H1><?=$this->system_title?></H1></div>-->
+<div class="login_main">
+<form action="/login/index" method="POST" name="form1" id="form1"><input type="hidden" name="url" value="<?=$this->url?>" /> 
+<div class="login_txt">
+    <ul>
+        <li class="font">Email:</li>
+        <li><input class="login_input" name="email" type="text" id="email" /></li>
+    </ul> 
+    <ul>
+        <li class="font">Password:</li>
+        <li><input class="login_input" name="password" id="password" type="password" /></li>
+    </ul>   
+    <div style=" height: 45px;"><input class="login_button" type="submit" name="button" id="button" value="" /> <span  class="login_prompt" color="red"><?=$this->msg;?></span></div>
+     
+</div>
+ </form>
+<div class="login_footer"><?=$this->system_title?> <?=$this->system_version?>Copyright © <?=date("Y");?> CrazySales</div>
+</div>
 
-<br>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-	<tbody>
-		<tr valign="top">
-			<td><div align="right">
-				<span class="timer"><?=$this->system_title?> <?=$this->system_version?><br />
-				<address>Copyright © <?=date("Y");?> CrazySales</address>
-				<span>
-				</div>
-			</td>
-		</tr>
-	</tbody>
-</table>
+
+
 </body>
 </html>

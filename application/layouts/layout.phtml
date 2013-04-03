@@ -11,6 +11,32 @@
 	<title><?=$this->title?> - <?=$this->system_title?></title>
 </head>
 <body>
+    <div class="info_topbg">
+    <div class="info_logo"></div>
+    <div class="info_toptxt">Hi merchant@gmail.com </div>
+    <div class="info_help">
+        <ul>
+            <li><a  href="#">Help</a></li>
+            <li><a  href="#">Logout</a></li>
+        </ul>
+    </div>
+</div>
+<div class="info_menu">
+    <ul>
+        <li class="info_menu02"><a href="#">Dashboard</a></li>
+        <li class="info_menu01"><a href="#">Merchants List</a></li>
+        <li class="info_menu01"><a href="#">BPay Import</a> </li>
+        <li class="info_menu01"><a href="#">Admin Order Import</a> </li>
+    </ul>
+</div>   
+<div class="no-print info_place" cellspacing="0" >
+    <ul>
+	<li >&nbsp;&nbsp;<?=$this->navigation?></li>
+        <li class="right nowrap"></li>
+   </ul>
+
+</div>
+      
 <div class="center"><span class="pagetitle"></span></div>
 <table class="hide no-print">
 	<tbody>
@@ -20,19 +46,10 @@
 	</tbody>
 </table>
 
-<table class="width100 no-print" cellspacing="0">
-	<tbody>
-		<tr>
-			<td class="menu">&nbsp;&nbsp;<?=$this->navigation?></td>
-			<td class="menu right nowrap"></td>
-		</tr>
-	</tbody>
-</table>
+
 
 <?php echo $this->layout()->content; ?>
-
-<br>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="info_footer">
 	<tbody>
 		<tr valign="top">
 			<td><div align="right">

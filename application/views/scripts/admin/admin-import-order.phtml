@@ -1,27 +1,19 @@
-<br />
+<div class="info_tablebox" align="center">
 <div align="center"><H2>Admin Import Order</H2></div>
-<br />
 <div align="center"><?php if($this->notice):?><?=$this->notice?><?php endif;?></div>
 <br />
 <div align="center">
     <form action="/admin/admin-import-order-preview" method="POST"  enctype="multipart/form-data">
-        <table class="hide" border="0" cellpadding="0" cellspacing="1">
-            <tbody>
-                <tr>
-                    <td valign="top" width="100%">
-                        <table class="width100" cellspacing="1">
+                        <table class="width100" cellspacing="1" >
                             <tbody>
                                 <tr class="row-1">
-                                    <td class="right" width="50%"><input type="file" name="csvf" id="csvf" /></td>
-                                    <td class="left" width="50%"><input type="submit" value="Continue" /></td>
+                                    <td align="right" width="50%"><input  type="file" name="csvf" id="csvf" /></td>
+                                    <td align="left"><input  class="info_botton" type="submit" value="Continue" /></td>
                                 </tr>
                             </tbody>
                         </table>
-                    </td>
-                </tr>
-            </tbody>
         </table>
     </form>
 </div>
-<br /><br />
-&nbsp;* <a href="/samples/import_order_sample.csv">Download a CSV sample</a>
+</div>
+<span class="red">&nbsp;* <a href="/samples/import_order_sample.csv" >Download a CSV sample</a></span>

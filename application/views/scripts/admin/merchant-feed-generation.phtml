@@ -101,6 +101,7 @@ jQuery(function($){
 <?php if($this->notice):?>
 <?php echo $this->notice;?><br /><br />
 <?php endif;?>
+<div align="center" class="info_tablebox" >
 <form action="/admin/merchant-feed-generation-confirm/user_id/<?=$this->user_info['user_id']?>" method="post">
 	<table class="width100" cellspacing="1">
 		<tbody>
@@ -200,11 +201,15 @@ jQuery(function($){
                                     <input type="radio" name="cost_protection" id="cost_protection" value="0" <?php if(!$this->users_feed['cost_protection'] || !$this->users_feed['users_feed_id']):?>checked="checked"<?php endif;?> />OFF
                                 </td>
 			</tr>	
-			<tr class="row-2">
-				<td colspan="4">
-                                    <input type="submit" value="Save" />&nbsp;&nbsp;&nbsp;<input type="button" id="publish" value="Publish" />
+			<tr >
+                                <td ></td>
+				<td colspan="3" class="info_botton2">
+                                    <input type="submit" class="special_button_style_green" value="Save" />&nbsp;&nbsp;&nbsp;<input  class="special_button_style_green"type="button" id="publish" value="Publish" />
                                 </td>
 			</tr>
 		</tbody>
 	</table>
+    
+    
 </form>
+</div>

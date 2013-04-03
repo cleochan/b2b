@@ -1,12 +1,10 @@
-<br />
-<div align="center"><H2>Adjust balance for merchant: <?=$this->user['company']?></H2></div>
-<br />
-<div align="center">
+
+<div align="center" class="info_tablebox">
+ 
+<div align="center class="row-1"><H2>Adjust balance for merchant: <?=$this->user['company']?></H2></div>
+
     <form action="/admin/merchant-recharge-preview" method="POST">
         <table class="hide" border="0" cellpadding="0" cellspacing="1">
-            <tbody>
-                <tr>
-                    <td valign="top" width="100%">
                         <table class="width100" cellspacing="1">
                             <tbody>
                                 <tr class="row-1">
@@ -26,14 +24,12 @@
                                     <td class="right">Adjustment Value</td>
                                     <td class="left"><input type="text" size="5" name="val" id="val" /></td>
                                 </tr>
-                                <tr class="row-2">
-                                    <td class="center" colspan="2"><input type="hidden" name="user_id" id="user_id" value="<?=$this->user['user_id']?>" /><input type="submit" value="Continue" /></td>
+                                <tr >
+                                    <td class="right"></td>
+                                    <td class="left info_botton2" ><input type="hidden" name="user_id" id="user_id" value="<?=$this->user['user_id']?>" /><input  class="special_button_style_green" type="submit" value="Continue" /></td>
                                 </tr>
                             </tbody>
                         </table>
-                    </td>
-                </tr>
-            </tbody>
         </table>
     </form>
 </div>
