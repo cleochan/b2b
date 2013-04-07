@@ -12,6 +12,7 @@
 <?php if($this->notice):?>
 <font color="#ff0000"><strong>* <?php echo $this->notice;?></strong></font><br /><br />
 <?php endif;?>
+<div class="info_tablebox"align="center" >
 <form action="/admin/help-edit/helpdesk-id/<?php echo $this->data['helpdesk_id'];?>" method="post">
 	<table class="width100" cellspacing="1">
 		<tbody>
@@ -30,9 +31,11 @@
 				<td class="category">Contents</td>
 				<td colspan="3"><?php echo $this->form->h_contents;?></td>
 			</tr>	
-			<tr class="row-2">
-				<td colspan="4"><?php echo $this->form->submitx;?></td>
+			<tr >
+                                <td ></td>
+				<td colspan="3" class="info_botton2"><?php echo $this->form->submitx;?></td>
 			</tr>
 		</tbody>
 	</table>
 </form>
+    </div>

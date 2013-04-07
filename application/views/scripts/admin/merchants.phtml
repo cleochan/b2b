@@ -4,12 +4,9 @@
         window.location.href = "/admin/merchant-add";
     }
 </script>
-<div align="center">
+<div align="center" class="info_tablebox">
 <form name="form1" id="form1" method="post" />
 	<table class="hide" border="0" cellpadding="0" cellspacing="1">
-		<tbody>
-			<tr>
-				<td valign="top" width="100%">
 					<table class="width100" cellspacing="1">
 						<tbody>
 							<tr>
@@ -34,7 +31,7 @@
 								<td class="center"><span class="small"><?=$list['balance']?></span></td>
 								<td class="center"><span class="small"><?=$list['credit']?></span></td>
 								<td class="center"><span class="small"><?=$list['discount']?>%</span></td>
-								<td class="center"><span class="small"><?=$list['user_status']?"<font color='red'>Active</font>":"<font color='red'>Inactive</font>"?></span></td>
+								<td class="center"><span class="small " style="color:#086d9d" ><?=$list['user_status']?"<font >Active</font>":"<font >Inactive</font>"?></span></td>
 								<td class="center"><span class="small"><a href="/admin/merchant-edit/user_id/<?=$list['user_id']?>">Edit</a> | <a href="/admin/merchant-recharge/user_id/<?=$list['user_id']?>">Recharge</a> | <a href="/admin/merchant-feed-generation/user_id/<?=$list['user_id']?>">Feed</a></span></td>
 								<td class="center"><span class="small"><a href="/admin/admin-order-report/user_id/<?=$list['user_id']?>">Orders</a> | <a href="/admin/admin-financial-report/user_id/<?=$list['user_id']?>">Financial</a></span></td>
 							</tr>
@@ -44,11 +41,9 @@
 							?>
 						</tbody>
 					</table>
-				</td>
-			</tr>
-		</tbody>
+
 	</table>
+<div align="center"class="info_bottonp" >&nbsp;&nbsp;<input class="special_button_style_green" type="button" onclick="merchant_add();" value="Add Merchant"><br></div>
 </form>
 </div>
-
-&nbsp;&nbsp;<input class="special_button_style_green" type="button" onclick="merchant_add();" value="Add Merchant">
+ 

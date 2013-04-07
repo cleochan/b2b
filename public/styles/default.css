@@ -56,7 +56,7 @@ a:visited {
 	}
 a:hover {
 		text-decoration:none;
-		color:#333;
+		color:#086d9d ;
 	}
 a:active {
 		text-decoration: none;
@@ -141,6 +141,8 @@ td.menu a
 	white-space: nowrap;
 }
 
+
+
 td.news-heading-public	{ background-color: #c8c8e8; color: #000000; text-align: left; border-bottom: 1px solid #000000; }
 td.news-heading-private	{ background-color: #d8d8d8;       color: #000000; text-align: left; border-bottom: 1px solid #000000; }
 td.news-body			{ background-color: #ffffff;         color: #000000; padding: 16px; }
@@ -204,7 +206,7 @@ div.quick-summary-right	{ width: 49%; padding: 2px; text-align: right; float: ri
 	.no-print {display:none}
 } 
 
-.special_button_style_green
+.special_button_style_green,#submitx
 {
     
     background: url("../images/buttom.gif") no-repeat left top;
@@ -272,6 +274,9 @@ text-align:center;
 
 /*new css*/
 
+/*color*/
+.blue{color:#086d9d}
+
 /*login*/
 .login_topbg{ background: url("../images/login/login_topbg.jpg") repeat-x left; height: 69px; width: 100%; overflow: hidden;}
 .login_logo{background: url("../images/login/logo.gif") no-repeat left; width: 218px; height: 69px; }
@@ -294,20 +299,24 @@ text-align:center;
 .info_help{ float: right; padding-right: 30px;}
 .info_help ul li{ float: left; width: 71px; height: 22px;background: url("../images/info_topmenu.gif") no-repeat left; list-style:  none; margin-right: 10px; text-align:  center; line-height:18px; color:  floralwhite; font-weight:  bold;}
 .info_help ul li a{ color:  #fff; display:  block}
-.info_menu {background: url("../images/info_menubg.gif") repeat-x left ; height:30px; width: 100%; overflow: hidden; background-color:  #82BB20}
+.info_menu {background: url("../images/info_menubg.gif") repeat-x left top ; height:30px; width: 100%; overflow: hidden; background-color:  #82BB20}
 .info_menu ul{ width:960px; margin: 0px auto}
 .info_menu ul li{ list-style:  none; float: left; width: 15%; line-height:30px; text-align:  center; font-weight:  bold; padding: 0px; }
-.info_menu01 a{ color:  #FFFFFF;}
+.info_menu01 { color:#FFFfff;}
+.info_menu01 a{ color:#FFFfff;}
 .info_menu02 {background: url("../images/info_menu02.gif") no-repeat  bottom;height:30px;  overflow: hidden; display: block}
-.info_menu02 a{ color: #00679a;}
+.info_menu02 a { color:#00679a;}
 
 .info_place{ width: 100%}
 .info_place ul{ margin: 0px; padding:10px 0px 10px 1%}
 .info_place ul li{ list-style: none; }
 .info_botton{background: url("../images/buttom.gif") no-repeat left -29px;color: #000;cursor: pointer;font-family: Arial,Helvetica,sans-serif;font-size: 12px; width: 87px;height: 22px; border: 0px;}
+.info_bottonp{ padding: 15px 0px;}
+.info_botton2{ padding:15px 0px 15px 0px;}
 .red,.red a{ color:#FF0000}
 .info_tablebox{ width: 99%; margin: 0px auto; border: 1px solid #cacaca; overflow:  hidden }
 .info_searchbox{ background: url("../images/searchbg.jpg") repeat-x left; height: 28px; overflow:  hidden; padding: 7px 0px 0px 0px ; border: 1px solid #fff; border-bottom: 0px;}
 .info_searchbox .input{ height: 16px;}
 .info_Recharge{  color: #086d9d; font-weight: bold; text-align: center; width: 100%}
 .info_search_botton{background: url("../images/buttom.gif") no-repeat left -55px;color: #fff;cursor: pointer;font-family: Arial,Helvetica,sans-serif;font-size: 12px; width: 57px;height: 20px; line-height: 20px; border: 0px;}
+
