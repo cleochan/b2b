@@ -273,9 +273,10 @@ text-align:center;
 
 
 /*new css*/
-
+h2{ padding: 30px 0px; margin: 0px;}
 /*color*/
 .blue{color:#086d9d}
+
 
 /*login*/
 .login_topbg{ background: url("../images/login/login_topbg.jpg") repeat-x left; height: 69px; width: 100%; overflow: hidden;}
@@ -321,4 +322,4 @@ text-align:center;
 .info_searchbox .input{ height: 16px;}
 .info_Recharge{  color: #086d9d; font-weight: bold; text-align: center; width: 100%}
 .info_search_botton{background: url("../images/buttom.gif") no-repeat left -55px;color: #fff;cursor: pointer;font-family: Arial,Helvetica,sans-serif;font-size: 12px; width: 57px;height: 20px; line-height: 20px; border: 0px;}
-
+.info_footer{ padding-right: 10px;}
