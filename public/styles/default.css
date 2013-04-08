@@ -296,14 +296,16 @@ text-align:center;
 .info_topbg{background: url("../images/info_topbg.gif") repeat-x left; height:41px; width: 100%; overflow: hidden;}
 .info_logo{background: url("../images/info_logo.gif") no-repeat left;height:41px; width: 127px; overflow: hidden;float: left; }
 .info_toptxt{ color:#FFFFFF; width: 500px;float: left; padding-top: 12px; font-style: italic;}
-.info_help{ float: right; padding-right: 30px;}
-.info_help ul li{ float: left; width: 71px; height: 22px;background: url("../images/info_topmenu.gif") no-repeat left; list-style:  none; margin-right: 10px; text-align:  center; line-height:18px; color:  floralwhite; font-weight:  bold;}
-.info_help ul li a{ color:  #fff; display:  block}
+.info_help{ float: right; padding-right: 30px; _margin-top: 10px;}
+.info_help ul li{ float: left;color:#fff; width: 71px; height: 22px;background: url("../images/info_topmenu.gif") no-repeat left; list-style:  none; margin-right: 10px; text-align:  center; line-height:18px; color:  floralwhite; font-weight:  bold;}
+.info_help ul li a{ color:#fff; display:  block}
+.info_help ul li a:hover{ color:#fff; display:  block}
 .info_menu {background: url("../images/info_menubg.gif") repeat-x left top ; height:30px; width: 100%; overflow: hidden; background-color:  #82BB20}
 .info_menu ul{ width:960px; margin: 0px auto}
 .info_menu ul li{ list-style:  none; float: left; width: 15%; line-height:30px; text-align:  center; font-weight:  bold; padding: 0px; }
 .info_menu01 { color:#FFFfff;}
 .info_menu01 a{ color:#FFFfff;}
+.info_menu01 a:hover{ color:#FFFfff;}
 .info_menu02 {background: url("../images/info_menu02.gif") no-repeat  bottom;height:30px;  overflow: hidden; display: block}
 .info_menu02 a { color:#00679a;}
 
