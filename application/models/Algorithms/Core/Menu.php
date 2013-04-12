@@ -144,17 +144,15 @@ class Algorithms_Core_Menu
         {
             if($m_key == $link)
             {
-                $strong_head = "<strong>";
-                $strong_end = "</strong>";
+                $strong_head = 2;
             }else{
-                $strong_head = "";
-                $strong_end = "";
+                $strong_head = 1;
             }
             
-            $html_array[] = "<a href='".$m_val."'>".$strong_head.$m_key.$strong_end."</a>";
+            $html_array[] = "<li class='info_menu0".$strong_head."'><a href='".$m_val."'>".$m_key."</a></li>";
         }
         
-        $menu_html = implode("&nbsp;&nbsp;&nbsp;&nbsp;", $html_array);
+        $menu_html = implode(" ", $html_array);
         
         return $menu_html;
     }
