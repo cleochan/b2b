@@ -127,7 +127,7 @@ class PlaceOrder {
 
 $order = new CrazySalesOrderType();
 $order->RetailerAccountEmail = 'unmind@gmail.com';
-$order->PaymentTypeID = 1;
+//$order->PaymentTypeID = 1;
 $order->ShipFirstName = "unmind";
 $order->ShipAddress_1 = "12 Springvale Rd";
 $order->ShipAddress_2 = "";
