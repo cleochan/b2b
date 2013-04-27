@@ -91,8 +91,6 @@ class Algorithms_Core_OrderService extends SoapClient{
         $this->placeOrderRequest['OrderRequests']   =   array($this->crazySalesOrderType);
         
         $response   =   $this->PlaceOrder(array('request' => $this->placeOrderRequest));
-        print_R($response);
-        exit;
         $response   =   $this->object_array($response);
         $orders_info    =   $response['PlaceOrderResult']['Orders'];
         $order_number   =   $orders_info['CrazySalesOrderType']['OrderNumber'];
@@ -101,8 +99,7 @@ class Algorithms_Core_OrderService extends SoapClient{
         $result['MessageType']  =   $message_info['MessageType'];
         return $result;
     }
-    
-    
+ 
 }
 
 ?>
