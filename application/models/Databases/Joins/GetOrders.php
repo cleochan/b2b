@@ -332,6 +332,7 @@ class Databases_Joins_GetOrders
             $purchase_order_model->shipping_phone = $this->shipping_phone;
             $purchase_order_model->shipping_fax = $this->shipping_fax;
             $purchase_order_model->order_amount = $this->order_amount;
+            $purchase_order_model->main_db_order_id =   $this->main_order_id;
             if("Y" == $this->pick_up)
             {
                 $purchase_order_model->pickup = 1;
@@ -346,6 +347,8 @@ class Databases_Joins_GetOrders
             $purchase_order_model->UpdatePurchaseOrder();
         }
         
+       
+        
         //Step 2: Insert into logs_orders table
         $item_data = array(
             "purchase_order_id" => $merchant_ref_pool[$this->merchant_ref],
@@ -359,6 +362,11 @@ class Databases_Joins_GetOrders
             "serial_no" => $this->serial_no,
             "comments" => $this->comments
         );
+        
+         if($this->item_status)
+        {
+            $item_data['item_status']   =   $this->item_status;
+        }
         
         $logs_orders_id = $this->db->insert("logs_orders", $item_data);
         

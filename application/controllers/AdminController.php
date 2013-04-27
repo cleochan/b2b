@@ -7,8 +7,6 @@ class AdminController extends Zend_Controller_Action
     function init()
     {
         $this->db = Zend_Registry::get("db");
-        						
-
     }
 	
     function preDispatch()
@@ -957,6 +955,8 @@ class AdminController extends Zend_Controller_Action
         $getorders_model = new Databases_Joins_GetOrders();
         $logs_financial = new Databases_Tables_LogsFinancial();
         $plugin_model = new Algorithms_Extensions_Plugin();
+        $order_service_model = new Algorithms_Core_OrderService();
+        $user_model = new Databases_Joins_GetUserInfo();
         $ip = $plugin_model->GetIp();
         $notice = "S1"; //success
         
@@ -1019,6 +1019,36 @@ class AdminController extends Zend_Controller_Action
                     $getorders_model->comments = $params['comments'][$loop_key];
                     $getorders_model->pick_up = $params['pick_up'][$loop_key];
                     $getorders_model->merchant_ref_pool = $merchant_ref_pool;
+                    
+                    
+                    //add by Angus 2013-04-25
+                    $getorders_model->item_amount   =   $order_amount;
+                    $user_info   =   $user_model->GetUserInfo($user_id);
+                    $merchant_email =   $user_info['email'];
+                    $order_service_model->crazySalesOrderType['RetailerAccountEmail']   =   $merchant_email;
+                    $order_service_model->crazySalesOrderType['PaymentTypeID']          =   1; 
+                    $order_service_model->crazySalesOrderType['ShipFirstName']          =   $params['shipping_first_name'][$loop_key];
+                    $order_service_model->crazySalesOrderType['ShipAddress_1']          =   $params['shipping_address_1'][$loop_key];
+                    $order_service_model->crazySalesOrderType['ShipAddress_2']          =   $params['shipping_address_2'][$loop_key];
+                    $order_service_model->crazySalesOrderType['ShipCity']               =   $params['shipping_suburb'][$loop_key];
+                    $order_service_model->crazySalesOrderType['ShipState']              =   $params['shipping_state'][$loop_key];
+                    $order_service_model->crazySalesOrderType['ShipZipCode']            =   $params['shipping_postcode'][$loop_key];
+                    $order_service_model->crazySalesOrderType['ShipCountryCode']        =   $params['shipping_country'][$loop_key];
+                    $order_service_model->crazySalesOrderType['ShipPhone']              =   $params['shipping_phone'][$loop_key];
+                    $order_service_model->crazySalesOrderType['orderAmount']            =   $order_amount;
+                    $order_service_model->crazySalesOrderItemType['Quantity']           =   $params['quantity'][$loop_key];
+                    $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];
+      
+                    $order_number   =   $order_service_model->WebServicePlaceOrder();
+                    
+                    
+                    if($order_number)
+                    {
+                        $getorders_model->main_order_id =   $order_number;
+                        $getorders_model->item_status   =   1;
+                    }
+                    //end add
+                    
 
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     
