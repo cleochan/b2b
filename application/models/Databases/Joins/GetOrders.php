@@ -48,6 +48,11 @@ class Databases_Joins_GetOrders
     var $api_response;
     
     var $merchant_ref_pool;
+    
+    var $order_api_trying_interval;
+    var $order_api_trying_times;
+    
+    var $purchase_order_id;
 
     function __construct(){
     	$this->db = Zend_Registry::get("db");
@@ -306,7 +311,6 @@ class Databases_Joins_GetOrders
                     $error = 1;
             }
         }
-        
         return $result;
     }
     
@@ -314,7 +318,6 @@ class Databases_Joins_GetOrders
     {
         $merchant_ref_pool = $this->merchant_ref_pool;
         $purchase_order_model = new Databases_Tables_PurchaseOrder();
-        
         if(!$merchant_ref_pool[$this->merchant_ref])
         {
             //Step 1: Insert into purchase order table
@@ -332,12 +335,11 @@ class Databases_Joins_GetOrders
             $purchase_order_model->shipping_phone = $this->shipping_phone;
             $purchase_order_model->shipping_fax = $this->shipping_fax;
             $purchase_order_model->order_amount = $this->order_amount;
-            $purchase_order_model->main_db_order_id =   $this->main_order_id;
+            $purchase_order_model->main_db_order_id =   $this->main_order_id;   // add by Tim Wu 2013-4-24
             if("Y" == $this->pick_up)
             {
                 $purchase_order_model->pickup = 1;
             }
-            
             $purchase_order_id = $purchase_order_model->AddPurchaseOrder();
             
             $merchant_ref_pool[$this->merchant_ref] = $purchase_order_id;
@@ -346,8 +348,6 @@ class Databases_Joins_GetOrders
             $purchase_order_model->order_amount_action = 1; //Plus
             $purchase_order_model->UpdatePurchaseOrder();
         }
-        
-       
         
         //Step 2: Insert into logs_orders table
         $item_data = array(
@@ -363,18 +363,18 @@ class Databases_Joins_GetOrders
             "comments" => $this->comments
         );
         
-         if($this->item_status)
+        //add by Tim Wu 2013-4-24 if item_status is not NULL
+        if($this->item_status)
         {
             $item_data['item_status']   =   $this->item_status;
         }
-        
+        //end add
         $logs_orders_id = $this->db->insert("logs_orders", $item_data);
         
         $result = array();
         $result['purchase_order_id'] = $merchant_ref_pool[$this->merchant_ref];
         $result['logs_orders_id'] = $logs_orders_id;
         $result['merchant_ref_pool'] = $merchant_ref_pool;
-        
         return $result;
     }
     
@@ -464,4 +464,63 @@ class Databases_Joins_GetOrders
         return $result;
     }
     
+    
+    function getPendinglist()
+    {
+        $select = $this->db->select();
+        $select->from("purchase_order as p", array("purchase_order_id", "main_db_order_id", "issue_time", "user_id", "order_amount", "pickup", "shipping_first_name", "shipping_address_1", "shipping_address_2", "shipping_suburb", "shipping_state", "shipping_postcode", "shipping_country", "shipping_phone"));
+        $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("logs_orders_id", "merchant_ref", "item_status", "api_response", "api_trying_times", "item_amount", "supplier_sku", "merchant_sku", "quantity"));
+        
+        if($this->item_status == 0 )
+        {
+            $select->where("item_status = ?", $this->item_status);
+        }
+        if($this->order_api_trying_times)
+        {
+            //$select->where("api_trying_times < ?",$this->order_api_trying_times);
+        }
+        if($this->order_api_trying_interval)
+        {
+            $time_now_unix  =   time();
+            $time_yes_unix  =   $time_now_unix - $this->order_api_trying_interval;
+            
+            $time_now   =   date('Y-m-d H:i:s', $time_now_unix);
+            $time_yes   =   date('Y-m-d H:i:s', $time_yes_unix);
+            $select->where("p.issue_time >= ?", $time_yes);
+            $select->where("p.issue_time <= ?", $time_now);
+        }
+        $result =   $this->db->fetchAll($select);
+        return $result;
+    }
+    
+    function updatePendingOrder()
+    {
+        $merchant_ref_pool = $this->merchant_ref_pool;
+        $purchase_order_model = new Databases_Tables_PurchaseOrder();
+        if(!$merchant_ref_pool[$this->merchant_ref])
+        {
+            //update purchase order table
+            $purchase_order_model->main_db_order_id     =   $this->main_order_id;   // add by Tim Wu 2013-4-24
+            $purchase_order_model->purchase_order_id    =   $this->purchase_order_id;
+            $result1 =   $purchase_order_model->UpdatePurchaseOrder();
+            $merchant_ref_pool[$this->merchant_ref]     =   $this->purchase_order_id;
+        }
+        if($this->main_order_id){
+            $item_data = array(
+                'item_status'   => $this->item_status,
+            );
+        }else
+        {
+            $item_data = array(
+                'api_trying_times'  =>  $this->order_api_trying_times,
+                'api_response'      =>  $this->api_response,
+            );
+        }
+        $where  =   $this->db->quoteInto("logs_orders_id = ?",$this->logs_orders_id);
+        $this->db->update("logs_orders", $item_data, $where);
+        $result['purchase_order_id']    =   $merchant_ref_pool[$this->merchant_ref];
+        $result['logs_orders_id']       =   $this->logs_orders_id;
+        $result['merchant_ref_pool']    =   $merchant_ref_pool;
+        return $result;
+    }
 }

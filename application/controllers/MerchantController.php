@@ -7,7 +7,6 @@ class MerchantController extends Zend_Controller_Action
         $this->db = Zend_Registry::get("db");
         $this->params = $this->_request->getParams();
         $this->params['user_id'] = $_SESSION["Zend_Auth"]["storage"]->user_id;
-        
     }
 	
     function preDispatch()
@@ -200,6 +199,7 @@ class MerchantController extends Zend_Controller_Action
         {
             $_SESSION['place_order'] = array();
         }
+        
         //get countries
         $countries_model = new Databases_Tables_Countries();
         $this->view->countries = $countries_model->CountriesArray();
@@ -357,7 +357,6 @@ class MerchantController extends Zend_Controller_Action
     
     function placeOrderConfirmAction()
     {
-        
         /**
          * start loop
          * validation
@@ -372,7 +371,6 @@ class MerchantController extends Zend_Controller_Action
         $getorders_model = new Databases_Joins_GetOrders();
         $logs_financial = new Databases_Tables_LogsFinancial();
         $plugin_model = new Algorithms_Extensions_Plugin();
-        $order_service_model = new Algorithms_Core_OrderService();
         $ip = $plugin_model->GetIp();
         $notice = "S1"; //success
         
@@ -398,7 +396,7 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
                 $getorders_model->pick_up = $params['pick_up'][$loop_key]?"Y":"N";
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
-                
+
                 $check_result = $getorders_model->PlaceOrderCheck();
                 
                 if("Y" == $check_result[1]) //passed the validation
@@ -435,32 +433,7 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->comments = $params['comments'][$loop_key];
                     $getorders_model->pick_up = $params['pick_up'][$loop_key];
                     $getorders_model->merchant_ref_pool = $merchant_ref_pool;
-                    $getorders_model->item_amount = $order_amount;
 
-                    //add by Angus 2013-4-2
-                    $order_service_model->crazySalesOrderType['RetailerAccountEmail']   =   $_SESSION["Zend_Auth"]["storage"]->email;
-                    $order_service_model->crazySalesOrderType['PaymentTypeID']          =   1;
-                    $order_service_model->crazySalesOrderType['ShipFirstName']          =   $params['shipping_first_name'][$loop_key];
-                    $order_service_model->crazySalesOrderType['ShipAddress_1']          =   $params['shipping_address_1'][$loop_key];
-                    $order_service_model->crazySalesOrderType['ShipAddress_2']          =   $params['shipping_address_2'][$loop_key];
-                    $order_service_model->crazySalesOrderType['ShipCity']               =   $params['shipping_suburb'][$loop_key];
-                    $order_service_model->crazySalesOrderType['ShipState']              =   $params['shipping_state'][$loop_key];
-                    $order_service_model->crazySalesOrderType['ShipZipCode']            =   $params['shipping_postcode'][$loop_key];
-                    $order_service_model->crazySalesOrderType['ShipCountryCode']        =   $params['shipping_country'][$loop_key];
-                    $order_service_model->crazySalesOrderType['ShipPhone']              =   $params['shipping_phone'][$loop_key];
-                    $order_service_model->crazySalesOrderType['orderAmount']            =   $order_amount;
-                    $order_service_model->crazySalesOrderItemType['Quantity']           =   $params['quantity'][$loop_key];
-                    $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];
-                   
-                    $order_number   =   $order_service_model->WebServicePlaceOrder();
-                   
-                    if($order_number)
-                    {
-                        $getorders_model->main_order_id =   $order_number;
-                        $getorders_model->item_status   =   1;
-                    }
-                   //end add
-                    
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     
                     //update merchant ref pool
@@ -474,7 +447,6 @@ class MerchantController extends Zend_Controller_Action
                     $logs_financial->trans_id = $place_order_return['logs_orders_id'];
 
                     $logs_financial->AddLog();
-                    
                 }else{
                     $notice = "E2";
                 }
@@ -611,12 +583,9 @@ class MerchantController extends Zend_Controller_Action
         $params = $this->_request->getParams();
         //Algorithms_Extensions_Plugin::FormatArray($params);die;
         $getorders_model = new Databases_Joins_GetOrders();
-      //  Zend_Loader::loadClass('PluginController');
-       // $postTo = new PluginController();
         $logs_financial = new Databases_Tables_LogsFinancial();
         $plugin_model = new Algorithms_Extensions_Plugin();
         $order_service_model    =   new Algorithms_Core_OrderService();
-         
         $ip = $plugin_model->GetIp();
         $notice = "S1"; //success
         
@@ -654,6 +623,7 @@ class MerchantController extends Zend_Controller_Action
                     //update instant balance
                     $group_instance_balance_array[$user_id] = $instant_balance;
                     
+                    
                     //Insert Into Orders
                     $getorders_model->merchant_ref = $params['merchant_ref'][$loop_key];
                     $getorders_model->order_amount = $order_amount;
@@ -679,11 +649,14 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->comments = $params['comments'][$loop_key];
                     $getorders_model->pick_up = $params['pick_up'][$loop_key];
                     $getorders_model->merchant_ref_pool = $merchant_ref_pool;
-                    $getorders_model->item_amount = $order_amount;
                     
-                    //add by Angus 2013-4-24
+                    $getorders_model->item_amount   =   $order_amount;  //add by Tim Wu log_order's item == order_amount                   
+                    
+                    //add by Tim wu 2013-4-24 connect to the web service of PlaceOrder to get main_db_order_id
                     $order_service_model->crazySalesOrderType['RetailerAccountEmail']   =   $_SESSION["Zend_Auth"]["storage"]->email;
-                    $order_service_model->crazySalesOrderType['PaymentTypeID']          =   1; 
+
+                    $order_service_model->crazySalesOrderType['PaymentTypeID']          =   1; //PaymentTypeID is unknown,need to check the PaymentTypeID
+
                     $order_service_model->crazySalesOrderType['ShipFirstName']          =   $params['shipping_first_name'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipAddress_1']          =   $params['shipping_address_1'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipAddress_2']          =   $params['shipping_address_2'][$loop_key];
@@ -693,20 +666,20 @@ class MerchantController extends Zend_Controller_Action
                     $order_service_model->crazySalesOrderType['ShipCountryCode']        =   $params['shipping_country'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipPhone']              =   $params['shipping_phone'][$loop_key];
                     $order_service_model->crazySalesOrderType['orderAmount']            =   $order_amount;
+
                     $order_service_model->crazySalesOrderItemType['Quantity']           =   $params['quantity'][$loop_key];
                     $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];
-                   
-                    $order_number   =   $order_service_model->WebServicePlaceOrder();
-                   
-                    if($order_number)
+                    
+                    $response_data   =   $order_service_model->WebServicePlaceOrder();
+                    
+                    if($response_data['order_number'])
                     {
-                        $getorders_model->main_order_id =   $order_number;
+                        $getorders_model->main_order_id =   $response_data['order_number'];
                         $getorders_model->item_status   =   1;
                     }
-                   //end add
-                    $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
-                 
+                    //end add
                     
+                    $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     //update merchant ref pool
                     $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
 
@@ -718,8 +691,6 @@ class MerchantController extends Zend_Controller_Action
                     $logs_financial->trans_id = $place_order_return['logs_orders_id'];
 
                     $logs_financial->AddLog();
-                    
-                   
                 }else{
                     $notice = "E2";
                 }
@@ -727,8 +698,40 @@ class MerchantController extends Zend_Controller_Action
         }else{
             $notice = "E1";
         }
-     
         $this->_redirect("/merchant/order-report/notice/".$notice);
+    }
+    
+    /**
+     * @author Tim Wu <TimWu@crazysales.com.au>
+     * just for test web service port
+     */
+    function testWebserviceAction()
+    {
+        error_reporting(0);
+        $order_service_model    =   new Algorithms_Core_OrderService();
+        for($i=0;$i<2;$i++){
+        $order_service_model->crazySalesOrderType['RetailerAccountEmail']   =   $_SESSION["Zend_Auth"]["storage"]->email;
+        $order_service_model->crazySalesOrderType['PaymentTypeID']          =   1;
+        $order_service_model->crazySalesOrderType['ShipFirstName']          =   "unmind";
+        $order_service_model->crazySalesOrderType['ShipAddress_1']          =   "12 Springvale Rd";
+        $order_service_model->crazySalesOrderType['ShipAddress_2']          =   "";
+        $order_service_model->crazySalesOrderType['ShipCity']               =   "";
+        $order_service_model->crazySalesOrderType['ShipState']              =   "Springvale";
+        $order_service_model->crazySalesOrderType['ShipZipCode']            =   "VIC";
+        $order_service_model->crazySalesOrderType['ShipCountryCode']        =   "3172";
+        $order_service_model->crazySalesOrderType['ShipPhone']              =   "123321123";
+        $order_service_model->crazySalesOrderType['orderAmount']            =   200;
+        $order_service_model->crazySalesOrderItemType['ExpectedItemCost']   =   10;
+        $order_service_model->crazySalesOrderItemType['FinalItemCost']      =   10;
+        $order_service_model->crazySalesOrderItemType['Quantity']           =   1;
+        $order_service_model->crazySalesOrderItemType['ItemSku']            =   "HW-BC943";
+
+        print_r($order_service_model->WebServicePlaceOrder());
+        $err    = error_get_last();
+        print_r($err);
+        }
+        exit();
+        die;
     }
 }
 

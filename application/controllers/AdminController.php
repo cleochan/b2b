@@ -7,6 +7,8 @@ class AdminController extends Zend_Controller_Action
     function init()
     {
         $this->db = Zend_Registry::get("db");
+        						
+
     }
 	
     function preDispatch()
@@ -63,10 +65,10 @@ class AdminController extends Zend_Controller_Action
         $form = new Forms_Merchant();
         $form->credit->setValue('0.00');
         $form->discount->setValue('0.00');
-	$form->submitx->setLabel('Create Merchant');
-	$this->view->form = $form;
+		$form->submitx->setLabel('Create Merchant');
+		$this->view->form = $form;
 		
-	if($this->_request->isPost()){
+		if($this->_request->isPost()){
             $formData = $this->_request->getPost();
             if($form->isValid($formData)){
                 $form->getValues();
@@ -664,7 +666,7 @@ class AdminController extends Zend_Controller_Action
         {
             $this->view->notice = "<font color='green'>Action completed.</font>";
         }
-    }
+    } 
     
     function bpayImportPreviewAction()
     {
@@ -839,6 +841,7 @@ class AdminController extends Zend_Controller_Action
     
     function adminImportOrderPreviewAction()
     {
+        
         /**
          *  Column A: $data[0] = Your Record #
          *  Column B: $data[1] = First Name
@@ -868,10 +871,12 @@ class AdminController extends Zend_Controller_Action
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Admin Import Order"));
         
+
         if ($_FILES["csvf"]["error"] > 0)
         {
             $this->view->notice = $_FILES["csvf"]["error"];
         }else{
+			
             if('text/csv' != $_FILES["csvf"]["type"])
             {
                 $this->view->notice = "File type is invalid.";
@@ -900,6 +905,7 @@ class AdminController extends Zend_Controller_Action
                                 $data_array[$da_key]['result'] = "N";
                                 $data_array[$da_key]['reason'] = "Column Amount Error.";
                             }else{ //check contents
+							
                                 $getorders_model->shipping_first_name = $da_val[1];
                                 $getorders_model->shipping_last_name = $da_val[2];
                                 $getorders_model->shipping_company = $da_val[3];
@@ -914,9 +920,9 @@ class AdminController extends Zend_Controller_Action
                                 $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
                                 $getorders_model->pick_up = $da_val[21];
                                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
-                                
+                                 
                                 $check_result = $getorders_model->PlaceOrderCheck();
-                                
+
                                 $data_array[$da_key]['result'] = $check_result[1];
                                 $data_array[$da_key]['reason'] = $check_result[2];
                                 $data_array[$da_key]['order_amount'] = $check_result['order_amount'];
@@ -955,8 +961,8 @@ class AdminController extends Zend_Controller_Action
         $getorders_model = new Databases_Joins_GetOrders();
         $logs_financial = new Databases_Tables_LogsFinancial();
         $plugin_model = new Algorithms_Extensions_Plugin();
-        $order_service_model = new Algorithms_Core_OrderService();
-        $user_model = new Databases_Joins_GetUserInfo();
+        $order_service_model    =   new Algorithms_Core_OrderService();
+        $user_model             =   new Databases_Joins_GetUserInfo();
         $ip = $plugin_model->GetIp();
         $notice = "S1"; //success
         
@@ -964,7 +970,7 @@ class AdminController extends Zend_Controller_Action
         {
             $group_instance_balance_array = array();
             $merchant_ref_pool = array();
-            
+            $i=0;
             foreach($params['supplier_sku'] as $loop_key => $supplier_sku)
             {
                 //Validation
@@ -1020,13 +1026,12 @@ class AdminController extends Zend_Controller_Action
                     $getorders_model->pick_up = $params['pick_up'][$loop_key];
                     $getorders_model->merchant_ref_pool = $merchant_ref_pool;
                     
-                    
-                    //add by Angus 2013-04-25
+                    //add by angus 2013-04-26
                     $getorders_model->item_amount   =   $order_amount;
                     $user_info   =   $user_model->GetUserInfo($user_id);
                     $merchant_email =   $user_info['email'];
                     $order_service_model->crazySalesOrderType['RetailerAccountEmail']   =   $merchant_email;
-                    $order_service_model->crazySalesOrderType['PaymentTypeID']          =   1; 
+                    $order_service_model->crazySalesOrderType['PaymentTypeID']          =   1; //PaymentTypeID is unknown,need to check the PaymentTypeID
                     $order_service_model->crazySalesOrderType['ShipFirstName']          =   $params['shipping_first_name'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipAddress_1']          =   $params['shipping_address_1'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipAddress_2']          =   $params['shipping_address_2'][$loop_key];
@@ -1038,18 +1043,16 @@ class AdminController extends Zend_Controller_Action
                     $order_service_model->crazySalesOrderType['orderAmount']            =   $order_amount;
                     $order_service_model->crazySalesOrderItemType['Quantity']           =   $params['quantity'][$loop_key];
                     $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];
-      
-                    $order_number   =   $order_service_model->WebServicePlaceOrder();
+
+                    $response_data   =   $order_service_model->WebServicePlaceOrder();
                     
-                    
-                    if($order_number)
+                    if($response_data['order_number'])
                     {
-                        $getorders_model->main_order_id =   $order_number;
+                        $getorders_model->main_order_id =   $response_data['order_number'];
                         $getorders_model->item_status   =   1;
                     }
                     //end add
                     
-
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     
                     //update merchant ref pool
@@ -1073,5 +1076,153 @@ class AdminController extends Zend_Controller_Action
         
         $this->_redirect("/admin/admin-import-order/notice/".$notice);
     }
+
+    function productInfoListAction()
+    {
+        
+        $this->view->title  =   "Product Info List";
+        $params =   $this->_request->getParams();
+        $menu_model =   new Algorithms_Core_Menu();
+        $this->view->navigation =   $menu_model->GetNavigation(array("Dashboard","Product Info"));
+        $produtct_info_1_model  =   new Databases_Tables_ProductInfo1();
+        $search_types   =   array(
+            'supplier_sku'  =>  'supplier_sku',
+            'product_name'  =>  'product_name',
+            'product_id'    =>  'product_id',
+        );
+        $search_column    =   $params['search_column'];
+        $search_value    =   $params['search_value'];
+        if($params['search_column'])
+        {
+            $produtct_info_1_model->search_column =  $params['search_column'];
+        }
+        if($params['search_value'])
+        {
+            $produtct_info_1_model->search_value =  $params['search_value'];
+        }
+        if($params['p_current_page'])
+        {
+            $produtct_info_1_model->p_current_page  =   $params['p_current_page'];
+        }else
+        {
+            $produtct_info_1_model->p_current_page  =   1;
+        }
+        $this->view->search_column   =   $search_column;
+        $this->view->search_value   =   $search_value;
+        $this->view->search_types   =   $search_types;
+        $this->view->list   =   $produtct_info_1_model->Pushlist();
+        $this->view->pagination =   $produtct_info_1_model->Pagination();
+    }
+
+    function productDelAction()
+    {
+
+        $this->view->title  =   "Sure to delete this product";
+        $params =   $this->_request->getParams();
+        $menu_model =   new Algorithms_Core_Menu();
+        $this->view->navigation =   $menu_model->GetNavigation(array("Dashboard","Product Info"));
+        
+        $product_info_1_model   =   new Databases_Tables_ProductInfo1();
+        
+        $product_info_1_model->product_info_id  =   $params['product_id'];
+        
+        $product_info   =   $product_info_1_model->getProductInfo();
+        
+        $this->view->productInfo    =   $product_info;
+    }
+    
+    function productDelConfirmAction()
+    {
+        $params =   $this->_request->getParams();
+        $product_info_1_model   =   new Databases_Tables_ProductInfo1();
+        $menu_model =   new Algorithms_Core_Menu();
+        $this->view->navigation =   $menu_model->GetNavigation(array("Dashboard","Product Info"));        
+        $product_info_1_model->product_info_id  =   $params['product_id'];
+        
+        $delState   =   $product_info_1_model->delProductInfo();
+        if($delState)
+        {
+            $this->_redirect('admin/product-info-list',array('message'=>'Product Info Delete Success.'));
+        }else
+        {
+            $this->_redirect('admin/product-info-list',array('message'=>'Product Info Delete failed.'));
+        }
+    }
+    
+    function productEditAction()
+    {
+        $this->view->title  =   "Product Info Edit";
+        $params =   $this->_request->getParams();
+        $menu_model =   new Algorithms_Core_Menu();
+        $this->view->navigation =   $menu_model->GetNavigation(array("Dashboard","Product Info"));        
+        $product_info_1_model   =   new Databases_Tables_ProductInfo1();
+        $product_info_1_model->product_info_id  =   $params['product_id'];
+        
+        $form   =   new Forms_Product();
+        $form->submitx->setLabel('Update');
+        $this->view->form   =   $form;
+        if($this->_request->isPost())
+        {
+            $form_data  =   $this->_request->getPost();
+            if($form->isValid($form_data))
+            {
+                $form->getValues();
+                
+                if(!$error)
+                {
+                    $product_info_1_model->offer_price  =   $form->getValue("offer_price");
+                    $product_info_1_model->product_name =   $form->getValue("product_name");
+                    $product_info_1_model->product_details  =   $form->getValue("product_details");
+                    
+                    $product_info_1_model->editProductInfo();
+                    $this->_redirect("admin/product-info-list");
+                }
+            }else
+            {
+                $this->view->notice="Some information are inValid";
+                $form->populate($form_data);
+            }
+        }
+        else
+        {
+            $product_info   =   $product_info_1_model->getProductInfo();
+            $this->view->product_info   =   $product_info;
+            $form->populate($product_info);
+            $this->view->data   =   $product_info;
+        }
+    }
+    
+    function productAddAction()
+    {
+        $this->view->title  =   "Add Product";
+        $menu_model =   new Algorithms_Core_Menu();
+        $this->view->navigation =   $menu_model->GetNavigation(array("Dashboard","Product Info"));
+        $form   =   new Forms_Product();
+        $form->submitx->setLabel("Add Product");
+        $this->view->form   =   $form;
+        if($this->_request->isPost())
+        {
+            $form_data  =   $this->_request->getPost();
+            if($form->isValid($form_data))
+            {
+                $form->getValues();
+                
+                if(!$error)
+                {
+                    $produt_info_1_model    =   new Databases_Tables_ProductInfo1();
+                    $produt_info_1_model->supplier_sku  =   $form->getValue("supplier_sku");
+                    $produt_info_1_model->offer_price   =   $form->getValue("offer_price");
+                    $produt_info_1_model->product_name   =   $form->getValue("product_name");
+                    $produt_info_1_model->product_details   =   $form->getValue("product_details");
+                    $produt_info_1_model->AddProduct();
+                    $this->_redirect("admin/product-info-list");
+                }  else {
+                    $this->view->notice =   "Some information are inValid.";
+                    $form->populate($form_data);
+                }
+            }
+        }
+    }
+    
 }
 
