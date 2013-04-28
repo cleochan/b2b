@@ -162,8 +162,9 @@ class ScheduledController extends Zend_Controller_Action
                 $productFilter_model->handling_fee =   '';
                 $productFilter_model->AddProduct();
             }
-            $page_now++;
             print_R('page'.$page_now.' Updated ....</br>');  
+            $page_now++;
+            
         }while($page_now <= $TotalNumberOfPages);
         
         $page_now--;
@@ -179,7 +180,7 @@ class ScheduledController extends Zend_Controller_Action
             $params_model->UpdateVal('product_info_table_refresh_time',date('Y-m-d H:i:s'));
         }
         
-         print_R('Updated....');  
+         print_R('Date:'.date('Y-m-d H:i:s'));  
         die();
     }
     
