@@ -3,6 +3,35 @@
 class Databases_Joins_ProductFilter
 {
     var $xml_array;
+    var $data_source;
+    var $product_id;
+    var $supplier_sku;
+    var $brand_id;
+    var $brand_name;
+    var $mpn;
+    var $stock;
+    var $offer_price;
+    var $cost_price;
+    var $product_name;
+    var $features1;
+    var $product_details;
+    var $specification;
+    var $dimension;
+    var $colour;
+    var $size;
+    var $factory_url;
+    var $package_content;
+    var $warranty;
+    var $category_id;
+    var $category_name;
+    var $weight;
+    var $image_url_1;
+    var $pm;
+    var $options;
+    var $search_keyword;
+    var $list_price;
+    var $shipping;
+    var $handling_fee;
     
     function __construct(){
         $this->db = Zend_Registry::get("db");
@@ -169,14 +198,12 @@ class Databases_Joins_ProductFilter
         $params_model = new Databases_Tables_Params();
         $cost_markup = $params_model->GetVal("cost_markup");
         $data_source = $params_model->GetVal("product_info_table");
-        
         if($data_source && $sku) // 1 or 2
         {
             $product_select = $this->db->select();
             $product_select->from("product_info_".$data_source, array("supplier_sku", "offer_price", "cost_price", "shipping", "handling_fee"));
             $product_select->where("supplier_sku = ?", $sku);
             $product = $this->db->fetchRow($product_select);
-            
             if($product['supplier_sku'])
             {
                 $offer_price_cal = $this->OfferPriceCalculation($product['offer_price'], $product['cost_price'], $discount, $cost_markup/100);
@@ -285,5 +312,60 @@ class Databases_Joins_ProductFilter
         }
         
         return $result;
+    }
+    
+    function truncateProduct()
+    {
+        if($this->data_source == '1'){
+            $truncate_table =   'product_info_2';
+        }else
+        {
+            $truncate_table =   'product_info_1';
+        }
+        $this->db->query('truncate table '.$truncate_table);
+    }
+    
+    function AddProduct()
+    {
+        if($this->data_source == '1'){
+            $source_table =   'product_info_2';
+        }else
+        {
+            $source_table =   'product_info_1';
+        }
+        $data   =   array(
+            'product_id'    =>  $this->product_id,
+            'brand_id'      =>  $this->brand_id,
+            'brand_name'    =>  $this->brand_name,
+            'mpn'           =>  $this->mpn,
+            'stock'         =>  $this->stock,
+            'offer_price'   =>  $this->offer_price,
+            'cost_price'    =>  $this->cost_price,
+            'product_name'  =>  $this->product_name,
+            'features1'     =>  $this->features1,
+            'category_id'   =>  $this->category_id,
+            'category_name' =>  $this->category_name,
+            'supplier_sku'  =>  $this->supplier_sku,
+            'features1'     =>  $this->features1,
+            'product_details'   =>  $this->product_details,
+            'specification' =>  $this->specification,
+            'dimension'     =>  $this->dimension,
+            'colour'        =>  $this->colour,
+            'size'          =>  $this->size,
+            'factory_url'   =>  $this->factory_url,
+            'package_content'   =>  $this->package_content,
+            'warranty'      =>  $this->warranty,
+            'category_id'   =>  $this->category_id,
+            'category_name' =>  $this->category_name,
+            'weight'        =>  $this->weight,
+            'image_url_1'   =>  $this->image_url_1,
+            'pm'            =>  $this->pm,
+            'options'       =>  $this->options,
+            'search_keyword'=>  $this->search_keyword,
+            'list_price'    =>  $this->list_price,
+            'shipping'      =>  $this->shipping,
+            'handling_fee'  =>  $this->handling_fee,
+        );
+        $this->db->insert($source_table,$data);
     }
 }
