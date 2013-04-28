@@ -180,7 +180,7 @@ class ScheduledController extends Zend_Controller_Action
         }
         
          print_R('Updated....');  
-        //die();
+        die();
     }
     
     function testGetProductAction(){
