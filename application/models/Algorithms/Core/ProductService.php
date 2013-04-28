@@ -1,32 +1,29 @@
 <?php
 
+/**
+ * 
+ * @author Tim Wu <TimWu@crazysales.com.au>
+ */
 class Algorithms_Core_ProductService extends SoapClient{
-
-   var $MoneyType   =   array(
-       'Value'  =>  '', //decimal
-   );
+    
+    var $PaginationType =   array(
+        'EntriesPerPage'    =>  '',
+        'PageNumber'        =>  '',
+    );
+    
+    var $PaginationRequest  =   array(
+        'DetailsLevel'      =>  '',
+        'Pagination'        =>  '',
+    );
    
-   var $MessageType =   array(
-       'Action'     =>  '',// string
-       'Created'    =>  '',// dateTime
-       'Description'    =>  '',//string
-       'Level'      =>  '', 
-   );
-   
-   var $CategoryType    =   array(
-       'CategoryIDs'    =>  ''  //array of int
-   );
-   
-   var $EntriesPerPage;
-   var $PageNumber;
-   var $GetProductsRequest  =   array(
-       'ProductRequests'    =>  '',
-   );
-   
-   var $GetProductsResponse =   array(
-       'Product'    =>  '',
-   );
-   
+    var $GetProductsRequest =   array(
+        'CategoryIDs'       =>  '',
+        'Pagination'        =>  '',
+    );
+    
+    var $EntriesPerPage;
+    var $PageNumber;
+    
     private static $classmap = array();
     
     function __construct($wsdl = "http://10.0.0.186:8743/ProductService.svc?wsdl", $options = array()) {
@@ -54,12 +51,10 @@ class Algorithms_Core_ProductService extends SoapClient{
     
     function WebServicesGetProducts()
     {
-        $PaginationType['EntriesPerPage']   =   10;
-        $PaginationType['PageNumber']       =   1;
-        $req        = $this->GetProductsRequest;
-        $cattype    =   $this->CategoryType;
-        $cattype['PaginationType']  =   $PaginationType;
-        $req['ProductRequests']     =   array($cattype);
+        $this->PaginationType['EntriesPerPage'] =   $this->EntriesPerPage;
+        $this->PaginationType['PageNumber']     =   $this->PageNumber;
+        $req    =   $this->GetProductsRequest;
+        $req['Pagination']     =   $this->PaginationType;
         $response   =   $this->GetProducts(array('request' => $req)); 
         $result     =   $this->object_array($response);
         return $result;
