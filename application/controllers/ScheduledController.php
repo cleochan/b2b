@@ -175,6 +175,7 @@ class ScheduledController extends Zend_Controller_Action
             {
                 $params_model->UpdateVal('product_info_table', '1');
             }
+            $params_model->UpdateVal('product_info_table_refresh_time',date('Y-m-d H:i:s'));
         }
         
          print_R('Updated....');  
