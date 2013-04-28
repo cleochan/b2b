@@ -163,6 +163,7 @@ class ScheduledController extends Zend_Controller_Action
                 $productFilter_model->AddProduct();
             }
             $page_now++;
+            print_R('page'.$page_now.' Updated ....</br>');  
         }while($page_now <= $TotalNumberOfPages);
         
         $page_now--;
