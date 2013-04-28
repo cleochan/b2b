@@ -16,7 +16,7 @@ class ScheduledController extends Zend_Controller_Action
         die;
     }
     
-    function refreshProductsAction()
+    function refreshProductAction()
     {
         /**
          * truncate the secondary table
@@ -38,7 +38,7 @@ class ScheduledController extends Zend_Controller_Action
         die;
     }
     
-    function refreshOrderAction() 
+    function refreshOrdersAction() 
     {
         try{
         $getorder_model         =   new Databases_Joins_GetOrders();
@@ -103,4 +103,75 @@ class ScheduledController extends Zend_Controller_Action
 
         die();
     }
+    
+     function refreshProductsAction()
+    {
+        $product_webservice_model   =   new Algorithms_Core_ProductService();
+        $product_info_2_model   =   new Databases_Tables_ProductInfo2();
+        $TotalNumberOfEntries   =   '';
+        $TotalNumberOfPages     =   '';
+        $page_now   =   1;
+        $paginationType =   array(
+            'EntriesPerPage'    =>  1000,
+            'PageNumber'        =>  $page_now,
+        );
+        $product_webservice_model->PaginationType->EntriesPerPage =   $paginationType['EntriesPerPage'];
+        $product_webservice_model->PaginationType->PageNumber     =   $paginationType['PageNumber'];
+        $product_info_2_model->truncateProduct();
+        do
+        {
+            $product_webservice_model->PaginationType   =   $paginationType;
+            $reponse_data  =   $product_webservice_model->WebServicesGetProducts();
+            $TotalNumberOfEntries   =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfEntries'];
+            $TotalNumberOfPages     =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfPages'];
+            $product_list_data      =   $reponse_data['GetProductsResult']['Products']['CrazySalesProductType'];
+            foreach ($product_list_data as $product_data){
+                $product_info_2_model->supplier_sku =   $product_data['SupplierSku'];
+                $product_info_2_model->brand_id     =   $product_data['BinNumber'];
+                $product_info_2_model->brand_name   =   $product_data['Brand'];
+                $product_info_2_model->mpn          =   $product_data['MPN'];
+                $product_info_2_model->stock        =   '';
+                $product_info_2_model->offer_price  =   $product_data['StreetPrice']['Value'];
+                $product_info_2_model->cost_price   =   $product_data['Cost']['Value'];
+                $product_info_2_model->product_name =   $product_data['ProductName'];
+                $product_info_2_model->features1    =   $product_data['Features'];
+                $product_info_2_model->product_details   =   '';
+                $product_info_2_model->specificatio =   $product_data['Specification'];
+                $product_info_2_model->dimension    =   '';
+                $product_info_2_model->colour       =   '';
+                $product_info_2_model->size         =   '';
+                $product_info_2_model->factory_url  =   '';
+                $product_info_2_model->package_content   =   '';
+                $product_info_2_model->warranty     =   $product_data['Warranty'];
+                $product_info_2_model->category_id  =   $product_data['Category'];
+                $product_info_2_model->category_name=   '';
+                $product_info_2_model->weight       =   $product_data['ProductWeight'];
+                $product_info_2_model->image_url_1  =   $product_data['ProductImages'];
+                $product_info_2_model->pm           =   '';
+                $product_info_2_model->options      =   $product_data['ProductOptions'];
+                $product_info_2_model->search_keyword    =   $product_data['Keywords'];
+                $product_info_2_model->list_price   =   '';
+                $product_info_2_model->shipping     =   $product_data['EstimatedShippingCost'];
+                $product_info_2_model->handling_fee =   '';
+                $product_info_2_model->AddProduct();
+            }
+            $page_now++;
+        }while($page_now <= $TotalNumberOfPages);
+        die();
+    }
+    
+    function testGetProductAction(){
+        $page_now   =   1;
+        $paginationType =   array(
+            'EntriesPerPage'    =>  1000,
+            'PageNumber'        =>  $page_now,
+        );
+        $product_webservice_model   =   new Algorithms_Core_ProductService();
+        $product_webservice_model->EntriesPerPage =   $paginationType['EntriesPerPage'];
+        $product_webservice_model->PageNumber     =   $paginationType['PageNumber'];  
+        $return_data    =   $product_webservice_model->WebServicesGetProducts();
+        print_r($return_data);
+        die();
+    }
+    
 }
