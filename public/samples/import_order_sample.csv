@@ -1,3 +1,3 @@
 Your Record #,Buyer First Name,Buyer Last Name,Buyer Company,Buyer Address Line 1,Buyer Address Line 2,Buyer Suburb,Buyer State,Buyer Postal Code,Buyer Country,Buyer Phone,Buyer Fax,Supplier Item Code,TopBuy SKU,Qty,Shipping Method,Shipping Instruction,TrackingNumber,SerialsNo,Comments,Merchant Company,Pick Up
-1111,Ross Pascoe,Hello,AAA,14 Trafalgar St,aaa,Kerang,VIC,3579,AU,aaa,aaa,KA3016,TBLC-XX1033989                ,3,standard,aa,aaa,aa,aa,A Company,Y
-1111,Testtt,Hello,BBB,1 Villa Rd,aaa,Springvale,VIC,3179,AU,aaa,aaa,AMP-30W,LS3228,2,standard,aa,aa,aa,aa,A Company,Y
+1111,Ross Pascoe,Hello,AAA,14 Trafalgar St,aaa,Kerang,VIC,3579,AU,aaa,aaa,KA3016,TBLC-XX1033989                ,3,standard,aa,aaa,aa,aa,Test Company,Y
+1111,Testtt,Hello,BBB,1 Villa Rd,aaa,Springvale,VIC,3179,AU,aaa,aaa,AMP-30W,LS3228,2,standard,aa,aa,aa,aa,Test Company,Y
