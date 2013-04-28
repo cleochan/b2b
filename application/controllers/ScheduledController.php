@@ -46,12 +46,10 @@ class ScheduledController extends Zend_Controller_Action
         $system_params_model    =   new Databases_Tables_Params();
         $getuser_info_model     =   new Databases_Joins_GetUserInfo();
         
-        $order_status_pending       =   $system_params_model->GetVal('order_status_pending');
         $order_api_trying_times     =   $system_params_model->GetVal('order_api_trying_times');
         $order_api_trying_interval  =   $system_params_model->GetVal('order_api_trying_interval');
         
         $merchant_ref_pool = array();
-        
         $getorder_model->item_status    =   0;
         $getorder_model->order_api_trying_times     =   $order_api_trying_times;
         $getorder_model->order_api_trying_interval  =   $order_api_trying_interval;
@@ -59,7 +57,7 @@ class ScheduledController extends Zend_Controller_Action
         $orders_pending_list    =   $getorder_model->getPendinglist();
         if($orders_pending_list)
         {
-            foreach ($orders_pending_list as $key => $order_pending)
+            foreach ($orders_pending_list as  $order_pending)
             {
                 $user_info   =   $getuser_info_model->GetUserInfo($order_pending['user_id']);
                 $merchant_email =   $user_info['email'];
@@ -86,17 +84,18 @@ class ScheduledController extends Zend_Controller_Action
                 {
                     $getorder_model->main_order_id  =   $response_data['order_number'];
                     $getorder_model->item_status    =   1;
+                    
                 }else
                 {
                     $order_pending['api_trying_times']  +=  1;
                     $getorder_model->order_api_trying_times =   $order_pending['api_trying_times'];
                     $getorder_model->api_response           =   $response_data['MessageType']['Description'];
                 }
-                $place_order_return = $getorder_model->updatePendingOrder();
-                    //update merchant ref pool
-                $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
-                print_r($place_order_return);
+                $place_order_return = $getorder_model->updatePendingOrder(); 
+                print_R($place_order_return);  
+                //$merchant_ref_pool = $place_order_return['merchant_ref_pool'];
             }
+             
         }
           }  catch (Zend_Exception $exp){
             var_dump($exp->getMessage());
