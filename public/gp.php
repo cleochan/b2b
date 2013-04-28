@@ -27,6 +27,9 @@ class PaginationType {
   public $PageNumber; // int
 }
 
+
+
+        
 $pagtype = new PaginationType();
 $pagtype->EntriesPerPage=100;
 $pagtype->PageNumber=1;
@@ -34,6 +37,12 @@ $pagtype->PageNumber=1;
 class GetProductsRequest {
   public $ProductRequests; 
 }
+
+class Pagination{ 
+  public $PaginationType; // int 
+}
+$pag=new Pagination();
+$pag->PaginationType=array($PaginationType);
 
 class GetProductsResponse {
   public $Product; 
@@ -44,8 +53,8 @@ $cattype->PaginationType = array($pagtype);
 //$product->Category = array($orderItem);
 
 $req = new GetProductsRequest();
-$req->ProductRequests = array($pagtype);
-print_R(array('request' => $req));
+
+$req->ProductRequests = array($pag);
 
 $response = $client->GetProducts(array('request' => $req)); 
 echo '<pre>';
