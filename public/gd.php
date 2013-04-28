@@ -19,7 +19,7 @@ class GetProductsRequest extends PaginationRequest {
 
 $req = new GetProductsRequest();
 $paginationType =   new PaginationType();
-$paginationType->EntriesPerPage =   100;
+$paginationType->EntriesPerPage =   1;
 $paginationType->PageNumber     =   1;
 $req->Pagination    =   $paginationType;
 
