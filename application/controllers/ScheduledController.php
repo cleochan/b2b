@@ -116,7 +116,7 @@ class ScheduledController extends Zend_Controller_Action
         $TotalNumberOfPages     =   '';
         $page_now   =   1;
         $paginationType =   array(
-            'EntriesPerPage'    =>  100,
+            'EntriesPerPage'    =>  1000,
             'PageNumber'        =>  $page_now,
         );
         $product_webservice_model->EntriesPerPage =   $paginationType['EntriesPerPage'];
@@ -130,7 +130,8 @@ class ScheduledController extends Zend_Controller_Action
             $TotalNumberOfEntries   =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfEntries'];
             $TotalNumberOfPages     =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfPages'];
             $product_list_data      =   $reponse_data['GetProductsResult']['Products']['CrazySalesProductType'];
-
+            print_R($product_list_data);
+            exit;
             foreach ($product_list_data as $product_data){
                 $productFilter_model->product_id    =   $product_data['ProductID'];
                 $productFilter_model->supplier_sku =   $product_data['SupplierSku'];
@@ -144,7 +145,7 @@ class ScheduledController extends Zend_Controller_Action
                 $productFilter_model->features1    =   $product_data['Features'];
                 $productFilter_model->product_details   =   '';//ProductCondition
                 $productFilter_model->specificatio =   $product_data['Specification'];
-                $productFilter_model->dimension    =    $product_data['ProductDimension'];
+                $productFilter_model->dimension    =    '';//$product_data['ProductDimension']
                 $productFilter_model->colour       =   '';
                 $productFilter_model->size         =   '';
                 $productFilter_model->factory_url  =   '';
