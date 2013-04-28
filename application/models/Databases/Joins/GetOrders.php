@@ -477,7 +477,7 @@ class Databases_Joins_GetOrders
         }
         if($this->order_api_trying_times)
         {
-            //$select->where("api_trying_times < ?",$this->order_api_trying_times);
+            $select->where("api_trying_times < ?",$this->order_api_trying_times);
         }
         if($this->order_api_trying_interval)
         {
@@ -500,27 +500,28 @@ class Databases_Joins_GetOrders
         if(!$merchant_ref_pool[$this->merchant_ref])
         {
             //update purchase order table
-            $purchase_order_model->main_db_order_id     =   $this->main_order_id;   // add by Tim Wu 2013-4-24
+            $purchase_order_model->main_db_order_id     =   $this->main_order_id;  
             $purchase_order_model->purchase_order_id    =   $this->purchase_order_id;
-            $result1 =   $purchase_order_model->UpdatePurchaseOrder();
             $merchant_ref_pool[$this->merchant_ref]     =   $this->purchase_order_id;
         }
         if($this->main_order_id){
             $item_data = array(
                 'item_status'   => $this->item_status,
             );
+            $tip= 'Id:'.$this->purchase_order_id.'    Ref:'.$this->merchant_ref.'   succeed:('.$this->main_order_id.') </br>';
         }else
         {
             $item_data = array(
                 'api_trying_times'  =>  $this->order_api_trying_times,
                 'api_response'      =>  $this->api_response,
             );
+            $tip= 'Id:'.$this->purchase_order_id.'    Ref:'.$this->merchant_ref.'   failed:'.$this->api_response.' </br>';
         }
         $where  =   $this->db->quoteInto("logs_orders_id = ?",$this->logs_orders_id);
         $this->db->update("logs_orders", $item_data, $where);
         $result['purchase_order_id']    =   $merchant_ref_pool[$this->merchant_ref];
         $result['logs_orders_id']       =   $this->logs_orders_id;
         $result['merchant_ref_pool']    =   $merchant_ref_pool;
-        return $result;
+        return  $tip;
     }
 }
