@@ -13,7 +13,7 @@ class PaginationType {
 }
 
 $pagtype = new PaginationType();
-$pagtype->EntriesPerPage=100;
+$pagtype->EntriesPerPage=1;
 $pagtype->PageNumber=1;
 
 class GetProductsRequest {
@@ -27,7 +27,7 @@ class GetProductsResponse {
 
 $product=new products();
 $product->CategoryIDs="";
-$product->Pagination =array($pagtype);
+$product->Pagination =$pagtype;
 
 $req = new GetProductsRequest();
 $req->ProductRequests = array($product);
