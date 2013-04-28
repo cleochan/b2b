@@ -130,8 +130,7 @@ class ScheduledController extends Zend_Controller_Action
             $TotalNumberOfEntries   =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfEntries'];
             $TotalNumberOfPages     =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfPages'];
             $product_list_data      =   $reponse_data['GetProductsResult']['Products']['CrazySalesProductType'];
-            print_R($product_list_data);
-            exit;
+
             foreach ($product_list_data as $product_data){
                 $productFilter_model->product_id    =   $product_data['ProductID'];
                 $productFilter_model->supplier_sku =   $product_data['SupplierSku'];
