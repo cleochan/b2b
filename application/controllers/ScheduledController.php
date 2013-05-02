@@ -48,12 +48,12 @@ class ScheduledController extends Zend_Controller_Action
         
         $order_api_trying_times     =   $system_params_model->GetVal('order_api_trying_times');
         $order_api_trying_interval  =   $system_params_model->GetVal('order_api_trying_interval');
-        
+        $logs_path                  =   $system_params_model->GetVal('logs_path');
+        $logs_contents              =   ' ';
         $merchant_ref_pool = array();
         $getorder_model->item_status    =   0;
         $getorder_model->order_api_trying_times     =   $order_api_trying_times;
         $getorder_model->order_api_trying_interval  =   $order_api_trying_interval;
-        
         $orders_pending_list    =   $getorder_model->getPendinglist();
         if($orders_pending_list)
         {
@@ -79,23 +79,32 @@ class ScheduledController extends Zend_Controller_Action
                 $getorder_model->merchant_ref_pool  =   $merchant_ref_pool;
                 $getorder_model->merchant_ref       =   $order_pending['merchant_ref'];
                 $response_data   =   $order_webservice_model->WebServicePlaceOrder();
-                
                 if($response_data['order_number'])
                 {
                     $getorder_model->main_order_id  =   $response_data['order_number'];
                     $getorder_model->item_status    =   1;
                     
-                }else
+                }elseif($response_data['MessageType']['Description'])
                 {
-                    $order_pending['api_trying_times']  +=  1;
+                    $getorder_model->item_status    =   2;
                     $getorder_model->order_api_trying_times =   $order_pending['api_trying_times'];
                     $getorder_model->api_response           =   $response_data['MessageType']['Description'];
                 }
+                else
+                {
+                     $order_pending['api_trying_times']  +=  1;
+                     $getorder_model->order_api_trying_times    =   $order_pending['api_trying_times'];
+                     $getorder_model->api_response   =  "time out";
+                }
+                
+                $logs_contents   .=   'OrderNumber:'.$response_data['order_number'].' ItemStatus:'.$getorder_model->item_status.' DateTime:'.date('Y-m-d H:i:s').' ApiResponse:'.$getorder_model->api_response.'\r\n';
                 $place_order_return = $getorder_model->updatePendingOrder(); 
-                print_R($place_order_return);  
+                //print_R($place_order_return);  
                 //$merchant_ref_pool = $place_order_return['merchant_ref_pool'];
             }
-             
+            $f  =   fopen($logs_path.'orderslogs/refreshorders'.date('YmdHis').'.txt', 'a+');
+            fwrite($f, $logs_contents);
+            fclose($f);
         }
           }  catch (Zend_Exception $exp){
             var_dump($exp->getMessage());
@@ -111,12 +120,15 @@ class ScheduledController extends Zend_Controller_Action
         $productFilter_model    =   new Databases_Joins_ProductFilter();
         
         $data_source            =   $params_model->GetVal("product_info_table");
+        $entries_perpage        =   $params_model->GetVal("product_request_qty_per_page");
+        $logs_path              =   $params_model->GetVal('logs_path');
         $productFilter_model->data_source   =   $data_source;
         $TotalNumberOfEntries   =   '';
         $TotalNumberOfPages     =   '';
+        $logs_contents         =   ' ';
         $page_now   =   1;
         $paginationType =   array(
-            'EntriesPerPage'   =>  1000,
+            'EntriesPerPage'   =>  $entries_perpage,
             'PageNumber'       =>  $page_now,
         );
         $product_webservice_model->EntriesPerPage =   $paginationType['EntriesPerPage'];
@@ -162,7 +174,7 @@ class ScheduledController extends Zend_Controller_Action
                 $productFilter_model->handling_fee =   '';
                 $productFilter_model->AddProduct();
             }
-            print_R('page'.$page_now.' Updated ....</br>');  
+            $logs_contents  .=   'page'.$page_now.'Date:'.date('Y-m-d H:i:s').'\r\n';
             $page_now++;
             
         }while($page_now <= $TotalNumberOfPages);
@@ -179,23 +191,9 @@ class ScheduledController extends Zend_Controller_Action
             }
             $params_model->UpdateVal('product_info_table_refresh_time',date('Y-m-d H:i:s'));
         }
-        
-         print_R('Date:'.date('Y-m-d H:i:s'));  
+        $f  =   @fopen($logs_path.'productslogs/refreshproducts'.date('YmdHis').'.txt', 'a+');
+        @fwrite($f, $logs_contents);
+        @fclose($f);
         die();
-    }
-    
-    function testGetProductAction(){
-        $page_now   =   1;
-        $paginationType =   array(
-            'EntriesPerPage'    =>  1000,
-            'PageNumber'        =>  $page_now,
-        );
-        $product_webservice_model   =   new Algorithms_Core_ProductService();
-        $product_webservice_model->EntriesPerPage =   $paginationType['EntriesPerPage'];
-        $product_webservice_model->PageNumber     =   $paginationType['PageNumber'];  
-        $return_data    =   $product_webservice_model->WebServicesGetProducts();
-        print_r($return_data);
-        die();
-    }
-    
+    }    
 }
