@@ -694,6 +694,10 @@ class MerchantController extends Zend_Controller_Action
                     {
                         $getorders_model->main_order_id =   $response_data['order_number'];
                         $getorders_model->item_status   =   1;
+                    }elseif($response_data['MessageType'])
+                    {
+                        $getorders_model->item_status   =   2;
+                        $getorders_model->api_response  =   $response_data['MessageType']['Description'];
                     }
                     //end add
                     
