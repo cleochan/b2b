@@ -694,7 +694,7 @@ class MerchantController extends Zend_Controller_Action
                     {
                         $getorders_model->main_order_id =   $response_data['order_number'];
                         $getorders_model->item_status   =   1;
-                    }elseif($response_data['MessageType'])
+                    }elseif($response_data['MessageType']['Description'])
                     {
                         $getorders_model->item_status   =   2;
                         $getorders_model->api_response  =   $response_data['MessageType']['Description'];
@@ -723,34 +723,5 @@ class MerchantController extends Zend_Controller_Action
         $this->_redirect("/merchant/order-report/notice/".$notice);
     }
     
-
-    function testWebserviceAction()
-    {
-        error_reporting(0);
-        $order_service_model    =   new Algorithms_Core_OrderService();
-        for($i=0;$i<2;$i++){
-        $order_service_model->crazySalesOrderType['RetailerAccountEmail']   =   $_SESSION["Zend_Auth"]["storage"]->email;
-        $order_service_model->crazySalesOrderType['PaymentTypeID']          =   1;
-        $order_service_model->crazySalesOrderType['ShipFirstName']          =   "unmind";
-        $order_service_model->crazySalesOrderType['ShipAddress_1']          =   "12 Springvale Rd";
-        $order_service_model->crazySalesOrderType['ShipAddress_2']          =   "";
-        $order_service_model->crazySalesOrderType['ShipCity']               =   "";
-        $order_service_model->crazySalesOrderType['ShipState']              =   "Springvale";
-        $order_service_model->crazySalesOrderType['ShipZipCode']            =   "VIC";
-        $order_service_model->crazySalesOrderType['ShipCountryCode']        =   "3172";
-        $order_service_model->crazySalesOrderType['ShipPhone']              =   "123321123";
-        $order_service_model->crazySalesOrderType['orderAmount']            =   200;
-        $order_service_model->crazySalesOrderItemType['ExpectedItemCost']   =   10;
-        $order_service_model->crazySalesOrderItemType['FinalItemCost']      =   10;
-        $order_service_model->crazySalesOrderItemType['Quantity']           =   1;
-        $order_service_model->crazySalesOrderItemType['ItemSku']            =   "HW-BC943";
-
-        print_r($order_service_model->WebServicePlaceOrder());
-        $err    = error_get_last();
-        print_r($err);
-        }
-        exit();
-        die;
-    }
 }
 
