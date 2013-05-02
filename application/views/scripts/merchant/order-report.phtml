@@ -90,11 +90,10 @@ function senfe(o,a,b,c,d){
                                                 echo "<font color='green'>Approved</font>";
                                                 break;
                                             case 2:
-                                                echo "<font color='red'>Rejected<br />(".$list['api_response'].")</font>";
+                                                echo "<font color='red'>Rejected</font><div class='api_response'>".$list['api_response']."</div>";
                                                 break;
                                         }
                                         ?>
-                                        
                                     </span></td>
                             </tr>
                             <?php
@@ -105,9 +104,18 @@ function senfe(o,a,b,c,d){
                     </table>
     </table>
 </div>
+<div style=" background:#999;  border:#FFF 1px;">
+</div>
 <div align="right"><?=$this->pagination?>&nbsp;&nbsp;</div>
-<script language="javascript"><!--
+<script language="javascript">
 //senfe("表格名称","奇数行背景","偶数行背景","鼠标经过背景","点击后背景");
 senfe("senfe","#f8f8f8","#e8f5f9","#ccc","");
 
---></script>
+</script>
+<script language="javascript">
+    $(".small font[color='red']").mouseover(function() {
+        $(this).next().show();
+    }).mouseout(function() {  
+        $(this).next().hide();  
+    });
+</script>
