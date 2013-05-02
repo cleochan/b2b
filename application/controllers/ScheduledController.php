@@ -97,12 +97,11 @@ class ScheduledController extends Zend_Controller_Action
                      $getorder_model->api_response   =  "time out";
                 }
                 
-                $logs_contents   .=   'OrderNumber:'.$response_data['order_number'].' ItemStatus:'.$getorder_model->item_status.' DateTime:'.date('Y-m-d H:i:s').' ApiResponse:'.$getorder_model->api_response.'\r \n';
-                //$place_order_return = $getorder_model->updatePendingOrder(); 
+                $logs_contents   .=   'OrderNumber:'.$response_data['order_number'].' ItemStatus:'.$getorder_model->item_status.' DateTime:'.date('Y-m-d H:i:s').' ApiResponse:'.$getorder_model->api_response." \n ";
+                $place_order_return = $getorder_model->updatePendingOrder(); 
                 //print_R($place_order_return);  
                 //$merchant_ref_pool = $place_order_return['merchant_ref_pool'];
             }
-            print_r($logs_contents);
             $f  =   fopen($logs_path."orderslogs/refreshorders".date('YmdHis').".txt", "w");
             fwrite($f, $logs_contents);
             fclose($f);
@@ -175,7 +174,7 @@ class ScheduledController extends Zend_Controller_Action
                 $productFilter_model->handling_fee =   '';
                 $productFilter_model->AddProduct();
             }
-            $logs_contents  .=   'page'.$page_now.'Date:'.date('Y-m-d H:i:s').'\r\n';
+            $logs_contents  .=   'page'.$page_now.'Date:'.date('Y-m-d H:i:s')."\n";
             $page_now++;
             
         }while($page_now <= $TotalNumberOfPages);
