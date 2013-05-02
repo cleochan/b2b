@@ -30,7 +30,7 @@ class ScheduledController extends Zend_Controller_Action
             $product_filter_model = new Databases_Joins_ProductFilter();
             if($product_filter_model->TruncateProductTable($secondary['table_num']))
             {
-                $product_filter_model->PostXmlToRefreshProducts();
+                $product_filter_model->PostXmlToRefreshProducts(); 
             }
         }
         
@@ -116,8 +116,8 @@ class ScheduledController extends Zend_Controller_Action
         $TotalNumberOfPages     =   '';
         $page_now   =   1;
         $paginationType =   array(
-            'EntriesPerPage'    =>  1000,
-            'PageNumber'        =>  $page_now,
+            'EntriesPerPage'   =>  1000,
+            'PageNumber'       =>  $page_now,
         );
         $product_webservice_model->EntriesPerPage =   $paginationType['EntriesPerPage'];
         $productFilter_model->truncateProduct();
