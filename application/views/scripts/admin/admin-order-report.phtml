@@ -63,7 +63,7 @@ $(function()
                                                 echo "<font color='green'>Approved</font>";
                                                 break;
                                             case 2:
-                                                echo "<font color='red'>Rejected<br />(".$list['api_response'].")</font>";
+                                                echo "<font color='red'>Rejected</font><div class='api_response'>".$list['api_response']."</div>";
                                                 break;
                                         }
                                         ?>
@@ -79,3 +79,10 @@ $(function()
 </div>
 <div align="right"><?=$this->pagination?>&nbsp;&nbsp;</div>
 </div>
+<script language="javascript">
+    $(".small font[color='red']").mouseover(function() {
+        $(this).next().show();
+    }).mouseout(function() {  
+        $(this).next().hide();  
+    });
+</script>
