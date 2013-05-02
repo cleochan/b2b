@@ -360,7 +360,8 @@ class Databases_Joins_GetOrders
             "shipping_method" => $this->shipping_method,
             "shipping_instruction" => $this->shipping_instruction,
             "serial_no" => $this->serial_no,
-            "comments" => $this->comments
+            "comments" => $this->comments,
+            "api_response"  =>  $this->api_response,    // add by Tim Wu 2013-5-2
         );
         
         //add by Tim Wu 2013-4-24 if item_status is not NULL
