@@ -55,8 +55,6 @@ class ScheduledController extends Zend_Controller_Action
         $getorder_model->order_api_trying_times     =   $order_api_trying_times;
         $getorder_model->order_api_trying_interval  =   $order_api_trying_interval;
         $orders_pending_list    =   $getorder_model->getPendinglist();
-        print_r($orders_pending_list);
-        exit();
         if($orders_pending_list)
         {
             foreach ($orders_pending_list as  $order_pending)
@@ -104,7 +102,8 @@ class ScheduledController extends Zend_Controller_Action
                 //print_R($place_order_return);  
                 //$merchant_ref_pool = $place_order_return['merchant_ref_pool'];
             }
-            $f  =   fopen($logs_path."orderslogs/refreshorders".date('YmdHis').".txt", "w");
+            print_r($logs_contents);
+            $f  =   fopen($logs_path."orderslogs/refreshorders".date('YmdHis').".txt", "w+");
             fwrite($f, $logs_contents);
             fclose($f);
         }
