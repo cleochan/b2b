@@ -102,7 +102,7 @@ class ScheduledController extends Zend_Controller_Action
                 //print_R($place_order_return);  
                 //$merchant_ref_pool = $place_order_return['merchant_ref_pool'];
             }
-            $f  =   fopen($logs_path.'orderslogs/refreshorders'.date('YmdHis').'.txt', 'a+');
+            $f  =   fopen($logs_path."orderslogs/refreshorders".date('YmdHis').".txt", "w+");
             fwrite($f, $logs_contents);
             fclose($f);
         }
@@ -191,7 +191,7 @@ class ScheduledController extends Zend_Controller_Action
             }
             $params_model->UpdateVal('product_info_table_refresh_time',date('Y-m-d H:i:s'));
         }
-        $f  =   @fopen($logs_path.'productslogs/refreshproducts'.date('YmdHis').'.txt', 'a+');
+        $f  =   @fopen($logs_path."productslogs/refreshproducts".date('YmdHis').".txt", "w+");
         @fwrite($f, $logs_contents);
         @fclose($f);
         die();
