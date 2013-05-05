@@ -2,10 +2,6 @@
 
 <definitions name='S1'
 
-  targetNamespace='http://example.org/StockQuote'
-
-  xmlns:tns=' http://example.org/StockQuote '
-
   xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/'
 
   xmlns:xsd='http://www.w3.org/2001/XMLSchema'
