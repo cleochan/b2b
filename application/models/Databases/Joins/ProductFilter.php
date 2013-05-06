@@ -6,32 +6,71 @@ class Databases_Joins_ProductFilter
     var $data_source;
     var $product_id;
     var $supplier_sku;
-    var $brand_id;
-    var $brand_name;
-    var $mpn;
-    var $stock;
-    var $offer_price;
-    var $cost_price;
+    var $retailer_sku;
     var $product_name;
-    var $features1;
-    var $product_details;
-    var $specification;
-    var $dimension;
-    var $colour;
-    var $size;
-    var $factory_url;
-    var $package_content;
-    var $warranty;
+    var $retailer_account_id;
+    var $wholesale_cost;
+    var $street_price;
+    var $estimated_shipping_cost;
+    var $estimated_handling_fee;
+    var $quantity_available;
+    var $long_html_description;
+    var $short_html_description;
+    var $long_text_description;
+    var $short_text_description;
+    var $inventory_id;
+    var $brand;
+    var $brand_id;
+    var $manufacturer;
+    var $condition_id;
+    var $last_update_date;
+    var $mpn;
+    var $upc;
+    var $ean;
+    var $isbn;
+    var $gtin;
+    var $country_of_origin;
+    var $catalog;
+    var $catalog_start_date;
+    var $catalog_end_date;
+    var $category;
     var $category_id;
-    var $category_name;
+    var $cross_sell_skus;
+    var $package_weight;
+    var $package_weight_units;
+    var $package_length;
+    var $package_height;
+    var $package_depth;
+    var $package_dimension_units;
+    var $ships_freight;
+    var $freight_class;
+    var $ships_alone;
+    var $max_ship_single_box;
+    var $length;
+    var $height;
+    var $depth;
+    var $dimension_units;
     var $weight;
-    var $image_url_1;
-    var $pm;
-    var $options;
-    var $search_keyword;
-    var $list_price;
-    var $shipping;
-    var $handling_fee;
+    var $weight_units;
+    var $dimension_description;
+    var $min_purchase_quantity;
+    var $max_purchase_quantity;
+    var $bin_number;
+    var $accessory_skus;
+    var $keywords;
+    var $pers_available;
+    var $gift_wrap_available;
+    var $details;
+    var $features;
+    var $specification;
+    var $warranty;
+    var $discontinue_flag;
+    var $case_pack_length;
+    var $case_pack_height;
+    var $case_pack_depth;
+    var $case_pack_units;
+    var $case_pack_quantity;
+    
     
     function __construct(){
         $this->db = Zend_Registry::get("db");
@@ -201,16 +240,16 @@ class Databases_Joins_ProductFilter
         if($data_source && $sku) // 1 or 2
         {
             $product_select = $this->db->select();
-            $product_select->from("product_info_".$data_source, array("supplier_sku", "offer_price", "cost_price", "shipping", "handling_fee"));
+            $product_select->from("product_info_".$data_source, array("supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee"));
             $product_select->where("supplier_sku = ?", $sku);
             $product = $this->db->fetchRow($product_select);
             if($product['supplier_sku'])
             {
-                $offer_price_cal = $this->OfferPriceCalculation($product['offer_price'], $product['cost_price'], $discount, $cost_markup/100);
+                $offer_price_cal = $this->OfferPriceCalculation($product['street_price'], $product['wholesale_cost'], $discount, $cost_markup/100);
                 
-                $result['offer_price'] = $offer_price_cal[1];
-                $result['shipping'] = $product['shipping'];
-                $result['handling_fee'] = $product['handling_fee'];
+                $result['street_price'] = $offer_price_cal[1];
+                $result['estimated_shipping_cost'] = $product['estimated_shipping_cost'];
+                $result['estimated_handling_fee'] = $product['estimated_handling_fee'];
             }
         }
         
@@ -334,37 +373,73 @@ class Databases_Joins_ProductFilter
             $source_table =   'product_info_1';
         }
         $data   =   array(
-            'product_id'    =>  $this->product_id,
-            'brand_id'      =>  $this->brand_id,
-            'brand_name'    =>  $this->brand_name,
-            'mpn'           =>  $this->mpn,
-            'stock'         =>  $this->stock,
-            'offer_price'   =>  $this->offer_price,
-            'cost_price'    =>  $this->cost_price,
-            'product_name'  =>  $this->product_name,
-            'features1'     =>  $this->features1,
-            'category_id'   =>  $this->category_id,
-            'category_name' =>  $this->category_name,
-            'supplier_sku'  =>  $this->supplier_sku,
-            'features1'     =>  $this->features1,
-            'product_details'   =>  $this->product_details,
-            'specification' =>  $this->specification,
-            'dimension'     =>  $this->dimension,
-            'colour'        =>  $this->colour,
-            'size'          =>  $this->size,
-            'factory_url'   =>  $this->factory_url,
-            'package_content'   =>  $this->package_content,
-            'warranty'      =>  $this->warranty,
-            'category_id'   =>  $this->category_id,
-            'category_name' =>  $this->category_name,
-            'weight'        =>  $this->weight,
-            'image_url_1'   =>  $this->image_url_1,
-            'pm'            =>  $this->pm,
-            'options'       =>  $this->options,
-            'search_keyword'=>  $this->search_keyword,
-            'list_price'    =>  $this->list_price,
-            'shipping'      =>  $this->shipping,
-            'handling_fee'  =>  $this->handling_fee,
+
+            'product_id'        =>  $this->product_id,
+            'supplier_sku'      =>  $this->supplier_sku,
+            'retailer_sku'      =>  $this->retailer_sku,
+            'product_name'      =>  $this->product_name,
+            'retailer_account_id'   =>  $this->retailer_account_id,
+            'wholesale_cost'        =>  $this->wholesale_cost,
+            'street_price'          =>  $this->street_price,
+            'estimated_shipping_cost'   =>  $this->estimated_shipping_cost,
+            'estimated_handling_fee'    =>  $this->estimated_handling_fee,
+            'quantity_available'        =>  $this->quantity_available,
+            'long_html_description'     =>  $this->long_html_description,
+            'short_html_description'    =>  $this->short_html_description,
+            'long_text_description'     =>  $this->long_text_description,
+            'short_text_description'    =>  $this->short_text_description,
+            'inventory_id'              =>  $this->inventory_id,
+            'brand'                     =>  $this->brand,
+            'brand_id'                  =>  $this->brand_id,
+            'manufacturer'              =>  $this->manufacturer,
+            'condition_id'              =>  $this->condition_id,
+            'last_update_date'          =>  $this->last_update_date,
+            'mpn'                       =>  $this->mpn,
+            'upc'                       =>  $this->upc,
+            'ean'                       =>  $this->ean,
+            'isbn'                      =>  $this->isbn,
+            'gtin'                      =>  $this->gtin,
+            'country_of_origin'         =>  $this->country_of_origin,
+            'catalog'                   =>  $this->catalog,
+            'catalog_start_date'        =>  $this->catalog_start_date,
+            'catalog_end_date'          =>  $this->catalog_end_date,
+            'category'                  =>  $this->category,
+            'category_id'               =>  $this->category_id,
+            'cross_sell_skus'           =>  $this->cross_sell_skus,
+            'package_weight'            =>  $this->package_weight,
+            'package_weight_units'      =>  $this->package_weight_units,
+            'package_length'            =>  $this->package_length,
+            'package_height'            =>  $this->package_height,
+            'package_depth'             =>  $this->package_depth,
+            'package_dimension_units'   =>  $this->package_dimension_units,
+            'ships_freight'             =>  $this->ships_freight,
+            'freight_class'             =>  $this->freight_class,
+            'ships_alone'               =>  $this->ships_alone,
+            'max_ship_single_box'       =>  $this->max_ship_single_box,
+            'length'                    =>  $this->length,
+            'height'                    =>  $this->height,
+            'depth'                     =>  $this->depth,
+            'dimension_units'           =>  $this->dimension_units,
+            'weight'                    =>  $this->weight,
+            'weight_units'              =>  $this->weight_units,
+            'dimension_description'     =>  $this->dimension_description,
+            'min_purchase_quantity'     =>  $this->min_purchase_quantity,
+            'max_purchase_quantity'     =>  $this->max_purchase_quantity,
+            'bin_number'                =>  $this->bin_number,
+            'accessory_skus'            =>  $this->accessory_skus,
+            'keywords'                  =>  $this->keywords,
+            'pers_available'            =>  $this->pers_available,
+            'gift_wrap_available'       =>  $this->gift_wrap_available,
+            'details'                   =>  $this->details,
+            'features'                  =>  $this->features,
+            'specification'             =>  $this->specification,
+            'warranty'                  =>  $this->warranty,
+            'discontinue_flag'          =>  $this->discontinue_flag,
+            'case_pack_length'          =>  $this->case_pack_length,
+            'case_pack_height'          =>  $this->case_pack_height,
+            'case_pack_depth'           =>  $this->case_pack_depth,
+            'case_pack_units'           =>  $this->case_pack_units,
+            'case_pack_quantity'        =>  $this->case_pack_quantity,
         );
         $this->db->insert($source_table,$data);
     }
