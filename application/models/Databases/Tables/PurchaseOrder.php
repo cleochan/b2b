@@ -45,7 +45,7 @@ class Databases_Tables_PurchaseOrder extends Zend_Db_Table
                 "shipping_phone" => $this->shipping_phone,
                 "shipping_fax" => $this->shipping_fax,
                 "order_amount" => $this->order_amount,
-                "main_db_order_id" => $this->main_db_order_id
+                "main_db_order_id" => $this->main_db_order_id,
             );
             if($this->pickup)
             {
