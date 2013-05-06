@@ -270,18 +270,18 @@ class Databases_Joins_GetOrders
                 $product_filter_model = new Databases_Joins_ProductFilter();
                 $prices = $product_filter_model->GetSkuPrices(trim($this->supplier_sku), $user_info['user_id']);
                 
-                if(NULL !== $prices['offer_price'])
+                if(NULL !== $prices['street_price'])
                 {
                     if("Y" == $this->pick_up)
                     {
                         if(NULL !== $this->group_instance_balance_array[$user_info['user_id']]) //has calculated document fee already
                         {
-                            $order_amount = ( $prices['offer_price'] + $prices['handling_fee'] ) * trim($this->quantity);
+                            $order_amount = ( $prices['street_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity);
                         }else{
-                            $order_amount = ( $prices['offer_price'] + $prices['handling_fee'] ) * trim($this->quantity) + $document_fee;
+                            $order_amount = ( $prices['street_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity) + $document_fee;
                         }
                     }else{
-                        $order_amount = ( $prices['offer_price'] + $prices['shipping'] ) * trim($this->quantity);
+                        $order_amount = ( $prices['street_price'] + $prices['estimated_shipping_cost'] ) * trim($this->quantity);
                     }
                     
                     $result['order_amount'] = $order_amount;
