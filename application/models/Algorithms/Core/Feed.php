@@ -22,24 +22,23 @@ class Algorithms_Core_Feed
                     $contents = "";
                     $contents_tmp_array = array();
                     
-                    switch($collect_feed_info['users_feed']['feed_delimeter'])
-                    {
-                        case 1:
-                            $delimeter = "	"; //Tab
-                            break;
-                        case 2:
-                            $delimeter = ";";
-                            break;
-                        case 3:
-                            $delimeter = ",";
-                            break;
-                        case 4:
-                            $delimeter = " "; //Space
-                            break;
-                        case 5:
-                            $delimeter = $collect_feed_info['users_feed']['special_delimeter']; //Custom
-                            break;
-                    }
+//                    switch($collect_feed_info['users_feed']['feed_delimeter'])
+//                    {
+//                        case 1:
+//                            break;
+//                        case 2:
+//                            $delimeter = ";";
+//                            break;
+//                        case 3:
+//                            $delimeter = ",";
+//                            break;
+//                        case 4:
+//                            $delimeter = " "; //Space
+//                            break;
+//                        case 5:
+//                            $delimeter = $collect_feed_info['users_feed']['special_delimeter']; //Custom
+//                            break;
+//                    }
 
                      switch($collect_feed_info['users_feed']['feed_qualifier'])
                     {
@@ -107,7 +106,6 @@ class Algorithms_Core_Feed
                     $plugin_model = new Algorithms_Extensions_Plugin();
                     $export_model->file_name = $plugin_model->GetFeedPath($collect_feed_info['users_feed']['feed_name'], $collect_feed_info['users_feed']['feed_extension'], 1);
                     $export_model->contents = $contents;
-                    
                     //Create Feed
                     $result = $export_model->Push();
                     
