@@ -514,6 +514,7 @@ class Databases_Joins_GetOrders
         }else
         {
             $item_data = array(
+                'item_status'       =>  $this->item_status,
                 'api_trying_times'  =>  $this->order_api_trying_times,
                 'api_response'      =>  $this->api_response,
             );
