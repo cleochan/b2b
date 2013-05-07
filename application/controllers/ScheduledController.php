@@ -86,6 +86,7 @@ class ScheduledController extends Zend_Controller_Action
                     
                 }elseif($response_data['MessageType']['Description'])
                 {
+                    $logs_contents  =   $response_data['MessageType']['Description']."\n";
                     $getorder_model->item_status    =   2;
                     $getorder_model->order_api_trying_times =   $order_pending['api_trying_times'];
                     $getorder_model->api_response           =   $response_data['MessageType']['Description'];
@@ -97,7 +98,7 @@ class ScheduledController extends Zend_Controller_Action
                      $getorder_model->api_response   =  "time out";
                 }
                 
-                $logs_contents   .=   'log_order_id:'.$order_pending['logs_orders_id'].' supplier_sku:'.$order_pending['supplier_sku']. ' OrderNumber:'.$response_data['order_number'].' ItemStatus:'.$getorder_model->item_status.' DateTime:'.date('Y-m-d H:i:s').' ApiResponse:'.$getorder_model->api_response." \n ";
+                //$logs_contents   .=   'log_order_id:'.$order_pending['logs_orders_id'].' supplier_sku:'.$order_pending['supplier_sku']. ' OrderNumber:'.$response_data['order_number'].' ItemStatus:'.$getorder_model->item_status.' DateTime:'.date('Y-m-d H:i:s').' ApiResponse:'.$getorder_model->api_response." \n ";
                 $place_order_return = $getorder_model->updatePendingOrder(); 
                 //print_R($place_order_return);  
                 //$merchant_ref_pool = $place_order_return['merchant_ref_pool'];
