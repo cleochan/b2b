@@ -22,25 +22,25 @@ class Algorithms_Core_Feed
                     $contents = "";
                     $contents_tmp_array = array();
                     
-//                    switch($collect_feed_info['users_feed']['feed_delimeter'])
-//                    {
-//                        case 1:
-//                            $delimeter = "	"; //Tab
-//                            break;
-//                        case 2:
-//                            $delimeter = ";";
-//                            break;
-//                        case 3:
-//                            $delimeter = ",";
-//                            break;
-//                        case 4:
-//                            $delimeter = " "; //Space
-//                            break;
-//                        case 5:
-//                            $delimeter = $collect_feed_info['users_feed']['special_delimeter']; //Custom
-//                            break;
-//                    }
-//
+                    switch($collect_feed_info['users_feed']['feed_delimeter'])
+                    {
+                        case 1:
+                            $delimeter = "	"; //Tab
+                            break;
+                        case 2:
+                            $delimeter = ";";
+                            break;
+                        case 3:
+                            $delimeter = ",";
+                            break;
+                        case 4:
+                            $delimeter = " "; //Space
+                            break;
+                        case 5:
+                            $delimeter = $collect_feed_info['users_feed']['special_delimeter']; //Custom
+                            break;
+                    }
+
                      switch($collect_feed_info['users_feed']['feed_qualifier'])
                     {
                         case 1:
