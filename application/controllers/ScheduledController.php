@@ -86,7 +86,6 @@ class ScheduledController extends Zend_Controller_Action
                     
                 }elseif($response_data['MessageType']['Description'])
                 {
-                    $logs_contents  .=   $response_data['MessageType']['Description']."\n";
                     $getorder_model->item_status    =   2;
                     $getorder_model->order_api_trying_times =   $order_pending['api_trying_times'];
                     $getorder_model->api_response           =   $response_data['MessageType']['Description'];
