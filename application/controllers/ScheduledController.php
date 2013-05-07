@@ -92,8 +92,8 @@ class ScheduledController extends Zend_Controller_Action
                 }
                 else
                 {
-                     $order_pending['api_trying_times']  +=  1;
-                     $getorder_model->order_api_trying_times    =   $order_pending['api_trying_times'];
+                     $api_trying_times  =   $order_pending['api_trying_times']  +  1;
+                     $getorder_model->order_api_trying_times    =   $api_trying_times;
                      $getorder_model->api_response   =  "time out";
                 }
                 
