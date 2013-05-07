@@ -480,7 +480,7 @@ class Databases_Joins_GetOrders
         {
             $select->where("api_trying_times < ?",$this->order_api_trying_times);
         }
-        if($this->order_api_trying_interval)
+        if($this->order_api_trying_interval>0)
         {
             $time_now_unix  =   time();
             $time_yes_unix  =   $time_now_unix - $this->order_api_trying_interval;
