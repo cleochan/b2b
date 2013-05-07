@@ -65,7 +65,7 @@ class Algorithms_Core_Feed
                             $contents_tmp_array[] = $qualifier.$users_feed_definition['column_alias'].$qualifier;
                         }
 
-                        $contents .= implode($delimeter, $contents_tmp_array)."\r\n";
+                        $contents .= implode('', $contents_tmp_array)."\r\n";
                         //==== Make Title Finished ====//
 
                         foreach($product_list as $pl)
@@ -77,7 +77,7 @@ class Algorithms_Core_Feed
                                 $contents_tmp_array[] = $qualifier.$this->StringReplacement($pl, $users_feed_definition['column_value'], $array_for_replacement, $users_feed_definition['column_value_adjustment']).$qualifier;
                             }
 
-                            $contents .= implode($delimeter, $contents_tmp_array)."\r\n";
+                            $contents .= implode('', $contents_tmp_array)."\r\n";
                         }
                     }elseif(3 == $collect_feed_info['users_feed']['feed_extension']) //xml
                     {
