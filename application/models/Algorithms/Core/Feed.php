@@ -41,18 +41,18 @@ class Algorithms_Core_Feed
 //                            break;
 //                    }
 //
-//                     switch($collect_feed_info['users_feed']['feed_qualifier'])
-//                    {
-//                        case 1:
-//                            $qualifier = ''; //None
-//                            break;
-//                        case 2:
-//                            $qualifier = '"'; // "
-//                            break;
-//                        case 3:
-//                            $qualifier = "'"; // '
-//                            break;
-//                    }
+                     switch($collect_feed_info['users_feed']['feed_qualifier'])
+                    {
+                        case 1:
+                            $qualifier = ''; //None
+                            break;
+                        case 2:
+                            $qualifier = '"'; // "
+                            break;
+                        case 3:
+                            $qualifier = "'"; // '
+                            break;
+                    }
                     
                     $feed_dictionary = new Databases_Tables_FeedDictionary();
                     $array_for_replacement = $feed_dictionary->ArrayForReplacement();
