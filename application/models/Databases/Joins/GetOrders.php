@@ -491,6 +491,8 @@ class Databases_Joins_GetOrders
             $select->where("p.issue_time <= ?", $time_now);
         }
         $result =   $this->db->fetchAll($select);
+        print_r($result);
+        exit();
         return $result;
     }
     
