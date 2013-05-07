@@ -568,10 +568,10 @@ class MerchantController extends Zend_Controller_Action
                                 $getorders_model->operator_id = $this->params['user_id'];
                                 $getorders_model->pick_up = $da_val[21];
                                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
+                                
+                                $check_result = $getorders_model->PlaceOrderCheck();
                                 echo 1;
                                 exit();
-                                $check_result = $getorders_model->PlaceOrderCheck();
-                                
                                 $data_array[$da_key]['result'] = $check_result[1];
                                 $data_array[$da_key]['reason'] = $check_result[2];
                                 $data_array[$da_key]['order_amount'] = $check_result['order_amount'];
