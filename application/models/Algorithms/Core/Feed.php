@@ -25,6 +25,7 @@ class Algorithms_Core_Feed
 //                    switch($collect_feed_info['users_feed']['feed_delimeter'])
 //                    {
 //                        case 1:
+//                            $delimeter = "	"; //Tab
 //                            break;
 //                        case 2:
 //                            $delimeter = ";";
@@ -39,7 +40,7 @@ class Algorithms_Core_Feed
 //                            $delimeter = $collect_feed_info['users_feed']['special_delimeter']; //Custom
 //                            break;
 //                    }
-
+//
 //                     switch($collect_feed_info['users_feed']['feed_qualifier'])
 //                    {
 //                        case 1:
