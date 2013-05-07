@@ -136,17 +136,17 @@ class Databases_Joins_ProductFilter
             switch ($stock)
             {
                 case 2: //in stock
-                    $select->where("stock > ?", 0);
+                    $select->where("quantity_available > ?", 0);
                     break;
                 case 3: //out of stock
-                    $select->where("stock = ?", 0);
+                    $select->where("quantity_available = ?", 0);
                     break;
                 default :
                     break;
             }
-            $select->order("category_name ASC");
-            $select->order("brand_name ASC");
-
+            $select->order("category ASC");
+            $select->order("brand ASC");
+            
             $data = $this->db->fetchAll($select);
             
             //update for discount/cost protection
@@ -154,19 +154,19 @@ class Databases_Joins_ProductFilter
             {
                 foreach($data as $d_key => $d_val)
                 {
-                    $cal_result = $this->OfferPriceCalculation($d_val['offer_price'], $d_val['cost_price'], $discount, ($cost_markup/100));
+                    $cal_result = $this->OfferPriceCalculation($d_val['street_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
                     
-                    $data[$d_key]['offer_price'] = $cal_result[1]; //update price
+                    $data[$d_key]['street_price'] = $cal_result[1]; //update price
                     
                     if($cost_protection && $cal_result[0])
                     {
-                        $data[$d_key]['stock'] = 0; //erase stock
+                        $data[$d_key]['quantity_available'] = 0; //erase stock
                     }
                     
                     //format the other prices
-                    $data[$d_key]['shipping'] = number_format($d_val['shipping'], 2);
-                    $data[$d_key]['list_price'] = number_format($d_val['list_price'], 2);
-                    $data[$d_key]['stock'] = (0 < $d_val['stock'])?$d_val['stock']:0;
+                    $data[$d_key]['estimated_shipping_cost'] = number_format($d_val['estimated_shipping_cost'], 2);
+                    //$data[$d_key]['list_price'] = number_format($d_val['list_price'], 2);
+                    $data[$d_key]['quantity_available'] = (0 < $d_val['quantity_available'])?$d_val['quantity_available']:0;
                 }
             }
         }else{
