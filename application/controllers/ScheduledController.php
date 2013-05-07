@@ -128,8 +128,8 @@ class ScheduledController extends Zend_Controller_Action
         $logs_contents         =   ' ';
         $page_now   =   1;
         $paginationType =   array(
-            'EntriesPerPage'   =>  $entries_perpage,
-            'PageNumber'       =>  $page_now,
+            'EntriesPerPage'   =>   $entries_perpage,
+            'PageNumber'       =>   $page_now,
         );
         $product_webservice_model->EntriesPerPage =   $paginationType['EntriesPerPage'];
         $productFilter_model->truncateProduct();
