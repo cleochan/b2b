@@ -175,8 +175,8 @@ class ScheduledController extends Zend_Controller_Action
                 $productFilter_model->category                  =   $product_data['Category']['CategoryName'];
                 $productFilter_model->category_id               =   $product_data['Category']['CategoryID'];
                 $productFilter_model->cross_sell_skus           =   $product_data['CrossSellSkus'];
-                $productFilter_model->package_weight            =   $product_data['PackageWeight'];
-                $productFilter_model->package_weight_units      =   $product_data['PackageDimension']['Units'];
+                $productFilter_model->package_weight            =   $product_data['PackageWeight']['Value'];
+                $productFilter_model->package_weight_units      =   $product_data['PackageWeight']['Units'];
                 $productFilter_model->package_length            =   $product_data['PackageDimension']['Length'];
                 $productFilter_model->package_height            =   $product_data['PackageDimension']['Width'];
                 $productFilter_model->package_depth             =   $product_data['PackageDimension']['Depth'];
