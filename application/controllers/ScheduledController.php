@@ -145,7 +145,7 @@ class ScheduledController extends Zend_Controller_Action
             foreach ($product_list_data as $product_data){                
                 $productFilter_model->product_id    =   $product_data['ProductID'];
                 $productFilter_model->supplier_sku  =   $product_data['SupplierSku'];
-                $productFilter_model->retailer_sku  =   '';
+                $productFilter_model->retailer_sku  =   $product_data['RetailerSku'];
                 $productFilter_model->product_name  =   $product_data['ProductName'];
                 $productFilter_model->retailer_account_id   =   '';
                 $productFilter_model->wholesale_cost    =   $product_data['Cost']['Value'];
@@ -153,9 +153,8 @@ class ScheduledController extends Zend_Controller_Action
                 $productFilter_model->estimated_shipping_cost   =   $product_data['EstimatedShippingCost']['Value'];
                 $productFilter_model->estimated_handling_fee    =   $product_data['EstimatedHandlingCost']['Value'];
                 $productFilter_model->quantity_available        =   $product_data['QuantityAvailable']['Value'];
-                $productFilter_model->long_html_description     =   '';
+                $productFilter_model->long_html_description     =   $product_data['Description'];
                 $productFilter_model->inventory_id              =   '';
-                $productFilter_model->long_html_description     =   '';
                 $productFilter_model->short_html_description    =   '';
                 $productFilter_model->long_text_description     =   '';
                 $productFilter_model->short_text_description    =   '';
