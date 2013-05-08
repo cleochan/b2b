@@ -566,7 +566,7 @@ class MerchantController extends Zend_Controller_Action
                 endif;
                 $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
             }
-            
+            $this->view->notice_paypal =   "PayPal Rechange successfully.";
             $this->view->list = $data_array;
         }
         else
