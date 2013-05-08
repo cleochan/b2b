@@ -526,79 +526,157 @@ class MerchantController extends Zend_Controller_Action
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Import Order"));
         
-        if ($_FILES["csvf"]["error"] > 0)
+        $group_instance_balance_array = array();
+        $getorders_model = new Databases_Joins_GetOrders();
+        if ($_SESSION['import_order'][$this->params['sessionid']]&& $this->params['sessionid'])
         {
-            $this->view->notice = $_FILES["csvf"]["error"];
-        }else{
-            if('text/csv' != $_FILES["csvf"]["type"])
+            $data_array =   $_SESSION['import_order'][$this->params['sessionid']];
+             foreach($data_array as $da_key => $da_val)
             {
-                $this->view->notice = "File type is invalid.";
-            }else{
-                //Action
-                $group_instance_balance_array = array();
-                $getorders_model = new Databases_Joins_GetOrders();
-                $data_array = array();
-                if (($handle = fopen($_FILES["csvf"]["tmp_name"], "r")) !== FALSE) {
-                    while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
-                        $data_array[] = $data;
-                    }
-                    fclose($handle);
-                    
-                    if(!empty($data_array))
-                    {
-                        //ignore title
-                        unset($data_array[0]);
-                        
-                        foreach($data_array as $da_key => $da_val)
+                $count_column = count($da_val);
+
+                $getorders_model->shipping_first_name = $da_val[1];
+                $getorders_model->shipping_last_name = $da_val[2];
+                $getorders_model->shipping_company = $da_val[3];
+                $getorders_model->merchant_company = $da_val[20]; // REQUIRED AND IMPORTANT !!!
+                $getorders_model->shipping_address_1 = $da_val[4];
+                $getorders_model->shipping_suburb = $da_val[6];
+                $getorders_model->shipping_state = $da_val[7];
+                $getorders_model->shipping_postcode = $da_val[8];
+                $getorders_model->shipping_country = $da_val[9];
+                $getorders_model->supplier_sku = $da_val[12];
+                $getorders_model->quantity = $da_val[14];
+                $getorders_model->operator_id = $this->params['user_id'];
+                $getorders_model->pick_up = $da_val[21];
+                $getorders_model->group_instance_balance_array = $group_instance_balance_array;
+
+                $check_result = $getorders_model->PlaceOrderCheck();
+
+                $data_array[$da_key]['result'] = $check_result[1];
+                $data_array[$da_key]['reason'] = $check_result[2];
+                $data_array[$da_key]['order_amount'] = $check_result['order_amount'];
+                $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
+                $data_array[$da_key]['credit'] = $check_result['credit'];
+                $data_array[$da_key]['user_id'] = $check_result['user_id'];
+
+
+                //update instant balance
+                if ($check_result[2]=="Out of balance"):
+                    $this->view->ifpay=1;
+                endif;
+                $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
+            }
+            
+            $this->view->list = $data_array;
+        }
+        else
+        {
+            
+            if ($_FILES["csvf"]["error"] > 0)
+            {
+                
+                $this->view->notice = $_FILES["csvf"]["error"];
+            }
+            else{
+                if('text/csv' != $_FILES["csvf"]["type"])
+                {
+                    $this->view->notice = "File type is invalid.";
+                }else{
+                    //Action
+                    $data_array = array();
+                    if (($handle = fopen($_FILES["csvf"]["tmp_name"], "r")) !== FALSE) {
+                        while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
+                            $data_array[] = $data;
+                        }
+                        fclose($handle);
+                        if(!empty($data_array))
                         {
-                            $count_column = count($da_val);
-                            
-                            if(22 != $count_column) //Reject due to the column amount
+                            //ignore title
+                            unset($data_array[0]);
+
+                            foreach($data_array as $da_key => $da_val)
                             {
-                                $data_array[$da_key]['result'] = "N";
-                                $data_array[$da_key]['reason'] = "Column Amount Error.";
-                            }else{ //check contents
-                                $getorders_model->shipping_first_name = $da_val[1];
-                                $getorders_model->shipping_last_name = $da_val[2];
-                                $getorders_model->shipping_company = $da_val[3];
-                                $getorders_model->merchant_company = $da_val[20]; // REQUIRED AND IMPORTANT !!!
-                                $getorders_model->shipping_address_1 = $da_val[4];
-                                $getorders_model->shipping_suburb = $da_val[6];
-                                $getorders_model->shipping_state = $da_val[7];
-                                $getorders_model->shipping_postcode = $da_val[8];
-                                $getorders_model->shipping_country = $da_val[9];
-                                $getorders_model->supplier_sku = $da_val[12];
-                                $getorders_model->quantity = $da_val[14];
-                                $getorders_model->operator_id = $this->params['user_id'];
-                                $getorders_model->pick_up = $da_val[21];
-                                $getorders_model->group_instance_balance_array = $group_instance_balance_array;
-                                
-                                $check_result = $getorders_model->PlaceOrderCheck();
-                                
-                                $data_array[$da_key]['result'] = $check_result[1];
-                                $data_array[$da_key]['reason'] = $check_result[2];
-                                $data_array[$da_key]['order_amount'] = $check_result['order_amount'];
-                                $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
-                                $data_array[$da_key]['credit'] = $check_result['credit'];
-                                $data_array[$da_key]['user_id'] = $check_result['user_id'];
-                                
-                                //update instant balance
-                                if ($check_result[2]=="Out of balance"):
-                                    $this->view->ifpay=1;
-                                endif;
-                                $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
+                                $count_column = count($da_val);
+
+                                if(22 != $count_column) //Reject due to the column amount
+                                {
+                                    $data_array[$da_key]['result'] = "N";
+                                    $data_array[$da_key]['reason'] = "Column Amount Error.";
+                                }else{ //check contents
+                                    $getorders_model->shipping_first_name = $da_val[1];
+                                    $getorders_model->shipping_last_name = $da_val[2];
+                                    $getorders_model->shipping_company = $da_val[3];
+                                    $getorders_model->merchant_company = $da_val[20]; // REQUIRED AND IMPORTANT !!!
+                                    $getorders_model->shipping_address_1 = $da_val[4];
+                                    $getorders_model->shipping_suburb = $da_val[6];
+                                    $getorders_model->shipping_state = $da_val[7];
+                                    $getorders_model->shipping_postcode = $da_val[8];
+                                    $getorders_model->shipping_country = $da_val[9];
+                                    $getorders_model->supplier_sku = $da_val[12];
+                                    $getorders_model->quantity = $da_val[14];
+                                    $getorders_model->operator_id = $this->params['user_id'];
+                                    $getorders_model->pick_up = $da_val[21];
+                                    $getorders_model->group_instance_balance_array = $group_instance_balance_array;
+
+                                    $check_result = $getorders_model->PlaceOrderCheck();
+
+                                    $data_array[$da_key]['result'] = $check_result[1];
+                                    $data_array[$da_key]['reason'] = $check_result[2];
+                                    $data_array[$da_key]['order_amount'] = $check_result['order_amount'];
+                                    $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
+                                    $data_array[$da_key]['credit'] = $check_result['credit'];
+                                    $data_array[$da_key]['user_id'] = $check_result['user_id'];
+
+
+                                    //update instant balance
+                                    if ($check_result[2]=="Out of balance"):
+                                        $this->view->ifpay=1;
+                                    endif;
+                                    $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
+                                }
+
                             }
                         }
+                        $sessionId =   base64_encode($this->params['user_id'].date('YmdHis'));
+                        $_SESSION['import_order'][$sessionId]   =   $data_array;
+                        $this->view->sessionId  =   $sessionId;
+                        $this->view->userId     =   $this->params['user_id'];
+                        $this->view->list = $data_array;
+
+                    }else{
+                        $this->view->notice = "Error.";
                     }
-                    
-                    $this->view->list = $data_array;
-                    
-                }else{
-                    $this->view->notice = "Error.";
                 }
             }
         }
     }
+    
+    function paypalSuccessAction ()
+    {
+        $params =   $this->_request->getParams();
+        $logs_financial = new Databases_Tables_LogsFinancial();
+        $sessionId  =   $params['sessionid'];
+        $logs_financial->user_id        =   $params['userid'];
+        $logs_financial->action_type    =   3; //Adjustment
+        $logs_financial->action_affect  =   1; //Recharge
+        $logs_financial->action_value   =   $params['rechange'];
+        if($logs_financial->AddLog())
+        {
+            $this->_redirect("/merchant/import-order-preview/sessionid/".$sessionId);
+        }else{
+            echo "Error: Action is rejected, please contact system administrator.";
+            die;
+        }
+    }
+    
+    function paypalNotifyAction()
+    {
+        $f  =   fopen("logs/test".date('YmdHis').".txt", "w+");
+        @fwrite($f, "askljdfhaslkdhf");
+        @fclose($f);
+        die();
+    }
+    
     
     function importOrderConfirmAction()
     {
