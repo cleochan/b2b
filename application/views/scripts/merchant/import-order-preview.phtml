@@ -39,6 +39,7 @@
                                     <td class="center"><?=$list_val[14]?></td>
                                     <td class="center"><?=number_format($list_val['order_amount'],2)?></td>
                                     <td class="center"><?=number_format($list_val['instant_balance'],2)?></td>
+                                    
                                     <td class="center"><?=number_format($list_val['credit'],2)?></td>
                                     <?php if("Y" == $list_val['result']):?>
                                         <td class="center"><font color="green">Approved</font></td>
@@ -73,16 +74,20 @@
                                 <input type="hidden" name="comments[<?=$list_key?>]" value="<?=$list_val[19]?>" />
                                 <input type="hidden" name="pick_up[<?=$list_key?>]" value="<?=$list_val[21]?>" />
 				<?php
+                                            $instant_balance    =   $list_val['instant_balance'];
                                             endforeach;
                                     endif;
 				?>
+                                 
+                                session= $this->list
                                 
                                 <input type="hidden" name="cmd" value="_xclick" />
                                 <input type="hidden" name="business" value="angus002@163.com" />
                                 <input type="hidden" name="item_name" value="B2B pay" />
-                                <input type="hidden" name="amount" value="5" />
+                                <input type="hidden" name="amount" value="<?=abs($instant_balance) ?>" />
                                 <input type="hidden" name="bn" value="webasyst" />
-                                <input type="hidden" name="return" value="http://devb2b/notify.php" />
+                                <input type="hidden" name="return" value="http://testb2b/merchant/paypal-success/sessionid/<?=$this->sessionId?>/userid/<?=$this->userId?>/transaction_result/success/rechange/<?=abs($instant_balance) ?>" />
+                                <input type="hidden" name="notify_url" value="http://testb2b/merchant/paypal-notify"/>
                                 <input type="hidden" name="currency_code" value="AUD" />
                                 <img src="/public/tpl2/images/paypal-credit.gif" alt="Pay now!" />
                                 
