@@ -6,7 +6,7 @@
 <?php else: ?>
 <br />
 <div align="center">
-    <form action="/merchant/import-order-confirm" method="POST">
+    <form action="<?php if($this->ifpay){?>https://www.sandbox.paypal.com/cgi-bin/webscr<?php }else{?>/merchant/import-order-confirm<?php };?>" method="POST" name='preview_form'>
         <table class="hide" border="0" cellpadding="0" cellspacing="1">
             <tbody>
                 <tr>
@@ -76,9 +76,19 @@
                                             endforeach;
                                     endif;
 				?>
+                                
+                                <input type="hidden" name="cmd" value="_xclick" />
+                                <input type="hidden" name="business" value="angus002@163.com" />
+                                <input type="hidden" name="item_name" value="B2B pay" />
+                                <input type="hidden" name="amount" value="5" />
+                                <input type="hidden" name="bn" value="webasyst" />
+                                <input type="hidden" name="return" value="http://devb2b/notify.php" />
+                                <input type="hidden" name="currency_code" value="AUD" />
+                                <img src="/public/tpl2/images/paypal-credit.gif" alt="Pay now!" />
+                                
                                 <tr>
                                     <td class="form-title" colspan="11">
-                                        <input type="submit" value="Confirm Update" <?php if($is_rejected){echo "disabled='disabled'";}?> /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?></td>
+                                        <input type="submit" value="Confirm Update" <?php if($is_rejected){echo "disabled='disabled'";}?> /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?><?php if($this->ifpay):?><a href="javascript:document.forms['preview_form'].submit(); return false;"><span onclick="javascript:document.forms['preview_form'].submit(); return false;"> Click To Pay By PayPal</span></a><?php endif ?></td>
                                 </tr>
                             </tbody>
                         </table>
