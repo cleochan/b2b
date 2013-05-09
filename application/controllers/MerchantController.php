@@ -310,13 +310,50 @@ class MerchantController extends Zend_Controller_Action
                 );
             }
         }
-        
-        if(!empty($data_array))
+        if ($_SESSION['place_order'][$this->params['sessionid']]&& $this->params['sessionid'])
+        {
+            $data_array =   $_SESSION['place_order'][$this->params['sessionid']];
+             foreach($data_array as $da_key => $da_val)
+            {
+                $getorders_model->shipping_first_name = $da_val['shipping_first_name'];
+                $getorders_model->shipping_last_name = $da_val['shipping_last_name'];
+                $getorders_model->shipping_company = $da_val['shipping_company'];
+                $getorders_model->merchant_company = $da_val['merchant_company'];
+                $getorders_model->shipping_address_1 = $da_val['shipping_address_1'];
+                $getorders_model->shipping_suburb = $da_val['shipping_suburb'];
+                $getorders_model->shipping_state = $da_val['shipping_state'];
+                $getorders_model->shipping_postcode = $da_val['shipping_postcode'];
+                $getorders_model->shipping_country = $da_val['shipping_country'];
+                $getorders_model->supplier_sku = $da_val['supplier_sku'];
+                $getorders_model->quantity = $da_val['quantity'];
+                $getorders_model->operator_id = $this->params['user_id'];
+                $getorders_model->pick_up = $da_val['pick_up'];
+                $getorders_model->group_instance_balance_array = $group_instance_balance_array;
+
+                $check_result = $getorders_model->PlaceOrderCheck();
+
+                $data_array[$da_key]['result'] = $check_result[1];
+                $data_array[$da_key]['reason'] = $check_result[2];
+                $data_array[$da_key]['order_amount'] = $check_result['order_amount'];
+                $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
+                $data_array[$da_key]['credit'] = $check_result['credit'];
+                $data_array[$da_key]['user_id'] = $check_result['user_id'];
+
+
+                //update instant balance
+                if ($check_result[2]=="Out of balance"):
+                    $this->view->ifpay=1;
+                endif;
+                $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
+            }
+            $this->view->notice_paypal =   "PayPal Rechange successfully.";
+            $this->view->list = $data_array;
+        }elseif(!empty($data_array))
         {
             foreach($data_array as $da_key => $da_val)
             {
                 $count_column = count($da_val);
-
+                print_r($da_val);
                 if(22 != $count_column) //Reject due to the column amount
                 {
                     $data_array[$da_key]['result'] = "N";
@@ -338,7 +375,8 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->group_instance_balance_array = $group_instance_balance_array;
 
                     $check_result = $getorders_model->PlaceOrderCheck();
-
+                    
+                    $data_array[$da_key]['pick_up']    =   $this->params['pickup']?"Y":"N";
                     $data_array[$da_key]['result'] = $check_result[1];
                     $data_array[$da_key]['reason'] = $check_result[2];
                     $data_array[$da_key]['order_amount'] = $check_result['order_amount'];
@@ -347,9 +385,17 @@ class MerchantController extends Zend_Controller_Action
                     $data_array[$da_key]['user_id'] = $check_result['user_id'];
 
                     //update instant balance
+                    //update instant balance
+                    if ($check_result[2]=="Out of balance"):
+                        $this->view->ifpay=1;
+                    endif;
                     $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
                 }
             }
+            $sessionId  =   base64_encode($this->params['user_id'].date('YmdHis'));
+            $_SESSION['place_order'][$sessionId]   =   $data_array;
+            $this->view->sessionId  =   $sessionId;
+            $this->view->userId     =   $this->params['user_id'];
         }
         
         $this->view->list = $data_array;
@@ -663,6 +709,24 @@ class MerchantController extends Zend_Controller_Action
         if($logs_financial->AddLog())
         {
             $this->_redirect("/merchant/import-order-preview/sessionid/".$sessionId);
+        }else{
+            echo "Error: Action is rejected, please contact system administrator.";
+            die;
+        }
+    }
+    
+    function paypalPlaceOrderAction ()
+    {
+        $params =   $this->_request->getParams();
+        $logs_financial = new Databases_Tables_LogsFinancial();
+        $sessionId  =   $params['sessionid'];
+        $logs_financial->user_id        =   $params['userid'];
+        $logs_financial->action_type    =   3; //Adjustment
+        $logs_financial->action_affect  =   1; //Recharge
+        $logs_financial->action_value   =   $params['rechange'];
+        if($logs_financial->AddLog())
+        {
+            $this->_redirect("/merchant/place-order-preview/sessionid/".$sessionId);
         }else{
             echo "Error: Action is rejected, please contact system administrator.";
             die;
