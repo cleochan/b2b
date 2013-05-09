@@ -4,6 +4,14 @@ class Databases_Tables_ProductCategories extends Zend_Db_Table
 {
     protected $_name = 'product_categories';
     
+    var $category_id    =   '';
+    var $category_name  =   '';
+    var $parent_id      =   '';
+    
+    function __construct(){
+        $this->db = Zend_Registry::get("db");
+    }
+    
     function BuildTree()
     {
         $rows = $this->fetchAll("(category_id != 174 and parent_id != 174) or parent_id is NULL"); //without special category
@@ -175,5 +183,20 @@ class Databases_Tables_ProductCategories extends Zend_Db_Table
         }
         
         return $result;
+    }
+    
+    function truncateCategory()
+    {
+        $this->db->query('truncate table '.$this->_name);
+    }
+    
+    function addCategory()
+    {
+        $data   = array(
+            'category_id'   =>  $this->category_id,
+            'category_name' =>  $this->category_name,
+            'parent_id'     =>  $this->parent_id,
+        );
+        $this->db->insert($this->_name,$data);
     }
 }
