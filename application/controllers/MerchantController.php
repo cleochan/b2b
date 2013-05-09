@@ -764,7 +764,10 @@ class MerchantController extends Zend_Controller_Action
         $payer_email    =   $params['payer_email'];   
         $mc_gross       =   $params['mc_gross']; // 付款金额   
         $custom         =   $params['custom']; // 得到订单号  
-           
+        
+        $f  =   @fopen("logs/".date('YmdHis').".txt", "w+");
+        @fwrite($f, '1231eqwewqewqe');
+        @fclose($f);
         if (!$fp) {   
             // HTTP ERROR   
         } else {   
