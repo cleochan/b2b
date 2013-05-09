@@ -6,7 +6,7 @@
 <div align="center"><font color="red"><?=$this->notice?></font></div>
 <?php else: ?>
 
-    <form action="/merchant/place-order-confirm" method="POST">
+    <form action="<?php if($this->ifpay){?>https://www.sandbox.paypal.com/cgi-bin/webscr<?php }else{?>/merchant/place-order-confirm<?php };?>" method="POST" name='preview_form'>
         <table class="hide" border="0" cellpadding="0" cellspacing="1">
                         <table class="width100" cellspacing="1">
                             <tbody>
@@ -70,14 +70,25 @@
                                 <input type="hidden" name="comments[<?=$list_key?>]" value="<?=$list_val['comments']?>" />
                                 <input type="hidden" name="pick_up[<?=$list_key?>]" value="<?=$list_val['pick_up']?>" />
 				<?php
+                                            $instant_balance    =   $list_val['instant_balance'];
                                             endforeach;
                                     else:
                                         $is_rejected = 1; //no items
                                     endif;
 				?>
+                                <input type="hidden" name="cmd" value="_xclick" />
+                                <input type="hidden" name="business" value="angus002@163.com" />
+                                <input type="hidden" name="item_name" value="B2B pay" />
+                                <input type="hidden" name="amount" value="<?=abs($instant_balance) ?>" />
+                                 <input type="hidden" name="userid" value="<?=$this->userId?>" />
+                                <input type="hidden" name="bn" value="webasyst" />
+                                <input type="hidden" name="return" value="http://testb2b/merchant/paypal-place-order/sessionid/<?=$this->sessionId?>/userid/<?=$this->userId?>/rechange/<?=abs($instant_balance) ?>" />
+                                <input type="hidden" name="notify_url" value="http://testb2b/merchant/paypal-notify"/>
+                                <input type="hidden" name="currency_code" value="AUD" />
+                                <img src="/public/tpl2/images/paypal-credit.gif" alt="Pay now!" />
                                 <tr>
                                     <td class="info_Recharge" colspan="10">
-                                        <input type="submit" value="Confirm Update" <?php if($is_rejected){echo "disabled='disabled'";}?> /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?></td>
+                                        <input type="submit" value="Confirm Update" <?php if($is_rejected){echo "disabled='disabled'";}?> /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?><?php if($this->ifpay):?><a href="javascript:document.forms['preview_form'].submit(); return false;"><span onclick="javascript:document.forms['preview_form'].submit(); return false;"> Click To Pay By PayPal</span></a><?php endif ?></td>
                                 </tr>
                             </tbody>
                         </table>
