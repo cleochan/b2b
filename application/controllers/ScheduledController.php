@@ -232,5 +232,43 @@ class ScheduledController extends Zend_Controller_Action
         @fwrite($f, $logs_contents);
         @fclose($f);
         die("Refresh Products Completed");
-    }    
+    }
+    
+    function refreshCategoriesAction()
+    {
+        $category_webservice_model  =   new Algorithms_Core_CategoryService();
+        $params_model               =   new Databases_Tables_Params();
+        $category_model             =   new Databases_Tables_ProductCategories();
+        $entries_perpage        =   $params_model->GetVal("product_request_qty_per_page");
+        $logs_path              =   $params_model->GetVal('logs_path');
+        $logs_contents  =   '';
+        $page_now   =   1;
+        $paginationType =   array(
+            'EntriesPerPage'   =>   $entries_perpage,
+            'PageNumber'       =>   $page_now,
+        );
+        $category_webservice_model->EntriesPerPage =   $paginationType['EntriesPerPage'];
+        $category_webservice_model->EntriesPerPage =   $paginationType['EntriesPerPage'];
+        $category_model->truncateCategory();
+        $category_webservice_model->PageNumber =   $page_now;
+        $category_webservice_model->PaginationType   =   $paginationType;
+        $reponse_data  =   $category_webservice_model->WebServicesGetCategories();
+        $category_list_data      =   $reponse_data['GetCategoryResult']['Categories']['CrazySalesCategoryType'];
+        $category_model->category_id    =  1;
+        $category_model->category_name  =  'ROOT';
+        $category_model->parent_id      =   '';
+        $category_model->addCategory();
+        foreach ($category_list_data as $category_data){                
+            $category_model->category_id    =   $category_data['CategoryID'];
+            $category_model->category_name  =   $category_data['CategoryName'];
+            $category_model->parent_id  =   $category_data['ParentID'];
+            $category_model->addCategory();
+            $logs_contents  .=   ' CategoryID:'.$category_data['CategoryID'].' , CategoryName:'.$category_data['CategoryName'].' ,                 Date:'.date('Y-m-d H:i:s')."\r\n";
+        }
+               
+        $f  =   @fopen($logs_path."categorieslogs/refreshcategories".date('YmdHis').".txt", "w+");
+        @fwrite($f, $logs_contents);
+        @fclose($f);
+        die("Refresh Products Completed");
+    }
 }
