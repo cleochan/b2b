@@ -263,7 +263,7 @@ class ScheduledController extends Zend_Controller_Action
             $category_model->category_name  =   $category_data['CategoryName'];
             $category_model->parent_id  =   $category_data['ParentID'];
             $category_model->addCategory();
-            $logs_contents  .=   ' CategoryID:'.$category_data['CategoryID'].' , CategoryName:'.$category_data['CategoryName'].' ,                 Date:'.date('Y-m-d H:i:s')."\r\n";
+            $logs_contents  .=   ' CategoryID:'.$category_data['CategoryID'].' , CategoryName:'.$category_data['CategoryName'].' ,                 Date:'.date('Y-m-d H:i:s')."\n";
         }
                
         $f  =   @fopen($logs_path."categorieslogs/refreshcategories".date('YmdHis').".txt", "w+");
