@@ -737,65 +737,6 @@ class MerchantController extends Zend_Controller_Action
         $f  =   @fopen(date('YmdHis').".txt", "w+");
         @fwrite($f, 'sadlfksadlfjsaj');
         @fclose($f);
-        
-        $params =   $this->_request->getParams();
-        $logs_financial = new Databases_Tables_LogsFinancial();
-        
-        $req = 'cmd=_notify-validate';   
-           
-        foreach ($_POST as $key => $value) {   
-            $value = urlencode(stripslashes($value));   
-            $req .= "&$key=$value";   
-        }   
-        // post back to PayPal system to validate   
-        $header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";   
-        $header .= "Content-Type: application/x-www-form-urlencoded\r\n";   
-        $header .= "Content-Length: " . strlen($req) . "\r\n\r\n";   
-           
-        $fp = fsockopen ('ssl://www.sandbox.paypal.com', 443, $errno, $errstr, 30); // 沙盒用   
-        //$fp = fsockopen ('ssl://www.paypal.com', 443, $errno, $errstr, 30); // 正式用   
-           
-        
-        // assign posted variables to local variables   
-        $item_name      =   $params['item_name'];   
-        $item_number    =   $params['item_number'];   
-        $payment_status =   $params['payment_status'];   
-        $payment_amount =   $params['mc_gross'];   
-        $payment_currency   =   $params['mc_gross'];   
-        $txn_id         =   $params['txn_id'];   
-        $receiver_email =   $params['receiver_email'];   
-        $payer_email    =   $params['payer_email'];   
-        $mc_gross       =   $params['mc_gross']; // 付款金额   
-        $custom         =   $params['custom']; // 得到订单号  
-        
-        $f  =   @fopen(date('YmdHis').".txt", "w+");
-        @fwrite($f, '1231eqwewqewqe');
-        @fclose($f);
-        if (!$fp) {   
-            // HTTP ERROR   
-        } else {   
-            fputs ($fp, $header . $req);   
-            while (!feof($fp)) {   
-                $res = fgets ($fp, 1024);   
-                //pay_log($res); 
-                if (strcmp ($res, "VERIFIED") == 0) { 
-                    $logs_financial->user_id        =   $params['userid'];
-                    $logs_financial->action_type    =   3; //Adjustment
-                    $logs_financial->action_affect  =   1; //Recharge
-                    $logs_financial->action_value   =   $mc_gross;
-                    $logs_financial->AddLog();
-                    // 验证通过。付款成功了，在这里进行逻辑处理（修改订单状态，邮件提醒，自动发货等）   
-                    $f  =   @fopen(date('YmdHis').".txt", "w+");
-                    @fwrite($f, $txn_id);
-                    @fclose($f);
-                }   
-                else if (strcmp ($res, "INVALID") == 0) {   
-                    // log for manual investigation   
-                    // 验证失败，可以不处理。   
-                }   
-            }   
-            fclose ($fp);   
-        }
         die();
     }
     
