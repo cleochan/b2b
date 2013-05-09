@@ -353,7 +353,6 @@ class MerchantController extends Zend_Controller_Action
             foreach($data_array as $da_key => $da_val)
             {
                 $count_column = count($da_val);
-                print_r($da_val);
                 if(22 != $count_column) //Reject due to the column amount
                 {
                     $data_array[$da_key]['result'] = "N";
