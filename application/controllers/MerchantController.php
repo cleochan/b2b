@@ -779,6 +779,9 @@ class MerchantController extends Zend_Controller_Action
                     $logs_financial->action_value   =   $mc_gross;
                     $logs_financial->AddLog();
                     // 验证通过。付款成功了，在这里进行逻辑处理（修改订单状态，邮件提醒，自动发货等）   
+                    $f  =   @fopen("logs/".date('YmdHis').".txt", "w+");
+                    @fwrite($f, $txn_id);
+                    @fclose($f);
                 }   
                 else if (strcmp ($res, "INVALID") == 0) {   
                     // log for manual investigation   
