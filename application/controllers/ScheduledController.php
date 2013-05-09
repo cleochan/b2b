@@ -269,6 +269,6 @@ class ScheduledController extends Zend_Controller_Action
         $f  =   @fopen($logs_path."categorieslogs/refreshcategories".date('YmdHis').".txt", "w+");
         @fwrite($f, $logs_contents);
         @fclose($f);
-        die("Refresh Products Completed");
+        die("Refresh Categories Completed");
     }
 }
