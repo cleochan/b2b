@@ -86,8 +86,9 @@
                                 <input type="hidden" name="business" value="angus002@163.com" />
                                 <input type="hidden" name="item_name" value="B2B pay" />
                                 <input type="hidden" name="amount" value="<?=abs($instant_balance) ?>" />
+                                 <input type="hidden" name="userid" value="<?=$this->userId?>" />
                                 <input type="hidden" name="bn" value="webasyst" />
-                                <input type="hidden" name="return" value="http://testb2b/merchant/paypal-success/sessionid/<?=$this->sessionId?>/userid/<?=$this->userId?>/transaction_result/success/rechange/<?=abs($instant_balance) ?>" />
+                                <input type="hidden" name="return" value="http://testb2b/merchant/paypal-success/sessionid/<?=$this->sessionId?>/userid/<?=$this->userId?>/rechange/<?=abs($instant_balance) ?>" />
                                 <input type="hidden" name="notify_url" value="http://testb2b/merchant/paypal-notify"/>
                                 <input type="hidden" name="currency_code" value="AUD" />
                                 <img src="/public/tpl2/images/paypal-credit.gif" alt="Pay now!" />
