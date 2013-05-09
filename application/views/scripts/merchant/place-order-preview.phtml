@@ -85,7 +85,6 @@
                                 <input type="hidden" name="return" value="http://b2b.cztesting.com/merchant/paypal-place-order/sessionid/<?=$this->sessionId?>/userid/<?=$this->userId?>/rechange/<?=abs($instant_balance) ?>" />
                                 <input type="hidden" name="notify_url" value="http://b2b.cztesting.com/merchant/paypal-notify"/>
                                 <input type="hidden" name="currency_code" value="AUD" />
-                                <img src="/public/tpl2/images/paypal-credit.gif" alt="Pay now!" />
                                 <tr>
                                     <td class="info_Recharge" colspan="10">
                                         <input type="submit" value="Confirm Update" <?php if($is_rejected){echo "disabled='disabled'";}?> /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?><?php if($this->ifpay):?><a href="javascript:document.forms['preview_form'].submit(); return false;"><span onclick="javascript:document.forms['preview_form'].submit(); return false;"> Click To Pay By PayPal</span></a><?php endif ?></td>
