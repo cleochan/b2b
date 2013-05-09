@@ -256,7 +256,7 @@ class ScheduledController extends Zend_Controller_Action
         $category_list_data      =   $reponse_data['GetCategoryResult']['Categories']['CrazySalesCategoryType'];
         $category_model->category_id    =  1;
         $category_model->category_name  =  'ROOT';
-        $category_model->parent_id      =   '';
+        $category_model->parent_id      =   '1';
         $category_model->addCategory();
         foreach ($category_list_data as $category_data){                
             $category_model->category_id    =   $category_data['CategoryID'];
