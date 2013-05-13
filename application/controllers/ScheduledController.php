@@ -272,21 +272,15 @@ class ScheduledController extends Zend_Controller_Action
         die("Refresh Categories Completed");
     }
     
-    function tstOrderAction ()
+    function paypalNotifyAction ()
     {
-         $logs_financial = new Databases_Tables_LogsFinancial();
-        $logs_financial->user_id        =   7;
-        $logs_financial->action_type    =   3; //Adjustment
-        $logs_financial->action_affect  =   1; //Recharge
-        $logs_financial->action_value   =   1000;
-        $logs_financial->AddLog();
-         $params =   $this->_request->getParams();
+        $params =   $this->_request->getParams();
          // read the post from PayPal system and add 'cmd'   
         $req = 'cmd=_notify-validate';   
         
         foreach ($params as $key => $value) {   
-        $value = urlencode(stripslashes($value));   
-        $req .= "&$key=$value";   
+            $value = urlencode(stripslashes($value));   
+            $req .= "&$key=$value";   
         }   
         // post back to PayPal system to validate   
         $header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";   
@@ -299,7 +293,8 @@ class ScheduledController extends Zend_Controller_Action
         // assign posted variables to local variables   
         $item_name = $params['item_name'];   
         $item_number = $params['item_number'];   
-        $payment_status = $params['payment_status'];   
+        $payment_status = $params['payment_status']; 
+        $user_id = $params['userid']; 
         $payment_amount = $params['mc_gross'];   
         $payment_currency = $params['mc_gross'];   
         $txn_id = $params['txn_id'];   
@@ -307,18 +302,28 @@ class ScheduledController extends Zend_Controller_Action
         $payer_email = $params['payer_email'];   
         $mc_gross = $params['mc_gross ']; // 付款金额   
         $custom = $params['custom ']; // 得到订单号  
-		 
-	$logs_contents	=	'item_name:'.$item_name."\r\n".' item_number:'.$item_number."\r\n".'  payment_status:'.$payment_status."\r\n".'  payment_amount:'.$payment_amount."\r\n".'  txn_id:'.$txn_id."\r\n".'  receiver_email:'.$receiver_email."\r\n".'  payer_email'.$payer_email."\r\n".'   custom:'.$custom;
-        $f  =   @fopen(date('YmdHis').".txt", "w+");
-        @fwrite($f, $logs_contents);
-        @fclose($f);
-	     
-        $logs_financial = new Databases_Tables_LogsFinancial();
-        $logs_financial->user_id        =   7;
-        $logs_financial->action_type    =   3; //Adjustment
-        $logs_financial->action_affect  =   1; //Recharge
-        $logs_financial->action_value   =   1000;
-        $logs_financial->AddLog();
+                
+        if (!$fp) {   
+            // HTTP ERROR   
+        } else {   
+            fputs ($fp, $header . $req);   
+            while (!feof($fp)) {   
+                $res = fgets ($fp, 1024);   
+                pay_log($res); 
+                if (strcmp ($res, "VERIFIED") == 0) {
+                    $logs_financial = new Databases_Tables_LogsFinancial();
+                    $logs_financial->user_id        =   $user_id;
+                    $logs_financial->action_type    =   3; //Adjustment
+                    $logs_financial->action_affect  =   1; //Recharge
+                    $logs_financial->action_value   =   $params['mc_gross'];
+                    $logs_financial->AddLog();
+                }   
+                else if (strcmp ($res, "INVALID") == 0) {
+                    
+                }   
+            }   
+            fclose ($fp);   
+        } 
         die;
     }
 }
