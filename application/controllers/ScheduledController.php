@@ -303,33 +303,20 @@ class ScheduledController extends Zend_Controller_Action
        // $payer_email = $params['payer_email'];   
         $mc_gross = $params['mc_gross']; // 付款金额   
         //$custom = $params['custom ']; // 得到订单号
-       // $logs_financial = new Databases_Tables_LogsFinancial();
-        //            $logs_financial->user_id        =   $user_id;
-         //          $logs_financial->action_type    =   3; //Adjustment
-          //         $logs_financial->action_affect  =   1; //Recharge
-           //         $logs_financial->action_value   =   $mc_gross;
-            //       $logs_financial->AddLog();
-                    
-                     $logs_financial = new Databases_Tables_LogsFinancial();
+        $logs_financial = new Databases_Tables_LogsFinancial();
         if (!$fp) { 
             // HTTP ERROR 
         } else {  
- 
-            fputs($fp, $header . $req);   
+            fputs($fp, $header . $req); 
+                 $f  =   @fopen("fp.txt", "w+");
+                @fwrite($f, $fp);
+                @fclose($f);
             while(!feof($fp)){   
-                $res = fgets($fp, 1024);   
-              //  pay_log($res); 
-                   $logs_financial->user_id        =   $user_id;
-                    $logs_financial->action_type    =   3; //Adjustment
-                   $logs_financial->action_affect  =   1; //Recharge
-                    $logs_financial->action_value   =   777;
-                    $logs_financial->AddLog();
-                    fclose($fp);
-                    
+                $res = fgets($fp, 1024);       
                 if (strcmp($res, "VERIFIED") == 0) { 
                     $logs_financial->user_id        =   $user_id;
                     $logs_financial->action_type    =   3; //Adjustment
-                   $logs_financial->action_affect  =   1; //Recharge
+                    $logs_financial->action_affect  =   1; //Recharge
                     $logs_financial->action_value   =   $mc_gross;
                     $logs_financial->AddLog();
                     fclose($fp);
