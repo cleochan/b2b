@@ -274,7 +274,6 @@ class ScheduledController extends Zend_Controller_Action
     
     function tstOrderAction ()
     {
-        echo 1;
          $logs_financial = new Databases_Tables_LogsFinancial();
         $logs_financial->user_id        =   7;
         $logs_financial->action_type    =   3; //Adjustment
