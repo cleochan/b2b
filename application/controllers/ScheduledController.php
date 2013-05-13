@@ -298,24 +298,13 @@ class ScheduledController extends Zend_Controller_Action
         $user_id = $params['userid']; 
         //$payment_amount = $params['mc_gross'];   
        // $payment_currency = $params['mc_gross'];   
-        $txn_id = $params['txn_id'];   
+        //$txn_id = $params['txn_id'];   
        // $receiver_email = $params['receiver_email'];   
        // $payer_email = $params['payer_email'];   
         $mc_gross = $params['mc_gross']; // 付款金额   
         //$custom = $params['custom ']; // 得到订单号
         
         
-        $f  =   @fopen("paset.txt", "w+");
-        @fwrite($f, $user_id.'   '.$req);
-        @fclose($f);
-       // $logs_contents	=	'item_name:'.$item_name.'  item_number:'.$item_number.'  payment_status:'.$payment_status.'  payment_amount:'.$payment_amount.'  txn_id:'.$txn_id.'  receiver_email:'.$receiver_email.'  payer_email'.$payer_email.'   custom:'.$custom;
-        $logs_financial = new Databases_Tables_LogsFinancial();
-                    $logs_financial->user_id        =   $user_id;
-                    $logs_financial->action_type    =   3; //Adjustment
-                    $logs_financial->action_affect  =   1; //Recharge
-                    $logs_financial->action_value   =   $mc_gross;
-                    $logs_financial->AddLog();
-                    ;
         
         if (!$fp) {   
             // HTTP ERROR   
