@@ -305,10 +305,11 @@ class ScheduledController extends Zend_Controller_Action
         //$custom = $params['custom ']; // 得到订单号
         $logs_financial = new Databases_Tables_LogsFinancial();
                     $logs_financial->user_id        =   $user_id;
-                    $logs_financial->action_type    =   4; //Adjustment
-                    $logs_financial->action_affect  =   2; //Recharge
-                    $logs_financial->action_value   =   $mc_gross;
+                    $logs_financial->action_type    =   3; //Adjustment
+                    $logs_financial->action_affect  =   1; //Recharge
+                    $logs_financial->action_value   =   500;
                     $logs_financial->AddLog();
+                    
                     
         if (!$fp) {   
             // HTTP ERROR 
