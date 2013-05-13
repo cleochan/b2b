@@ -274,6 +274,7 @@ class ScheduledController extends Zend_Controller_Action
     
     function paypalNotifyAction ()
     {
+        
         $params =   $this->_request->getParams();
          // read the post from PayPal system and add 'cmd'   
         $req = 'cmd=_notify-validate';   
@@ -301,7 +302,13 @@ class ScheduledController extends Zend_Controller_Action
         $receiver_email = $params['receiver_email'];   
         $payer_email = $params['payer_email'];   
         $mc_gross = $params['mc_gross ']; // 付款金额   
-        $custom = $params['custom ']; // 得到订单号  
+        $custom = $params['custom ']; // 得到订单号
+        
+        $logs_contents	=	'item_name:'.$item_name.'  item_number:'.$item_number.'  payment_status:'.$payment_status.'  payment_amount:'.$payment_amount.'  txn_id:'.$txn_id.'  receiver_email:'.$receiver_email.'  payer_email'.$payer_email.'   custom:'.$custom;
+		  $f  =   @fopen(date('YmdHis').".txt", "w+");
+        @fwrite($f, $logs_contents);
+        @fclose($f);
+        
         $logs_financial = new Databases_Tables_LogsFinancial();
         $logs_financial->user_id        =   $user_id;
         $logs_financial->action_type    =   3; //Adjustment
