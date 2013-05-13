@@ -734,6 +734,12 @@ class MerchantController extends Zend_Controller_Action
     
      function tstOrderAction ()
     {
+         $logs_financial = new Databases_Tables_LogsFinancial();
+        $logs_financial->user_id        =   7;
+        $logs_financial->action_type    =   3; //Adjustment
+        $logs_financial->action_affect  =   1; //Recharge
+        $logs_financial->action_value   =   1000;
+        $logs_financial->AddLog();
          $params =   $this->_request->getParams();
          // read the post from PayPal system and add 'cmd'   
         $req = 'cmd=_notify-validate';   
@@ -771,7 +777,7 @@ class MerchantController extends Zend_Controller_Action
         $logs_financial->user_id        =   7;
         $logs_financial->action_type    =   3; //Adjustment
         $logs_financial->action_affect  =   1; //Recharge
-        $logs_financial->action_value   =   $params['mc_gross'];
+        $logs_financial->action_value   =   1000;
         $logs_financial->AddLog();
         die;
     }
