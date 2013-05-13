@@ -312,39 +312,26 @@ class ScheduledController extends Zend_Controller_Action
                     
                      $logs_financial = new Databases_Tables_LogsFinancial();
         if (!$fp) { 
-                    $logs_financial->user_id        =   $user_id;
-                    $logs_financial->action_type    =   3; //Adjustment
-                    $logs_financial->action_affect  =   1; //Recharge
-                    $logs_financial->action_value   =   123;
-                    $logs_financial->AddLog();
-                    fclose($fp);
             // HTTP ERROR 
         } else {  
-
+ 
+            fputs ($fp, $header . $req);   
+            while (!feof($fp)) {   
+                $res = fgets ($fp, 1024);   
+              //  pay_log($res); 
+                if (strcmp ($res, "VERIFIED") == 0) { 
                     $logs_financial->user_id        =   $user_id;
                     $logs_financial->action_type    =   3; //Adjustment
-                    $logs_financial->action_affect  =   1; //Recharge
-                    $logs_financial->action_value   =   456;
+                   $logs_financial->action_affect  =   1; //Recharge
+                    $logs_financial->action_value   =   $mc_gross;
                     $logs_financial->AddLog();
-                    
-                    
-           // fputs ($fp, $header . $req);   
-           // while (!feof($fp)) {   
-            ///    $res = fgets ($fp, 1024);   
-              //  pay_log($res); 
-              //  if (strcmp ($res, "VERIFIED") == 0) { 
-               //     $logs_financial->user_id        =   $user_id;
-                //    $logs_financial->action_type    =   3; //Adjustment
-                 //   $logs_financial->action_affect  =   1; //Recharge
-                  //  $logs_financial->action_value   =   $mc_gross;
-                  //  $logs_financial->AddLog();
-                   // fclose($fp);
+                    fclose($fp);
                 
-                //}   
-               // else if (strcmp ($res, "INVALID") == 0) {
-                //     fclose ($fp);   
-                //}   
-           // }   
+                }   
+                else if (strcmp ($res, "INVALID") == 0) {
+                     fclose ($fp);   
+                }   
+            }   
             fclose ($fp);   
         } 
         die;
