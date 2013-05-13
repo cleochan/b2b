@@ -303,9 +303,13 @@ class ScheduledController extends Zend_Controller_Action
        // $payer_email = $params['payer_email'];   
         $mc_gross = $params['mc_gross']; // 付款金额   
         //$custom = $params['custom ']; // 得到订单号
-         $f  =   @fopen("fp_data.txt", "w+");
-              @fwrite($f, $fp);
-               @fclose($f);
+        $logs_financial = new Databases_Tables_LogsFinancial();
+                    $logs_financial->user_id        =   $user_id;
+                    $logs_financial->action_type    =   4; //Adjustment
+                    $logs_financial->action_affect  =   2; //Recharge
+                    $logs_financial->action_value   =   $mc_gross;
+                    $logs_financial->AddLog();
+                    
         if (!$fp) {   
             // HTTP ERROR 
         } else {   
