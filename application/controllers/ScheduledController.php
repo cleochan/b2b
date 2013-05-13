@@ -308,23 +308,23 @@ class ScheduledController extends Zend_Controller_Action
             // HTTP ERROR 
         } else {  
           
-           // while(!feof($fp)){   
-            //    $res = fgets($fp, 1024);       
-             //   if (strcmp($res, "VERIFIED") == 0) { 
-                  //  $logs_financial->user_id        =   $user_id;
-                   // $logs_financial->action_type    =   3; //Adjustment
-                   // $logs_financial->action_affect  =   1; //Recharge
-                   // $logs_financial->action_value   =   $mc_gross;
-                    //$logs_financial->AddLog();
+           while(!feof($fp)){
+                $res = fgets($fp, 1024);       
+                if (strcmp($res, "VERIFIED") == 0) { 
+                    $logs_financial->user_id        =   $user_id;
+                    $logs_financial->action_type    =   3; //Adjustment
+                    $logs_financial->action_affect  =   1; //Recharge
+                    $logs_financial->action_value   =   $mc_gross;
+                    $logs_financial->AddLog();
                     fclose($fp);
                 
-              //  }   
-              //  else if (strcmp ($res, "INVALID") == 0) {
-               //      fclose ($fp);   
-               // }   
+                }   
+                else if (strcmp ($res, "INVALID") == 0) {
+                     fclose ($fp);   
+                }   
             }   
             fclose ($fp);   
-      //  } 
+        } 
         die;
     }
 }
