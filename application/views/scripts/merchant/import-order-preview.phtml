@@ -95,8 +95,14 @@
                                 
                                 <tr>
                                     <td class="form-title" colspan="11">
-                                        <input type="submit" value="Confirm Update" <?php if($is_rejected){echo "disabled='disabled'";}?> /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?><?php if($this->ifpay):?><a href="javascript:document.forms['preview_form'].submit(); return false;"><span onclick="javascript:document.forms['preview_form'].submit(); return false;"> Click To Pay By PayPal</span></a><?php endif ?></td>
+                                        <input type="submit" value="Confirm Update" <?php if($is_rejected){echo "disabled='disabled'";}?> /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?></td>
                                 </tr>
+                                <?php if($this->ifpay):?>
+                                <tr>
+                                    <td class="info_Recharge" colspan="10">
+                                        <input type="image" src="http://www.fullyloadedelectronics.com/uploads/images/paypal-button.png" style="height:77px; width:248px" onclick="javascript:document.forms['preview_form'].submit(); return false;" /></td>
+                                </tr>
+                                <?php endif ?>
                             </tbody>
                         </table>
                     </td>
