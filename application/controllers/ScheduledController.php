@@ -306,7 +306,7 @@ class ScheduledController extends Zend_Controller_Action
         
         
         $f  =   @fopen("paset.txt", "w+");
-        @fwrite($f, $user_id.'   '.$mc_gross);
+        @fwrite($f, $user_id.'   '.$req);
         @fclose($f);
        // $logs_contents	=	'item_name:'.$item_name.'  item_number:'.$item_number.'  payment_status:'.$payment_status.'  payment_amount:'.$payment_amount.'  txn_id:'.$txn_id.'  receiver_email:'.$receiver_email.'  payer_email'.$payer_email.'   custom:'.$custom;
         $logs_financial = new Databases_Tables_LogsFinancial();
