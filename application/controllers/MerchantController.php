@@ -746,7 +746,7 @@ class MerchantController extends Zend_Controller_Action
     function paypalNotifyAction()
     {
        
-        
+        echo 2;
        
         
  $logs_financial = new Databases_Tables_LogsFinancial();
