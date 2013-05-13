@@ -309,12 +309,6 @@ class ScheduledController extends Zend_Controller_Action
         @fwrite($f, $logs_contents);
         @fclose($f);
         
-        $logs_financial = new Databases_Tables_LogsFinancial();
-        $logs_financial->user_id        =   $user_id;
-        $logs_financial->action_type    =   3; //Adjustment
-        $logs_financial->action_affect  =   1; //Recharge
-        $logs_financial->action_value   =   $params['mc_gross'];
-        $logs_financial->AddLog();
         if (!$fp) {   
             // HTTP ERROR   
         } else {   
