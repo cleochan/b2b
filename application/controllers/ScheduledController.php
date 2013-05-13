@@ -301,7 +301,7 @@ class ScheduledController extends Zend_Controller_Action
         $txn_id = $params['txn_id'];   
        // $receiver_email = $params['receiver_email'];   
        // $payer_email = $params['payer_email'];   
-        $mc_gross = $params['mc_gross ']; // 付款金额   
+        $mc_gross = $params['mc_gross']; // 付款金额   
         //$custom = $params['custom ']; // 得到订单号
         
         
