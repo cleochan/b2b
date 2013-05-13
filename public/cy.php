@@ -1,3 +1,3 @@
 <?php
-header("Location:http://testb2b/Merchant/tst-order");
+header("Location:http://b2b.cztesting.com/Merchant/tst-order");
 ?>
