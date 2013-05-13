@@ -749,8 +749,7 @@ class MerchantController extends Zend_Controller_Action
            
         $fp = fsockopen ('ssl://www.sandbox.paypal.com', 443, $errno, $errstr, 30); // 沙盒用   
         //$fp = fsockopen ('ssl://www.paypal.com', 443, $errno, $errstr, 30); // 正式用   
-           
-        
+
         // assign posted variables to local variables   
         $item_name = $params['item_name'];   
         $item_number = $params['item_number'];   
@@ -763,8 +762,8 @@ class MerchantController extends Zend_Controller_Action
         $mc_gross = $params['mc_gross ']; // 付款金额   
         $custom = $params['custom ']; // 得到订单号  
 		 
-		$logs_contents	=	'item_name:'.$item_name."\r\n".' item_number:'.$item_number."\r\n".'  payment_status:'.$payment_status."\r\n".'  payment_amount:'.$payment_amount."\r\n".'  txn_id:'.$txn_id."\r\n".'  receiver_email:'.$receiver_email."\r\n".'  payer_email'.$payer_email."\r\n".'   custom:'.$custom;
-		   $f  =   @fopen(date('YmdHis').".txt", "w+");
+	$logs_contents	=	'item_name:'.$item_name."\r\n".' item_number:'.$item_number."\r\n".'  payment_status:'.$payment_status."\r\n".'  payment_amount:'.$payment_amount."\r\n".'  txn_id:'.$txn_id."\r\n".'  receiver_email:'.$receiver_email."\r\n".'  payer_email'.$payer_email."\r\n".'   custom:'.$custom;
+        $f  =   @fopen(date('YmdHis').".txt", "w+");
         @fwrite($f, $logs_contents);
         @fclose($f);
 	     
