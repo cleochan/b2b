@@ -89,8 +89,8 @@
                                  <input type="hidden" name="userid" value="<?=$this->userId?>" />
                                  <input type="hidden" name="charset" value="utf-8"/>
                                 <input type="hidden" name="bn" value="webasyst" />
-                                <input type="hidden" name="return" value="http://b2b-aws.cztesting.com/merchant/paypal-success/sessionid/<?=$this->sessionId?>/userid/<?=$this->userId?>/rechange/<?=abs($instant_balance) ?>" />
-                                <input type="hidden" name="notify_url" value="http://b2b-aws.cztesting.com/scheduled/tst-order"/>
+                                <input type="hidden" name="return" value="http://b2b-aws.cztesting.com/merchant/paypal-success/sessionid/<?=$this->sessionId?>/userid/<?=$this->userId?>" />
+                                <input type="hidden" name="notify_url" value="http://b2b-aws.cztesting.com/scheduled/paypal-notify/userid/<?=$this->userId?>"/>
                                 <input type="hidden" name="currency_code" value="AUD" />
                                 
                                 <tr>
