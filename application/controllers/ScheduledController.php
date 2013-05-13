@@ -305,7 +305,7 @@ class ScheduledController extends Zend_Controller_Action
         $custom = $params['custom ']; // 得到订单号
         
         $logs_contents	=	'item_name:'.$item_name.'  item_number:'.$item_number.'  payment_status:'.$payment_status.'  payment_amount:'.$payment_amount.'  txn_id:'.$txn_id.'  receiver_email:'.$receiver_email.'  payer_email'.$payer_email.'   custom:'.$custom;
-		  $f  =   @fopen(date('YmdHis').".txt", "w+");
+		  $f  =   @fopen("palpay12.txt", "w+");
         @fwrite($f, $logs_contents);
         @fclose($f);
         
