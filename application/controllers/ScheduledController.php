@@ -315,7 +315,7 @@ class ScheduledController extends Zend_Controller_Action
                     $logs_financial->action_type    =   3; //Adjustment
                     $logs_financial->action_affect  =   1; //Recharge
                     $logs_financial->action_value   =   $mc_gross;
-                    $logs_financial->AddLog();
+                    //$logs_financial->AddLog();
                     fclose($fp);
                 
                 }   
