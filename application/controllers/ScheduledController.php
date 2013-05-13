@@ -275,43 +275,15 @@ class ScheduledController extends Zend_Controller_Action
     function paypalNotifyAction ()
     {
         
-        $params =   $this->_request->getParams();
-         // read the post from PayPal system and add 'cmd'   
-        $req = 'cmd=_notify-validate';   
-        
-        foreach ($params as $key => $value) {
-            $value = urlencode(stripslashes($value));   
-            $req .= "&$key=$value";   
-        }   
-        // post back to PayPal system to validate   
-        $header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";   
-        $header .= "Content-Type: application/x-www-form-urlencoded\r\n";   
-        $header .= "Content-Length: " . strlen($req) . "\r\n\r\n";   
-           
-        $fp = fsockopen ('ssl://www.sandbox.paypal.com', 443, $errno, $errstr, 30); // 沙盒用   
-        //$fp = fsockopen ('ssl://www.paypal.com', 443, $errno, $errstr, 30); // 正式用   
-
-        // assign posted variables to local variables   
-        //$item_name = $params['item_name'];   
-       // $item_number = $params['item_number'];   
-        //$payment_status = $params['payment_status']; 
-        $user_id = $params['userid']; 
-        //$payment_amount = $params['mc_gross'];   
-       // $payment_currency = $params['mc_gross'];   
-        $txn_id = $params['txn_id'];   
-       // $receiver_email = $params['receiver_email'];   
-       // $payer_email = $params['payer_email'];   
-        $mc_gross = $params['mc_gross ']; // 付款金额   
-        //$custom = $params['custom ']; // 得到订单号
         
        // $logs_contents	=	'item_name:'.$item_name.'  item_number:'.$item_number.'  payment_status:'.$payment_status.'  payment_amount:'.$payment_amount.'  txn_id:'.$txn_id.'  receiver_email:'.$receiver_email.'  payer_email'.$payer_email.'   custom:'.$custom;
         $logs_financial = new Databases_Tables_LogsFinancial();
-                    $logs_financial->user_id        =   $user_id;
+                    $logs_financial->user_id        =   3;
                     $logs_financial->action_type    =   3; //Adjustment
                     $logs_financial->action_affect  =   1; //Recharge
-                    $logs_financial->action_value   =   $mc_gross;
+                    $logs_financial->action_value   =   100;
                     $logs_financial->AddLog();
-                    exit;
+                    die;
         
         if (!$fp) {   
             // HTTP ERROR   
