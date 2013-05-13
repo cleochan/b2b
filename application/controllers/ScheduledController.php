@@ -278,7 +278,10 @@ class ScheduledController extends Zend_Controller_Action
          // read the post from PayPal system and add 'cmd'   
         $req = 'cmd=_notify-validate';   
         
-        foreach ($params as $key => $value) {   
+        foreach ($params as $key => $value) {
+            if($key=='userid'){
+                continue;
+            }
             $value = urlencode(stripslashes($value));   
             $req .= "&$key=$value";   
         }   
