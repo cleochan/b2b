@@ -307,10 +307,7 @@ class ScheduledController extends Zend_Controller_Action
         if (!$fp) { 
             // HTTP ERROR 
         } else {  
-            fputs($fp, $header . $req); 
-                 $f  =   @fopen("fp.txt", "w+");
-                @fwrite($f, $fp);
-                @fclose($f);
+          
             while(!feof($fp)){   
                 $res = fgets($fp, 1024);       
                 if (strcmp($res, "VERIFIED") == 0) { 
