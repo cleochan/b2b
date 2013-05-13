@@ -746,17 +746,9 @@ class MerchantController extends Zend_Controller_Action
     function paypalNotifyAction()
     {
        
-        echo 2;
-       
-        
- $logs_financial = new Databases_Tables_LogsFinancial();
- 
-                    $logs_financial->user_id        = 7  ;
-                    $logs_financial->action_type    =   3; //Adjustment
-                    $logs_financial->action_affect  =   1; //Recharge
-                    $logs_financial->action_value   =   100;
-                    $logs_financial->AddLog();
-                    // 验证通过。付款成功了，在这里进行逻辑处理（修改订单状态，邮件提醒，自动发货等）   
+        $f  =   @fopen(date('YmdHis').".txt", "w+");
+        @fwrite($f, 'test2013---'.date('Y-m-d H:i:s'));
+        @fclose($f);
                  
                
         die();
