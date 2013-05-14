@@ -10,6 +10,7 @@ class Databases_Tables_ProductCategories extends Zend_Db_Table
     
     function __construct(){
         $this->db = Zend_Registry::get("db");
+        parent::__construct();
     }
     
     function BuildTree()
