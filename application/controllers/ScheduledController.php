@@ -293,16 +293,29 @@ class ScheduledController extends Zend_Controller_Action
 
         // assign posted variables to local variables   
         //$item_name = $params['item_name'];   
-       // $item_number = $params['item_number'];   
+        // $item_number = $params['item_number'];   
         //$payment_status = $params['payment_status']; 
-        $user_id = $params['userid']; 
         //$payment_amount = $params['mc_gross'];   
-       // $payment_currency = $params['mc_gross'];   
-        //$txn_id = $params['txn_id'];   
-       // $receiver_email = $params['receiver_email'];   
-       // $payer_email = $params['payer_email'];   
-        $mc_gross = $params['mc_gross']; // 付款金额   
-        //$custom = $params['custom ']; // 得到订单号
+        // $payment_currency = $params['mc_gross'];   
+        // $receiver_email = $params['receiver_email'];   
+        // $payer_email = $params['payer_email']; 
+        //$custom = $params['custom ']; 
+        
+        $user_id = $params['userid']; 
+        $txn_id = $params['txn_id']; 
+        $mc_gross = $params['mc_gross']; 
+        
+        if($txn_id)
+        {
+            $logs_financial = new Databases_Tables_LogsFinancial();
+            $logs_financial->user_id        =   $user_id;
+            $logs_financial->action_type    =   3; //Adjustment
+            $logs_financial->action_affect  =   1; //Recharge
+            $logs_financial->action_value   =   $mc_gross;
+            $logs_financial->AddLog();
+            fclose($fp); 
+        }
+/**
         $logs_financial = new Databases_Tables_LogsFinancial();
         if (!$fp) { 
             // HTTP ERROR 
@@ -325,6 +338,7 @@ class ScheduledController extends Zend_Controller_Action
             }   
             fclose ($fp);   
         } 
+        **/
         die;
     }
 }
