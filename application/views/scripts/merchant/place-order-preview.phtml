@@ -70,7 +70,7 @@
                                 <input type="hidden" name="comments[<?=$list_key?>]" value="<?=$list_val['comments']?>" />
                                 <input type="hidden" name="pick_up[<?=$list_key?>]" value="<?=$list_val['pick_up']?>" />
 				<?php
-                                            $instant_balance    =   $list_val['instant_balance'];
+                                             $pay_amount    =   abs($list_val['instant_balance'])-$list_val['credit'];
                                             endforeach;
                                     else:
                                         $is_rejected = 1; //no items
@@ -79,7 +79,7 @@
                                 <input type="hidden" name="cmd" value="_xclick" />
                                 <input type="hidden" name="business" value="angus002@163.com" />
                                 <input type="hidden" name="item_name" value="B2B Payment" />
-                                <input type="hidden" name="amount" value="<?=abs($instant_balance) ?>" />
+                                <input type="hidden" name="amount" value="<?=$pay_amount;?>" />
                                  <input type="hidden" name="userid" value="<?=$this->userId?>" />
                                 <input type="hidden" name="bn" value="webasyst" />
                                 <input type="hidden" name="return" value="http://b2b-aws.cztesting.com/merchant/paypal-place-order/sessionid/<?=$this->sessionId?>/userid/<?=$this->userId?>" />

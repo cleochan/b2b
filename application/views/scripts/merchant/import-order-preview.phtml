@@ -77,8 +77,8 @@
                                 <input type="hidden" name="comments[<?=$list_key?>]" value="<?=$list_val[19]?>" />
                                 <input type="hidden" name="pick_up[<?=$list_key?>]" value="<?=$list_val[21]?>" />
 				<?php
-                                            $pay_amount    =   abs($list_val['instant_balance'])-$list_val['credit'];
-                                            endforeach;
+                                      $pay_amount    =   abs($list_val['instant_balance'])-$list_val['credit'];
+                                      endforeach;
                                     endif;
 				?>
                                 <input type="hidden" name="cmd" value="_xclick" />
