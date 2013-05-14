@@ -22,7 +22,7 @@ class Algorithms_Core_CategoryService extends SoapClient{
     
     private static $classmap = array();
     
-    function __construct($wsdl = "http://10.0.0.186:8743/CategoryService.svc?wsdl", $options = array()) {
+    function __construct($wsdl = "http://203.213.123.150:8743/CategoryService.svc?wsdl", $options = array()) {
         foreach(self::$classmap as $key => $value) {
             if(!isset($options['classmap'][$key])) {
                 $options['classmap'][$key] = $value;
