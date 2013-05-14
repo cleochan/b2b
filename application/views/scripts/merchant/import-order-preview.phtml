@@ -77,15 +77,15 @@
                                 <input type="hidden" name="comments[<?=$list_key?>]" value="<?=$list_val[19]?>" />
                                 <input type="hidden" name="pick_up[<?=$list_key?>]" value="<?=$list_val[21]?>" />
 				<?php
-                                            $instant_balance    =   $list_val['instant_balance'];
-                                            endforeach;
+                                      $pay_amount    =   abs($list_val['instant_balance'])-$list_val['credit'];
+                                      endforeach;
                                     endif;
 				?>
                                 <input type="hidden" name="cmd" value="_xclick" />
                                 
                                 <input type="hidden" name="business" value="angus002@163.com" />
-                                <input type="hidden" name="item_name" value="B2B pay" />
-                                <input type="hidden" name="amount" value="<?=abs($instant_balance) ?>" />
+                                <input type="hidden" name="item_name" value="B2B Payment" />
+                                <input type="hidden" name="amount" value="<?=$pay_amount?>" />
                                  <input type="hidden" name="userid" value="<?=$this->userId?>" />
                                  <input type="hidden" name="charset" value="utf-8"/>
                                 <input type="hidden" name="bn" value="webasyst" />
@@ -95,14 +95,13 @@
                                 
                                 <tr>
                                     <td class="form-title" colspan="11">
+                                        <?php if($this->ifpay):?>
+                                        <input type="submit" value="Pay by Paypal"/>
+                                        <?php else: ?>
                                         <input type="submit" value="Confirm Update" <?php if($is_rejected){echo "disabled='disabled'";}?> /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?></td>
+                                        <?php endif;?>
                                 </tr>
-                                <?php if($this->ifpay):?>
-                                <tr>
-                                    <td class="info_Recharge" colspan="10">
-                                        <input type="image" src="http://www.fullyloadedelectronics.com/uploads/images/paypal-button.png" style="height:77px; width:248px" onclick="javascript:document.forms['preview_form'].submit(); return false;" /></td>
-                                </tr>
-                                <?php endif ?>
+                                
                             </tbody>
                         </table>
                     </td>

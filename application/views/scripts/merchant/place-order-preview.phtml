@@ -70,7 +70,7 @@
                                 <input type="hidden" name="comments[<?=$list_key?>]" value="<?=$list_val['comments']?>" />
                                 <input type="hidden" name="pick_up[<?=$list_key?>]" value="<?=$list_val['pick_up']?>" />
 				<?php
-                                            $instant_balance    =   $list_val['instant_balance'];
+                                             $pay_amount    =   abs($list_val['instant_balance'])-$list_val['credit'];
                                             endforeach;
                                     else:
                                         $is_rejected = 1; //no items
@@ -78,8 +78,8 @@
 				?>
                                 <input type="hidden" name="cmd" value="_xclick" />
                                 <input type="hidden" name="business" value="angus002@163.com" />
-                                <input type="hidden" name="item_name" value="B2B pay" />
-                                <input type="hidden" name="amount" value="<?=abs($instant_balance) ?>" />
+                                <input type="hidden" name="item_name" value="B2B Payment" />
+                                <input type="hidden" name="amount" value="<?=$pay_amount;?>" />
                                  <input type="hidden" name="userid" value="<?=$this->userId?>" />
                                 <input type="hidden" name="bn" value="webasyst" />
                                 <input type="hidden" name="return" value="http://b2b-aws.cztesting.com/merchant/paypal-place-order/sessionid/<?=$this->sessionId?>/userid/<?=$this->userId?>" />
@@ -87,14 +87,13 @@
                                 <input type="hidden" name="currency_code" value="AUD" />
                                 <tr>
                                     <td class="info_Recharge" colspan="10">
-                                        <input type="submit" value="Confirm Update" <?php if($is_rejected){echo "disabled='disabled'";}?> /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?></td>
+                                         <?php if($this->ifpay):?>
+                                        <input type="submit" value="Pay by Paypal"/>
+                                        <?php else: ?>
+                                        <input type="submit" value="Confirm Update" <?php if($is_rejected){echo "disabled='disabled'";}?> /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?>
+                                        <?php endif ?>
+                                     </td>   
                                 </tr>
-                                <?php if($this->ifpay):?>
-                                <tr>
-                                    <td class="info_Recharge" colspan="10">
-                                        <input type="image" src="http://www.fullyloadedelectronics.com/uploads/images/paypal-button.png" style="height:77px; width:248px" onclick="javascript:document.forms['preview_form'].submit(); return false;" /></td>
-                                </tr>
-                                <?php endif ?>
                             </tbody>
                         </table>
         </table>
