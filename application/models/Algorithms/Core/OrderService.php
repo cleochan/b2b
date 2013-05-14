@@ -65,7 +65,10 @@ class Algorithms_Core_OrderService extends SoapClient{
     
     private static $classmap = array();
     
-    function __construct($wsdl = "http://203.213.123.150:8743/OrderService.svc?wsdl", $options = array()) {
+    function __construct($wsdl , $options = array()) {
+        $params_model   =   new Databases_Tables_Params();
+        $web_service_url    =   $params_model->GetVal('web_service_url');
+        $wsdl   =   $web_service_url."OrderService.svc?wsdl";
         foreach(self::$classmap as $key => $value) {
             if(!isset($options['classmap'][$key])) {
                 $options['classmap'][$key] = $value;
