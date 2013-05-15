@@ -827,7 +827,7 @@ class MerchantController extends Zend_Controller_Action
                     $logs_financial->action_type = 1; //place order
                     $logs_financial->action_affect = 2; //deduct
                     $logs_financial->action_value = $order_amount;
-                    $logs_financial->trans_id = $place_order_return['logs_orders_id'];
+                    //$logs_financial->trans_id = $place_order_return['logs_orders_id'];
 
                     $logs_financial->AddLog();
                 }else{
