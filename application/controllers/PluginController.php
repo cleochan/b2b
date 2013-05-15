@@ -422,7 +422,7 @@ if($result)
         $db_info->query('truncate table users_feed_definition');
         $db_info->query('truncate table logs_orders');
         $db_info->query('truncate table logs_financial');
-        
+        $db_info->query('truncate table purchase_order');
         $select = $db_info->select();
         $select->from("users as u", array("user_id", "email" , "password", "user_status" , "user_type"));
         $select->joinLeft("users_extension as e", "u.user_id=e.user_id", array("company", "contact_name", "contact_phone", "join_date", "balance", "credit", "discount", "bpay_ref"));
