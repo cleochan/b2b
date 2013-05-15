@@ -415,7 +415,7 @@ if($result)
         die;
     }
     
-    function deleteUsersDataAction()
+    function clearDataAction()
     {
         $db_info = Zend_Registry::get("db");
         $db_info->query('truncate table users_feed');
