@@ -152,6 +152,7 @@ class Algorithms_Core_Feed
         {
             foreach($value_adjustment_array as $adj)
             {
+                print_r($adj);
                 $cond = explode("|", $adj);
                 
                 if(">" === substr($cond[0], 0, 1))
