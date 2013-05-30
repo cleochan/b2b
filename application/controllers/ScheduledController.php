@@ -283,10 +283,11 @@ class ScheduledController extends Zend_Controller_Action
             $req .= "&$key=$value";   
         }   
         // post back to PayPal system to validate   
-        $header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";   
+        $header = "POST /cgi-bin/webscr HTTP/1.0\r\n";   
         $header .= "Content-Type: application/x-www-form-urlencoded\r\n";   
         $header .= "Content-Length: " . strlen($req) . "\r\n\r\n";   
-           
+        
+        
         $fp = fsockopen ('ssl://www.sandbox.paypal.com', 443, $errno, $errstr, 30); // 沙盒用   
         //$fp = fsockopen ('ssl://www.paypal.com', 443, $errno, $errstr, 30); // 正式用   
         $user_id = $params['userid']; 
