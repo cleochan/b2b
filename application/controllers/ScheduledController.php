@@ -304,7 +304,7 @@ class ScheduledController extends Zend_Controller_Action
         $user_id = $params['userid']; 
         $txn_id = $params['txn_id']; 
         $mc_gross = $params['mc_gross']; 
-        
+        /**
         if($txn_id)
         {
             $logs_financial = new Databases_Tables_LogsFinancial();
@@ -316,7 +316,7 @@ class ScheduledController extends Zend_Controller_Action
             $logs_financial->AddLog();
             fclose($fp); 
         }
-/**
+        **/
         $logs_financial = new Databases_Tables_LogsFinancial();
         if (!$fp) { 
             // HTTP ERROR 
@@ -339,7 +339,6 @@ class ScheduledController extends Zend_Controller_Action
             }   
             fclose ($fp);   
         } 
-        **/
         die;
     }
 }
