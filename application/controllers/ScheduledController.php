@@ -274,7 +274,6 @@ class ScheduledController extends Zend_Controller_Action
     
     function paypalNotifyAction ()
     {
-        
         $params =   $this->_request->getParams();
          // read the post from PayPal system and add 'cmd'   
         $req = 'cmd=_notify-validate';   
@@ -290,20 +289,14 @@ class ScheduledController extends Zend_Controller_Action
            
         //$fp = fsockopen ('ssl://www.sandbox.paypal.com', 443, $errno, $errstr, 30); // 沙盒用   
         $fp = fsockopen ('ssl://www.paypal.com', 443, $errno, $errstr, 30); // 正式用   
-
-        // assign posted variables to local variables   
-        //$item_name = $params['item_name'];   
-        // $item_number = $params['item_number'];   
-        //$payment_status = $params['payment_status']; 
-        //$payment_amount = $params['mc_gross'];   
-        // $payment_currency = $params['mc_gross'];   
-        // $receiver_email = $params['receiver_email'];   
-        // $payer_email = $params['payer_email']; 
-        //$custom = $params['custom ']; 
-        
         $user_id = $params['userid']; 
         $txn_id = $params['txn_id']; 
-        $mc_gross = $params['mc_gross']; 
+        $mc_gross = $params['mc_gross'];
+        
+        $paypal_log_model    =   new Databases_Tables_PaypalLogs();
+        $paypal_log_model->user_id   =   $user_id;
+        $paypal_log_model->params    =   $req;
+        $paypal_log_model->AddParams();
         /**
         if($txn_id)
         {
@@ -317,12 +310,13 @@ class ScheduledController extends Zend_Controller_Action
             fclose($fp); 
         }
         **/
-        $logs_financial = new Databases_Tables_LogsFinancial();
+       
         if (!$fp) { 
             // HTTP ERROR 
         } else {  
-          
+           fputs($fp, $header . $req);
            while(!feof($fp)){
+                $logs_financial = new Databases_Tables_LogsFinancial();
                 $res = fgets($fp, 1024);       
                 if (strcmp($res, "VERIFIED") == 0) { 
                     $logs_financial->user_id        =   $user_id;
