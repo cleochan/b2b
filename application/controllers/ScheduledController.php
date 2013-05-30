@@ -287,8 +287,10 @@ class ScheduledController extends Zend_Controller_Action
         $header .= "Content-Type: application/x-www-form-urlencoded\r\n";   
         $header .= "Content-Length: " . strlen($req) . "\r\n\r\n";   
         
+        $system_params_model    =   new Databases_Tables_Params();        
+        $paypal_url         =   $system_params_model->GetVal('paypal_url');
         
-        $fp = fsockopen ('ssl://www.sandbox.paypal.com', 443, $errno, $errstr, 30); // 沙盒用   
+        $fp = fsockopen ('ssl://'.$paypal_url, 443, $errno, $errstr, 30); // 沙盒用   
         //$fp = fsockopen ('ssl://www.paypal.com', 443, $errno, $errstr, 30); // 正式用   
         $user_id = $params['userid']; 
         $txn_id = $params['txn_id']; 

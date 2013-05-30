@@ -6,7 +6,7 @@
 <div align="center"><font color="red"><?=$this->notice?></font></div>
 <?php else: ?>
 
-    <form action="<?php if($this->ifpay){?>https://www.sandbox.paypal.com/cgi-bin/webscr<?php }else{?>/merchant/place-order-confirm<?php };?>" method="POST" name='preview_form'>
+    <form action="<?php if($this->ifpay){?>https://<?=$this->paypal_url?>/cgi-bin/webscr<?php }else{?>/merchant/place-order-confirm<?php };?>" method="POST" name='preview_form'>
         <table class="hide" border="0" cellpadding="0" cellspacing="1">
                         <table class="width100" cellspacing="1">
                             <tbody>
@@ -77,13 +77,13 @@
                                     endif;
 				?>
                                 <input type="hidden" name="cmd" value="_xclick" />
-                                <input type="hidden" name="business" value="angus002@163.com" />
+                                <input type="hidden" name="business" value="<?=$this->paypal_account?>" />
                                 <input type="hidden" name="item_name" value="B2B Payment" />
                                 <input type="hidden" name="amount" value="<?=$pay_amount;?>" />
                                  <input type="hidden" name="userid" value="<?=$this->userId?>" />
                                 <input type="hidden" name="bn" value="webasyst" />
-                                <input type="hidden" name="return" value="http://b2b-aws.cztesting.com/merchant/paypal-place-order/sessionid/<?=$this->sessionId?>/userid/<?=$this->userId?>" />
-                                <input type="hidden" name="notify_url" value="http://b2b-aws.cztesting.com/scheduled/paypal-notify/userid/<?=$this->userId?>"/>
+                                <input type="hidden" name="return" value="<?=$this->paypal_return_url?>merchant/paypal-place-order/sessionid/<?=$this->sessionId?>/userid/<?=$this->userId?>" />
+                                <input type="hidden" name="notify_url" value="<?=$this->paypal_return_url?>scheduled/paypal-notify/userid/<?=$this->userId?>"/>
                                 <input type="hidden" name="currency_code" value="AUD" />
                                 <tr>
                                     <td class="info_Recharge" colspan="10">

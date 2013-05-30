@@ -257,6 +257,11 @@ class MerchantController extends Zend_Controller_Action
         $user_info = $user_extension_model->UserInfo();
         $group_instance_balance_array = array();
         
+        $system_params_model    =   new Databases_Tables_Params();        
+        $this->view->paypal_url         =   $system_params_model->GetVal('paypal_url');
+        $this->view->paypal_account     =   $system_params_model->GetVal('paypal_account');
+        $this->view->paypal_return_url  =   $system_params_model->GetVal('paypal_return_url');
+        
         //save delivery
         if(!$_SESSION['place_order']['delivery'])
         {
@@ -573,6 +578,12 @@ class MerchantController extends Zend_Controller_Action
         
         $group_instance_balance_array = array();
         $getorders_model = new Databases_Joins_GetOrders();
+        
+        $system_params_model    =   new Databases_Tables_Params();        
+        $this->view->paypal_url         =   $system_params_model->GetVal('paypal_url');
+        $this->view->paypal_account     =   $system_params_model->GetVal('paypal_account');
+        $this->view->paypal_return_url  =   $system_params_model->GetVal('paypal_return_url');
+        
         if ($_SESSION['import_order'][$this->params['sessionid']]&& $this->params['sessionid'])
         {
             $data_array =   $_SESSION['import_order'][$this->params['sessionid']];
