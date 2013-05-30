@@ -337,7 +337,7 @@ class ScheduledController extends Zend_Controller_Action
            $paypal_log_model   =   new Databases_Tables_PaypalLogs();
             $paypal_log_model->user_id  =   $user_id;
             $paypal_log_model->params   =   $req;
-            $paypal_log_model->errors   =   $errors;
+            $paypal_log_model->errors   =   $fp;
             $paypal_log_model->AddParams();
         die;
     }
