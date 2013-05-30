@@ -288,8 +288,8 @@ class ScheduledController extends Zend_Controller_Action
         $header .= "Content-Length: " . strlen($req) . "\r\n\r\n";   
         
         
-        //$fp = fsockopen ('ssl://www.sandbox.paypal.com', 443, $errno, $errstr, 30); // 沙盒用   
-        $fp = fsockopen ('ssl://www.paypal.com', 443, $errno, $errstr, 30); // 正式用   
+        $fp = fsockopen ('ssl://www.sandbox.paypal.com', 443, $errno, $errstr, 30); // 沙盒用   
+        //$fp = fsockopen ('ssl://www.paypal.com', 443, $errno, $errstr, 30); // 正式用   
         $user_id = $params['userid']; 
         $txn_id = $params['txn_id']; 
         $mc_gross = $params['mc_gross'];
