@@ -292,11 +292,7 @@ class ScheduledController extends Zend_Controller_Action
         $user_id = $params['userid']; 
         $txn_id = $params['txn_id']; 
         $mc_gross = $params['mc_gross'];
-        
-        $paypal_log_model    =   new Databases_Tables_PaypalLogs();
-        $paypal_log_model->user_id   =   $user_id;
-        $paypal_log_model->params    =   $req;
-        $paypal_log_model->AddParams();
+       
         /**
         if($txn_id)
         {
@@ -310,30 +306,39 @@ class ScheduledController extends Zend_Controller_Action
             fclose($fp); 
         }
         **/
-       
-        if (!$fp) { 
-            // HTTP ERROR 
-        } else {  
-           fputs($fp, $header . $req);
-           while(!feof($fp)){
-                $logs_financial = new Databases_Tables_LogsFinancial();
-                $res = fgets($fp, 1024);       
-                if (strcmp($res, "VERIFIED") == 0) { 
-                    $logs_financial->user_id        =   $user_id;
-                    $logs_financial->action_type    =   3; //Adjustment
-                    $logs_financial->action_affect  =   1; //Recharge
-                    $logs_financial->action_value   =   $mc_gross;
-                    $logs_financial->trans_id       =   $txn_id;
-                    $logs_financial->AddLog();
-                    fclose($fp);
-                
+       try{
+            if (!$fp) { 
+                // HTTP ERROR 
+            } else {  
+               fputs($fp, $header . $req);
+               while(!feof($fp)){
+                    $logs_financial = new Databases_Tables_LogsFinancial();
+                    $res = fgets($fp, 1024);       
+                    if (strcmp($res, "VERIFIED") == 0) { 
+                        $logs_financial->user_id        =   $user_id;
+                        $logs_financial->action_type    =   3; //Adjustment
+                        $logs_financial->action_affect  =   1; //Recharge
+                        $logs_financial->action_value   =   $mc_gross;
+                        $logs_financial->trans_id       =   $txn_id;
+                        $logs_financial->AddLog();
+                        fclose($fp);
+
+                    }   
+                    else if (strcmp ($res, "INVALID") == 0) {
+                         fclose ($fp);   
+                    }   
                 }   
-                else if (strcmp ($res, "INVALID") == 0) {
-                     fclose ($fp);   
-                }   
-            }   
-            fclose ($fp);   
-        } 
+                fclose ($fp);   
+            } 
+       }catch (Zend_Exception $exp){
+            $errors             =   $exp->getMessage();
+         
+        }
+           $paypal_log_model   =   new Databases_Tables_PaypalLogs();
+            $paypal_log_model->user_id  =   $user_id;
+            $paypal_log_model->params   =   $req;
+            $paypal_log_model->errors   =   $errors;
+            $paypal_log_model->AddParams();
         die;
     }
 }
