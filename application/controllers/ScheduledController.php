@@ -294,7 +294,7 @@ class ScheduledController extends Zend_Controller_Action
         $txn_id = $params['txn_id']; 
         $mc_gross = $params['mc_gross'];
        
-        /**
+      
         if($txn_id)
         {
             $logs_financial = new Databases_Tables_LogsFinancial();
@@ -306,7 +306,7 @@ class ScheduledController extends Zend_Controller_Action
             $logs_financial->AddLog();
             fclose($fp); 
         }
-        **/
+/**
        try{
             if (!$fp) { 
                 // HTTP ERROR 
@@ -335,10 +335,12 @@ class ScheduledController extends Zend_Controller_Action
             $errors             =   $exp->getMessage();
          
         }
+ *
+ */
            $paypal_log_model   =   new Databases_Tables_PaypalLogs();
             $paypal_log_model->user_id  =   $user_id;
             $paypal_log_model->params   =   $req;
-            $paypal_log_model->errors   =   $res;
+            $paypal_log_model->errors   =   '';
             $paypal_log_model->AddParams();
         die;
     }
