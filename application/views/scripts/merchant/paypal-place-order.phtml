@@ -1,0 +1,22 @@
+<div align="center" class="info_tablebox">
+    <p align="center"><span lang="zh-cn">Recharging in progress, please wait for a moment.</span></p>
+    <p align="center">
+    <span id=second lang="zh-cn">
+        10
+    </span>
+    <span lang="zh-cn"></span></p>
+</div>
+<script language="javascript">
+   var time=10;
+  
+   function timedown()
+   {
+    time=time-1;
+    if (time<0)
+        window.location.href='/merchant/place-order-preview/sessionid/<?=$this->sessionId?>' ;
+    else
+        document.getElementById("second").innerHTML = time;
+   }
+  
+   setInterval("timedown()",1000);
+</script>

@@ -711,14 +711,16 @@ class MerchantController extends Zend_Controller_Action
     {
         $params =   $this->_request->getParams();
         $sessionId  =   $params['sessionid'];
-        $this->_redirect("/merchant/import-order-preview/sessionid/".$sessionId);
+        $this->view->sessionId  =   $sessionId;
+        //$this->_redirect("/merchant/import-order-preview/sessionid/".$sessionId);
     }
     
     function paypalPlaceOrderAction ()
     {
         $params =   $this->_request->getParams();
         $sessionId  =   $params['sessionid'];
-        $this->_redirect("/merchant/place-order-preview/sessionid/".$sessionId);
+        $this->view->sessionId  =   $sessionId;
+        //$this->_redirect("/merchant/place-order-preview/sessionid/".$sessionId);
     }
     
     function importOrderConfirmAction()
