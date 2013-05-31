@@ -274,6 +274,8 @@ class ScheduledController extends Zend_Controller_Action
     
     function paypalNotifyAction ()
     {
+        $system_params_model    =   new Databases_Tables_Params();        
+        $paypal_url         =   $system_params_model->GetVal('paypal_url');
         $params =   $this->_request->getParams();
          // read the post from PayPal system and add 'cmd'   
         $req = 'cmd=_notify-validate';   
@@ -282,13 +284,13 @@ class ScheduledController extends Zend_Controller_Action
             $value = urlencode(stripslashes($value));   
             $req .= "&$key=$value";   
         }   
-        // post back to PayPal system to validate   
-        $header = "POST /cgi-bin/webscr HTTP/1.0\r\n";   
-        $header .= "Content-Type: application/x-www-form-urlencoded\r\n";   
-        $header .= "Content-Length: " . strlen($req) . "\r\n\r\n";   
+        // post back to PayPal system to validate           
+        $header .= "POST /cgi-bin/webscr HTTP/1.0\r\n" ; 
+        $header .=  "Host: ".$paypal_url."\r\n" ; 
+        //$header .=  "Host: www.paypal.com\r\n" ; 
+        $header .= "Content-Type:application/x-www-form-urlencoded\r\n" ; 
+        $header .= "Content-Length:" .strlen($req)."\r\n\r\n";  
         
-        $system_params_model    =   new Databases_Tables_Params();        
-        $paypal_url         =   $system_params_model->GetVal('paypal_url');
         
         $fp = fsockopen ('ssl://'.$paypal_url, 443, $errno, $errstr, 30); // 沙盒用   
         //$fp = fsockopen ('ssl://www.paypal.com', 443, $errno, $errstr, 30); // 正式用   
