@@ -276,33 +276,28 @@ class ScheduledController extends Zend_Controller_Action
     {
         $system_params_model    =   new Databases_Tables_Params();        
         $paypal_url         =   $system_params_model->GetVal('paypal_url');
-       
-         // read the post from PayPal system and add 'cmd'   
-         $req = 'cmd=_notify-validate'; 
+        
+        $req = 'cmd=_notify-validate'; 
         foreach($_POST as $key => $value){ 
             $value = urlencode (stripslashes($value)); 
             $req.= "&$key=$value" ;    
         }  
         // post back to PayPal system to validate           
         $header.= "POST /cgi-bin/webscr HTTP/1.0\r\n" ; 
-        $header.=  "Host: www.sandbox.paypal.com\r\n" ; 
+        $header.=  "Host: ".$paypal_url."\r\n" ; 
         $header.= "Content-Type:application/x-www-form-urlencoded\r\n" ; 
         $header.= "Content-Length:" .strlen($req)."\r\n\r\n";   
-        
-        
-        $fp = fsockopen('ssl://www.sandbox.paypal.com', 443, $errno, $errstr, 30);  // 沙盒用   
-        //$fp = fsockopen ('ssl://www.paypal.com', 443, $errno, $errstr, 30); // 正式用   
-        //$user_id = $_POST['userid']; 
-        $user_id =   $this->_request->getParam('userid');
+
+        $fp = fsockopen('ssl://'.$paypal_url, 443, $errno, $errstr, 30);    
+
+        $user_id =  $this->_request->getParam('userid');
         $txn_id = $_POST['txn_id']; 
         $mc_gross = $_POST['mc_gross'];
        
-      if(!$fp){ 
+        if(!$fp){ 
              
-        }else{ 
-             
+        }else{  
             fputs($fp, $header.$req); 
-            
             while (!feof($fp)){ 
                     $logs_financial = new Databases_Tables_LogsFinancial();
                     $res = fgets($fp, 1024);       
