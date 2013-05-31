@@ -276,6 +276,7 @@ class ScheduledController extends Zend_Controller_Action
     {
         $system_params_model    =   new Databases_Tables_Params();        
         $paypal_url         =   $system_params_model->GetVal('paypal_url');
+       
          // read the post from PayPal system and add 'cmd'   
          $req = 'cmd=_notify-validate'; 
         foreach($_POST as $key => $value){ 
@@ -289,25 +290,13 @@ class ScheduledController extends Zend_Controller_Action
         $header.= "Content-Length:" .strlen($req)."\r\n\r\n";   
         
         
-         $fp = fsockopen('ssl://www.sandbox.paypal.com', 443, $errno, $errstr, 30);  // 沙盒用   
+        $fp = fsockopen('ssl://www.sandbox.paypal.com', 443, $errno, $errstr, 30);  // 沙盒用   
         //$fp = fsockopen ('ssl://www.paypal.com', 443, $errno, $errstr, 30); // 正式用   
-        $user_id = $_POST['userid']; 
+        //$user_id = $_POST['userid']; 
+        $user_id =   $this->_request->getParam('userid');
         $txn_id = $_POST['txn_id']; 
         $mc_gross = $_POST['mc_gross'];
        
-      /**
-        if($txn_id)
-        {
-            $logs_financial = new Databases_Tables_LogsFinancial();
-            $logs_financial->user_id        =   $user_id;
-            $logs_financial->action_type    =   3; //Adjustment
-            $logs_financial->action_affect  =   1; //Recharge
-            $logs_financial->action_value   =   $mc_gross;
-            $logs_financial->trans_id       =   $txn_id;
-            $logs_financial->AddLog();
-            fclose($fp); 
-        }
-       * **/
       if(!$fp){ 
              
         }else{ 
@@ -318,6 +307,7 @@ class ScheduledController extends Zend_Controller_Action
                     $logs_financial = new Databases_Tables_LogsFinancial();
                     $res = fgets($fp, 1024);       
                     if (strcmp($res, "VERIFIED") == 0) { 
+                        
                         $logs_financial->user_id        =   $user_id;
                         $logs_financial->action_type    =   3; //Adjustment
                         $logs_financial->action_affect  =   1; //Recharge
