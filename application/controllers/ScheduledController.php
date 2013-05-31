@@ -286,7 +286,7 @@ class ScheduledController extends Zend_Controller_Action
         }   
         // post back to PayPal system to validate           
         $header .= "POST /cgi-bin/webscr HTTP/1.0\r\n" ; 
-        $header .=  "Host: www.sandbox.paypal.com\r\n" ; 
+        //$header .=  "Host: www.sandbox.paypal.com\r\n" ; 
         $header .= "Content-Type:application/x-www-form-urlencoded\r\n" ; 
         $header .= "Content-Length:" .strlen($req)."\r\n\r\n";  
         
