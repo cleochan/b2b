@@ -278,7 +278,7 @@ class ScheduledController extends Zend_Controller_Action
          // read the post from PayPal system and add 'cmd'   
         $req = 'cmd=_notify-validate';   
         
-        foreach ($params as $key => $value) {
+        foreach ($_POST as $key => $value) {
             $value = urlencode(stripslashes($value));   
             $req .= "&$key=$value";   
         }   
@@ -292,11 +292,11 @@ class ScheduledController extends Zend_Controller_Action
         
         $fp = fsockopen ('ssl://'.$paypal_url, 443, $errno, $errstr, 30); // 沙盒用   
         //$fp = fsockopen ('ssl://www.paypal.com', 443, $errno, $errstr, 30); // 正式用   
-        $user_id = $params['userid']; 
-        $txn_id = $params['txn_id']; 
-        $mc_gross = $params['mc_gross'];
+        $user_id = $_POST['userid']; 
+        $txn_id = $_POST['txn_id']; 
+        $mc_gross = $_POST['mc_gross'];
        
-      
+      /**
         if($txn_id)
         {
             $logs_financial = new Databases_Tables_LogsFinancial();
@@ -308,7 +308,7 @@ class ScheduledController extends Zend_Controller_Action
             $logs_financial->AddLog();
             fclose($fp); 
         }
-/**
+       * **/
        try{
             if (!$fp) { 
                 // HTTP ERROR 
@@ -337,12 +337,10 @@ class ScheduledController extends Zend_Controller_Action
             $errors             =   $exp->getMessage();
          
         }
- *
- */
            $paypal_log_model   =   new Databases_Tables_PaypalLogs();
             $paypal_log_model->user_id  =   $user_id;
             $paypal_log_model->params   =   $req;
-            $paypal_log_model->errors   =   '';
+            $paypal_log_model->errors   =   $res;
             $paypal_log_model->AddParams();
         die;
     }
