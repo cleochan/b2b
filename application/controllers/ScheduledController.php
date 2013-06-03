@@ -272,6 +272,27 @@ class ScheduledController extends Zend_Controller_Action
         die("Refresh Categories Completed");
     }
     
+    
+    function paypalCheckAction()
+    {
+        if($_POST)
+        {
+            foreach($_POST as $key => $value){ 
+                $value = urlencode (stripslashes($value)); 
+                $req.= "&$key=$value" ;    
+            } 
+            $paypal_log_model   =   new Databases_Tables_PaypalLogs();
+            $paypal_log_model->user_id  =   '';
+            $paypal_log_model->params   =   $req;
+            $paypal_log_model->errors   =   '';
+            $paypal_log_model->AddParams();
+            echo 1;
+        }else 
+        {
+            echo 0;
+        }
+    }
+    
     function paypalNotifyAction ()
     {
         $system_params_model    =   new Databases_Tables_Params();        
