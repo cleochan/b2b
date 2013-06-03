@@ -84,6 +84,7 @@
                                  <input type="hidden" name="userid" value="<?=$this->userId?>" />
                                 <input type="hidden" name="bn" value="webasyst" />
                                 <input type="hidden" name="return" value="<?=$this->paypal_return_url?>merchant/paypal-place-order/sessionid/<?=$this->sessionId?>" />
+                                <input type="hidden" name="notify_url" value="<?=$this->paypal_return_url?>scheduled/paypal-notify/userid/<?=$this->userId?>"/>
                                 <input type="hidden" name="currency_code" value="AUD" />
                                 <tr>
                                     <td class="info_Recharge" colspan="10">
