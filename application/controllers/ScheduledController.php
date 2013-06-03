@@ -291,6 +291,7 @@ class ScheduledController extends Zend_Controller_Action
         {
             echo 0;
         }
+        die;
     }
     
     function paypalNotifyAction ()
