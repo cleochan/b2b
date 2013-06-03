@@ -505,6 +505,15 @@ class MerchantController extends Zend_Controller_Action
                     {
                         $getorders_model->main_order_id =   $response_data['order_number'];
                         $getorders_model->item_status   =   1;
+                          
+                        //Update Financial Info
+                        $logs_financial->user_id = $user_id;
+                        $logs_financial->action_type = 1; //place order
+                        $logs_financial->action_affect = 2; //deduct
+                        $logs_financial->action_value = $order_amount;
+                        // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
+                        $logs_financial->AddLog();
+                        
                     }elseif($response_data['MessageType']['Description'])
                     {
                         $getorders_model->item_status   =   2;
@@ -517,14 +526,6 @@ class MerchantController extends Zend_Controller_Action
                     //update merchant ref pool
                     $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
 
-                    //Update Financial Info
-                    $logs_financial->user_id = $user_id;
-                    $logs_financial->action_type = 1; //place order
-                    $logs_financial->action_affect = 2; //deduct
-                    $logs_financial->action_value = $order_amount;
-                   // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
-
-                    $logs_financial->AddLog();
                 }else{
                     $notice = "E2";
                 }
@@ -824,6 +825,14 @@ class MerchantController extends Zend_Controller_Action
                     {
                         $getorders_model->main_order_id =   $response_data['order_number'];
                         $getorders_model->item_status   =   1;
+                        //Update Financial Info
+                        $logs_financial->user_id = $user_id;
+                        $logs_financial->action_type = 1; //place order
+                        $logs_financial->action_affect = 2; //deduct
+                        $logs_financial->action_value = $order_amount;
+                        //$logs_financial->trans_id = $place_order_return['logs_orders_id'];
+                        $logs_financial->AddLog();
+                        
                     }elseif($response_data['MessageType']['Description'])
                     {
                         $getorders_model->item_status   =   2;
@@ -834,15 +843,6 @@ class MerchantController extends Zend_Controller_Action
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     //update merchant ref pool
                     $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
-
-                    //Update Financial Info
-                    $logs_financial->user_id = $user_id;
-                    $logs_financial->action_type = 1; //place order
-                    $logs_financial->action_affect = 2; //deduct
-                    $logs_financial->action_value = $order_amount;
-                    //$logs_financial->trans_id = $place_order_return['logs_orders_id'];
-
-                    $logs_financial->AddLog();
                 }else{
                     $notice = "E2";
                 }
