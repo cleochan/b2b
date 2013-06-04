@@ -22,7 +22,7 @@ class Algorithms_Core_CategoryService extends SoapClient{
     
     private static $classmap = array();
     
-    function __construct($wsdl , $options = array()) {
+    function __construct($options = array()) {
         $params_model   =   new Databases_Tables_Params();
         $web_service_url    =   $params_model->GetVal('web_service_url');
         $wsdl   =   $web_service_url."CategoryService.svc?wsdl";

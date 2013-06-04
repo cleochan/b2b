@@ -351,7 +351,8 @@ class MerchantController extends Zend_Controller_Action
                 endif;
                 $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
             }
-            $this->view->notice_paypal =   "PayPal Rechange successfully.";
+            $this->view->flat_paypal    =   1;
+            $this->view->notice_paypal  =   "PayPal Rechange successfully.";
             $this->view->list = $data_array;
         }elseif(!empty($data_array))
         {
@@ -486,9 +487,15 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->pick_up = $params['pick_up'][$loop_key];
                     $getorders_model->merchant_ref_pool = $merchant_ref_pool;
                     
-                    $getorders_model->item_amount   =   $order_amount;          
+                    $getorders_model->item_amount   =   $order_amount;
+                    if($params['flat_paypal'])
+                    {
+                        $order_service_model->crazySalesOrderType['PaymentTypeID']          =   5; 
+                    }else
+                    {
+                        $order_service_model->crazySalesOrderType['PaymentTypeID']          =   6; 
+                    }
                     $order_service_model->crazySalesOrderType['RetailerAccountEmail']   =   $_SESSION["Zend_Auth"]["storage"]->email;
-                    $order_service_model->crazySalesOrderType['PaymentTypeID']          =   1; 
                     $order_service_model->crazySalesOrderType['ShipFirstName']          =   $params['shipping_first_name'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipAddress_1']          =   $params['shipping_address_1'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipAddress_2']          =   $params['shipping_address_2'][$loop_key];
@@ -511,12 +518,22 @@ class MerchantController extends Zend_Controller_Action
                     
                     $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
                     
-                    $order_service_model->crazySalesOrderItemType['ExpectedItemCost']   =   $sku_prices_info['street_price'];
-                    $order_service_model->crazySalesOrderItemType['FinalItemCost']      =   $sku_prices_info['street_price'];
-                    $order_service_model->crazySalesOrderItemType['FinalShipCost']      =   $sku_prices_info['estimated_shipping_cost'];
-                    $order_service_model->crazySalesOrderItemType['ShipCost']           =   $sku_prices_info['estimated_shipping_cost'];
+                    $moeney_type    =   array();
+                    $order_service_model->crazySalesOrderItemType['ExpectedItemCost']   =   $moeney_type['Value']   =   $sku_prices_info['street_price'];
+                    $order_service_model->crazySalesOrderItemType['FinalItemCost']      =   $moeney_type['Value']   =   $sku_prices_info['street_price'];
+                    $order_service_model->crazySalesOrderItemType['FinalShipCost']      =   $moeney_type['Value']   =   $sku_prices_info['estimated_shipping_cost'];
+                    $order_service_model->crazySalesOrderItemType['ShipCost']           =   $moeney_type['Value']   =   $sku_prices_info['estimated_shipping_cost'];
+                    $order_service_model->crazySalesOrderItemType['Dimension']          =   '';
+                    $order_service_model->crazySalesOrderItemType['Weight']             =   '';
+                    $order_service_model->crazySalesOrderItemType['Notes']              =   '';
+                    $order_service_model->crazySalesOrderItemType['OrderItemNumber']    =   10;
+                    $order_service_model->crazySalesOrderItemType['OrderNumber']        =   10;
+                    $order_service_model->crazySalesOrderItemType['ShipCarrier']        =   '';
+                    $order_service_model->crazySalesOrderItemType['ShipDate']           = date('Y-m-d H:i:s');
+                    $order_service_model->crazySalesOrderItemType['ShipMethod']         =   '';
+                    $order_service_model->crazySalesOrderItemType['TrackingNumber']     =   '';
                     
-                    $order_service_model->crazySalesOrderItemType['Quantity']           =   $params['quantity'][$loop_key];
+                    $order_service_model->quantityType['Value']                         =   $params['quantity'][$loop_key];
                     $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];          
                     
                     $response_data   =   $order_service_model->WebServicePlaceOrder();
@@ -643,7 +660,8 @@ class MerchantController extends Zend_Controller_Action
                 endif;
                 $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
             }
-            $this->view->notice_paypal =   "PayPal Rechange successfully.";
+            $this->view->flat_paypal    =   1;
+            $this->view->notice_paypal  =   "PayPal Rechange successfully.";
             $this->view->list = $data_array;
         }
         else
@@ -826,9 +844,15 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->pick_up = $params['pick_up'][$loop_key];
                     $getorders_model->merchant_ref_pool = $merchant_ref_pool;
                     
-                    $getorders_model->item_amount   =   $order_amount;          
+                    $getorders_model->item_amount   =   $order_amount;
+                    if($params['flat_paypal'])
+                    {
+                        $order_service_model->crazySalesOrderType['PaymentTypeID']          =   5; 
+                    }else
+                    {
+                        $order_service_model->crazySalesOrderType['PaymentTypeID']          =   6; 
+                    }
                     $order_service_model->crazySalesOrderType['RetailerAccountEmail']   =   $_SESSION["Zend_Auth"]["storage"]->email;
-                    $order_service_model->crazySalesOrderType['PaymentTypeID']          =   1; 
                     $order_service_model->crazySalesOrderType['ShipFirstName']          =   $params['shipping_first_name'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipAddress_1']          =   $params['shipping_address_1'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipAddress_2']          =   $params['shipping_address_2'][$loop_key];
@@ -851,10 +875,20 @@ class MerchantController extends Zend_Controller_Action
                     
                     $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
                     
-                    $order_service_model->crazySalesOrderItemType['ExpectedItemCost']   =   $sku_prices_info['street_price'];
-                    $order_service_model->crazySalesOrderItemType['FinalItemCost']      =   $sku_prices_info['street_price'];
-                    $order_service_model->crazySalesOrderItemType['FinalShipCost']      =   $sku_prices_info['estimated_shipping_cost'];
-                    $order_service_model->crazySalesOrderItemType['ShipCost']           =   $sku_prices_info['estimated_shipping_cost'];
+                    $moeney_type    =   array();
+                    $order_service_model->crazySalesOrderItemType['ExpectedItemCost']   =   $moeney_type['Value']   =   $sku_prices_info['street_price'];
+                    $order_service_model->crazySalesOrderItemType['FinalItemCost']      =   $moeney_type['Value']   =   $sku_prices_info['street_price'];
+                    $order_service_model->crazySalesOrderItemType['FinalShipCost']      =   $moeney_type['Value']   =   $sku_prices_info['estimated_shipping_cost'];
+                    $order_service_model->crazySalesOrderItemType['ShipCost']           =   $moeney_type['Value']   =   $sku_prices_info['estimated_shipping_cost'];
+                    $order_service_model->crazySalesOrderItemType['Dimension']          =   '';
+                    $order_service_model->crazySalesOrderItemType['Weight']             =   '';
+                    $order_service_model->crazySalesOrderItemType['Notes']              =   '';
+                    $order_service_model->crazySalesOrderItemType['OrderItemNumber']    =   10;
+                    $order_service_model->crazySalesOrderItemType['OrderNumber']        =   10;
+                    $order_service_model->crazySalesOrderItemType['ShipCarrier']        =   '';
+                    $order_service_model->crazySalesOrderItemType['ShipDate']           = date('Y-m-d H:i:s');
+                    $order_service_model->crazySalesOrderItemType['ShipMethod']         =   '';
+                    $order_service_model->crazySalesOrderItemType['TrackingNumber']     =   '';
                     
                     $order_service_model->crazySalesOrderItemType['Quantity']           =   $params['quantity'][$loop_key];
                     $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];

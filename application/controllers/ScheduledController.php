@@ -346,4 +346,24 @@ class ScheduledController extends Zend_Controller_Action
             $paypal_log_model->AddParams();
         die;
     }
+    
+    function bpayCheckAction()
+    {
+        if($_POST)
+        {
+            foreach($_POST as $key => $value){ 
+                $value = urlencode (stripslashes($value)); 
+                $req.= "&$key=$value" ;    
+            } 
+            $logs_bpay_model   =   new Databases_Tables_LogsBpay();
+            $logs_bpay_model->params   =   $req;
+            $logs_bpay_model->add_time = date('Y-m-d H:i:s');
+            $logs_bpay_model->AddParams();
+            echo 1;
+        }else 
+        {
+            echo 0;
+        }
+        die;
+    }
 }
