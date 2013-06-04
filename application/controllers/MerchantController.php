@@ -423,6 +423,7 @@ class MerchantController extends Zend_Controller_Action
         $plugin_model = new Algorithms_Extensions_Plugin();
         $order_service_model    =   new Algorithms_Core_OrderService();
         $user_info_model    =   new Databases_Joins_GetUserInfo();
+        $product_filter_model   =   new Databases_Joins_ProductFilter();
         $ip = $plugin_model->GetIp();
         $notice = "S1"; //success
         
@@ -497,6 +498,7 @@ class MerchantController extends Zend_Controller_Action
                     $order_service_model->crazySalesOrderType['ShipCountryCode']        =   $params['shipping_country'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipPhone']              =   $params['shipping_phone'][$loop_key];
                     
+                    
                     $user_info  =   $user_info_model->GetUserInfo($user_id);
                     $order_service_model->crazySalesOrderType['OrderAmount']            =   $check_result['subtotal'];
                     $order_service_model->crazySalesOrderType['ShippingCost']           =   $check_result['shipping_cost'];
@@ -504,10 +506,18 @@ class MerchantController extends Zend_Controller_Action
                     $order_service_model->crazySalesOrderType['BillingZipCode']         =   $user_info['post_code'];
                     $order_service_model->crazySalesOrderType['BillingState']           =   $user_info['state'];
                     $order_service_model->crazySalesOrderType['BillingCity']            =   $user_info['suburb'];
+                    $order_service_model->crazySalesOrderType['BillingCompany']         =   $user_info['company'];                    
                     
+                    
+                    $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
+                    
+                    $order_service_model->crazySalesOrderItemType['ExpectedItemCost']   =   $sku_prices_info['street_price'];
+                    $order_service_model->crazySalesOrderItemType['FinalItemCost']      =   $sku_prices_info['street_price'];
+                    $order_service_model->crazySalesOrderItemType['FinalShipCost']      =   $sku_prices_info['estimated_shipping_cost'];
+                    $order_service_model->crazySalesOrderItemType['ShipCost']           =   $sku_prices_info['estimated_shipping_cost'];
                     
                     $order_service_model->crazySalesOrderItemType['Quantity']           =   $params['quantity'][$loop_key];
-                    $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];
+                    $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];          
                     
                     $response_data   =   $order_service_model->WebServicePlaceOrder();
                     
@@ -752,6 +762,7 @@ class MerchantController extends Zend_Controller_Action
         $plugin_model = new Algorithms_Extensions_Plugin();
         $order_service_model    =   new Algorithms_Core_OrderService();
         $user_info_model    =   new Databases_Joins_GetUserInfo();
+        $product_filter_model   =   new Databases_Joins_ProductFilter();
         $ip = $plugin_model->GetIp();
         $notice = "S1"; //success
         
@@ -827,13 +838,23 @@ class MerchantController extends Zend_Controller_Action
                     $order_service_model->crazySalesOrderType['ShipCountryCode']        =   $params['shipping_country'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipPhone']              =   $params['shipping_phone'][$loop_key];
                     
+                                        
                     $user_info  =   $user_info_model->GetUserInfo($user_id);
                     $order_service_model->crazySalesOrderType['OrderAmount']            =   $check_result['subtotal'];
                     $order_service_model->crazySalesOrderType['ShippingCost']           =   $check_result['shipping_cost'];
                     $order_service_model->crazySalesOrderType['BillingAddress_1']       =   $user_info['address'];
                     $order_service_model->crazySalesOrderType['BillingZipCode']         =   $user_info['post_code'];
                     $order_service_model->crazySalesOrderType['BillingState']           =   $user_info['state'];
-                    $order_service_model->crazySalesOrderType['BillingCity']            =   $user_info['suburb'];                    
+                    $order_service_model->crazySalesOrderType['BillingCity']            =   $user_info['suburb'];
+                    $order_service_model->crazySalesOrderType['BillingCompany']         =   $user_info['company'];
+                    
+                    
+                    $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
+                    
+                    $order_service_model->crazySalesOrderItemType['ExpectedItemCost']   =   $sku_prices_info['street_price'];
+                    $order_service_model->crazySalesOrderItemType['FinalItemCost']      =   $sku_prices_info['street_price'];
+                    $order_service_model->crazySalesOrderItemType['FinalShipCost']      =   $sku_prices_info['estimated_shipping_cost'];
+                    $order_service_model->crazySalesOrderItemType['ShipCost']           =   $sku_prices_info['estimated_shipping_cost'];
                     
                     $order_service_model->crazySalesOrderItemType['Quantity']           =   $params['quantity'][$loop_key];
                     $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];

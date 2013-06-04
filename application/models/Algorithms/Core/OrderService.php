@@ -45,12 +45,21 @@ class Algorithms_Core_OrderService extends SoapClient{
     );
     
     var $crazySalesOrderItemType    =   array(
+        'Dimension'             =>  '', // DimensionType
         'ExpectedItemCost'      =>  '', // MoneyType
         'FinalItemCost'         =>  '', // MoneyType
+        'FinalShipCost'         =>  '', // MoneyType
+        'Notes'                 =>  '', // string
+        'OrderItemNumber'       =>  '', // int
+        'OrderNumber'           =>  '', // int
         'ItemSku'               =>  '', // string
         'Quantity'              =>  '', // QuantityType
+        'ShipCarrier'           =>  '', // string 
+        'ShipCost'              =>  '', // MoneyType
+        'ShipDate'              =>  '', // datetime
         'ShipMethod'            =>  '', // string
         'TrackingNumber'        =>  '', // string
+        'Weight'                =>  '', // string
     );
     
     var $crazySalesOrderStatusType  =   array(
