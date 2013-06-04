@@ -536,6 +536,7 @@ class MerchantController extends Zend_Controller_Action
                     $order_service_model->quantityType['Value']                         =   $params['quantity'][$loop_key];
                     $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];          
                     
+                                     
                     $response_data   =   $order_service_model->WebServicePlaceOrder();
                     
                     if($response_data['order_number']) 
@@ -876,10 +877,14 @@ class MerchantController extends Zend_Controller_Action
                     $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
                     
                     $moeney_type    =   array();
-                    $order_service_model->crazySalesOrderItemType['ExpectedItemCost']   =   $moeney_type['Value']   =   $sku_prices_info['street_price'];
-                    $order_service_model->crazySalesOrderItemType['FinalItemCost']      =   $moeney_type['Value']   =   $sku_prices_info['street_price'];
-                    $order_service_model->crazySalesOrderItemType['FinalShipCost']      =   $moeney_type['Value']   =   $sku_prices_info['estimated_shipping_cost'];
-                    $order_service_model->crazySalesOrderItemType['ShipCost']           =   $moeney_type['Value']   =   $sku_prices_info['estimated_shipping_cost'];
+                    $moeney_type['Value']   =   $sku_prices_info['street_price'];
+                    $order_service_model->crazySalesOrderItemType['ExpectedItemCost']   =   $moeney_type['Value'];
+                    $moeney_type['Value']   =   $sku_prices_info['street_price'];
+                    $order_service_model->crazySalesOrderItemType['FinalItemCost']      =   $moeney_type['Value'];
+                    $moeney_type['Value']   =   $sku_prices_info['estimated_shipping_cost'];
+                    $order_service_model->crazySalesOrderItemType['FinalShipCost']      =   $moeney_type['Value'];
+                    $moeney_type['Value']   =   $sku_prices_info['estimated_shipping_cost'];
+                    $order_service_model->crazySalesOrderItemType['ShipCost']           =   $moeney_type['Value'];
                     $order_service_model->crazySalesOrderItemType['Dimension']          =   '';
                     $order_service_model->crazySalesOrderItemType['Weight']             =   '';
                     $order_service_model->crazySalesOrderItemType['Notes']              =   '';
@@ -890,9 +895,9 @@ class MerchantController extends Zend_Controller_Action
                     $order_service_model->crazySalesOrderItemType['ShipMethod']         =   '';
                     $order_service_model->crazySalesOrderItemType['TrackingNumber']     =   '';
                     
-                    $order_service_model->crazySalesOrderItemType['Quantity']           =   $params['quantity'][$loop_key];
-                    $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];
-                    
+                    $order_service_model->quantityType['Value']                         =   $params['quantity'][$loop_key];
+                    $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];   
+                   
                     $response_data   =   $order_service_model->WebServicePlaceOrder();
                     
                     if($response_data['order_number']) 
