@@ -13,6 +13,10 @@ class Databases_Tables_Users extends Zend_Db_Table
     var $contact_phone;
     var $credit;
     var $discount;
+    var $address;
+    var $post_code;
+    var $suburb;
+    var $state;
     
     function AddUser()
     {
@@ -45,6 +49,11 @@ class Databases_Tables_Users extends Zend_Db_Table
             $user_ext->credit = $this->credit;
             $user_ext->discount = $this->discount;
             
+            $user_ext->address      =   $this->address;
+            $user_ext->post_code    =   $this->post_code;
+            $user_ext->suburb       =   $this->suburb;
+            $user_ext->state        =   $this->state; 
+            
              try{
                 $user_ext ->AddUserExtension();
             }  catch (Zend_Exception $exp){
@@ -69,7 +78,6 @@ class Databases_Tables_Users extends Zend_Db_Table
             $user->user_status = $this->user_status;
             
             $user->save();
-            
             //update extension
             $user_ext = new Databases_Tables_UsersExtension();
             $user_ext->user_id = $this->user_id;
@@ -78,6 +86,12 @@ class Databases_Tables_Users extends Zend_Db_Table
             $user_ext->contact_phone = $this->contact_phone;
             $user_ext->credit = $this->credit;
             $user_ext->discount = $this->discount;
+            
+            $user_ext->address      =   $this->address;
+            $user_ext->post_code    =   $this->post_code;
+            $user_ext->suburb       =   $this->suburb;
+            $user_ext->state        =   $this->state;      
+            
             $user_ext->EditUserExtension();
             
         }

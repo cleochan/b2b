@@ -32,8 +32,21 @@ class Forms_Merchant extends Zend_Form
 		$company = new Zend_Form_Element_Text('company');
 		$company -> setDecorators(array(array('ViewHelper'),));
         
+                $address = new Zend_Form_Element_Text('address');
+		$address -> setDecorators(array(array('ViewHelper'),));
+                
+                $post_code = new Zend_Form_Element_Text('post_code');
+		$post_code -> setDecorators(array(array('ViewHelper'),));
+                
+                $suburb = new Zend_Form_Element_Text('suburb');
+		$suburb -> setDecorators(array(array('ViewHelper'),));
+                
+                $state = new Zend_Form_Element_Text('state');
+		$state -> setDecorators(array(array('ViewHelper'),));
+                
                 $contact_name = new Zend_Form_Element_Text('contact_name');
 		$contact_name -> setDecorators(array(array('ViewHelper'),));
+                
         
                 $contact_phone = new Zend_Form_Element_Text('contact_phone');
 		$contact_phone -> setDecorators(array(array('ViewHelper'),));
@@ -56,6 +69,10 @@ class Forms_Merchant extends Zend_Form
                                                                 $user_status,
                                                                 $company,
                                                                 $contact_name,
+                                                                $address,
+                                                                $post_code,
+                                                                $suburb,
+                                                                $state,
                                                                 $contact_phone,
                                                                 $credit,
                                                                 $discount,

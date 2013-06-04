@@ -284,15 +284,18 @@ class Databases_Joins_GetOrders
                         $order_amount = ( $prices['street_price'] + $prices['estimated_shipping_cost'] ) * trim($this->quantity);
                     }
                     
+                    $subtotal   =   $prices['street_price'] * trim($this->quantity);
+                    $result['subtotal']     =   $subtotal;
+                    $result['shipping_cost']    =   $prices['estimated_shipping_cost'] * trim($this->quantity);
+                    
                     $result['order_amount'] = $order_amount;
 
                     if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
                     {
                         $result['instant_balance'] = $this->group_instance_balance_array[$user_info['user_id']] - $order_amount;
                     }else{
-                        $result['instant_balance'] = $user_info['balance'] - $order_amount;
+                        $result['instant_balance'] = (float)$user_info['balance'] - (float)$order_amount;
                     }
-                   
                     if($result['credit'] < (0 - $result['instant_balance']))
                     {
                         $result[1] =  "N";

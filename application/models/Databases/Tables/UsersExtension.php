@@ -10,6 +10,10 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
     var $credit;
     var $discount;
     var $balance;
+    var $address;
+    var $post_code;
+    var $suburb;
+    var $state;
     
     function AddUserExtension()
     {
@@ -22,6 +26,10 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
                 'company' => $this->company,
                 'contact_name' => $this->contact_name,
                 'contact_phone' => $this->contact_phone,
+                'address'       =>  $this->address,
+                'post_code'     =>  $this->post_code,
+                'suburb'        =>  $this->suburb,
+                'state'         =>  $this->state,
                 'join_date' => date("Y-m-d"),
                 'credit' => round($this->credit, 2),
                 'discount' => round($this->discount, 2),
@@ -49,7 +57,10 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
             $user->contact_phone = $this->contact_phone;
             $user->credit = $this->credit;
             $user->discount = $this->discount;
-            
+            $user->address  =  $this->address;
+            $user->post_code     =  $this->post_code;
+            $user->suburb        =  $this->suburb;
+            $user->state         =  $this->state;
             $user->save();
         }
     }

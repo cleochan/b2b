@@ -144,6 +144,13 @@ class AdminController extends Zend_Controller_Action
                     $check_user_string->contact_phone = $form->getValue('contact_phone');
                     $check_user_string->credit = $form->getValue('credit');
                     $check_user_string->discount = $form->getValue('discount');
+                    
+                    $check_user_string->address     =   $form->getValue('address');
+                    $check_user_string->post_code   =   $form->getValue('post_code');
+                    $check_user_string->suburb      =   $form->getValue('suburb');
+                    $check_user_string->state       =   $form->getValue('state');
+                    
+                    
                     $check_user_string ->AddUser();
                     
                     $this->_redirect('admin/merchants');
@@ -298,6 +305,13 @@ class AdminController extends Zend_Controller_Action
                     $check_user_string->contact_phone = $form->getValue('contact_phone');
                     $check_user_string->credit = $form->getValue('credit');
                     $check_user_string->discount = $form->getValue('discount');
+                    
+                    $check_user_string->address     =   $form->getValue('address');
+                    $check_user_string->post_code   =   $form->getValue('post_code');
+                    $check_user_string->suburb      =   $form->getValue('suburb');
+                    $check_user_string->state       =   $form->getValue('state');
+                    
+                    
                     $check_user_string->EditUser();
                     
                     //unset session
@@ -1039,10 +1053,20 @@ class AdminController extends Zend_Controller_Action
                     $order_service_model->crazySalesOrderType['ShipZipCode']            =   $params['shipping_postcode'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipCountryCode']        =   $params['shipping_country'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipPhone']              =   $params['shipping_phone'][$loop_key];
-                    $order_service_model->crazySalesOrderType['orderAmount']            =   $order_amount;
+                    
+                    $order_service_model->crazySalesOrderType['OrderAmount']            =   $check_result['subtotal'];
+                    $order_service_model->crazySalesOrderType['ShippingCost']           =   $check_result['shipping_cost'];
+                    $order_service_model->crazySalesOrderType['BillingAddress_1']       =   $user_info['address'];
+                    $order_service_model->crazySalesOrderType['BillingZipCode']         =   $user_info['post_code'];
+                    $order_service_model->crazySalesOrderType['BillingState']           =   $user_info['state'];
+                    $order_service_model->crazySalesOrderType['BillingCity']            =   $user_info['suburb'];
+                    
                     $order_service_model->crazySalesOrderItemType['Quantity']           =   $params['quantity'][$loop_key];
                     $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];
-
+                    
+                    
+                    
+                    
                     $response_data   =   $order_service_model->WebServicePlaceOrder();
                     
                     if($response_data['order_number'])

@@ -422,6 +422,7 @@ class MerchantController extends Zend_Controller_Action
         $logs_financial = new Databases_Tables_LogsFinancial();
         $plugin_model = new Algorithms_Extensions_Plugin();
         $order_service_model    =   new Algorithms_Core_OrderService();
+        $user_info_model    =   new Databases_Joins_GetUserInfo();
         $ip = $plugin_model->GetIp();
         $notice = "S1"; //success
         
@@ -495,7 +496,16 @@ class MerchantController extends Zend_Controller_Action
                     $order_service_model->crazySalesOrderType['ShipZipCode']            =   $params['shipping_postcode'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipCountryCode']        =   $params['shipping_country'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipPhone']              =   $params['shipping_phone'][$loop_key];
-                    $order_service_model->crazySalesOrderType['orderAmount']            =   $order_amount;
+                    
+                    $user_info  =   $user_info_model->GetUserInfo($user_id);
+                    $order_service_model->crazySalesOrderType['OrderAmount']            =   $check_result['subtotal'];
+                    $order_service_model->crazySalesOrderType['ShippingCost']           =   $check_result['shipping_cost'];
+                    $order_service_model->crazySalesOrderType['BillingAddress_1']       =   $user_info['address'];
+                    $order_service_model->crazySalesOrderType['BillingZipCode']         =   $user_info['post_code'];
+                    $order_service_model->crazySalesOrderType['BillingState']           =   $user_info['state'];
+                    $order_service_model->crazySalesOrderType['BillingCity']            =   $user_info['suburb'];
+                    
+                    
                     $order_service_model->crazySalesOrderItemType['Quantity']           =   $params['quantity'][$loop_key];
                     $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];
                     
@@ -741,6 +751,7 @@ class MerchantController extends Zend_Controller_Action
         $logs_financial = new Databases_Tables_LogsFinancial();
         $plugin_model = new Algorithms_Extensions_Plugin();
         $order_service_model    =   new Algorithms_Core_OrderService();
+        $user_info_model    =   new Databases_Joins_GetUserInfo();
         $ip = $plugin_model->GetIp();
         $notice = "S1"; //success
         
@@ -774,7 +785,7 @@ class MerchantController extends Zend_Controller_Action
                     $order_amount = $check_result['order_amount'];
                     $instant_balance = $check_result['instant_balance'];
                     $user_id = $check_result['user_id'];
-
+                    
                     //update instant balance
                     $group_instance_balance_array[$user_id] = $instant_balance;
 
@@ -815,7 +826,15 @@ class MerchantController extends Zend_Controller_Action
                     $order_service_model->crazySalesOrderType['ShipZipCode']            =   $params['shipping_postcode'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipCountryCode']        =   $params['shipping_country'][$loop_key];
                     $order_service_model->crazySalesOrderType['ShipPhone']              =   $params['shipping_phone'][$loop_key];
-                    $order_service_model->crazySalesOrderType['orderAmount']            =   $order_amount;
+                    
+                    $user_info  =   $user_info_model->GetUserInfo($user_id);
+                    $order_service_model->crazySalesOrderType['OrderAmount']            =   $check_result['subtotal'];
+                    $order_service_model->crazySalesOrderType['ShippingCost']           =   $check_result['shipping_cost'];
+                    $order_service_model->crazySalesOrderType['BillingAddress_1']       =   $user_info['address'];
+                    $order_service_model->crazySalesOrderType['BillingZipCode']         =   $user_info['post_code'];
+                    $order_service_model->crazySalesOrderType['BillingState']           =   $user_info['state'];
+                    $order_service_model->crazySalesOrderType['BillingCity']            =   $user_info['suburb'];                    
+                    
                     $order_service_model->crazySalesOrderItemType['Quantity']           =   $params['quantity'][$loop_key];
                     $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];
                     

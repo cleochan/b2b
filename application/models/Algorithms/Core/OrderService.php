@@ -18,6 +18,20 @@ class Algorithms_Core_OrderService extends SoapClient{
     );
     
     var $crazySalesOrderType    =   array(
+        'AffiliateID'           =>  '', // int        
+        'BillingAddress_1'      =>  '', // string
+        'BillingAddress_2'      =>  '', // string
+        'BillingCity'           =>  '', // string
+        'BillingCompany'        =>  '', // string
+        'BillingCountryCode'    =>  '', // string
+        'BillingFirstName'      =>  '', // string      
+        'BillingLastName'       =>  '', // string
+        'BillingState'          =>  '', // string
+        'BillingZipCode'        =>  '', // string
+        'OrderAmount'           =>  '', // float
+        'OrderDiscount'         =>  '', // float
+        'ShippingCost'          =>  '', // float
+        
         'RetailerAccountEmail'  =>  '', // string
         'PaymentTypeID'         =>  '', // int
         'ShipFirstName'         =>  '', // string
@@ -65,7 +79,7 @@ class Algorithms_Core_OrderService extends SoapClient{
     
     private static $classmap = array();
     
-    function __construct($wsdl , $options = array()) {
+    function __construct($options = array()) {
         $params_model   =   new Databases_Tables_Params();
         $web_service_url    =   $params_model->GetVal('web_service_url');
         $wsdl   =   $web_service_url."OrderService.svc?wsdl";
