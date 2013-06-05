@@ -498,15 +498,15 @@ class MerchantController extends Zend_Controller_Action
                     {
                         $crazySalesOrderType->PaymentTypeID          =   1; 
                     }
-                    $crazySalesOrderType->RetailerAccountEmail   =   'unmind@gmail.com';//$_SESSION["Zend_Auth"]["storage"]->email;
-                    $crazySalesOrderType->ShipFirstName          =   'unmind';//$params['shipping_first_name'][$loop_key];
-                    $crazySalesOrderType->ShipAddress_1          =   '12 Springvale Rd';//$params['shipping_address_1'][$loop_key];
+                    $crazySalesOrderType->RetailerAccountEmail   =   $_SESSION["Zend_Auth"]["storage"]->email;
+                    $crazySalesOrderType->ShipFirstName          =   $params['shipping_first_name'][$loop_key];
+                    $crazySalesOrderType->ShipAddress_1          =   $params['shipping_address_1'][$loop_key];
                     $crazySalesOrderType->ShipAddress_2          =   '';//$params['shipping_address_2'][$loop_key];
-                    $crazySalesOrderType->ShipCity               =   'Springvale';//$params['shipping_suburb'][$loop_key];
-                    $crazySalesOrderType->ShipState              =   'VIC';//$params['shipping_state'][$loop_key];
-                    $crazySalesOrderType->ShipZipCode            =   '3172';//$params['shipping_postcode'][$loop_key];
-                    $crazySalesOrderType->ShipCountryCode        =   'AU';//$params['shipping_country'][$loop_key];
-                    $crazySalesOrderType->ShipPhone              =   '123321123';//$params['shipping_phone'][$loop_key];
+                    $crazySalesOrderType->ShipCity               =   $params['shipping_suburb'][$loop_key];
+                    $crazySalesOrderType->ShipState              =   $params['shipping_state'][$loop_key];
+                    $crazySalesOrderType->ShipZipCode            =   $params['shipping_postcode'][$loop_key];
+                    $crazySalesOrderType->ShipCountryCode        =   $params['shipping_country'][$loop_key];
+                    $crazySalesOrderType->ShipPhone              =   $params['shipping_phone'][$loop_key];
                     
                     
                     $user_info  =   $user_info_model->GetUserInfo($user_id);
@@ -524,19 +524,19 @@ class MerchantController extends Zend_Controller_Action
                     
                     $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
                     
-                    $moeney_type->Value   =   10;//$sku_prices_info['street_price'];
+                    $moeney_type->Value   =   $sku_prices_info['street_price'];
                     $crazySalesOrderItemType->ExpectedItemCost   =   $moeney_type;
                     
-                    $moeney_type->Value   =   10;//$sku_prices_info['street_price'];
+                    $moeney_type->Value   =   $sku_prices_info['street_price'];
                     $crazySalesOrderItemType->FinalItemCost      =   $moeney_type;
                     //$moeney_type->Value   =   $sku_prices_info['estimated_shipping_cost'];
                     //$crazySalesOrderItemType->FinalShipCost      =   $moeney_type;
                     //$moeney_type->Value   =   $sku_prices_info['estimated_shipping_cost'];
                     //$crazySalesOrderItemType->ShipCost           =   $moeney_type;
                     
-                    $quantityType->Value    =   1;//$params['quantity'][$loop_key];
+                    $quantityType->Value    =   $params['quantity'][$loop_key];
                     $crazySalesOrderItemType->Quantity  =   $quantityType;
-                    $crazySalesOrderItemType->ItemSku   =   'RABBIT2';//$params['supplier_sku'][$loop_key];          
+                    $crazySalesOrderItemType->ItemSku   =   $params['supplier_sku'][$loop_key];          
                     $order_service_model->crazySalesOrderType  =   $crazySalesOrderType;
                     $order_service_model->crazySalesOrderItemType   =   $crazySalesOrderItemType;
                                      
