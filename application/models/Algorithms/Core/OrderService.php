@@ -2,89 +2,15 @@
 
 class Algorithms_Core_OrderService extends SoapClient{
     
-    var $moneyType  =   array(
-        'Value' =>  '', // decimal
-    );
+    var $moneyType;
     
-    var $quantityType   =   array(
-        'Value' =>  '', // int
-    );
+    var $quantityType;
     
-    var $messageType    =   array(
-        'Action'        =>  '', // string
-        'Created'       =>  '', // dateTime
-        'Description'   =>  '', // string
-        'Level'         =>  '', // string
-    );
+    var $messageType;
     
-    var $crazySalesOrderType    =   array(
-        'AffiliateID'           =>  '', // int        
-        'BillingAddress_1'      =>  '', // string
-        'BillingAddress_2'      =>  '', // string
-        'BillingCity'           =>  '', // string
-        'BillingCompany'        =>  '', // string
-        'BillingCountryCode'    =>  '', // string
-        'BillingFirstName'      =>  '', // string      
-        'BillingLastName'       =>  '', // string
-        'BillingState'          =>  '', // string
-        'BillingZipCode'        =>  '', // string
-        'OrderAmount'           =>  '', // float
-        'OrderDiscount'         =>  '', // float
-        'ShippingCost'          =>  '', // float
-        
-        'RetailerAccountEmail'  =>  '', // string
-        'PaymentTypeID'         =>  '', // int
-        'ShipFirstName'         =>  '', // string
-        'ShipAddress_1'         =>  '', // string
-        'ShipAddress_2'         =>  '', // string
-        'ShipCompany'           =>  '', // string
-        'ShipState'             =>  '', // string
-        'ShipZipCode'           =>  '', // string
-        'ShipCountryCode'       =>  '', // string
-        'ShipPhone'             =>  '', // string
-    );
+    var $crazySalesOrderType;
     
-    var $crazySalesOrderItemType    =   array(
-        'Dimension'             =>  '', // DimensionType
-        'ExpectedItemCost'      =>  '', // MoneyType
-        'FinalItemCost'         =>  '', // MoneyType
-        'FinalShipCost'         =>  '', // MoneyType
-        'Notes'                 =>  '', // string
-        'OrderItemNumber'       =>  '', // int
-        'OrderNumber'           =>  '', // int
-        'ItemSku'               =>  '', // string
-        'Quantity'              =>  '', // QuantityType
-        'ShipCarrier'           =>  '', // string 
-        'ShipCost'              =>  '', // MoneyType
-        'ShipDate'              =>  '', // datetime
-        'ShipMethod'            =>  '', // string
-        'TrackingNumber'        =>  '', // string
-        'Weight'                =>  '', // string
-    );
-    
-    var $crazySalesOrderStatusType  =   array(
-        'AdminID'       =>  '', // int
-        'Comment'       =>  '', // string
-        'Level'         =>  '', // int
-        'OrderNumber'   =>  '', // int
-        'StatusName'    =>  '', // string
-    );
-    
-    var $placeOrderRequest  =   array(
-        'OrderRequests' =>  ''  // ArrayOfCrazySalesOrderType
-    );
-    
-    var $placeOrderResponse =   array(
-        'Orders'    =>  '', // ArrayOfCrazySalesOrderType
-    );
-    
-    var $generalResponse    =   array(
-        'Messages'  =>  '', // ArrayOfMessageType
-    );
-    
-    var $placeOrder =   array(
-        'request'   =>  '', // PlaceOrderRequest
-    );
+    var $crazySalesOrderItemType;
     
     private static $classmap = array();
     
@@ -113,10 +39,12 @@ class Algorithms_Core_OrderService extends SoapClient{
     }
     
     function WebServicePlaceOrder(){
-        $this->crazySalesOrderItemType['Quantity']  =   (object)$this->quantityType;
-        $this->crazySalesOrderType['OrderItems']    =   $this->crazySalesOrderItemType;
-        $this->placeOrderRequest['OrderRequests']   =   array((object)$this->crazySalesOrderType);
-        $response   =   $this->PlaceOrder(array('request' => $this->placeOrderRequest));
+        $this->crazySalesOrderType->OrderItems  =   array($this->crazySalesOrderItemType);
+        $req = new PlaceOrderRequest();
+        $req->OrderRequests = array($this->crazySalesOrderType);
+        print_r(array('request' => $req));
+        exit();
+        $response   =   $this->PlaceOrder(array('request' => $req));
         $response   =   $this->object_array($response);
         $orders_info    =   $response['PlaceOrderResult']['Orders'];
         $order_number   =   $orders_info['CrazySalesOrderType']['OrderNumber'];
