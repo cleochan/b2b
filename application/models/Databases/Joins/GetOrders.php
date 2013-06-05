@@ -270,7 +270,12 @@ class Databases_Joins_GetOrders
                 $product_filter_model = new Databases_Joins_ProductFilter();
                 $prices = $product_filter_model->GetSkuPrices(trim($this->supplier_sku), $user_info['user_id']);
                 
-                if(NULL !== $prices['street_price'])
+                if($prices['quantity_available'] < $this->quantity || $prices['quantity_available']<=0)
+                {
+                    $result[1] =  "N";
+                    $result[2] =  "Out Of Stock";
+                    $error = 1;
+                }elseif(NULL !== $prices['street_price'])
                 {
                     if("Y" == $this->pick_up)
                     {
