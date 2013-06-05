@@ -42,8 +42,6 @@ class Algorithms_Core_OrderService extends SoapClient{
         $this->crazySalesOrderType->OrderItems  =   array($this->crazySalesOrderItemType);
         $req = new PlaceOrderRequest();
         $req->OrderRequests = array($this->crazySalesOrderType);
-        print_r(array('request' => $req));
-        exit();
         $response   =   $this->PlaceOrder(array('request' => $req));
         $response   =   $this->object_array($response);
         $orders_info    =   $response['PlaceOrderResult']['Orders'];
