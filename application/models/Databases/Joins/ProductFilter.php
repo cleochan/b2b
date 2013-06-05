@@ -250,6 +250,7 @@ class Databases_Joins_ProductFilter
                 $result['street_price'] = $offer_price_cal[1];
                 $result['estimated_shipping_cost'] = $product['estimated_shipping_cost'];
                 $result['estimated_handling_fee'] = $product['estimated_handling_fee'];
+                $result['quantity_available'] = $product['quantity_available'];
             }
         }
         
