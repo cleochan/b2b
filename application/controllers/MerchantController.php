@@ -511,24 +511,33 @@ class MerchantController extends Zend_Controller_Action
                     
                     $user_info  =   $user_info_model->GetUserInfo($user_id);
                     $moeney_type    =   new MoneyType();
-                    $moeney_type->Value =   $check_result['subtotal'];
-                    $crazySalesOrderType->OrderAmount            =   $moeney_type;
+                    $order_amount   =   new MoneyType();
+                    $expected_item_cost =   new MoneyType();
+                    $final_item_cost    =   new MoneyType();
+                    $order_amount->Value    =   $check_result['subtotal'];
+        
+                    $crazySalesOrderType->OrderAmount            =   $order_amount;
                     $moeney_type->Value =   $check_result['shipping_cost'];
-                    //$crazySalesOrderType->ShippingCost           =   $moeney_type;
+                    $crazySalesOrderType->ShippingCost           =   $moeney_type;
                     $crazySalesOrderType->BillingAddress_1       =   $user_info['address'];
                     $crazySalesOrderType->BillingZipCode         =   $user_info['post_code'];
                     $crazySalesOrderType->BillingState           =   $user_info['state'];
                     $crazySalesOrderType->BillingCity            =   $user_info['suburb'];
-                    $crazySalesOrderType->BillingCompany         =   $user_info['company'];                    
+                    $crazySalesOrderType->BillingCompany         =   $user_info['company'];      
+                    if($params['pick_up'][$loop_key])
+                    {
+                        $crazySalesOrderType->ShipMethod    =   'pick up';
+                    }else{
+                        $crazySalesOrderType->ShipMethod    =   'shipping';
+                    }
+                                  
                     
                     
                     $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
-                    
-                    $moeney_type->Value   =   $sku_prices_info['street_price'];
-                    $crazySalesOrderItemType->ExpectedItemCost   =   $moeney_type;
-                    
-                    $moeney_type->Value   =   $sku_prices_info['street_price'];
-                    $crazySalesOrderItemType->FinalItemCost      =   $moeney_type;
+                    $expected_item_cost->Value   =   $sku_prices_info['street_price'];
+                    $crazySalesOrderItemType->ExpectedItemCost   =   $expected_item_cost;
+                    $final_item_cost->Value   =   $sku_prices_info['street_price'];
+                    $crazySalesOrderItemType->FinalItemCost      =   $final_item_cost;
                     //$moeney_type->Value   =   $sku_prices_info['estimated_shipping_cost'];
                     //$crazySalesOrderItemType->FinalShipCost      =   $moeney_type;
                     //$moeney_type->Value   =   $sku_prices_info['estimated_shipping_cost'];
