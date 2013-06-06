@@ -47,4 +47,14 @@ class Databases_Joins_GetUserInfo
         
         return $ref_array;
     }
+    
+    function GetUserId($bpay_ref)
+    {
+        $select = $this->db->select();
+        $select->from("users as u", array("user_id", "email", "user_status"));
+        $select->joinLeft("users_extension as e", "u.user_id=e.user_id", array("company", "contact_name","address","post_code","suburb","state", "join_date", "balance", "credit", "discount", "bpay_ref"));
+        $select->where("e.bpay_ref = ?", $bpay_ref);
+        $data = $this->db->fetchRow($select);
+        return $data;
+    }
 }
