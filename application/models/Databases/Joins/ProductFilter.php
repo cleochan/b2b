@@ -240,7 +240,7 @@ class Databases_Joins_ProductFilter
         if($data_source && $sku) // 1 or 2
         {
             $product_select = $this->db->select();
-            $product_select->from("product_info_".$data_source, array("supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available"));
+            $product_select->from("product_info_".$data_source, array("product_id","supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","flat_rate_shipping","freight_class"));
             $product_select->where("supplier_sku = ?", $sku);
             $product = $this->db->fetchRow($product_select);
             if($product['supplier_sku'])
@@ -251,6 +251,9 @@ class Databases_Joins_ProductFilter
                 $result['estimated_shipping_cost'] = $product['estimated_shipping_cost'];
                 $result['estimated_handling_fee'] = $product['estimated_handling_fee'];
                 $result['quantity_available'] = $product['quantity_available'];
+                $result['flat_rate_shipping'] = $product['flat_rate_shipping'];
+                $result['freight_class'] = $product['freight_class'];
+                $result['product_id']    = $product['product_id'];
             }
         }
         
@@ -443,5 +446,54 @@ class Databases_Joins_ProductFilter
             'case_pack_quantity'        =>  $this->case_pack_quantity,
         );
         $this->db->insert($source_table,$data);
+    }
+    
+    function getProductAll()
+    {
+        $params_model   =   new Databases_Tables_Params();
+        $data_source    =   $params_model->GetVal("product_info_table");
+        $products_select =   $this->db->select();
+        $products_select->from("product_info_".$data_source);
+        $products       =   $this->db->fetchAll($products_select);
+        if($products)
+        {
+            return $products;
+        }else
+        {
+            return FALSE;
+        }
+    }
+    
+    function getEstimatedShippingCost($product_id,$zip,$qty){
+        $params_model   =   new Databases_Tables_Params();
+        $param_postage_api_url    =   $params_model->GetVal("postage_api_url");
+        $postage_api_url    =   $param_postage_api_url.'?pid='.$product_id.'&zip='.$zip.'&qty='.$qty;
+        $string =   file_get_contents($postage_api_url);
+        $string =   str_replace("<font size='18' color='#000000'>Postage</font><br><font size='26' color='#000000'><b>$",'',$string);
+        $estimated_shipping_cost    =   str_replace("</b></font>",'',$string);
+        if($estimated_shipping_cost){
+            return  $estimated_shipping_cost;
+        }else{
+            return 0;
+        }
+    }
+            
+    function updateEstimatedShippingCost($postage_api_url,$product_id)
+    {
+        $params_model   =   new Databases_Tables_Params();
+        $data_source    =   $params_model->GetVal("product_info_table");
+        $string =   file_get_contents($postage_api_url);
+        $string =   str_replace("<font size='18' color='#000000'>Postage</font><br><font size='26' color='#000000'><b>$",'',$string);
+        $estimated_shipping_cost    =   str_replace("</b></font>",'',$string);
+        $where  =   $this->db->quoteInto('product_id = ?', $product_id);
+        $set    =   array (
+            'estimated_shipping_cost' => $estimated_shipping_cost,
+        );
+        $row    =   $this->db->update("product_info_".$data_source, $set, $where);
+        if($row){
+            return $estimated_shipping_cost;
+        }else{
+            return FALSE;
+        }
     }
 }
