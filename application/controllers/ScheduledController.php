@@ -235,7 +235,7 @@ class ScheduledController extends Zend_Controller_Action
                 $productFilter_model->case_pack_quantity        =   $product_data['CasePackQuantity']['Value'];
                 $count  =    $productFilter_model->AddProduct();
             }
-            $logs_contents  =   ' page:'.$page_now.'  succeed! , Date:'.date('Y-m-d H:i:s')."\n";
+            $logs_contents  =   ' page:'.$page_now.'  succeed!  Date:'.date('Y-m-d H:i:s')."\n";
             @fwrite($f, $logs_contents);
             $page_now++;
             
@@ -253,8 +253,9 @@ class ScheduledController extends Zend_Controller_Action
             }
             $params_model->UpdateVal('product_info_table_refresh_time',date('Y-m-d H:i:s'));
         }
-        
-        
+        @fwrite($f, "Refresh Products normal:".$count['normal_count'] ."  Product Repeat:".$count['repeat_count']."\n");
+        @fwrite($f, "Refresh Products Completed.\n");
+        @fclose($f);
         
         $param_postage_api_url    =   $params_model->GetVal('postage_api_url');
         $products_all       =   $productFilter_model->getProductAll();
@@ -280,8 +281,6 @@ class ScheduledController extends Zend_Controller_Action
             @fwrite($f, $error);
             @fclose($f);
         }
-        @fwrite($f, "Refresh Products Completed.\n");
-        @fclose($f);
         die();
     }
     
@@ -428,4 +427,31 @@ class ScheduledController extends Zend_Controller_Action
         }
         die;
     }
+    function refreshProductsPostAction()
+    {
+            $params_model           =   new Databases_Tables_Params();
+            $productFilter_model    =   new Databases_Joins_ProductFilter();
+            $param_postage_api_url    =   $params_model->GetVal('postage_api_url');
+            $logs_path              =   $params_model->GetVal('logs_path');
+            $products_all       =   $productFilter_model->getProductAll();
+            if($products_all)
+            {
+                $f_psotage  =   @fopen($logs_path."productslogs/refreshpostage".date('YmdHis').".txt", "w+");
+                $logs_postage   =   '';
+                foreach ($products_all as $product)
+                {
+                    $postage_api_url    =   $param_postage_api_url.'?pid='.$product['product_id'].'&zip=4270&qty=1';
+                    $result =   $productFilter_model->updateEstimatedShippingCost($postage_api_url,$product['product_id']);
+                    if($result){
+                        $logs_postage   .=   'product_id:'.$product['product_id']." sku:".$product['supplier_sku'].' update estimated_shipping_cost:'.$result."\r\n";
+                    }else{
+                        $logs_postage   .=   'product_id:'.$product['product_id']." sku:".$product['supplier_sku']." update estimated_shipping_cost faild\r\n";
+                    }
+                }
+                @fwrite($f_psotage, $logs_postage);
+                @fclose($f_psotage);
+            }
+            die('update success');
+      }
+
 }
