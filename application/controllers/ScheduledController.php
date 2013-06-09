@@ -246,9 +246,9 @@ class ScheduledController extends Zend_Controller_Action
                 $postage_api_url    =   $param_postage_api_url.'?pid='.$product['product_id'].'&zip=4270&qty=1';
                 $result =   $productFilter_model->updateEstimatedShippingCost($postage_api_url,$product['product_id']);
                 if($result){
-                    $logs_postage   .=   'product_id:'.$product['product_id']." sku:".$product['supplier_sku'].' update estimated_shipping_cost:'.$result."\r\n";
+                    $logs_postage   .=   'product_id:'.$product['product_id']." sku:".$product['supplier_sku'].' update estimated_shipping_cost:'.$result."\n";
                 }else{
-                    $logs_postage   .=   'product_id:'.$product['product_id']." sku:".$product['supplier_sku']." update estimated_shipping_cost faild\r\n";
+                    $logs_postage   .=   'product_id:'.$product['product_id']." sku:".$product['supplier_sku']." update estimated_shipping_cost faild\n";
                 }
             }
             @fwrite($f_psotage, $logs_postage);
