@@ -115,9 +115,7 @@ class ScheduledController extends Zend_Controller_Action
     
     function refreshProductsAction()
     {
-        $f  =   @fopen($logs_path."productslogs/refreshproducts".date('YmdHis').".txt", "w+");
-        @fwrite($f, 'Refresh Products Begin at:'.date("Y-m-d H:i:s"));
-        try{
+        
         $product_webservice_model   =   new Algorithms_Core_ProductService();
         $params_model           =   new Databases_Tables_Params();
         $productFilter_model    =   new Databases_Joins_ProductFilter();
@@ -136,6 +134,9 @@ class ScheduledController extends Zend_Controller_Action
         );
         $product_webservice_model->EntriesPerPage =   $paginationType['EntriesPerPage'];
         $productFilter_model->truncateProduct();
+        $f  =   @fopen($logs_path."productslogs/refreshproducts".date('YmdHis').".txt", "w+");
+        @fwrite($f, 'Refresh Products Begin at:'.date("Y-m-d H:i:s"));
+        try{
         do
         {
             
