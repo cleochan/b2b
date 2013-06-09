@@ -366,6 +366,7 @@ class Databases_Joins_ProductFilter
             $truncate_table =   'product_info_1';
         }
         $this->db->query('truncate table '.$truncate_table);
+        $this->db->query('truncate table product_info_repeat');
     }
     
     function AddProduct()
@@ -456,6 +457,14 @@ class Databases_Joins_ProductFilter
 
             $this->db->insert($source_table,$data);
 
+        }else{
+            $data   =   array(
+                'product_id'    =>  $this->product_id,
+                'supplier_sku'  =>  $this->supplier_sku,
+                'product_name'  =>  $this->product_name,
+                'add_date'      =>  date('Y-m-d H:i:s'),
+            );
+            $this->db->insert('product_info_repeat',$data);
         }
         
     }

@@ -104,13 +104,14 @@ class ScheduledController extends Zend_Controller_Action
             }
             $f  =   fopen($logs_path."orderslogs/refreshorders".date('YmdHis').".txt", "w+");
             @fwrite($f, $logs_contents);
+            @fwrite($f,"Refresh Orders Completed.\n");
             @fclose($f);
         }
           }  catch (Zend_Exception $exp){
             var_dump($exp->getMessage());
         }
 
-        die("Refresh Orders Completed");
+        die();
     }
     
     function refreshProductsAction()
@@ -248,7 +249,7 @@ class ScheduledController extends Zend_Controller_Action
         }
         
         
-        @fclose($f);
+        
         $param_postage_api_url    =   $params_model->GetVal('postage_api_url');
         $products_all       =   $productFilter_model->getProductAll();
         if($products_all)
@@ -273,7 +274,9 @@ class ScheduledController extends Zend_Controller_Action
             @fwrite($f, $error);
             @fclose($f);
         }
-        die("Refresh Products Completed");
+        @fwrite($f, "Refresh Products Completed.\n");
+        @fclose($f);
+        die();
     }
     
     function refreshCategoriesAction()
@@ -310,8 +313,9 @@ class ScheduledController extends Zend_Controller_Action
                
         $f  =   @fopen($logs_path."categorieslogs/refreshcategories".date('YmdHis').".txt", "w+");
         @fwrite($f, $logs_contents);
+        @fwrite($f,"Refresh Categories Completed.\n");
         @fclose($f);
-        die("Refresh Categories Completed");
+        die();
     }
     
     
