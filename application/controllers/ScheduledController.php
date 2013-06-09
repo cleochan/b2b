@@ -115,6 +115,9 @@ class ScheduledController extends Zend_Controller_Action
     
     function refreshProductsAction()
     {
+        $f  =   @fopen($logs_path."productslogs/refreshproducts".date('YmdHis').".txt", "w+");
+        @fwrite($f, 'Refresh Products Begin at:'.date("Y-m-d H:i:s"));
+        try{
         $product_webservice_model   =   new Algorithms_Core_ProductService();
         $params_model           =   new Databases_Tables_Params();
         $productFilter_model    =   new Databases_Joins_ProductFilter();
@@ -228,7 +231,7 @@ class ScheduledController extends Zend_Controller_Action
             }
             $params_model->UpdateVal('product_info_table_refresh_time',date('Y-m-d H:i:s'));
         }
-        $f  =   @fopen($logs_path."productslogs/refreshproducts".date('YmdHis').".txt", "w+");
+        
         @fwrite($f, $logs_contents);
         @fclose($f);
         $param_postage_api_url    =   $params_model->GetVal('postage_api_url');
@@ -249,6 +252,11 @@ class ScheduledController extends Zend_Controller_Action
             }
             @fwrite($f_psotage, $logs_postage);
             @fclose($f_psotage);
+        }
+        }  catch (Zend_Exception $exp){
+            $error  =   $exp->getMessage();
+            @fwrite($f, $error);
+            @fclose($f);
         }
         die("Refresh Products Completed");
     }
