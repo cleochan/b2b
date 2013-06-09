@@ -138,7 +138,7 @@ class ScheduledController extends Zend_Controller_Action
         $product_webservice_model->EntriesPerPage =   $paginationType['EntriesPerPage'];
         @fwrite($f, 'Truncate Product Data : '.date("Y-m-d H:i:s")."\n");
         $productFilter_model->truncateProduct();
-        
+        $has=1;
         try{
         do
         {
@@ -148,9 +148,15 @@ class ScheduledController extends Zend_Controller_Action
             $reponse_data  =   $product_webservice_model->WebServicesGetProducts();
             $TotalNumberOfEntries   =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfEntries'];
             $TotalNumberOfPages     =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfPages'];
-            @fwrite($f, 'TotalNumberOfPages : '.$TotalNumberOfPages."\n");
-            @fwrite($f, 'TotalNumberOfEntries : '.$TotalNumberOfEntries."\n");
+         
+            if ($has)
+            {
+                $has=0;
+                @fwrite($f, 'TotalNumberOfPages : '.$TotalNumberOfPages."\n");
+                @fwrite($f, 'TotalNumberOfEntries : '.$TotalNumberOfEntries."\n");
+            }
             $product_list_data      =   $reponse_data['GetProductsResult']['Products']['CrazySalesProductType'];
+           
             foreach ($product_list_data as $product_data){                
                 $productFilter_model->product_id    =   $product_data['ProductID'];
                 $productFilter_model->supplier_sku  =   $product_data['SupplierSku'];
@@ -220,7 +226,8 @@ class ScheduledController extends Zend_Controller_Action
                 $productFilter_model->case_pack_quantity        =   $product_data['CasePackQuantity']['Value'];
                 $productFilter_model->AddProduct();
             }
-            $logs_contents  .=   ' page:'.$page_now.' , Date:'.date('Y-m-d H:i:s')."\n";
+            $logs_contents  =   ' page:'.$page_now.'  successed! , Date:'.date('Y-m-d H:i:s')."\n";
+            @fwrite($f, $logs_contents);
             $page_now++;
             
         }while($page_now <= $TotalNumberOfPages);
@@ -238,7 +245,7 @@ class ScheduledController extends Zend_Controller_Action
             $params_model->UpdateVal('product_info_table_refresh_time',date('Y-m-d H:i:s'));
         }
         
-        @fwrite($f, $logs_contents);
+        
         @fclose($f);
         $param_postage_api_url    =   $params_model->GetVal('postage_api_url');
         $products_all       =   $productFilter_model->getProductAll();
