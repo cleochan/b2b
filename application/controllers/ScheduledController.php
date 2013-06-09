@@ -139,6 +139,10 @@ class ScheduledController extends Zend_Controller_Action
         $product_webservice_model->EntriesPerPage =   $paginationType['EntriesPerPage'];
         @fwrite($f, 'Truncate Product Data : '.date("Y-m-d H:i:s")."\n");
         $productFilter_model->truncateProduct();
+        $count  =   array(
+            'normal_count'  =>  0,
+            'repeat_count'  =>  0,
+        );
         $has=1;
         try{
         do
@@ -160,7 +164,9 @@ class ScheduledController extends Zend_Controller_Action
             }
             $product_list_data      =   $reponse_data['GetProductsResult']['Products']['CrazySalesProductType'];
            
-            foreach ($product_list_data as $product_data){                
+            foreach ($product_list_data as $product_data){
+                $productFilter_model->normal_count  =   $count['normal_count'];
+                $productFilter_model->repeat_count  =   $count['repeat_count'];
                 $productFilter_model->product_id    =   $product_data['ProductID'];
                 $productFilter_model->supplier_sku  =   $product_data['SupplierSku'];
                 $productFilter_model->retailer_sku  =   $product_data['RetailerSku'];
@@ -227,7 +233,7 @@ class ScheduledController extends Zend_Controller_Action
                 $productFilter_model->case_pack_depth           =   $product_data['CasePackDimension']['Depth'];
                 $productFilter_model->case_pack_units           =   $product_data['CasePackDimension']['Units'];
                 $productFilter_model->case_pack_quantity        =   $product_data['CasePackQuantity']['Value'];
-                $productFilter_model->AddProduct();
+                $count  =    $productFilter_model->AddProduct();
             }
             $logs_contents  =   ' page:'.$page_now.'  succeed! , Date:'.date('Y-m-d H:i:s')."\n";
             @fwrite($f, $logs_contents);

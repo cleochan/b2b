@@ -70,6 +70,8 @@ class Databases_Joins_ProductFilter
     var $case_pack_depth;
     var $case_pack_units;
     var $case_pack_quantity;
+    var $normal_count;
+    var $repeat_count;
     
     
     function __construct(){
@@ -454,9 +456,8 @@ class Databases_Joins_ProductFilter
                 'case_pack_units'           =>  $this->case_pack_units,
                 'case_pack_quantity'        =>  $this->case_pack_quantity,
             );
-
+            $this->normal_count++;
             $this->db->insert($source_table,$data);
-
         }else{
             $data   =   array(
                 'product_id'    =>  $this->product_id,
@@ -464,9 +465,12 @@ class Databases_Joins_ProductFilter
                 'product_name'  =>  $this->product_name,
                 'add_date'      =>  date('Y-m-d H:i:s'),
             );
+            $this->repeat_count++;
             $this->db->insert('product_info_repeat',$data);
         }
-        
+        $count['normal_count']   =   $this->$this->normal_count;
+        $count['repeat_count']   =   $this->$this->repeat_count;
+        return  $count;
     }
     
     function getProductAll()
