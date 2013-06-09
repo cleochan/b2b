@@ -154,6 +154,8 @@ class ScheduledController extends Zend_Controller_Action
                 $has=0;
                 @fwrite($f, 'TotalNumberOfPages : '.$TotalNumberOfPages."\n");
                 @fwrite($f, 'TotalNumberOfEntries : '.$TotalNumberOfEntries."\n");
+                @fwrite($f, 'EntriesPerPage : '.$paginationType['EntriesPerPage']."\n");
+                
             }
             $product_list_data      =   $reponse_data['GetProductsResult']['Products']['CrazySalesProductType'];
            
