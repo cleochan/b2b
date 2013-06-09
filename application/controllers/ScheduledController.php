@@ -121,7 +121,7 @@ class ScheduledController extends Zend_Controller_Action
         @fwrite($f, 'Refresh Products Begin at:'.date("Y-m-d H:i:s")."\n");
         @fwrite($f, "initialize wdsl start ....\n");
         $product_webservice_model   =   new Algorithms_Core_ProductService();
-        @fwrite($f, 'init wdsl success :'.date("Y-m-d H:i:s")."\n");
+        @fwrite($f, 'initialize wdsl succeed :'.date("Y-m-d H:i:s")."\n");
         $productFilter_model    =   new Databases_Joins_ProductFilter();
         $data_source            =   $params_model->GetVal("product_info_table");
         $entries_perpage        =   $params_model->GetVal("product_request_qty_per_page");
@@ -228,7 +228,7 @@ class ScheduledController extends Zend_Controller_Action
                 $productFilter_model->case_pack_quantity        =   $product_data['CasePackQuantity']['Value'];
                 $productFilter_model->AddProduct();
             }
-            $logs_contents  =   ' page:'.$page_now.'  successed! , Date:'.date('Y-m-d H:i:s')."\n";
+            $logs_contents  =   ' page:'.$page_now.'  succeed! , Date:'.date('Y-m-d H:i:s')."\n";
             @fwrite($f, $logs_contents);
             $page_now++;
             
