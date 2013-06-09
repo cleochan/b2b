@@ -468,8 +468,8 @@ class Databases_Joins_ProductFilter
             $this->repeat_count++;
             $this->db->insert('product_info_repeat',$data);
         }
-        $count['normal_count']   =   $this->$this->normal_count;
-        $count['repeat_count']   =   $this->$this->repeat_count;
+        $count['normal_count']   =   $this->normal_count;
+        $count['repeat_count']   =   $this->repeat_count;
         return  $count;
     }
     

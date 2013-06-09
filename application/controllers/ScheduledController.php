@@ -256,26 +256,6 @@ class ScheduledController extends Zend_Controller_Action
         @fwrite($f, "Refresh Products normal:".$count['normal_count'] ."  Product Repeat:".$count['repeat_count']."\n");
         @fwrite($f, "Refresh Products Completed.\n");
         @fclose($f);
-        
-        $param_postage_api_url    =   $params_model->GetVal('postage_api_url');
-        $products_all       =   $productFilter_model->getProductAll();
-        if($products_all)
-        {
-            $f_psotage  =   @fopen($logs_path."productslogs/refreshpostage".date('YmdHis').".txt", "w+");
-            $logs_postage   =   '';
-            foreach ($products_all as $product)
-            {
-                $postage_api_url    =   $param_postage_api_url.'?pid='.$product['product_id'].'&zip=4270&qty=1';
-                $result =   $productFilter_model->updateEstimatedShippingCost($postage_api_url,$product['product_id']);
-                if($result){
-                    $logs_postage   .=   'product_id:'.$product['product_id']." sku:".$product['supplier_sku'].' update estimated_shipping_cost:'.$result."\n";
-                }else{
-                    $logs_postage   .=   'product_id:'.$product['product_id']." sku:".$product['supplier_sku']." update estimated_shipping_cost faild\n";
-                }
-            }
-            @fwrite($f_psotage, $logs_postage);
-            @fclose($f_psotage);
-        }
         }  catch (Zend_Exception $exp){
             $error  =   $exp->getMessage();
             @fwrite($f, $error);
