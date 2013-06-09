@@ -119,7 +119,7 @@ class ScheduledController extends Zend_Controller_Action
         $logs_path              =   $params_model->GetVal('logs_path');
         $f  =   @fopen($logs_path."productslogs/refreshproducts".date('YmdHis').".txt", "w+");
         @fwrite($f, 'Refresh Products Begin at:'.date("Y-m-d H:i:s"));
-        @fwrite($f, 'init wdsl start :'.date("Y-m-d H:i:s"));
+        @fwrite($f, 'init wdsl start ....');
         $product_webservice_model   =   new Algorithms_Core_ProductService();
          @fwrite($f, 'init wdsl success :'.date("Y-m-d H:i:s"));
         $productFilter_model    =   new Databases_Joins_ProductFilter();
