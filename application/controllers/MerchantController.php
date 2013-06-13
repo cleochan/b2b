@@ -545,9 +545,9 @@ class MerchantController extends Zend_Controller_Action
                     $crazySalesOrderItemType->ExpectedItemCost   =   $expected_item_cost;
                     $final_item_cost->Value   =   round($sku_prices_info['street_price'],2);
                     $crazySalesOrderItemType->FinalItemCost      =   $final_item_cost;
-                    $final_ship_cost->Value   =   11.25;//round($check_result['shipping_cost'],2);
+                    $final_ship_cost->Value   =   round($check_result['shipping_cost'],2);
                     $crazySalesOrderItemType->FinalShipCost      =   $final_ship_cost;
-                    $ship_cost->Value   =    20.26;//round($check_result['shipping_cost'],2);
+                    $ship_cost->Value   =    round($check_result['shipping_cost'],2);
                     $crazySalesOrderItemType->ShipCost           =   $ship_cost;
                     
                     $quantityType->Value    =   $params['quantity'][$loop_key];
