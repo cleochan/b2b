@@ -522,7 +522,7 @@ class MerchantController extends Zend_Controller_Action
                     $order_amount->Value    =   $check_result['subtotal'];
         
                     $crazySalesOrderType->OrderAmount            =   $order_amount;
-                    $moeney_type->Value =   $check_result['shipping_cost'];
+                    $moeney_type->Value =   (float)$check_result['shipping_cost'];
                     $crazySalesOrderType->ShippingCost           =   $moeney_type;
                     $crazySalesOrderType->BillingAddress_1       =   $user_info['address'];
                     $crazySalesOrderType->BillingZipCode         =   $user_info['post_code'];
