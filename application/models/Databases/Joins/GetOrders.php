@@ -267,7 +267,7 @@ class Databases_Joins_GetOrders
             {
                 $result['user_id'] = $user_info['user_id'];
                 $result['credit'] = $user_info['credit'];
-                $discount = (100 - $user_info['discount']) / 100;
+                $discount = ( $user_info['discount']) / 100;
                 //calculate item price
                 $product_filter_model = new Databases_Joins_ProductFilter();
                 $prices = $product_filter_model->GetSkuPrices(trim($this->supplier_sku), $user_info['user_id']);

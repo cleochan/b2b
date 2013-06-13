@@ -525,7 +525,7 @@ class MerchantController extends Zend_Controller_Action
                     $order_amount_money_type->Value    =   round($check_result['subtotal'],2);                                  
                     $order_discount->Value  =   round($$check_result['discount_amount'],2);
                     $crazySalesOrderType->OrderDiscount =   $order_discount;
-                    $crazySalesOrderType->PointsRate    =   0;
+                    $crazySalesOrderType->PointsRate    =   0.00;
                     $crazySalesOrderType->OrderAmount            =   $order_amount_money_type;
                     $moeney_type->Value =   round($check_result['subtotal'],2);
                     $crazySalesOrderType->ShippingCost           =   $moeney_type;
