@@ -143,7 +143,7 @@ $order->OrderAmount = $orderAmount;
 
 $orderItem = new CrazySalesOrderItemType();
 $cost = new MoneyType();
-$cost->Value = 10;
+$cost->Value = 10.25;
 $orderItem->ExpectedItemCost = $cost;
 $orderItem->FinalItemCost = $cost;
 $qty = new QuantityType();
