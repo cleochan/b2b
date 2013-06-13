@@ -146,7 +146,6 @@ class ScheduledController extends Zend_Controller_Action
         );
         $has=1;
         try{
-            /*
             do
             {
 
@@ -256,23 +255,18 @@ class ScheduledController extends Zend_Controller_Action
                 $params_model->UpdateVal('product_info_table_refresh_time',date('Y-m-d H:i:s'));
             }
             @fwrite($f, "Refresh Products normal:".$count['normal_count'] ."  Product Repeat:".$count['repeat_count']."\n");
-            */
         
             $products_all       =   $productFilter_model->getProductAll();
             if($products_all)
             {
                 $logs_postage   =   '';
-                @fwrite($f, 'Update Estimated Shipping Cost : '.date("Y-m-d H:i:s")."\n");
+                @fwrite($f, 'Update Estimated Shipping Cost Start : '.date("Y-m-d H:i:s")."\n");
                 foreach ($products_all as $product)
                 {
                     $postage_api_url    =   $param_postage_api_url.'?pid='.$product['product_id'].'&zip=4270&qty=1';
                     $result =   $productFilter_model->updateEstimatedShippingCost($postage_api_url,$product['product_id']);
-                    if($result){
-                        $logs_postage   .=   'product_id:'.$product['product_id']." sku:".$product['supplier_sku'].' update estimated_shipping_cost:'.$result."\n";
-                    }else{
-                        $logs_postage   .=   'product_id:'.$product['product_id']." sku:".$product['supplier_sku']." update estimated_shipping_cost faild\n";
-                    }
                 }
+                @fwrite($f, 'Update Estimated Shipping Cost End : '.date("Y-m-d H:i:s")."\n");
             }
             @fwrite($f, $logs_postage);
             @fwrite($f, "Refresh Products Completed.\n");
