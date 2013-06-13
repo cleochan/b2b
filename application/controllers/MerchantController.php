@@ -516,13 +516,13 @@ class MerchantController extends Zend_Controller_Action
                     
                     $user_info  =   $user_info_model->GetUserInfo($user_id);
                     $moeney_type    =   new MoneyType();
-                    $order_amount   =   new MoneyType();
+                    $order_amount_money_type   =   new MoneyType();
                     $expected_item_cost =   new MoneyType();
                     $final_item_cost    =   new MoneyType();
-                    $order_amount->Value    =   $check_result['subtotal'];
+                    $order_amount_money_type->Value    =   round($check_result['subtotal'],2);
         
-                    $crazySalesOrderType->OrderAmount            =   $order_amount;
-                    $moeney_type->Value =   (float)$check_result['shipping_cost'];
+                    $crazySalesOrderType->OrderAmount            =   $order_amount_money_type;
+                    $moeney_type->Value =   round($check_result['subtotal'],2);
                     $crazySalesOrderType->ShippingCost           =   $moeney_type;
                     $crazySalesOrderType->BillingAddress_1       =   $user_info['address'];
                     $crazySalesOrderType->BillingZipCode         =   $user_info['post_code'];
@@ -539,9 +539,9 @@ class MerchantController extends Zend_Controller_Action
                     
                     
                     $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
-                    $expected_item_cost->Value   =   $sku_prices_info['street_price'];
+                    $expected_item_cost->Value   =   round($sku_prices_info['street_price'],2);
                     $crazySalesOrderItemType->ExpectedItemCost   =   $expected_item_cost;
-                    $final_item_cost->Value   =   $sku_prices_info['street_price'];
+                    $final_item_cost->Value   =   round($sku_prices_info['street_price'],2);
                     $crazySalesOrderItemType->FinalItemCost      =   $final_item_cost;
                     //$moeney_type->Value   =   $sku_prices_info['estimated_shipping_cost'];
                     //$crazySalesOrderItemType->FinalShipCost      =   $moeney_type;
