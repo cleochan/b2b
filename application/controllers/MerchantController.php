@@ -519,6 +519,8 @@ class MerchantController extends Zend_Controller_Action
                     $order_amount_money_type   =   new MoneyType();
                     $expected_item_cost =   new MoneyType();
                     $final_item_cost    =   new MoneyType();
+                    $final_ship_cost    =   new MoneyType();
+                    $ship_cost    =   new MoneyType();
                     $order_amount_money_type->Value    =   round($check_result['subtotal'],2);
         
                     $crazySalesOrderType->OrderAmount            =   $order_amount_money_type;
@@ -543,10 +545,10 @@ class MerchantController extends Zend_Controller_Action
                     $crazySalesOrderItemType->ExpectedItemCost   =   $expected_item_cost;
                     $final_item_cost->Value   =   round($sku_prices_info['street_price'],2);
                     $crazySalesOrderItemType->FinalItemCost      =   $final_item_cost;
-                    //$moeney_type->Value   =   $sku_prices_info['estimated_shipping_cost'];
-                    //$crazySalesOrderItemType->FinalShipCost      =   $moeney_type;
-                    //$moeney_type->Value   =   $sku_prices_info['estimated_shipping_cost'];
-                    //$crazySalesOrderItemType->ShipCost           =   $moeney_type;
+                    $final_ship_cost->Value   =   round($check_result['shipping_cost'],2);
+                    $crazySalesOrderItemType->FinalShipCost      =   $final_ship_cost;
+                    $ship_cost->Value   =   round($check_result['shipping_cost'],2);
+                    $crazySalesOrderItemType->ShipCost           =   $ship_cost;
                     
                     $quantityType->Value    =   $params['quantity'][$loop_key];
                     $crazySalesOrderItemType->Quantity  =   $quantityType;

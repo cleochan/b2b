@@ -289,14 +289,16 @@ class Databases_Joins_GetOrders
                         }
                     }elseif($this->flat_rate_shipping == 1 && in_array ($prices['freight_class'], array(3,5,6))){
                         $order_amount = ( $prices['street_price'] + $prices['estimated_shipping_cost'] ) * trim($this->quantity);
+                        $shipping_cost  =   $prices['estimated_shipping_cost'] * trim($this->quantit);
                     }else{
                         $estimated_shipping_cost    =   $product_filter_model->getEstimatedShippingCost($prices['product_id'], $user_info['post_code'], trim($this->quantity) );
                         $order_amount = ( $prices['street_price'] * trim($this->quantity) ) + $estimated_shipping_cost;
+                        $shipping_cost  =   $estimated_shipping_cost;
                     }
                     
                     $subtotal   =   $prices['street_price'] * trim($this->quantity);
                     $result['subtotal']     =   $subtotal;
-                    $result['shipping_cost']    =   $prices['estimated_shipping_cost'] * trim($this->quantity);
+                    $result['shipping_cost']    =   $shipping_cost;
                     
                     $result['order_amount'] = $order_amount;
 
