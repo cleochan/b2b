@@ -155,8 +155,6 @@ $order->OrderItems = array($orderItem);
 
 $req = new PlaceOrderRequest();
 $req->OrderRequests = array($order);
-print_r(array('request' => $req));
-exit();
 $response = $client->PlaceOrder(array('request' => $req)); 
 
 echo '<pre>';
