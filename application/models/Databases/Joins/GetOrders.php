@@ -291,7 +291,6 @@ class Databases_Joins_GetOrders
                         $order_amount = ( $prices['street_price'] + $prices['estimated_shipping_cost'] ) * trim($this->quantity);
                     }else{
                         $estimated_shipping_cost    =   $product_filter_model->getEstimatedShippingCost($prices['product_id'], $user_info['post_code'], trim($this->quantity) );
-                        echo $estimated_shipping_cost;
                         $order_amount = ( $prices['street_price'] * trim($this->quantity) ) + $estimated_shipping_cost;
                     }
                     
