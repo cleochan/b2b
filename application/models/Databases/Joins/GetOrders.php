@@ -267,7 +267,7 @@ class Databases_Joins_GetOrders
             {
                 $result['user_id'] = $user_info['user_id'];
                 $result['credit'] = $user_info['credit'];
-
+                $discount = (100 - $user_info['discount']) / 100;
                 //calculate item price
                 $product_filter_model = new Databases_Joins_ProductFilter();
                 $prices = $product_filter_model->GetSkuPrices(trim($this->supplier_sku), $user_info['user_id']);
@@ -298,9 +298,10 @@ class Databases_Joins_GetOrders
                     }
                     
                     $subtotal   =   $prices['street_price'] * trim($this->quantity);
+                    $discount_amount    =   $subtotal * $discount;
                     $result['subtotal']     =   $subtotal;
                     $result['shipping_cost']    =   $shipping_cost;
-                    
+                    $result['discount_amount']  =   $discount_amount;
                     $result['order_amount'] = $order_amount;
 
                     if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])

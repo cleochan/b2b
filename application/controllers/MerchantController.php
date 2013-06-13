@@ -520,9 +520,12 @@ class MerchantController extends Zend_Controller_Action
                     $expected_item_cost =   new MoneyType();
                     $final_item_cost    =   new MoneyType();
                     $final_ship_cost    =   new MoneyType();
-                    $ship_cost    =   new MoneyType();
-                    $order_amount_money_type->Value    =   round($check_result['subtotal'],2);
-        
+                    $ship_cost          =   new MoneyType();
+                    $order_discount     =   new MoneyType();
+                    $order_amount_money_type->Value    =   round($check_result['subtotal'],2);                                  
+                    $order_discount->Value  =   round($$check_result['discount_amount'],2);
+                    $crazySalesOrderType->OrderDiscount =   $order_discount;
+                    $crazySalesOrderType->PointsRate    =   0;
                     $crazySalesOrderType->OrderAmount            =   $order_amount_money_type;
                     $moeney_type->Value =   round($check_result['subtotal'],2);
                     $crazySalesOrderType->ShippingCost           =   $moeney_type;
@@ -537,8 +540,6 @@ class MerchantController extends Zend_Controller_Action
                     }else{
                         $crazySalesOrderType->ShipMethod    =   'PickUp';
                     }
-                                  
-                    
                     
                     $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
                     $expected_item_cost->Value   =   round($sku_prices_info['street_price'],2);
