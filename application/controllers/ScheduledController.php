@@ -126,6 +126,7 @@ class ScheduledController extends Zend_Controller_Action
         $productFilter_model    =   new Databases_Joins_ProductFilter();
         $data_source            =   $params_model->GetVal("product_info_table");
         $entries_perpage        =   $params_model->GetVal("product_request_qty_per_page");
+        $param_postage_api_url    =   $params_model->GetVal('postage_api_url');
         
         $productFilter_model->data_source   =   $data_source;
         $TotalNumberOfEntries   =   '';
@@ -145,117 +146,138 @@ class ScheduledController extends Zend_Controller_Action
         );
         $has=1;
         try{
-        do
-        {
-            
-            $product_webservice_model->PageNumber =   $page_now;
-            $product_webservice_model->PaginationType   =   $paginationType;
-            $reponse_data  =   $product_webservice_model->WebServicesGetProducts();
-            $TotalNumberOfEntries   =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfEntries'];
-            $TotalNumberOfPages     =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfPages'];
-         
-            if ($has)
+            /*
+            do
             {
-                $has=0;
-                @fwrite($f, 'TotalNumberOfPages : '.$TotalNumberOfPages."\n");
-                @fwrite($f, 'TotalNumberOfEntries : '.$TotalNumberOfEntries."\n");
-                @fwrite($f, 'EntriesPerPage : '.$paginationType['EntriesPerPage']."\n");
-                
+
+                $product_webservice_model->PageNumber =   $page_now;
+                $product_webservice_model->PaginationType   =   $paginationType;
+                $reponse_data  =   $product_webservice_model->WebServicesGetProducts();
+                $TotalNumberOfEntries   =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfEntries'];
+                $TotalNumberOfPages     =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfPages'];
+
+                if ($has)
+                {
+                    $has=0;
+                    @fwrite($f, 'TotalNumberOfPages : '.$TotalNumberOfPages."\n");
+                    @fwrite($f, 'TotalNumberOfEntries : '.$TotalNumberOfEntries."\n");
+                    @fwrite($f, 'EntriesPerPage : '.$paginationType['EntriesPerPage']."\n");
+
+                }
+                $product_list_data      =   $reponse_data['GetProductsResult']['Products']['CrazySalesProductType'];
+
+                foreach ($product_list_data as $product_data){
+                    $productFilter_model->normal_count  =   $count['normal_count'];
+                    $productFilter_model->repeat_count  =   $count['repeat_count'];
+                    $productFilter_model->product_id    =   $product_data['ProductID'];
+                    $productFilter_model->supplier_sku  =   $product_data['SupplierSku'];
+                    $productFilter_model->retailer_sku  =   $product_data['RetailerSku'];
+                    $productFilter_model->product_name  =   $product_data['ProductName'];
+                    $productFilter_model->retailer_account_id   =   '';
+                    $productFilter_model->wholesale_cost    =   $product_data['Cost']['Value'];
+                    $productFilter_model->street_price      =   $product_data['StreetPrice']['Value'];
+                    $productFilter_model->estimated_shipping_cost   =   $product_data['EstimatedShippingCost']['Value'];
+                    $productFilter_model->estimated_handling_fee    =   $product_data['EstimatedHandlingCost']['Value'];
+                    $productFilter_model->quantity_available        =   $product_data['QuantityAvailable']['Value'];
+                    $productFilter_model->long_html_description     =   $product_data['Description'];
+                    $productFilter_model->inventory_id              =   '';
+                    $productFilter_model->short_html_description    =   '';
+                    $productFilter_model->long_text_description     =   '';
+                    $productFilter_model->short_text_description    =   '';
+                    $productFilter_model->brand                     =   $product_data['Brand'];
+                    $productFilter_model->brand_id                  =   '';
+                    $productFilter_model->manufacturer              =   $product_data['Manufacturer'];
+                    $productFilter_model->condition_id              =   '';
+                    $productFilter_model->last_update_date          =   $product_data['LastUpdateDate']['Value'];
+                    $productFilter_model->mpn                       =   $product_data['MPN'];
+                    $productFilter_model->upc                       =   $product_data['UPC'];
+                    $productFilter_model->ean                       =   $product_data['EAN'];
+                    $productFilter_model->isbn                      =   $product_data['ISBN'];
+                    $productFilter_model->gtin                      =   $product_data['GTIN'];
+                    $productFilter_model->country_of_origin         =   $product_data['CountryOfOrigin'];
+                    $productFilter_model->catalog                   =   $product_data['Catalog'];
+                    $productFilter_model->catalog_start_date        =   $product_data['CatalogStartDate'];
+                    $productFilter_model->catalog_end_date          =   $product_data['CatalogEndDate'];
+                    $productFilter_model->category                  =   $product_data['Category']['CategoryName'];
+                    $productFilter_model->category_id               =   $product_data['Category']['CategoryID'];
+                    $productFilter_model->cross_sell_skus           =   $product_data['CrossSellSkus'];
+                    $productFilter_model->package_weight            =   $product_data['PackageWeight']['Value'];
+                    $productFilter_model->package_weight_units      =   $product_data['PackageWeight']['Units'];
+                    $productFilter_model->package_length            =   $product_data['PackageDimension']['Length'];
+                    $productFilter_model->package_height            =   $product_data['PackageDimension']['Width'];
+                    $productFilter_model->package_depth             =   $product_data['PackageDimension']['Depth'];
+                    $productFilter_model->package_dimension_units   =   $product_data['PackageDimension']['Units'];
+                    $productFilter_model->ships_freight             =   '';
+                    $productFilter_model->freight_class             =   '';
+                    $productFilter_model->ships_alone               =   '';
+                    $productFilter_model->max_ship_single_box       =   $product_data['MaxShippingSingleBox'];
+                    $productFilter_model->length                    =   $product_data['ProductDimension']['Length'];
+                    $productFilter_model->height                    =   $product_data['ProductDimension']['Width'];
+                    $productFilter_model->depth                     =   $product_data['ProductDimension']['Depth'];
+                    $productFilter_model->dimension_units           =   $product_data['ProductDimension']['Units'];
+                    $productFilter_model->weight                    =   $product_data['ProductWeight']['Value'];
+                    $productFilter_model->weight_units              =   $product_data['ProductWeight']['Units'];
+                    $productFilter_model->dimension_description     =   '';
+                    $productFilter_model->min_purchase_quantity     =   $product_data['MinPurchaseQuantity'];
+                    $productFilter_model->max_purchase_quantity     =   $product_data['MaxPurchaseQuantity'];
+                    $productFilter_model->bin_number                =   $product_data['BinNumber'];
+                    $productFilter_model->accessory_skus            =   $product_data['AccessorySkus'];
+                    $productFilter_model->keywords                  =   $product_data['Keywords'];
+                    $productFilter_model->pers_available            =   '';
+                    $productFilter_model->gift_wrap_available       =   '';
+                    $productFilter_model->details                   =   '';
+                    $productFilter_model->features                  =   $product_data['Features'];
+                    $productFilter_model->specification             =   $product_data['Specification'];
+                    $productFilter_model->warranty                  =   $product_data['Warranty'];
+                    $productFilter_model->discontinue_flag          =   $product_data['DiscontinueFlag']['Value'];
+                    $productFilter_model->case_pack_length          =   $product_data['CasePackDimension']['Length'];
+                    $productFilter_model->case_pack_height          =   $product_data['CasePackDimension']['Width'];
+                    $productFilter_model->case_pack_depth           =   $product_data['CasePackDimension']['Depth'];
+                    $productFilter_model->case_pack_units           =   $product_data['CasePackDimension']['Units'];
+                    $productFilter_model->case_pack_quantity        =   $product_data['CasePackQuantity']['Value'];
+                    $count  =    $productFilter_model->AddProduct();
+                }
+                $logs_contents  =   ' page:'.$page_now.'  succeed!  Date:'.date('Y-m-d H:i:s')."\n";
+                @fwrite($f, $logs_contents);
+                $page_now++;
+
+            }while($page_now <= $TotalNumberOfPages);
+
+            $page_now--;
+            if($page_now == $TotalNumberOfPages)
+            {
+                if($data_source == '1')
+                {
+                    $params_model->UpdateVal('product_info_table', '2');
+                }else
+                {
+                    $params_model->UpdateVal('product_info_table', '1');
+                }
+                $params_model->UpdateVal('product_info_table_refresh_time',date('Y-m-d H:i:s'));
             }
-            $product_list_data      =   $reponse_data['GetProductsResult']['Products']['CrazySalesProductType'];
-           
-            foreach ($product_list_data as $product_data){
-                $productFilter_model->normal_count  =   $count['normal_count'];
-                $productFilter_model->repeat_count  =   $count['repeat_count'];
-                $productFilter_model->product_id    =   $product_data['ProductID'];
-                $productFilter_model->supplier_sku  =   $product_data['SupplierSku'];
-                $productFilter_model->retailer_sku  =   $product_data['RetailerSku'];
-                $productFilter_model->product_name  =   $product_data['ProductName'];
-                $productFilter_model->retailer_account_id   =   '';
-                $productFilter_model->wholesale_cost    =   $product_data['Cost']['Value'];
-                $productFilter_model->street_price      =   $product_data['StreetPrice']['Value'];
-                $productFilter_model->estimated_shipping_cost   =   $product_data['EstimatedShippingCost']['Value'];
-                $productFilter_model->estimated_handling_fee    =   $product_data['EstimatedHandlingCost']['Value'];
-                $productFilter_model->quantity_available        =   $product_data['QuantityAvailable']['Value'];
-                $productFilter_model->long_html_description     =   $product_data['Description'];
-                $productFilter_model->inventory_id              =   '';
-                $productFilter_model->short_html_description    =   '';
-                $productFilter_model->long_text_description     =   '';
-                $productFilter_model->short_text_description    =   '';
-                $productFilter_model->brand                     =   $product_data['Brand'];
-                $productFilter_model->brand_id                  =   '';
-                $productFilter_model->manufacturer              =   $product_data['Manufacturer'];
-                $productFilter_model->condition_id              =   '';
-                $productFilter_model->last_update_date          =   $product_data['LastUpdateDate']['Value'];
-                $productFilter_model->mpn                       =   $product_data['MPN'];
-                $productFilter_model->upc                       =   $product_data['UPC'];
-                $productFilter_model->ean                       =   $product_data['EAN'];
-                $productFilter_model->isbn                      =   $product_data['ISBN'];
-                $productFilter_model->gtin                      =   $product_data['GTIN'];
-                $productFilter_model->country_of_origin         =   $product_data['CountryOfOrigin'];
-                $productFilter_model->catalog                   =   $product_data['Catalog'];
-                $productFilter_model->catalog_start_date        =   $product_data['CatalogStartDate'];
-                $productFilter_model->catalog_end_date          =   $product_data['CatalogEndDate'];
-                $productFilter_model->category                  =   $product_data['Category']['CategoryName'];
-                $productFilter_model->category_id               =   $product_data['Category']['CategoryID'];
-                $productFilter_model->cross_sell_skus           =   $product_data['CrossSellSkus'];
-                $productFilter_model->package_weight            =   $product_data['PackageWeight']['Value'];
-                $productFilter_model->package_weight_units      =   $product_data['PackageWeight']['Units'];
-                $productFilter_model->package_length            =   $product_data['PackageDimension']['Length'];
-                $productFilter_model->package_height            =   $product_data['PackageDimension']['Width'];
-                $productFilter_model->package_depth             =   $product_data['PackageDimension']['Depth'];
-                $productFilter_model->package_dimension_units   =   $product_data['PackageDimension']['Units'];
-                $productFilter_model->ships_freight             =   '';
-                $productFilter_model->freight_class             =   '';
-                $productFilter_model->ships_alone               =   '';
-                $productFilter_model->max_ship_single_box       =   $product_data['MaxShippingSingleBox'];
-                $productFilter_model->length                    =   $product_data['ProductDimension']['Length'];
-                $productFilter_model->height                    =   $product_data['ProductDimension']['Width'];
-                $productFilter_model->depth                     =   $product_data['ProductDimension']['Depth'];
-                $productFilter_model->dimension_units           =   $product_data['ProductDimension']['Units'];
-                $productFilter_model->weight                    =   $product_data['ProductWeight']['Value'];
-                $productFilter_model->weight_units              =   $product_data['ProductWeight']['Units'];
-                $productFilter_model->dimension_description     =   '';
-                $productFilter_model->min_purchase_quantity     =   $product_data['MinPurchaseQuantity'];
-                $productFilter_model->max_purchase_quantity     =   $product_data['MaxPurchaseQuantity'];
-                $productFilter_model->bin_number                =   $product_data['BinNumber'];
-                $productFilter_model->accessory_skus            =   $product_data['AccessorySkus'];
-                $productFilter_model->keywords                  =   $product_data['Keywords'];
-                $productFilter_model->pers_available            =   '';
-                $productFilter_model->gift_wrap_available       =   '';
-                $productFilter_model->details                   =   '';
-                $productFilter_model->features                  =   $product_data['Features'];
-                $productFilter_model->specification             =   $product_data['Specification'];
-                $productFilter_model->warranty                  =   $product_data['Warranty'];
-                $productFilter_model->discontinue_flag          =   $product_data['DiscontinueFlag']['Value'];
-                $productFilter_model->case_pack_length          =   $product_data['CasePackDimension']['Length'];
-                $productFilter_model->case_pack_height          =   $product_data['CasePackDimension']['Width'];
-                $productFilter_model->case_pack_depth           =   $product_data['CasePackDimension']['Depth'];
-                $productFilter_model->case_pack_units           =   $product_data['CasePackDimension']['Units'];
-                $productFilter_model->case_pack_quantity        =   $product_data['CasePackQuantity']['Value'];
-                $count  =    $productFilter_model->AddProduct();
-            }
-            $logs_contents  =   ' page:'.$page_now.'  succeed!  Date:'.date('Y-m-d H:i:s')."\n";
-            @fwrite($f, $logs_contents);
-            $page_now++;
-            
-        }while($page_now <= $TotalNumberOfPages);
+            @fwrite($f, "Refresh Products normal:".$count['normal_count'] ."  Product Repeat:".$count['repeat_count']."\n");
+            */
         
-        $page_now--;
-        if($page_now == $TotalNumberOfPages)
-        {
-            if($data_source == '1')
+            $products_all       =   $productFilter_model->getProductAll();
+            if($products_all)
             {
-                $params_model->UpdateVal('product_info_table', '2');
-            }else
-            {
-                $params_model->UpdateVal('product_info_table', '1');
+                $logs_postage   =   '';
+                @fwrite($f, 'Update Estimated Shipping Cost : '.date("Y-m-d H:i:s")."\n");
+                foreach ($products_all as $product)
+                {
+                    $postage_api_url    =   $param_postage_api_url.'?pid='.$product['product_id'].'&zip=4270&qty=1';
+                    $result =   $productFilter_model->updateEstimatedShippingCost($postage_api_url,$product['product_id']);
+                    if($result){
+                        $logs_postage   .=   'product_id:'.$product['product_id']." sku:".$product['supplier_sku'].' update estimated_shipping_cost:'.$result."\n";
+                    }else{
+                        $logs_postage   .=   'product_id:'.$product['product_id']." sku:".$product['supplier_sku']." update estimated_shipping_cost faild\n";
+                    }
+                }
             }
-            $params_model->UpdateVal('product_info_table_refresh_time',date('Y-m-d H:i:s'));
-        }
-        @fwrite($f, "Refresh Products normal:".$count['normal_count'] ."  Product Repeat:".$count['repeat_count']."\n");
-        @fwrite($f, "Refresh Products Completed.\n");
-        @fclose($f);
+            @fwrite($f, $logs_postage);
+            @fwrite($f, "Refresh Products Completed.\n");
+            @fclose($f);
+        
         }  catch (Zend_Exception $exp){
             $error  =   $exp->getMessage();
             @fwrite($f, $error);
