@@ -498,10 +498,10 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->item_amount   =   $order_amount;
                     if($params['flat_paypal'])
                     {
-                        $crazySalesOrderType->PaymentTypeID          =   1; 
+                        $crazySalesOrderType->PaymentTypeID          =   5; 
                     }else
                     {
-                        $crazySalesOrderType->PaymentTypeID          =   1; 
+                        $crazySalesOrderType->PaymentTypeID          =   9; 
                     }
                     $crazySalesOrderType->RetailerAccountEmail   =   $_SESSION["Zend_Auth"]["storage"]->email;
                     $crazySalesOrderType->ShipFirstName          =   $params['shipping_first_name'][$loop_key];
@@ -875,7 +875,7 @@ class MerchantController extends Zend_Controller_Action
                         $order_service_model->crazySalesOrderType['PaymentTypeID']          =   5; 
                     }else
                     {
-                        $order_service_model->crazySalesOrderType['PaymentTypeID']          =   6; 
+                        $order_service_model->crazySalesOrderType['PaymentTypeID']          =   9; 
                     }
                     $order_service_model->crazySalesOrderType['RetailerAccountEmail']   =   $_SESSION["Zend_Auth"]["storage"]->email;
                     $order_service_model->crazySalesOrderType['ShipFirstName']          =   $params['shipping_first_name'][$loop_key];
