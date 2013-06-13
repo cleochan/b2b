@@ -28,6 +28,17 @@ class Forms_Merchant extends Zend_Form
                                         -> setRequired(True)
                                         -> setValue(1)
                                         -> addValidator('NotEmpty');
+                
+                
+                //create flat_rate_shipping radio
+		$flat_rate_shipping_array = array(1=>"On", 0=>"Off");
+		$flat_rate_shipping = new Zend_Form_Element_Radio('flat_rate_shipping');
+		$flat_rate_shipping    -> setDecorators(array(array('ViewHelper'),))
+                                        -> addMultiOptions($flat_rate_shipping_array)
+                                        -> setSeparator(' ')
+                                        -> setRequired(True)
+                                        -> setValue(1)
+                                        -> addValidator('NotEmpty');
         
 		$company = new Zend_Form_Element_Text('company');
 		$company -> setDecorators(array(array('ViewHelper'),));
@@ -76,7 +87,8 @@ class Forms_Merchant extends Zend_Form
                                                                 $contact_phone,
                                                                 $credit,
                                                                 $discount,
-								$submitx
+								$submitx,
+                                                                $flat_rate_shipping,
 							)
 						);
 	}

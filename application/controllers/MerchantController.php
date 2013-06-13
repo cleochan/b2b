@@ -334,7 +334,8 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->operator_id = $this->params['user_id'];
                 $getorders_model->pick_up = $da_val['pick_up'];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
-
+                $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
+                
                 $check_result = $getorders_model->PlaceOrderCheck();
 
                 $data_array[$da_key]['result'] = $check_result[1];
@@ -378,6 +379,7 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->operator_id = $this->params['user_id'];
                     $getorders_model->pick_up = $this->params['pickup']?"Y":"N"; 
                     $getorders_model->group_instance_balance_array = $group_instance_balance_array;
+                    $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
 
                     $check_result = $getorders_model->PlaceOrderCheck();
                     
@@ -430,7 +432,7 @@ class MerchantController extends Zend_Controller_Action
         $quantityType           =   new QuantityType();
         $ip = $plugin_model->GetIp();
         $notice = "S1"; //success
-        
+        $users_extension_model = new Databases_Tables_UsersExtension();
         if(count($params['supplier_sku']))
         {
             $group_instance_balance_array = array();
@@ -452,7 +454,10 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->quantity = $params['quantity'][$loop_key];
                 $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
                 $getorders_model->pick_up = $params['pick_up'][$loop_key];
-                $getorders_model->group_instance_balance_array = $group_instance_balance_array;
+                $getorders_model->group_instance_balance_array = $group_instance_balance_array;                
+                $users_extension_model->company = $params['merchant_company'][$loop_key];
+                $user_info = $users_extension_model->CheckCompanyInCsv();
+                $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
 
                 $check_result = $getorders_model->PlaceOrderCheck();
                 
@@ -629,7 +634,8 @@ class MerchantController extends Zend_Controller_Action
         
         $group_instance_balance_array = array();
         $getorders_model = new Databases_Joins_GetOrders();
-        
+        $user_extension_model = new Databases_Tables_UsersExtension();
+        $user_info = $user_extension_model->UserInfo();
         $system_params_model    =   new Databases_Tables_Params();        
         $this->view->paypal_url         =   $system_params_model->GetVal('paypal_url');
         $this->view->paypal_account     =   $system_params_model->GetVal('paypal_account');
@@ -656,6 +662,7 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->operator_id = $this->params['user_id'];
                 $getorders_model->pick_up = $da_val[21];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
+                $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
 
                 $check_result = $getorders_model->PlaceOrderCheck();
 
@@ -725,7 +732,8 @@ class MerchantController extends Zend_Controller_Action
                                     $getorders_model->operator_id = $this->params['user_id'];
                                     $getorders_model->pick_up = $da_val[21];
                                     $getorders_model->group_instance_balance_array = $group_instance_balance_array;
-
+                                    $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
+                                    
                                     $check_result = $getorders_model->PlaceOrderCheck();
 
                                     $data_array[$da_key]['result'] = $check_result[1];
@@ -794,6 +802,7 @@ class MerchantController extends Zend_Controller_Action
         $order_service_model    =   new Algorithms_Core_OrderService();
         $user_info_model    =   new Databases_Joins_GetUserInfo();
         $product_filter_model   =   new Databases_Joins_ProductFilter();
+        $users_extension_model  =   new Databases_Tables_UsersExtension();
         $ip = $plugin_model->GetIp();
         $notice = "S1"; //success
         
@@ -818,6 +827,9 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->quantity = $params['quantity'][$loop_key];
                 $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
                 $getorders_model->pick_up = $params['pick_up'][$loop_key];
+                $users_extension_model->company = $params['merchant_company'][$loop_key];
+                $user_info = $users_extension_model->CheckCompanyInCsv();
+                $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
 
                 $check_result = $getorders_model->PlaceOrderCheck();

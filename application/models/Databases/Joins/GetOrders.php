@@ -53,6 +53,8 @@ class Databases_Joins_GetOrders
     var $order_api_trying_times;
     
     var $purchase_order_id;
+    
+    var $flat_rate_shipping;
 
     function __construct(){
     	$this->db = Zend_Registry::get("db");
@@ -269,7 +271,7 @@ class Databases_Joins_GetOrders
                 //calculate item price
                 $product_filter_model = new Databases_Joins_ProductFilter();
                 $prices = $product_filter_model->GetSkuPrices(trim($this->supplier_sku), $user_info['user_id']);
-                
+                 
                 if($prices['quantity_available'] < $this->quantity || $prices['quantity_available']<=0)
                 {
                     $result[1] =  "N";
@@ -285,10 +287,11 @@ class Databases_Joins_GetOrders
                         }else{
                             $order_amount = ( $prices['street_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity) + $document_fee;
                         }
-                    }elseif($prices['flat_rate_shipping'] && in_array ($prices['freight_class'], array(3,5,6))){
+                    }elseif($this->flat_rate_shipping == 1 && in_array ($prices['freight_class'], array(3,5,6))){
                         $order_amount = ( $prices['street_price'] + $prices['estimated_shipping_cost'] ) * trim($this->quantity);
                     }else{
                         $estimated_shipping_cost    =   $product_filter_model->getEstimatedShippingCost($prices['product_id'], $user_info['post_code'], trim($this->quantity) );
+                        echo $estimated_shipping_cost;
                         $order_amount = ( $prices['street_price'] * trim($this->quantity) ) + $estimated_shipping_cost;
                     }
                     

@@ -242,7 +242,7 @@ class Databases_Joins_ProductFilter
         if($data_source && $sku) // 1 or 2
         {
             $product_select = $this->db->select();
-            $product_select->from("product_info_".$data_source, array("product_id","supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","flat_rate_shipping","freight_class"));
+            $product_select->from("product_info_".$data_source, array("product_id","supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","freight_class"));
             $product_select->where("supplier_sku = ?", $sku);
             $product = $this->db->fetchRow($product_select);
             if($product['supplier_sku'])
@@ -253,7 +253,6 @@ class Databases_Joins_ProductFilter
                 $result['estimated_shipping_cost'] = $product['estimated_shipping_cost'];
                 $result['estimated_handling_fee'] = $product['estimated_handling_fee'];
                 $result['quantity_available'] = $product['quantity_available'];
-                $result['flat_rate_shipping'] = $product['flat_rate_shipping'];
                 $result['freight_class'] = $product['freight_class'];
                 $result['product_id']    = $product['product_id'];
             }

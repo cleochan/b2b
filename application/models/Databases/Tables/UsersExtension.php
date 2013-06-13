@@ -14,6 +14,7 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
     var $post_code;
     var $suburb;
     var $state;
+    var $flat_rate_shipping;
     
     function AddUserExtension()
     {
@@ -30,6 +31,7 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
                 'post_code'     =>  $this->post_code,
                 'suburb'        =>  $this->suburb,
                 'state'         =>  $this->state,
+                'flat_rate_shipping'    =>  $this->flat_rate_shipping,
                 'join_date' => date("Y-m-d"),
                 'credit' => round($this->credit, 2),
                 'discount' => round($this->discount, 2),
@@ -61,6 +63,7 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
             $user->post_code     =  $this->post_code;
             $user->suburb        =  $this->suburb;
             $user->state         =  $this->state;
+            $user->flat_rate_shipping   =   $this->flat_rate_shipping;
             $user->save();
         }
     }

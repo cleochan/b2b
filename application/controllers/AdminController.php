@@ -149,6 +149,7 @@ class AdminController extends Zend_Controller_Action
                     $check_user_string->post_code   =   $form->getValue('post_code');
                     $check_user_string->suburb      =   $form->getValue('suburb');
                     $check_user_string->state       =   $form->getValue('state');
+                    $check_user_string->flat_rate_shipping       =   $form->getValue('flat_rate_shipping');
                     
                     
                     $check_user_string ->AddUser();
@@ -310,7 +311,7 @@ class AdminController extends Zend_Controller_Action
                     $check_user_string->post_code   =   $form->getValue('post_code');
                     $check_user_string->suburb      =   $form->getValue('suburb');
                     $check_user_string->state       =   $form->getValue('state');
-                    
+                    $check_user_string->flat_rate_shipping       =   $form->getValue('flat_rate_shipping');
                     
                     $check_user_string->EditUser();
                     
@@ -1081,8 +1082,8 @@ class AdminController extends Zend_Controller_Action
                     $order_service_model->crazySalesOrderItemType['ShipMethod']         =   '';
                     $order_service_model->crazySalesOrderItemType['TrackingNumber']     =   '';
                     
-                    $order_service_model->crazySalesOrderItemType['Quantity']           =   $params['quantity'][$loop_key];
-                    $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];
+                    $order_service_model->quantityType['Value']                         =   $params['quantity'][$loop_key];
+                    $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];   
                     
                     
                     
