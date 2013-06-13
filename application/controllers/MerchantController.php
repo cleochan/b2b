@@ -533,9 +533,9 @@ class MerchantController extends Zend_Controller_Action
                     $crazySalesOrderType->BillingCompany         =   $user_info['company'];      
                     if($params['pick_up'][$loop_key])
                     {
-                        $crazySalesOrderType->ShipMethod    =   'PickUp';
-                    }else{
                         $crazySalesOrderType->ShipMethod    =   'Shipping';
+                    }else{
+                        $crazySalesOrderType->ShipMethod    =   'PickUp';
                     }
                                   
                     
