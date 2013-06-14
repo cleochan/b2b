@@ -433,6 +433,15 @@ class MerchantController extends Zend_Controller_Action
         $ip = $plugin_model->GetIp();
         $notice = "S1"; //success
         $users_extension_model = new Databases_Tables_UsersExtension();
+        $crazySalesOrderItemTypeArray   =   array();
+
+        $moeney_type    =   new MoneyType();
+        $order_amount_money_type   =   new MoneyType();
+        $expected_item_cost =   new MoneyType();
+        $final_item_cost    =   new MoneyType();
+        $final_ship_cost    =   new MoneyType();
+        $ship_cost          =   new MoneyType();
+        $order_discount     =   new MoneyType();
         if(count($params['supplier_sku']))
         {
             $group_instance_balance_array = array();
@@ -515,13 +524,6 @@ class MerchantController extends Zend_Controller_Action
                     
                     
                     $user_info  =   $user_info_model->GetUserInfo($user_id);
-                    $moeney_type    =   new MoneyType();
-                    $order_amount_money_type   =   new MoneyType();
-                    $expected_item_cost =   new MoneyType();
-                    $final_item_cost    =   new MoneyType();
-                    $final_ship_cost    =   new MoneyType();
-                    $ship_cost          =   new MoneyType();
-                    $order_discount     =   new MoneyType();
                     $order_amount_money_type->Value    =   round($check_result['order_amount'],2);                                  
                     $order_discount->Value  =   round($$check_result['discount_amount'],2);
                     $crazySalesOrderType->OrderDiscount =   $order_discount;
@@ -553,11 +555,14 @@ class MerchantController extends Zend_Controller_Action
                     
                     $quantityType->Value    =   $params['quantity'][$loop_key];
                     $crazySalesOrderItemType->Quantity  =   $quantityType;
-                    $crazySalesOrderItemType->ItemSku   =   $params['supplier_sku'][$loop_key];          
-                    $order_service_model->crazySalesOrderType  =   $crazySalesOrderType;
-                    $order_service_model->crazySalesOrderItemType   =   $crazySalesOrderItemType;
-                                     
-                    $response_data   =   $order_service_model->WebServicePlaceOrder();
+                    $crazySalesOrderItemType->ItemSku   =   $params['supplier_sku'][$loop_key];
+                    $order_service_model->crazySalesOrderType  =   $crazySalesOrderType;                    
+                    $crazySalesOrderItemTypeArray[]   =   $crazySalesOrderItemType;
+                    
+                    if($merchant_ref_pool[$params['merchant_ref'][$loop_key]]){
+                        $order_service_model->crazySalesOrderItemType   =   $crazySalesOrderItemTypeArray;
+                        $response_data   =   $order_service_model->WebServicePlaceOrder();
+                    }
                     
                     if($response_data['order_number']) 
                     {
@@ -934,12 +939,13 @@ class MerchantController extends Zend_Controller_Action
                     
                     $quantityType->Value    =   $params['quantity'][$loop_key];
                     $crazySalesOrderItemType->Quantity  =   $quantityType;
-                    $crazySalesOrderItemType->ItemSku   =   $params['supplier_sku'][$loop_key];          
+                    $crazySalesOrderItemType->ItemSku   =   $params['supplier_sku'][$loop_key];       
                     $order_service_model->crazySalesOrderType  =   $crazySalesOrderType;
                     $order_service_model->crazySalesOrderItemType   =   $crazySalesOrderItemType;                
-                                     
-                    $response_data   =   $order_service_model->WebServicePlaceOrder();
                     
+                    if($merchant_ref_pool[$params['merchant_ref'][$loop_key]]){
+                        $response_data   =   $order_service_model->WebServicePlaceOrder();
+                    }
                     if($response_data['order_number']) 
                     {
                         $getorders_model->main_order_id =   $response_data['order_number'];
