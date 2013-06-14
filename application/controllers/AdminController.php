@@ -979,6 +979,16 @@ class AdminController extends Zend_Controller_Action
         $order_service_model    =   new Algorithms_Core_OrderService();
         $user_model             =   new Databases_Joins_GetUserInfo();
         $product_filter_model   =   new Databases_Joins_ProductFilter();
+        $crazySalesOrderType    =   new CrazySalesOrderType();
+        $crazySalesOrderItemType    =   new CrazySalesOrderItemType();
+        $quantityType           =   new QuantityType();
+        $moeney_type            =   new MoneyType();
+        $order_amount_money_type=   new MoneyType();
+        $expected_item_cost     =   new MoneyType();
+        $final_item_cost        =   new MoneyType();
+        $final_ship_cost        =   new MoneyType();
+        $ship_cost              =   new MoneyType();
+        $order_discount         =   new MoneyType();
         $ip = $plugin_model->GetIp();
         $notice = "S1"; //success
         
@@ -1043,47 +1053,59 @@ class AdminController extends Zend_Controller_Action
                     
                     //add by angus 2013-04-26
                     $getorders_model->item_amount   =   $order_amount;
-                    $user_info   =   $user_model->GetUserInfo($user_id);
-                    $merchant_email =   $user_info['email'];
-                    $order_service_model->crazySalesOrderType['RetailerAccountEmail']   =   $merchant_email;
-                    $order_service_model->crazySalesOrderType['PaymentTypeID']          =   6; //PaymentTypeID is unknown,need to check the PaymentTypeID
-                    $order_service_model->crazySalesOrderType['ShipFirstName']          =   $params['shipping_first_name'][$loop_key];
-                    $order_service_model->crazySalesOrderType['ShipAddress_1']          =   $params['shipping_address_1'][$loop_key];
-                    $order_service_model->crazySalesOrderType['ShipAddress_2']          =   $params['shipping_address_2'][$loop_key];
-                    $order_service_model->crazySalesOrderType['ShipCity']               =   $params['shipping_suburb'][$loop_key];
-                    $order_service_model->crazySalesOrderType['ShipState']              =   $params['shipping_state'][$loop_key];
-                    $order_service_model->crazySalesOrderType['ShipZipCode']            =   $params['shipping_postcode'][$loop_key];
-                    $order_service_model->crazySalesOrderType['ShipCountryCode']        =   $params['shipping_country'][$loop_key];
-                    $order_service_model->crazySalesOrderType['ShipPhone']              =   $params['shipping_phone'][$loop_key];
-                                        
-                                        
-                    $order_service_model->crazySalesOrderType['OrderAmount']            =   $check_result['subtotal'];
-                    $order_service_model->crazySalesOrderType['ShippingCost']           =   $check_result['shipping_cost'];
-                    $order_service_model->crazySalesOrderType['BillingAddress_1']       =   $user_info['address'];
-                    $order_service_model->crazySalesOrderType['BillingZipCode']         =   $user_info['post_code'];
-                    $order_service_model->crazySalesOrderType['BillingState']           =   $user_info['state'];
-                    $order_service_model->crazySalesOrderType['BillingCity']            =   $user_info['suburb'];
-                    $order_service_model->crazySalesOrderType['BillingCompany']         =   $user_info['company'];
+                    if($params['flat_paypal'])
+                    {
+                        $crazySalesOrderType->PaymentTypeID          =   5; 
+                    }else
+                    {
+                        $crazySalesOrderType->PaymentTypeID          =   9; 
+                    }
+                    $crazySalesOrderType->RetailerAccountEmail   =   $_SESSION["Zend_Auth"]["storage"]->email;
+                    $crazySalesOrderType->ShipFirstName          =   $params['shipping_first_name'][$loop_key];
+                    $crazySalesOrderType->ShipAddress_1          =   $params['shipping_address_1'][$loop_key];
+                    $crazySalesOrderType->ShipAddress_2          =   '';//$params['shipping_address_2'][$loop_key];
+                    $crazySalesOrderType->ShipCity               =   $params['shipping_suburb'][$loop_key];
+                    $crazySalesOrderType->ShipState              =   $params['shipping_state'][$loop_key];
+                    $crazySalesOrderType->ShipZipCode            =   $params['shipping_postcode'][$loop_key];
+                    $crazySalesOrderType->ShipCountryCode        =   $params['shipping_country'][$loop_key];
+                    $crazySalesOrderType->ShipPhone              =   $params['shipping_phone'][$loop_key];
+                    
+                    
+                    $user_info  =   $user_model->GetUserInfo($user_id);
+                    $order_amount_money_type->Value    =   round($check_result['order_amount'],2);                                  
+                    $order_discount->Value  =   round($$check_result['discount_amount'],2);
+                    $crazySalesOrderType->OrderDiscount =   $order_discount;
+                    $crazySalesOrderType->PointsRate    =   0.00;
+                    $crazySalesOrderType->OrderAmount            =   $order_amount_money_type;
+                    $moeney_type->Value =   round($check_result['shipping_cost'],2);
+                    $crazySalesOrderType->ShippingCost           =   $moeney_type;
+                    $crazySalesOrderType->BillingAddress_1       =   $user_info['address'];
+                    $crazySalesOrderType->BillingZipCode         =   $user_info['post_code'];
+                    $crazySalesOrderType->BillingState           =   $user_info['state'];
+                    $crazySalesOrderType->BillingCity            =   $user_info['suburb'];
+                    $crazySalesOrderType->BillingCompany         =   $user_info['company'];      
+                    if($params['pick_up'][$loop_key])
+                    {
+                        $crazySalesOrderType->ShipMethod    =   'Shipping';
+                    }else{
+                        $crazySalesOrderType->ShipMethod    =   'PickUp';
+                    }
                     
                     $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
+                    $expected_item_cost->Value   =   round($sku_prices_info['street_price'],2);
+                    $crazySalesOrderItemType->ExpectedItemCost   =   $expected_item_cost;
+                    $final_item_cost->Value   =   round($sku_prices_info['street_price'],2);
+                    $crazySalesOrderItemType->FinalItemCost      =   $final_item_cost;
+                    $final_ship_cost->Value   =   round($check_result['shipping_cost'],2);
+                    $crazySalesOrderItemType->FinalShipCost      =   $final_ship_cost;
+                    $ship_cost->Value   =    round($check_result['ship_cost'],2);
+                    $crazySalesOrderItemType->ShipCost           =   $ship_cost;
                     
-                    $moeney_type    =   array();
-                    $order_service_model->crazySalesOrderItemType['ExpectedItemCost']   =   $moeney_type['Value']   =   $sku_prices_info['street_price'];
-                    $order_service_model->crazySalesOrderItemType['FinalItemCost']      =   $moeney_type['Value']   =   $sku_prices_info['street_price'];
-                    $order_service_model->crazySalesOrderItemType['FinalShipCost']      =   $moeney_type['Value']   =   $sku_prices_info['estimated_shipping_cost'];
-                    $order_service_model->crazySalesOrderItemType['ShipCost']           =   $moeney_type['Value']   =   $sku_prices_info['estimated_shipping_cost'];
-                    $order_service_model->crazySalesOrderItemType['Dimension']          =   '';
-                    $order_service_model->crazySalesOrderItemType['Weight']             =   '';
-                    $order_service_model->crazySalesOrderItemType['Notes']              =   '';
-                    $order_service_model->crazySalesOrderItemType['OrderItemNumber']    =   10;
-                    $order_service_model->crazySalesOrderItemType['OrderNumber']        =   10;
-                    $order_service_model->crazySalesOrderItemType['ShipCarrier']        =   '';
-                    $order_service_model->crazySalesOrderItemType['ShipDate']           = date('Y-m-d H:i:s');
-                    $order_service_model->crazySalesOrderItemType['ShipMethod']         =   '';
-                    $order_service_model->crazySalesOrderItemType['TrackingNumber']     =   '';
-                    
-                    $order_service_model->quantityType['Value']                         =   $params['quantity'][$loop_key];
-                    $order_service_model->crazySalesOrderItemType['ItemSku']            =   $params['supplier_sku'][$loop_key];   
+                    $quantityType->Value    =   $params['quantity'][$loop_key];
+                    $crazySalesOrderItemType->Quantity  =   $quantityType;
+                    $crazySalesOrderItemType->ItemSku   =   $params['supplier_sku'][$loop_key];          
+                    $order_service_model->crazySalesOrderType  =   $crazySalesOrderType;
+                    $order_service_model->crazySalesOrderItemType   =   $crazySalesOrderItemType;
                     
                     
                     
