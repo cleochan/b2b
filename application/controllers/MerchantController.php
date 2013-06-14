@@ -522,12 +522,12 @@ class MerchantController extends Zend_Controller_Action
                     $final_ship_cost    =   new MoneyType();
                     $ship_cost          =   new MoneyType();
                     $order_discount     =   new MoneyType();
-                    $order_amount_money_type->Value    =   round($check_result['subtotal'],2);                                  
+                    $order_amount_money_type->Value    =   round($check_result['order_amount'],2);                                  
                     $order_discount->Value  =   round($$check_result['discount_amount'],2);
                     $crazySalesOrderType->OrderDiscount =   $order_discount;
                     $crazySalesOrderType->PointsRate    =   0.00;
                     $crazySalesOrderType->OrderAmount            =   $order_amount_money_type;
-                    $moeney_type->Value =  20.25;// round($check_result['shipping_cost'],2);
+                    $moeney_type->Value =   round($check_result['shipping_cost'],2);
                     $crazySalesOrderType->ShippingCost           =   $moeney_type;
                     $crazySalesOrderType->BillingAddress_1       =   $user_info['address'];
                     $crazySalesOrderType->BillingZipCode         =   $user_info['post_code'];
@@ -548,7 +548,7 @@ class MerchantController extends Zend_Controller_Action
                     $crazySalesOrderItemType->FinalItemCost      =   $final_item_cost;
                     $final_ship_cost->Value   =   round($check_result['shipping_cost'],2);
                     $crazySalesOrderItemType->FinalShipCost      =   $final_ship_cost;
-                    $ship_cost->Value   =    1.25;//round($check_result['shipping_cost'],2);
+                    $ship_cost->Value   =    round($check_result['ship_cost'],2);
                     $crazySalesOrderItemType->ShipCost           =   $ship_cost;
                     
                     $quantityType->Value    =   $params['quantity'][$loop_key];
