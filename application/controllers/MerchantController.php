@@ -599,11 +599,8 @@ class MerchantController extends Zend_Controller_Action
                             $crazySalesOrderItemTypeArray[$logs_order['merchant_ref']][]   =   $crazySalesOrderItemType;
                         }
                     }
-                    
-                    if($merchant_ref_pool[$params['merchant_ref'][$loop_key]]){
-                        $order_service_model->crazySalesOrderItemType   =   $crazySalesOrderItemTypeArray[$params['merchant_ref'][$loop_key]];
-                        $response_data   =   $order_service_model->WebServicePlaceOrder();
-                    }
+                    $order_service_model->crazySalesOrderItemType   =   $crazySalesOrderItemTypeArray[$logs_order['merchant_ref']];
+                    $response_data   =   $order_service_model->WebServicePlaceOrder();
                     if($response_data['order_number']) 
                     {
                         $getorders_model->main_order_id =   $response_data['order_number'];
