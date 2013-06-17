@@ -273,7 +273,6 @@ class Databases_Joins_GetOrders
             $params_model = new Databases_Tables_Params();
             $document_fee = $params_model->GetVal("document_fee");
             $total_shipping =   $this->total_shipping_cost_array[$user_info['user_id']];
-            $total_amount   =   $this->total_order_amount_array[$user_info['user_id']];
             if($user_info['user_id'])
             {
                 $result['user_id'] = $user_info['user_id'];
@@ -310,7 +309,6 @@ class Databases_Joins_GetOrders
                         $ship_cost  =   $estimated_shipping_cost;
                     }
                     $total_shipping +=  $shipping_cost;
-                    $total_amount   +=  $order_amount;
                     $subtotal   =   $prices['street_price'] * trim($this->quantity);
                     $discount_amount    =   $subtotal * $discount;
                     $result['subtotal']     =   $subtotal;
@@ -319,7 +317,6 @@ class Databases_Joins_GetOrders
                     $result['discount_amount']  =   $discount_amount;
                     $result['order_amount'] = $order_amount;
                     $result['total_shipping']   =   $total_shipping;
-                    $result['total_amount']   =   $total_amount;
 
                     if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
                     {
@@ -379,10 +376,11 @@ class Databases_Joins_GetOrders
             $purchase_order_id = $purchase_order_model->AddPurchaseOrder();
             
             $merchant_ref_pool[$this->merchant_ref] = $purchase_order_id;
-        }else{ //update order amount
+        }else{ //update order amount 
+            $purchase_order_model->purchase_order_id    =   $merchant_ref_pool[$this->merchant_ref];
             $purchase_order_model->shipping_cost = $this->shipping_cost;
             $purchase_order_model->order_amount_change_value = $this->order_amount;
-            $purchase_order_model->order_amount_action = 1; //Plus
+            $purchase_order_model->order_amount_action = 1; //Plus   
             $purchase_order_model->UpdatePurchaseOrder();
         }
         

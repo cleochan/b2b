@@ -475,10 +475,10 @@ class MerchantController extends Zend_Controller_Action
                     //update instant balance
                     $group_instance_balance_array[$user_id] = $instant_balance;
                     $total_shipping_cost_array[$user_id] = $total_shipping_cost;
-                    $total_order_amount_array[$user_id]  = $total_amount;
+                    $total_order_amount_array[$params['merchant_ref'][$loop_key]]  = $total_amount;
                     //Insert Into Orders
                     $getorders_model->merchant_ref = $params['merchant_ref'][$loop_key];
-                    $getorders_model->order_amount = $total_amount;
+                    $getorders_model->order_amount = $order_amount;
                     $getorders_model->user_id = $user_id;
                     $getorders_model->ip = $ip;
                     $getorders_model->shipping_first_name = $params['shipping_first_name'][$loop_key];
@@ -510,7 +510,6 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->final_item_cost       =   round($sku_prices_info['street_price'],2);
                     $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
                     $getorders_model->ship_cost             =   round($check_result['ship_cost'],2);
-                                      
                     
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     
@@ -521,7 +520,7 @@ class MerchantController extends Zend_Controller_Action
                     $notice = "E2";
                 }
             }
-            
+                    
             $purchase_order_ids =   implode(',',$merchant_ref_pool);
             $purchase_order_model   =   new Databases_Tables_PurchaseOrder();
             $logs_orders_model      =   new Databases_Tables_LogsOrders();
