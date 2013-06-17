@@ -567,9 +567,9 @@ class MerchantController extends Zend_Controller_Action
                     }
                     if($purchase_order['pick_up'])
                     {
-                        $crazySalesOrderType->ShipMethod    =   'Shipping';
-                    }else{
                         $crazySalesOrderType->ShipMethod    =   'PickUp';
+                    }else{
+                        $crazySalesOrderType->ShipMethod    =   'Shipping';
                     }
                     $logs_orders_model->purchase_order_id   =   $purchase_order['purchase_order_id'];
                     $logs_orders    =   $logs_orders_model->GetLogsOrderList();
