@@ -199,7 +199,7 @@ $qty->Value = 1;
 $orderItem2->Quantity = $qty;
 $orderItem2->ItemSku = "RABBIT2";
 
-$order->OrderItems = array($orderItem,$orderItem1,$orderItem2);
+$order->OrderItems = array($orderItem);
 $order1->OrderItems = array($orderItem1);
 $order2->OrderItems = array($orderItem2);
 
