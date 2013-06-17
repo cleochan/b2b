@@ -39,7 +39,7 @@ class Algorithms_Core_OrderService extends SoapClient{
     }
     
     function WebServicePlaceOrder(){
-        $this->crazySalesOrderType->OrderItems  =   array($this->crazySalesOrderItemType);
+        $this->crazySalesOrderType->OrderItems  =   $this->crazySalesOrderItemType;
         $req = new PlaceOrderRequest();
         $req->OrderRequests = array($this->crazySalesOrderType);
         $response   =   $this->PlaceOrder(array('request' => $req));
