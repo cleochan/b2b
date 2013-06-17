@@ -1,5 +1,5 @@
 <?php
-$url = 'http://10.0.0.186:8743/OrderService.svc?wsdl';
+$url = 'http://203.213.123.150:8743/OrderService.svc?wsdl';
 $client = new SoapClient($url);
 
 class MoneyType {
