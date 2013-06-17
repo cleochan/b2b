@@ -64,6 +64,7 @@ class Databases_Joins_GetOrders
     var $shipping_cost;
     var $total_shipping_cost_array;
     var $logs_order_ids;
+    var $total_order_amount_array;
     
     function __construct(){
     	$this->db = Zend_Registry::get("db");
@@ -271,7 +272,8 @@ class Databases_Joins_GetOrders
             
             $params_model = new Databases_Tables_Params();
             $document_fee = $params_model->GetVal("document_fee");
-            $total_shipping  =   $this->total_shipping_cost_array[$user_info['user_id']];
+            $total_shipping =   $this->total_shipping_cost_array[$user_info['user_id']];
+            $total_amount   =   $this->total_order_amount_array[$user_info['user_id']];
             if($user_info['user_id'])
             {
                 $result['user_id'] = $user_info['user_id'];
@@ -307,7 +309,8 @@ class Databases_Joins_GetOrders
                         $shipping_cost  =   $estimated_shipping_cost;
                         $ship_cost  =   $estimated_shipping_cost;
                     }
-                    $total_shipping +=   $shipping_cost;
+                    $total_shipping +=  $shipping_cost;
+                    $total_amount   +=  $order_amount;
                     $subtotal   =   $prices['street_price'] * trim($this->quantity);
                     $discount_amount    =   $subtotal * $discount;
                     $result['subtotal']     =   $subtotal;
@@ -316,6 +319,7 @@ class Databases_Joins_GetOrders
                     $result['discount_amount']  =   $discount_amount;
                     $result['order_amount'] = $order_amount;
                     $result['total_shipping']   =   $total_shipping;
+                    $result['total_amount']   =   $total_amount;
 
                     if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
                     {

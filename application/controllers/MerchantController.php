@@ -437,8 +437,9 @@ class MerchantController extends Zend_Controller_Action
         {
             $group_instance_balance_array = array();
             $total_shipping_cost_array    =   array();
+            $total_order_amount_array     =   array();
             $merchant_ref_pool = array();
-            $i=1;
+            
             foreach($params['supplier_sku'] as $loop_key => $supplier_sku)
             {
                 //Validation
@@ -457,6 +458,7 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->pick_up = $params['pick_up'][$loop_key];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
                 $getorders_model->total_shipping_cost_array = $total_shipping_cost_array;
+                $getorders_model->total_order_amount_array = $total_order_amount_array;
                 $users_extension_model->company = $params['merchant_company'][$loop_key];
                 $user_info = $users_extension_model->CheckCompanyInCsv();
                 $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
@@ -468,13 +470,15 @@ class MerchantController extends Zend_Controller_Action
                     $order_amount = $check_result['order_amount'];
                     $instant_balance = $check_result['instant_balance'];
                     $total_shipping_cost    =   $check_result['total_shipping'];
+                    $total_amount           =   $check_result['total_amount'];
                     $user_id = $check_result['user_id'];
                     //update instant balance
                     $group_instance_balance_array[$user_id] = $instant_balance;
                     $total_shipping_cost_array[$user_id] = $total_shipping_cost;
+                    $total_order_amount_array[$user_id]  = $total_amount;
                     //Insert Into Orders
                     $getorders_model->merchant_ref = $params['merchant_ref'][$loop_key];
-                    $getorders_model->order_amount = $order_amount;
+                    $getorders_model->order_amount = $total_amount;
                     $getorders_model->user_id = $user_id;
                     $getorders_model->ip = $ip;
                     $getorders_model->shipping_first_name = $params['shipping_first_name'][$loop_key];
