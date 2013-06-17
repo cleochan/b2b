@@ -429,7 +429,6 @@ class MerchantController extends Zend_Controller_Action
         $product_filter_model   =   new Databases_Joins_ProductFilter();
         $crazySalesOrderType    =   new CrazySalesOrderType();
         $crazySalesOrderItemType    =   new CrazySalesOrderItemType();
-        $quantityType           =   new QuantityType();
         $ip = $plugin_model->GetIp();
         $notice = "S1"; //success
         $users_extension_model = new Databases_Tables_UsersExtension();
@@ -583,6 +582,7 @@ class MerchantController extends Zend_Controller_Action
                             $final_item_cost    =   new MoneyType();
                             $final_ship_cost    =   new MoneyType();
                             $ship_cost          =   new MoneyType();
+                            $quantityType       =   new QuantityType();
                             $expected_item_cost->Value   =   round($logs_order['expected_item_cost'],2);
                             $crazySalesOrderItemType->ExpectedItemCost   =   $expected_item_cost;
                             $final_item_cost->Value   =   round($logs_order['final_item_cost'],2);
