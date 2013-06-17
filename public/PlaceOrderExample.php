@@ -1,5 +1,5 @@
 <?php
-$url = 'http://203.213.123.150:8753/OrderService.svc?wsdl';
+$url = 'http://203.213.123.150:8743/OrderService.svc?wsdl';
 $client = new SoapClient($url);
 
 class MoneyType {
@@ -141,6 +141,34 @@ $orderAmount = new MoneyType();
 $orderAmount->Value = 200;
 $order->OrderAmount = $orderAmount;
 
+$order1 = new CrazySalesOrderType();
+$order1->RetailerAccountEmail = 'unmind@gmail.com';
+$order1->PaymentTypeID = 6;
+$order1->ShipFirstName = "unmind";
+$order1->ShipAddress_1 = "12 Springvale Rd";
+$order1->ShipAddress_2 = "";
+$order1->ShipCity = "Springvale";
+$order1->ShipState = "VIC";
+$order1->ShipZipCode = "3172";
+$order1->ShipCountryCode = "AU";
+$order1->ShipPhone = "123321123";
+
+$order1->OrderAmount = $orderAmount;
+
+$order2 = new CrazySalesOrderType();
+$order2->RetailerAccountEmail = 'unmind@gmail.com';
+$order2->PaymentTypeID = 6;
+$order2->ShipFirstName = "unmind";
+$order2->ShipAddress_1 = "12 Springvale Rd";
+$order2->ShipAddress_2 = "";
+$order2->ShipCity = "Springvale";
+$order2->ShipState = "VIC";
+$order2->ShipZipCode = "3172";
+$order2->ShipCountryCode = "AU";
+$order2->ShipPhone = "123321123";
+
+$order2->OrderAmount = $orderAmount;
+
 $orderItem = new CrazySalesOrderItemType();
 $cost = new MoneyType();
 $cost->Value = 10.25;
@@ -151,7 +179,29 @@ $qty->Value = 1;
 $orderItem->Quantity = $qty;
 $orderItem->ItemSku = "RABBIT2";
 
-$order->OrderItems = array($orderItem);
+$orderItem1 = new CrazySalesOrderItemType();
+$cost1 = new MoneyType();
+$cost1->Value = 11.25;
+$orderItem1->ExpectedItemCost = $cost;
+$orderItem1->FinalItemCost = $cost;
+$qty = new QuantityType();
+$qty->Value = 1;
+$orderItem1->Quantity = $qty;
+$orderItem1->ItemSku = "RABBIT2";
+
+$orderItem2 = new CrazySalesOrderItemType();
+$cost2 = new MoneyType();
+$cost2->Value = 12.25;
+$orderItem2->ExpectedItemCost = $cost;
+$orderItem2->FinalItemCost = $cost;
+$qty = new QuantityType();
+$qty->Value = 1;
+$orderItem2->Quantity = $qty;
+$orderItem2->ItemSku = "RABBIT2";
+
+$order->OrderItems = array($orderItem,$orderItem1,$orderItem2);
+$order1->OrderItems = array($orderItem1);
+$order2->OrderItems = array($orderItem2);
 
 $req = new PlaceOrderRequest();
 $req->OrderRequests = array($order);
