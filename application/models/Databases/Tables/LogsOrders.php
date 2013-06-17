@@ -45,6 +45,9 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
     var $logs_orders_id;
     var $api_response;
     
+    var $purchase_order_id;
+    var $logs_order_ids;
+    
     function Pagination()
     {
         //Get amount page qty
@@ -244,4 +247,32 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
         return $result;
     }
     
+    function GetLogsOrderList()
+    {
+        $result =   FALSE;
+        if($this->purchase_order_id)
+        {
+             $row    =   $this->fetchAll("purchase_order_id = '".$this->purchase_order_id."'");
+             $result    =   $row->toArray();
+        }
+        
+        return $result;
+    }
+    
+    function UpdateLogsOrder()
+    {
+        if($this->logs_order_ids){
+            foreach ($this->logs_order_ids as $logs_order_id)
+            {
+                
+                $row = $this->fetchRow("logs_orders_id = '".$logs_order_id."'");
+                $row->item_status       =   $this->item_status;
+                if($this->api_response)
+                {
+                    $row->api_response  =   $this->api_response;
+                }
+                $row->save();
+            }
+        }
+    }
 }

@@ -55,7 +55,16 @@ class Databases_Joins_GetOrders
     var $purchase_order_id;
     
     var $flat_rate_shipping;
-
+    
+    var $expected_item_cost;
+    var $final_item_cost;
+    var $final_ship_cost;
+    var $ship_cost;
+    var $discount_amount;
+    var $shipping_cost;
+    var $total_shipping_cost_array;
+    var $logs_order_ids;
+    
     function __construct(){
     	$this->db = Zend_Registry::get("db");
     }
@@ -262,7 +271,7 @@ class Databases_Joins_GetOrders
             
             $params_model = new Databases_Tables_Params();
             $document_fee = $params_model->GetVal("document_fee");
-            
+            $total_shipping  =   $this->total_shipping_cost_array[$user_info['user_id']];
             if($user_info['user_id'])
             {
                 $result['user_id'] = $user_info['user_id'];
@@ -298,7 +307,7 @@ class Databases_Joins_GetOrders
                         $shipping_cost  =   $estimated_shipping_cost;
                         $ship_cost  =   $estimated_shipping_cost;
                     }
-                    
+                    $total_shipping +=   $shipping_cost;
                     $subtotal   =   $prices['street_price'] * trim($this->quantity);
                     $discount_amount    =   $subtotal * $discount;
                     $result['subtotal']     =   $subtotal;
@@ -306,6 +315,7 @@ class Databases_Joins_GetOrders
                     $result['ship_cost']    =   $ship_cost;
                     $result['discount_amount']  =   $discount_amount;
                     $result['order_amount'] = $order_amount;
+                    $result['total_shipping']   =   $total_shipping;
 
                     if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
                     {
@@ -355,6 +365,8 @@ class Databases_Joins_GetOrders
             $purchase_order_model->shipping_phone = $this->shipping_phone;
             $purchase_order_model->shipping_fax = $this->shipping_fax;
             $purchase_order_model->order_amount = $this->order_amount;
+            $purchase_order_model->discount_amount = $this->discount_amount;
+            $purchase_order_model->shipping_cost = $this->shipping_cost;
             $purchase_order_model->main_db_order_id =   $this->main_order_id;   // add by Tim Wu 2013-4-24
             if("Y" == $this->pick_up)
             {
@@ -364,6 +376,7 @@ class Databases_Joins_GetOrders
             
             $merchant_ref_pool[$this->merchant_ref] = $purchase_order_id;
         }else{ //update order amount
+            $purchase_order_model->shipping_cost = $this->shipping_cost;
             $purchase_order_model->order_amount_change_value = $this->order_amount;
             $purchase_order_model->order_amount_action = 1; //Plus
             $purchase_order_model->UpdatePurchaseOrder();
@@ -381,6 +394,10 @@ class Databases_Joins_GetOrders
             "shipping_instruction" => $this->shipping_instruction,
             "serial_no" => $this->serial_no,
             "comments" => $this->comments,
+            "expected_item_cost" => $this->expected_item_cost,
+            "final_item_cost" => $this->final_item_cost,
+            "final_ship_cost" => $this->final_ship_cost,
+            "ship_cost" => $this->ship_cost, 
             "api_response"  =>  $this->api_response,    // add by Tim Wu 2013-5-2
         );
         
@@ -546,5 +563,22 @@ class Databases_Joins_GetOrders
         $result['logs_orders_id']       =   $this->logs_orders_id;
         $result['merchant_ref_pool']    =   $merchant_ref_pool;
         return  $tip;
+    }
+    
+    function UpdateOrder()
+    {
+        $purchase_order_model = new Databases_Tables_PurchaseOrder();
+        $logs_order_model       =   new Databases_Tables_LogsOrders();
+        $logs_order_model->main_order_id    =   $this->main_order_id;
+        $logs_order_model->logs_order_ids   =   $this->logs_order_ids;
+        $logs_order_model->item_status      =   $this->item_status;
+        if($this->api_response)
+        {
+            $logs_order_model->api_response    =   $this->api_response;
+        }
+        $purchase_order_model->purchase_order_id    =   $this->purchase_order_id;
+        $purchase_order_model->main_db_order_id        =   $this->main_order_id;
+        $purchase_order_model->UpdatePurchaseOrder();
+        $logs_order_model->UpdateLogsOrder();
     }
 }

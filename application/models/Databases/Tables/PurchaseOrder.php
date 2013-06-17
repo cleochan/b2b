@@ -22,7 +22,9 @@ class Databases_Tables_PurchaseOrder extends Zend_Db_Table
     var $order_amount_change_value;
     var $order_amount_action; //1=Plus 2=Deduct
     var $pickup;
-    
+    var $purchase_order_ids;
+    var $discount_amount;
+    var $shipping_cost;
     
     function AddPurchaseOrder()
     {
@@ -46,6 +48,8 @@ class Databases_Tables_PurchaseOrder extends Zend_Db_Table
                 "shipping_fax" => $this->shipping_fax,
                 "order_amount" => $this->order_amount,
                 "main_db_order_id" => $this->main_db_order_id,
+                "discount_amount" => $this->discount_amount,
+                "shipping_cost" => $this->shipping_cost,
             );
             if($this->pickup)
             {
@@ -65,7 +69,6 @@ class Databases_Tables_PurchaseOrder extends Zend_Db_Table
         if($this->purchase_order_id)
         {
             $row = $this->fetchRow("purchase_order_id = '".$this->purchase_order_id."'");
-
             if(!empty($row))
             {
                 //update main_db_order_id
@@ -91,6 +94,19 @@ class Databases_Tables_PurchaseOrder extends Zend_Db_Table
         }
 
         
+        return $result;
+    }
+    
+    function GetPurchaseOrder()
+    {
+        $result =   FALSE;
+        if($this->purchase_order_ids)
+        {
+            $select   =   $this->select();
+            $select->where("purchase_order_id in(".$this->purchase_order_ids.")" );
+            $rows =   $this->fetchAll($select);
+            $result =   $rows->toArray();
+        }
         return $result;
     }
 }

@@ -434,19 +434,12 @@ class MerchantController extends Zend_Controller_Action
         $notice = "S1"; //success
         $users_extension_model = new Databases_Tables_UsersExtension();
         $crazySalesOrderItemTypeArray   =   array();
-
-        $moeney_type    =   new MoneyType();
-        $order_amount_money_type   =   new MoneyType();
-        $expected_item_cost =   new MoneyType();
-        $final_item_cost    =   new MoneyType();
-        $final_ship_cost    =   new MoneyType();
-        $ship_cost          =   new MoneyType();
-        $order_discount     =   new MoneyType();
         if(count($params['supplier_sku']))
         {
             $group_instance_balance_array = array();
+            $total_shipping_cost_array    =   array();
             $merchant_ref_pool = array();
-            
+            $i=1;
             foreach($params['supplier_sku'] as $loop_key => $supplier_sku)
             {
                 //Validation
@@ -463,7 +456,8 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->quantity = $params['quantity'][$loop_key];
                 $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
                 $getorders_model->pick_up = $params['pick_up'][$loop_key];
-                $getorders_model->group_instance_balance_array = $group_instance_balance_array;                
+                $getorders_model->group_instance_balance_array = $group_instance_balance_array;
+                $getorders_model->total_shipping_cost_array = $total_shipping_cost_array;
                 $users_extension_model->company = $params['merchant_company'][$loop_key];
                 $user_info = $users_extension_model->CheckCompanyInCsv();
                 $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
@@ -474,10 +468,11 @@ class MerchantController extends Zend_Controller_Action
                 {
                     $order_amount = $check_result['order_amount'];
                     $instant_balance = $check_result['instant_balance'];
+                    $total_shipping_cost    =   $check_result['total_shipping'];
                     $user_id = $check_result['user_id'];
                     //update instant balance
                     $group_instance_balance_array[$user_id] = $instant_balance;
-                    
+                    $total_shipping_cost_array[$user_id] = $total_shipping_cost;
                     //Insert Into Orders
                     $getorders_model->merchant_ref = $params['merchant_ref'][$loop_key];
                     $getorders_model->order_amount = $order_amount;
@@ -503,86 +498,16 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->comments = $params['comments'][$loop_key];
                     $getorders_model->pick_up = $params['pick_up'][$loop_key];
                     $getorders_model->merchant_ref_pool = $merchant_ref_pool;
-                    
+                    $getorders_model->discount_amount   =   round($check_result['discount_amount'],2);
+                    $getorders_model->shipping_cost   =   round($check_result['total_shipping'],2);
                     $getorders_model->item_amount   =   $order_amount;
-                    if($params['flat_paypal'])
-                    {
-                        $crazySalesOrderType->PaymentTypeID          =   5; 
-                    }else
-                    {
-                        $crazySalesOrderType->PaymentTypeID          =   9; 
-                    }
-                    $crazySalesOrderType->RetailerAccountEmail   =   $_SESSION["Zend_Auth"]["storage"]->email;
-                    $crazySalesOrderType->ShipFirstName          =   $params['shipping_first_name'][$loop_key];
-                    $crazySalesOrderType->ShipAddress_1          =   $params['shipping_address_1'][$loop_key];
-                    $crazySalesOrderType->ShipAddress_2          =   '';//$params['shipping_address_2'][$loop_key];
-                    $crazySalesOrderType->ShipCity               =   $params['shipping_suburb'][$loop_key];
-                    $crazySalesOrderType->ShipState              =   $params['shipping_state'][$loop_key];
-                    $crazySalesOrderType->ShipZipCode            =   $params['shipping_postcode'][$loop_key];
-                    $crazySalesOrderType->ShipCountryCode        =   $params['shipping_country'][$loop_key];
-                    $crazySalesOrderType->ShipPhone              =   $params['shipping_phone'][$loop_key];
-                    
-                    
-                    $user_info  =   $user_info_model->GetUserInfo($user_id);
-                    $order_amount_money_type->Value    =   round($check_result['order_amount'],2);                                  
-                    $order_discount->Value  =   round($$check_result['discount_amount'],2);
-                    $crazySalesOrderType->OrderDiscount =   $order_discount;
-                    $crazySalesOrderType->PointsRate    =   0.00;
-                    $crazySalesOrderType->OrderAmount            =   $order_amount_money_type;
-                    $moeney_type->Value =   round($check_result['shipping_cost'],2);
-                    $crazySalesOrderType->ShippingCost           =   $moeney_type;
-                    $crazySalesOrderType->BillingAddress_1       =   $user_info['address'];
-                    $crazySalesOrderType->BillingZipCode         =   $user_info['post_code'];
-                    $crazySalesOrderType->BillingState           =   $user_info['state'];
-                    $crazySalesOrderType->BillingCity            =   $user_info['suburb'];
-                    $crazySalesOrderType->BillingCompany         =   $user_info['company'];      
-                    if($params['pick_up'][$loop_key])
-                    {
-                        $crazySalesOrderType->ShipMethod    =   'Shipping';
-                    }else{
-                        $crazySalesOrderType->ShipMethod    =   'PickUp';
-                    }
-                    
                     $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
-                    $expected_item_cost->Value   =   round($sku_prices_info['street_price'],2);
-                    $crazySalesOrderItemType->ExpectedItemCost   =   $expected_item_cost;
-                    $final_item_cost->Value   =   round($sku_prices_info['street_price'],2);
-                    $crazySalesOrderItemType->FinalItemCost      =   $final_item_cost;
-                    $final_ship_cost->Value   =   round($check_result['shipping_cost'],2);
-                    $crazySalesOrderItemType->FinalShipCost      =   $final_ship_cost;
-                    $ship_cost->Value   =    round($check_result['ship_cost'],2);
-                    $crazySalesOrderItemType->ShipCost           =   $ship_cost;
                     
-                    $quantityType->Value    =   $params['quantity'][$loop_key];
-                    $crazySalesOrderItemType->Quantity  =   $quantityType;
-                    $crazySalesOrderItemType->ItemSku   =   $params['supplier_sku'][$loop_key];
-                    $order_service_model->crazySalesOrderType  =   $crazySalesOrderType;                    
-                    $crazySalesOrderItemTypeArray[]   =   $crazySalesOrderItemType;
-                    
-                    if($merchant_ref_pool[$params['merchant_ref'][$loop_key]]){
-                        $order_service_model->crazySalesOrderItemType   =   $crazySalesOrderItemTypeArray;
-                        $response_data   =   $order_service_model->WebServicePlaceOrder();
-                    }
-                    
-                    if($response_data['order_number']) 
-                    {
-                        $getorders_model->main_order_id =   $response_data['order_number'];
-                        $getorders_model->item_status   =   1;
-                          
-                        //Update Financial Info
-                        $logs_financial->user_id = $user_id;
-                        $logs_financial->action_type = 1; //place order
-                        $logs_financial->action_affect = 2; //deduct
-                        $logs_financial->action_value = $order_amount;
-                        // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
-                        $logs_financial->AddLog();
-                        
-                    }elseif($response_data['MessageType']['Description'])
-                    {
-                        $getorders_model->item_status   =   2;
-                        $getorders_model->api_response  =   $response_data['MessageType']['Description'];
-                    }
-                    //end add
+                    $getorders_model->expected_item_cost    =   round($sku_prices_info['street_price'],2);
+                    $getorders_model->final_item_cost       =   round($sku_prices_info['street_price'],2);
+                    $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
+                    $getorders_model->ship_cost             =   round($check_result['ship_cost'],2);
+                                      
                     
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     
@@ -593,10 +518,118 @@ class MerchantController extends Zend_Controller_Action
                     $notice = "E2";
                 }
             }
+            
+            $purchase_order_ids =   implode(',',$merchant_ref_pool);
+            $purchase_order_model   =   new Databases_Tables_PurchaseOrder();
+            $logs_orders_model      =   new Databases_Tables_LogsOrders();
+            $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
+            $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
+            $moeney_type                =   new MoneyType();
+            $order_discount             =   new MoneyType();
+            $order_amount_money_type    =   new MoneyType();
+            if($purchase_orders)
+            {
+                foreach ($purchase_orders as $purchase_order)
+                {
+                    if($params['flat_paypal'])
+                    {
+                        $crazySalesOrderType->PaymentTypeID          =   5; 
+                    }else
+                    {
+                        $crazySalesOrderType->PaymentTypeID          =   9; 
+                    }
+                    $crazySalesOrderType->RetailerAccountEmail   =   $_SESSION["Zend_Auth"]["storage"]->email;
+                    $crazySalesOrderType->ShipFirstName          =   $purchase_order['shipping_first_name'];
+                    $crazySalesOrderType->ShipAddress_1          =   $purchase_order['shipping_address_1'];
+                    $crazySalesOrderType->ShipAddress_2          =   $purchase_order['shipping_address_2'];
+                    $crazySalesOrderType->ShipCity               =   $purchase_order['shipping_suburb'];
+                    $crazySalesOrderType->ShipState              =   $purchase_order['shipping_state'];
+                    $crazySalesOrderType->ShipZipCode            =   $purchase_order['shipping_postcode'];
+                    $crazySalesOrderType->ShipCountryCode        =   $purchase_order['shipping_country'];
+                    $crazySalesOrderType->ShipPhone              =   $purchase_order['shipping_phone'];
+
+
+                    $user_info  =   $user_info_model->GetUserInfo($user_id);
+                    $order_amount_money_type->Value    =   round($purchase_order['order_amount'],2);                                  
+                    $order_discount->Value  =   round($purchase_order['discount_amount'],2);
+                    if($crazySalesOrderType)
+                    {
+                        $crazySalesOrderType->OrderDiscount =   $order_discount;
+                        $crazySalesOrderType->PointsRate    =   0.00;
+                        $crazySalesOrderType->OrderAmount            =   $order_amount_money_type;
+                        $moeney_type->Value =   round($purchase_order['shipping_cost'],2);
+                        $crazySalesOrderType->ShippingCost           =   $moeney_type;
+                        $crazySalesOrderType->BillingAddress_1       =   $user_info['address'];
+                        $crazySalesOrderType->BillingZipCode         =   $user_info['post_code'];
+                        $crazySalesOrderType->BillingState           =   $user_info['state'];
+                        $crazySalesOrderType->BillingCity            =   $user_info['suburb'];
+                        $crazySalesOrderType->BillingCompany         =   $user_info['company'];      
+                    }
+                    if($purchase_order['pick_up'])
+                    {
+                        $crazySalesOrderType->ShipMethod    =   'Shipping';
+                    }else{
+                        $crazySalesOrderType->ShipMethod    =   'PickUp';
+                    }
+                    $logs_orders_model->purchase_order_id   =   $purchase_order['purchase_order_id'];
+                    $logs_orders    =   $logs_orders_model->GetLogsOrderList();
+                    if($logs_orders)
+                    {
+                        foreach ($logs_orders as $logs_order)
+                        {
+                            $logs_order_ids[]           =   $logs_order['logs_orders_id'];
+                            $crazySalesOrderItemType    =   new CrazySalesOrderItemType();
+                            $expected_item_cost =   new MoneyType();
+                            $final_item_cost    =   new MoneyType();
+                            $final_ship_cost    =   new MoneyType();
+                            $ship_cost          =   new MoneyType();
+                            $expected_item_cost->Value   =   round($logs_order['expected_item_cost'],2);
+                            $crazySalesOrderItemType->ExpectedItemCost   =   $expected_item_cost;
+                            $final_item_cost->Value   =   round($logs_order['final_item_cost'],2);
+                            $crazySalesOrderItemType->FinalItemCost      =   $final_item_cost;
+                            $final_ship_cost->Value   =   round($logs_order['final_ship_cost'],2);
+                            $crazySalesOrderItemType->FinalShipCost      =   $final_ship_cost;
+                            $ship_cost->Value   =    round($logs_order['ship_cost'],2);
+                            $crazySalesOrderItemType->ShipCost           =   $ship_cost;
+
+                            $quantityType->Value    =   $logs_order['quantity'];
+                            $crazySalesOrderItemType->Quantity  =   $quantityType;
+                            $crazySalesOrderItemType->ItemSku   =   $logs_order['supplier_sku'];
+                            $order_service_model->crazySalesOrderType  =   $crazySalesOrderType;                    
+                            $crazySalesOrderItemTypeArray[$logs_order['merchant_ref']][]   =   $crazySalesOrderItemType;
+                        }
+                    }
+                    
+                    if($merchant_ref_pool[$params['merchant_ref'][$loop_key]]){
+                        $order_service_model->crazySalesOrderItemType   =   $crazySalesOrderItemTypeArray[$params['merchant_ref'][$loop_key]];
+                        $response_data   =   $order_service_model->WebServicePlaceOrder();
+                    }
+                    if($response_data['order_number']) 
+                    {
+                        $getorders_model->main_order_id =   $response_data['order_number'];
+                        $getorders_model->item_status   =   1;
+
+                        //Update Financial Info
+                        $logs_financial->user_id = $user_id;
+                        $logs_financial->action_type = 1; //place order
+                        $logs_financial->action_affect = 2; //deduct
+                        $logs_financial->action_value = $purchase_order['order_amount'];
+                        // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
+                        $logs_financial->AddLog();
+
+                    }elseif($response_data['MessageType']['Description'])
+                    {
+                        $getorders_model->item_status   =   2;
+                        $getorders_model->api_response  =   $response_data['MessageType']['Description'];
+                    }
+                    $getorders_model->logs_order_ids    =  $logs_order_ids;
+                    $getorders_model->purchase_order_id   =   $purchase_order['purchase_order_id'];
+                    $getorders_model->UpdateOrder();
+                }
+            }
         }else{
             $notice = "E1";
         }
-        
         //unset session
         unset($_SESSION['place_order']);
         $this->_redirect("/merchant/order-report/notice/".$notice);
