@@ -43,7 +43,7 @@ class Databases_Joins_ProductFilter
     var $package_depth;
     var $package_dimension_units;
     var $ships_freight;
-    var $freight_class;
+    var $sc_class;
     var $ships_alone;
     var $max_ship_single_box;
     var $length;
@@ -242,7 +242,7 @@ class Databases_Joins_ProductFilter
         if($data_source && $sku) // 1 or 2
         {
             $product_select = $this->db->select();
-            $product_select->from("product_info_".$data_source, array("product_id","supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","freight_class"));
+            $product_select->from("product_info_".$data_source, array("product_id","supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","sc_class"));
             $product_select->where("supplier_sku = ?", $sku);
             $product = $this->db->fetchRow($product_select);
             if($product['supplier_sku'])
@@ -253,7 +253,7 @@ class Databases_Joins_ProductFilter
                 $result['estimated_shipping_cost'] = $product['estimated_shipping_cost'];
                 $result['estimated_handling_fee'] = $product['estimated_handling_fee'];
                 $result['quantity_available'] = $product['quantity_available'];
-                $result['freight_class'] = $product['freight_class'];
+                $result['sc_class'] = $product['sc_class'];
                 $result['product_id']    = $product['product_id'];
             }
         }
@@ -427,7 +427,7 @@ class Databases_Joins_ProductFilter
                 'package_depth'             =>  $this->package_depth,
                 'package_dimension_units'   =>  $this->package_dimension_units,
                 'ships_freight'             =>  $this->ships_freight,
-                'freight_class'             =>  $this->freight_class,
+                'sc_class'             		=>  $this->sc_class,
                 'ships_alone'               =>  $this->ships_alone,
                 'max_ship_single_box'       =>  $this->max_ship_single_box,
                 'length'                    =>  $this->length,

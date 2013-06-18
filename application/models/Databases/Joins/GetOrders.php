@@ -297,7 +297,7 @@ class Databases_Joins_GetOrders
                             $order_amount = ( $prices['street_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity) + $document_fee;
                         }
                         $shipping_cost  =   0;
-                    }elseif($this->flat_rate_shipping == 1 && in_array ($prices['freight_class'], array(3,5,6))){
+                    }elseif($this->flat_rate_shipping == 1 && in_array ($prices['sc_class'], array(3,5,6))){
                         $order_amount = ( $prices['street_price'] + $prices['estimated_shipping_cost'] ) * trim($this->quantity);
                         $shipping_cost  =   $prices['estimated_shipping_cost'] * trim($this->quantity);
                         $ship_cost  =   $shipping_cost;
