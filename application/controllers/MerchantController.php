@@ -436,8 +436,6 @@ class MerchantController extends Zend_Controller_Action
         if(count($params['supplier_sku']))
         {
             $group_instance_balance_array = array();
-            $total_shipping_cost_array    =   array();
-            $total_order_amount_array     =   array();
             $merchant_ref_pool = array();
             
             foreach($params['supplier_sku'] as $loop_key => $supplier_sku)
@@ -457,7 +455,6 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
                 $getorders_model->pick_up = $params['pick_up'][$loop_key];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
-                $getorders_model->total_shipping_cost_array = $total_shipping_cost_array;
                 $users_extension_model->company = $params['merchant_company'][$loop_key];
                 $user_info = $users_extension_model->CheckCompanyInCsv();
                 $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
@@ -468,11 +465,9 @@ class MerchantController extends Zend_Controller_Action
                 {
                     $order_amount = $check_result['order_amount'];
                     $instant_balance = $check_result['instant_balance'];
-                    $total_shipping_cost    =   $check_result['total_shipping'];
                     $user_id = $check_result['user_id'];
                     //update instant balance
                     $group_instance_balance_array[$user_id] = $instant_balance;
-                    $total_shipping_cost_array[$params['merchant_ref'][$loop_key]] = $total_shipping_cost;
                     //Insert Into Orders
                     $getorders_model->merchant_ref = $params['merchant_ref'][$loop_key];
                     $getorders_model->order_amount = $order_amount;
@@ -499,7 +494,7 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->pick_up = $params['pick_up'][$loop_key];
                     $getorders_model->merchant_ref_pool = $merchant_ref_pool;
                     $getorders_model->discount_amount   =   round($check_result['discount_amount'],2);
-                    $getorders_model->shipping_cost   =   round($check_result['total_shipping'],2);
+                    $getorders_model->shipping_cost   =   round($check_result['shipping_cost'],2);
                     $getorders_model->item_amount   =   $order_amount;
                     $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
                     
@@ -507,7 +502,6 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->final_item_cost       =   round($sku_prices_info['street_price'],2);
                     $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
                     $getorders_model->ship_cost             =   round($check_result['ship_cost'],2);
-                    echo $check_result['total_shipping'];
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     
                     //update merchant ref pool
@@ -517,7 +511,6 @@ class MerchantController extends Zend_Controller_Action
                     $notice = "E2";
                 }
             }
-                    
             $purchase_order_ids =   implode(',',$merchant_ref_pool);
             $purchase_order_model   =   new Databases_Tables_PurchaseOrder();
             $logs_orders_model      =   new Databases_Tables_LogsOrders();

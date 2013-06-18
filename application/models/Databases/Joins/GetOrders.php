@@ -272,7 +272,6 @@ class Databases_Joins_GetOrders
             
             $params_model = new Databases_Tables_Params();
             $document_fee = $params_model->GetVal("document_fee");
-            $total_shipping =   $this->total_shipping_cost_array[$this->merchant_ref];
             if($user_info['user_id'])
             {
                 $result['user_id'] = $user_info['user_id'];
@@ -308,7 +307,6 @@ class Databases_Joins_GetOrders
                         $shipping_cost  =   $estimated_shipping_cost;
                         $ship_cost  =   $estimated_shipping_cost;
                     }
-                    $total_shipping +=  $shipping_cost;
                     $subtotal   =   $prices['street_price'] * trim($this->quantity);
                     $discount_amount    =   $subtotal * $discount;
                     $result['subtotal']     =   $subtotal;
@@ -316,7 +314,6 @@ class Databases_Joins_GetOrders
                     $result['ship_cost']    =   $ship_cost;
                     $result['discount_amount']  =   $discount_amount;
                     $result['order_amount'] = $order_amount;
-                    $result['total_shipping']   =   $total_shipping;
 
                     if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
                     {
