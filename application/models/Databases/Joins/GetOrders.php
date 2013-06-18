@@ -301,7 +301,7 @@ class Databases_Joins_GetOrders
                     }elseif($this->flat_rate_shipping == 1 && in_array ($prices['freight_class'], array(3,5,6))){
                         $order_amount = ( $prices['street_price'] + $prices['estimated_shipping_cost'] ) * trim($this->quantity);
                         $shipping_cost  =   $prices['estimated_shipping_cost'] * trim($this->quantity);
-                        $ship_cost  =   $prices['estimated_shipping_cost'];
+                        $ship_cost  =   $shipping_cost;
                     }else{
                         $estimated_shipping_cost    =   $product_filter_model->getEstimatedShippingCost($prices['product_id'], $user_info['post_code'], trim($this->quantity) );
                         $order_amount = ( $prices['street_price'] * trim($this->quantity) ) + $estimated_shipping_cost;

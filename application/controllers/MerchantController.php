@@ -469,7 +469,6 @@ class MerchantController extends Zend_Controller_Action
                     $order_amount = $check_result['order_amount'];
                     $instant_balance = $check_result['instant_balance'];
                     $total_shipping_cost    =   $check_result['total_shipping'];
-                    $total_amount           =   $check_result['total_amount'];
                     $user_id = $check_result['user_id'];
                     //update instant balance
                     $group_instance_balance_array[$user_id] = $instant_balance;
@@ -629,6 +628,7 @@ class MerchantController extends Zend_Controller_Action
             $notice = "E1";
         }
         //unset session
+        //die();
         unset($_SESSION['place_order']);
         $this->_redirect("/merchant/order-report/notice/".$notice);
     }
