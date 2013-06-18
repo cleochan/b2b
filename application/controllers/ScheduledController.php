@@ -207,7 +207,7 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->package_depth             =   $product_data['PackageDimension']['Depth'];
                     $productFilter_model->package_dimension_units   =   $product_data['PackageDimension']['Units'];
                     $productFilter_model->ships_freight             =   '';
-                    $productFilter_model->sc_class             		=   '';
+                    $productFilter_model->sc_class             	    =   $product_data['ShippingCourier']['ClassID'];
                     $productFilter_model->ships_alone               =   '';
                     $productFilter_model->max_ship_single_box       =   $product_data['MaxShippingSingleBox'];
                     $productFilter_model->length                    =   $product_data['ProductDimension']['Length'];
