@@ -76,7 +76,7 @@ class Databases_Tables_PurchaseOrder extends Zend_Db_Table
                 {
                     $row->main_db_order_id = $this->main_db_order_id;
                 }
-                
+                $row->shipping_cost = $row->shipping_cost + $this->shipping_cost;
                 //update order amount
                 if(NULL !== $this->order_amount_change_value && $this->order_amount_action)
                 {

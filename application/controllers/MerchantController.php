@@ -458,7 +458,6 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->pick_up = $params['pick_up'][$loop_key];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
                 $getorders_model->total_shipping_cost_array = $total_shipping_cost_array;
-                $getorders_model->total_order_amount_array = $total_order_amount_array;
                 $users_extension_model->company = $params['merchant_company'][$loop_key];
                 $user_info = $users_extension_model->CheckCompanyInCsv();
                 $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
@@ -474,8 +473,7 @@ class MerchantController extends Zend_Controller_Action
                     $user_id = $check_result['user_id'];
                     //update instant balance
                     $group_instance_balance_array[$user_id] = $instant_balance;
-                    $total_shipping_cost_array[$user_id] = $total_shipping_cost;
-                    $total_order_amount_array[$params['merchant_ref'][$loop_key]]  = $total_amount;
+                    $total_shipping_cost_array[$params['merchant_ref'][$loop_key]] = $total_shipping_cost;
                     //Insert Into Orders
                     $getorders_model->merchant_ref = $params['merchant_ref'][$loop_key];
                     $getorders_model->order_amount = $order_amount;
@@ -510,7 +508,7 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->final_item_cost       =   round($sku_prices_info['street_price'],2);
                     $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
                     $getorders_model->ship_cost             =   round($check_result['ship_cost'],2);
-                    
+                    echo $check_result['total_shipping'];
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     
                     //update merchant ref pool

@@ -272,7 +272,7 @@ class Databases_Joins_GetOrders
             
             $params_model = new Databases_Tables_Params();
             $document_fee = $params_model->GetVal("document_fee");
-            $total_shipping =   $this->total_shipping_cost_array[$user_info['user_id']];
+            $total_shipping =   $this->total_shipping_cost_array[$this->merchant_ref];
             if($user_info['user_id'])
             {
                 $result['user_id'] = $user_info['user_id'];
