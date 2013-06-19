@@ -724,10 +724,8 @@ class MerchantController extends Zend_Controller_Action
                 $this->view->notice = $_FILES["csvf"]["error"];
             }
             else{
-                if('text/csv' != $_FILES["csvf"]["type"] || 'application/vnd.ms-excel' != $_FILES["csvf"]["type"] )
-                {
-                    $this->view->notice = "File type is invalid.";
-                }else{
+                if('text/csv' == $_FILES["csvf"]["type"] || 'application/vnd.ms-excel' == $_FILES["csvf"]["type"] )
+                {   
                     //Action
                     $data_array = array();
                     if (($handle = fopen($_FILES["csvf"]["tmp_name"], "r")) !== FALSE) {
@@ -793,6 +791,8 @@ class MerchantController extends Zend_Controller_Action
                     }else{
                         $this->view->notice = "Error.";
                     }
+                }else{
+                    $this->view->notice = "File type is invalid.";
                 }
             }
         }
