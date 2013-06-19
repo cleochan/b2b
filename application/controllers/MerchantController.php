@@ -718,8 +718,6 @@ class MerchantController extends Zend_Controller_Action
         }
         else
         {
-			print_r($_FILES["csvf"]);
-            exit();
             if ($_FILES["csvf"]["error"] > 0)
             {
                 
