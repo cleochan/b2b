@@ -718,14 +718,15 @@ class MerchantController extends Zend_Controller_Action
         }
         else
         {
-            
+			print_r($_FILES["csvf"]);
+            exit();
             if ($_FILES["csvf"]["error"] > 0)
             {
                 
                 $this->view->notice = $_FILES["csvf"]["error"];
             }
             else{
-                if('text/csv' != $_FILES["csvf"]["type"])
+                if('text/csv' != $_FILES["csvf"]["type"] || 'application/vnd.ms-excel' != $_FILES["csvf"]["type"] )
                 {
                     $this->view->notice = "File type is invalid.";
                 }else{
