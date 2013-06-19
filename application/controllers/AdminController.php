@@ -890,12 +890,9 @@ class AdminController extends Zend_Controller_Action
         if ($_FILES["csvf"]["error"] > 0)
         {
             $this->view->notice = $_FILES["csvf"]["error"];
-        }else{
-			
-            if('text/csv' != $_FILES["csvf"]["type"])
-            {
-                $this->view->notice = "File type is invalid.";
-            }else{
+        }else{	
+            if('text/csv' == $_FILES["csvf"]["type"] || 'application/vnd.ms-excel' == $_FILES["csvf"]["type"] )
+            {                
                 //Action
                 $group_instance_balance_array = array();
                 $getorders_model = new Databases_Joins_GetOrders();
@@ -956,6 +953,8 @@ class AdminController extends Zend_Controller_Action
                 }else{
                     $this->view->notice = "Error.";
                 }
+            }else{
+                $this->view->notice = "File type is invalid.";
             }
         }
     }
