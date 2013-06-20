@@ -271,6 +271,10 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
                 {
                     $row->api_response  =   $this->api_response;
                 }
+                if($this->item_status == 2)
+                {
+                    $row->api_trying_times  =   $row->api_trying_times + 1;
+                }
                 $row->save();
             }
         }

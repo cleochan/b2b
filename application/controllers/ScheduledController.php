@@ -41,72 +41,132 @@ class ScheduledController extends Zend_Controller_Action
     function refreshOrdersAction() 
     {
         try{
-        $getorder_model         =   new Databases_Joins_GetOrders();
-        $order_webservice_model =   new Algorithms_Core_OrderService();
-        $system_params_model    =   new Databases_Tables_Params();
-        $getuser_info_model     =   new Databases_Joins_GetUserInfo();
-        
-        $order_api_trying_times     =   $system_params_model->GetVal('order_api_trying_times');
-        $order_api_trying_interval  =   $system_params_model->GetVal('order_api_trying_interval');
-        $logs_path                  =   $system_params_model->GetVal('logs_path');
-        $logs_contents              =   ' ';
-        $merchant_ref_pool = array();
-        $getorder_model->item_status    =   0;
-        $getorder_model->order_api_trying_times     =   $order_api_trying_times;
-        $getorder_model->order_api_trying_interval  =   $order_api_trying_interval;
-        $orders_pending_list    =   $getorder_model->getPendinglist();
-        if($orders_pending_list)
-        {
-            foreach ($orders_pending_list as  $order_pending)
-            {
-                $user_info   =   $getuser_info_model->GetUserInfo($order_pending['user_id']);
-                $merchant_email =   $user_info['email'];
-                $order_webservice_model->crazySalesOrderType['RetailerAccountEmail']   =   $merchant_email;
-                $order_webservice_model->crazySalesOrderType['PaymentTypeID']          =   1; 
-                $order_webservice_model->crazySalesOrderType['ShipFirstName']          =   $order_pending['shipping_first_name'];
-                $order_webservice_model->crazySalesOrderType['ShipAddress_1']          =   $order_pending['shipping_address_1'];
-                $order_webservice_model->crazySalesOrderType['ShipAddress_2']          =   $order_pending['shipping_address_2'];
-                $order_webservice_model->crazySalesOrderType['ShipCity']               =   $order_pending['shipping_suburb'];
-                $order_webservice_model->crazySalesOrderType['ShipState']              =   $order_pending['shipping_state'];
-                $order_webservice_model->crazySalesOrderType['ShipZipCode']            =   $order_pending['shipping_postcode'];
-                $order_webservice_model->crazySalesOrderType['ShipCountryCode']        =   $order_pending['shipping_country'];
-                $order_webservice_model->crazySalesOrderType['ShipPhone']              =   $order_pending['shipping_phone'];
-                $order_webservice_model->crazySalesOrderType['orderAmount']            =   $order_pending['order_amount'];
-                $order_webservice_model->crazySalesOrderItemType['Quantity']           =   $order_pending['quantity'];
-                $order_webservice_model->crazySalesOrderItemType['ItemSku']            =   $order_pending['supplier_sku'];
-                $getorder_model->purchase_order_id  =   $order_pending['purchase_order_id'];
-                $getorder_model->logs_orders_id     =   $order_pending['logs_orders_id'];
-                $getorder_model->merchant_ref_pool  =   $merchant_ref_pool;
-                $getorder_model->merchant_ref       =   $order_pending['merchant_ref'];
-                $response_data   =   $order_webservice_model->WebServicePlaceOrder();
-                if($response_data['order_number'])
-                {
-                    $getorder_model->main_order_id  =   $response_data['order_number'];
-                    $getorder_model->item_status    =   1;
-                    
-                }elseif($response_data['MessageType']['Description'])
-                {
-                    $getorder_model->item_status    =   2;
-                    $getorder_model->order_api_trying_times =   $order_pending['api_trying_times'];
-                    $getorder_model->api_response           =   $response_data['MessageType']['Description'];
+            $getorder_model         =   new Databases_Joins_GetOrders();
+            $order_webservice_model =   new Algorithms_Core_OrderService();
+            $system_params_model    =   new Databases_Tables_Params();
+            $getuser_info_model     =   new Databases_Joins_GetUserInfo();
+            $crazySalesOrderItemTypeArray   =   array();
+
+            $order_api_trying_times     =   $system_params_model->GetVal('order_api_trying_times');
+            $order_api_trying_interval  =   $system_params_model->GetVal('order_api_trying_interval');
+            $logs_path                  =   $system_params_model->GetVal('logs_path');
+            $logs_contents              =   ' ';
+            $merchant_ref_pool = array();
+            $getorder_model->item_status    =   0;
+            //$getorder_model->order_api_trying_times     =   $order_api_trying_times;
+            //$getorder_model->order_api_trying_interval  =   $order_api_trying_interval;
+            $orders_pending_list    =   $getorder_model->getPendinglist();
+            if($orders_pending_list){
+                foreach($orders_pending_list as $order_pending){
+                    $purchase_order_ids[$order_pending['purchase_order_id']]    =   $order_pending['purchase_order_id'];
                 }
-                else
-                {
-                     $api_trying_times  =   $order_pending['api_trying_times']  +  1;
-                     $getorder_model->order_api_trying_times    =   $api_trying_times;
-                     $getorder_model->api_response   =  "time out";
-                }
-                
-                $logs_contents   .=   'log_order_id:'.$order_pending['logs_orders_id'].' supplier_sku:'.$order_pending['supplier_sku']. ' OrderNumber:'.$response_data['order_number'].' ItemStatus:'.$getorder_model->item_status.' DateTime:'.date('Y-m-d H:i:s').' ApiResponse:'.$getorder_model->api_response." \n ";
-                $place_order_return = $getorder_model->updatePendingOrder(); 
-                //print_R($place_order_return);  
-                //$merchant_ref_pool = $place_order_return['merchant_ref_pool'];
             }
-            $f  =   fopen($logs_path."orderslogs/refreshorders".date('YmdHis').".txt", "w+");
-            @fwrite($f, $logs_contents);
-            @fwrite($f,"Refresh Orders Completed.\n");
-            @fclose($f);
-        }
+            $purchase_order_ids =   implode(',',$purchase_order_ids);
+            $purchase_order_model   =   new Databases_Tables_PurchaseOrder();
+            $logs_orders_model      =   new Databases_Tables_LogsOrders();
+            $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
+            $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
+
+            if($purchase_orders)
+            {
+                foreach ($purchase_orders as $purchase_order)
+                {
+                    $crazySalesOrderType        =   new CrazySalesOrderType();
+                    $moeney_type                =   new MoneyType();
+                    $order_discount             =   new MoneyType();
+                    $order_amount_money_type    =   new MoneyType();
+                    $crazySalesOrderType->PaymentTypeID          =   $purchase_order['payment_type_id']; 
+                    $crazySalesOrderType->RetailerAccountEmail   =   $_SESSION["Zend_Auth"]["storage"]->email;
+                    $crazySalesOrderType->ShipFirstName          =   $purchase_order['shipping_first_name'];
+                    $crazySalesOrderType->ShipAddress_1          =   $purchase_order['shipping_address_1'];
+                    $crazySalesOrderType->ShipAddress_2          =   $purchase_order['shipping_address_2'];
+                    $crazySalesOrderType->ShipCity               =   $purchase_order['shipping_suburb'];
+                    $crazySalesOrderType->ShipState              =   $purchase_order['shipping_state'];
+                    $crazySalesOrderType->ShipZipCode            =   $purchase_order['shipping_postcode'];
+                    $crazySalesOrderType->ShipCountryCode        =   $purchase_order['shipping_country'];
+                    $crazySalesOrderType->ShipPhone              =   $purchase_order['shipping_phone'];
+
+
+                    $user_info  =   $getuser_info_model->GetUserInfo($purchase_order['user_id']);
+                    $order_amount_money_type->Value    =   round($purchase_order['order_amount'],2);                                  
+                    $order_discount->Value  =   round($purchase_order['discount_amount'],2);
+                    if($crazySalesOrderType)
+                    {
+                        //$crazySalesOrderType->OrderDiscount =   $order_discount;
+                        $crazySalesOrderType->PointsRate    =   0.00;
+                        $crazySalesOrderType->OrderAmount            =   $order_amount_money_type;
+                        $moeney_type->Value =   round($purchase_order['shipping_cost'],2);
+                        $crazySalesOrderType->ShippingCost           =   $moeney_type;
+                        $crazySalesOrderType->BillingAddress_1       =   $user_info['address'];
+                        $crazySalesOrderType->BillingZipCode         =   $user_info['post_code'];
+                        $crazySalesOrderType->BillingState           =   $user_info['state'];
+                        $crazySalesOrderType->BillingCity            =   $user_info['suburb'];
+                        $crazySalesOrderType->BillingCompany         =   $user_info['company'];      
+                    }
+                    if($purchase_order['pickup']==1)
+                    {
+                        $crazySalesOrderType->ShipMethod    =   'PickUp';
+                    }else{
+                        $crazySalesOrderType->ShipMethod    =   'Shipping';
+                    }
+                    $logs_orders_model->purchase_order_id   =   $purchase_order['purchase_order_id'];
+                    $logs_orders    =   $logs_orders_model->GetLogsOrderList();
+                    if($logs_orders)
+                    {
+                        foreach ($logs_orders as $logs_order)
+                        {
+                            $logs_order_ids[]           =   $logs_order['logs_orders_id'];
+                            $crazySalesOrderItemType    =   new CrazySalesOrderItemType();
+                            $expected_item_cost =   new MoneyType();
+                            $final_item_cost    =   new MoneyType();
+                            $final_ship_cost    =   new MoneyType();
+                            $ship_cost          =   new MoneyType();
+                            $quantityType       =   new QuantityType();
+                            $expected_item_cost->Value   =   round($logs_order['expected_item_cost'],2);
+                            $crazySalesOrderItemType->ExpectedItemCost   =   $expected_item_cost;
+                            $final_item_cost->Value   =   round($logs_order['final_item_cost'],2);
+                            $crazySalesOrderItemType->FinalItemCost      =   $final_item_cost;
+                            $final_ship_cost->Value   =   round($logs_order['final_ship_cost'],2);
+                            $crazySalesOrderItemType->FinalShipCost      =   $final_ship_cost;
+                            $ship_cost->Value   =    round($logs_order['ship_cost'],2);
+                            $crazySalesOrderItemType->ShipCost           =   $ship_cost;
+
+                            $quantityType->Value    =   $logs_order['quantity'];
+                            $crazySalesOrderItemType->Quantity  =   $quantityType;
+                            $crazySalesOrderItemType->ItemSku   =   $logs_order['supplier_sku'];                   
+                            $crazySalesOrderItemTypeArray[$logs_order['merchant_ref']][]   =   $crazySalesOrderItemType;
+                        }
+                    }
+                    $order_webservice_model->crazySalesOrderType  =   $crazySalesOrderType; 
+                    $order_webservice_model->crazySalesOrderItemType   =   $crazySalesOrderItemTypeArray[$logs_order['merchant_ref']];
+                    $response_data   =   $order_webservice_model->WebServicePlaceOrder();
+                    if($response_data['order_number']) 
+                    {
+                        $getorder_model->main_order_id =   $response_data['order_number'];
+                        $getorder_model->item_status   =   1;
+
+                    }elseif($response_data['MessageType']['Description'])
+                    {
+                        $getorder_model->item_status   =   2;
+                        $getorder_model->api_response  =   $response_data['MessageType']['Description'];
+                    }else
+                    {
+                         $api_trying_times  =   $order_pending['api_trying_times']  +  1;
+                         $getorder_model->order_api_trying_times    =   $api_trying_times;
+                         $getorder_model->api_response   =  "time out";
+                    }
+                    $getorder_model->logs_order_ids    =  $logs_order_ids;
+                    $getorder_model->purchase_order_id   =   $purchase_order['purchase_order_id'];
+                    $getorder_model->UpdateOrder();
+
+                     $logs_contents   .=   'log_order_id:'.$order_pending['logs_orders_id'].' supplier_sku:'.$order_pending['supplier_sku']. ' OrderNumber:'.$response_data['order_number'].' ItemStatus:'.$getorder_model->item_status.' DateTime:'.date('Y-m-d H:i:s').' ApiResponse:'.$getorder_model->api_response." \n ";
+                    //$place_order_return = $getorder_model->updatePendingOrder(); 
+                }
+                $f  =   fopen($logs_path."orderslogs/refreshorders".date('YmdHis').".txt", "w+");
+                @fwrite($f, $logs_contents);
+                @fwrite($f,"Refresh Orders Completed.\n");
+                @fclose($f);
+            }
           }  catch (Zend_Exception $exp){
             var_dump($exp->getMessage());
         }

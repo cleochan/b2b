@@ -17,7 +17,11 @@ class MerchantController extends Zend_Controller_Action
 
         if(!$auth->hasIdentity())
         { 
-            $this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
+            //$this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
+            //if($_SERVER['SERVER_PORT'] != '443') {
+                header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login/logout?url='.$_SERVER["REQUEST_URI"]);
+                exit();
+            //}
         }elseif(2 != $user_info['user_type']){
             $this->_redirect('/admin');
         }
@@ -496,10 +500,18 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->item_amount   =   $order_amount;
                     $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
                     
+                    if($params['flat_paypal'])
+                    {
+                        $getorders_model->payment_type_id   =   5;
+                    }else
+                    {
+                        $getorders_model->payment_type_id   =   9;
+                    }
+                    
                     $getorders_model->expected_item_cost    =   round($sku_prices_info['street_price'],2);
                     $getorders_model->final_item_cost       =   round($sku_prices_info['street_price'],2);
                     $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
-                    $getorders_model->ship_cost             =   round($check_result['ship_cost'],2);
+                    $getorders_model->ship_cost             =   round($check_result['shipping_cost'],2);
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     
                     //update merchant ref pool
@@ -546,7 +558,7 @@ class MerchantController extends Zend_Controller_Action
                     $order_discount->Value  =   round($purchase_order['discount_amount'],2);
                     if($crazySalesOrderType)
                     {
-                        $crazySalesOrderType->OrderDiscount =   $order_discount;
+                        //$crazySalesOrderType->OrderDiscount =   $order_discount;
                         $crazySalesOrderType->PointsRate    =   0.00;
                         $crazySalesOrderType->OrderAmount            =   $order_amount_money_type;
                         $moeney_type->Value =   round($purchase_order['shipping_cost'],2);
@@ -557,7 +569,7 @@ class MerchantController extends Zend_Controller_Action
                         $crazySalesOrderType->BillingCity            =   $user_info['suburb'];
                         $crazySalesOrderType->BillingCompany         =   $user_info['company'];      
                     }
-                    if($purchase_order['pick_up'])
+                    if($purchase_order['pickup']==1)
                     {
                         $crazySalesOrderType->ShipMethod    =   'PickUp';
                     }else{
@@ -908,7 +920,14 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->expected_item_cost    =   round($sku_prices_info['street_price'],2);
                     $getorders_model->final_item_cost       =   round($sku_prices_info['street_price'],2);
                     $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
-                    $getorders_model->ship_cost             =   round($check_result['ship_cost'],2);
+                    $getorders_model->ship_cost             =   round($check_result['shipping_cost'],2);
+                    if($params['flat_paypal'])
+                    {
+                        $getorders_model->payment_type_id   =   5;
+                    }else
+                    {
+                        $getorders_model->payment_type_id   =   9;
+                    }
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     //update merchant ref pool
                     $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
@@ -954,7 +973,7 @@ class MerchantController extends Zend_Controller_Action
                     $order_discount->Value  =   round($purchase_order['discount_amount'],2);
                     if($crazySalesOrderType)
                     {
-                        $crazySalesOrderType->OrderDiscount =   $order_discount;
+                        //$crazySalesOrderType->OrderDiscount =   $order_discount;
                         $crazySalesOrderType->PointsRate    =   0.00;
                         $crazySalesOrderType->OrderAmount            =   $order_amount_money_type;
                         $moeney_type->Value =   round($purchase_order['shipping_cost'],2);
@@ -965,7 +984,7 @@ class MerchantController extends Zend_Controller_Action
                         $crazySalesOrderType->BillingCity            =   $user_info['suburb'];
                         $crazySalesOrderType->BillingCompany         =   $user_info['company'];      
                     }
-                    if($purchase_order['pick_up'])
+                    if($purchase_order['pickup']==1)
                     {
                         $crazySalesOrderType->ShipMethod    =   'PickUp';
                     }else{

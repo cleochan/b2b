@@ -66,6 +66,8 @@ class Databases_Joins_GetOrders
     var $logs_order_ids;
     var $total_order_amount_array;
     
+    var $payment_type_id;
+    
     function __construct(){
     	$this->db = Zend_Registry::get("db");
     }
@@ -366,6 +368,7 @@ class Databases_Joins_GetOrders
             $purchase_order_model->order_amount = $this->order_amount;
             $purchase_order_model->discount_amount = $this->discount_amount;
             $purchase_order_model->shipping_cost = $this->shipping_cost;
+            $purchase_order_model->payment_type_id = $this->payment_type_id;
             $purchase_order_model->main_db_order_id =   $this->main_order_id;   // add by Tim Wu 2013-4-24
             if("Y" == $this->pick_up)
             {
@@ -506,8 +509,8 @@ class Databases_Joins_GetOrders
     function getPendinglist()
     {
         $select = $this->db->select();
-        $select->from("purchase_order as p", array("purchase_order_id", "main_db_order_id", "issue_time", "user_id", "order_amount", "pickup", "shipping_first_name", "shipping_address_1", "shipping_address_2", "shipping_suburb", "shipping_state", "shipping_postcode", "shipping_country", "shipping_phone"));
-        $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("logs_orders_id", "merchant_ref", "item_status", "api_response", "api_trying_times", "item_amount", "supplier_sku", "merchant_sku", "quantity"));
+        $select->from("purchase_order as p", "distinct(p.purchase_order_id) as purchase_order_id");
+        $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id");
         
         if($this->item_status == 0 )
         {

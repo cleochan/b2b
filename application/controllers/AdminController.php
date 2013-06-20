@@ -18,7 +18,11 @@ class AdminController extends Zend_Controller_Action
             $user_info = $users->UserInfo();
             if(!$auth->hasIdentity())
             { 
-                $this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
+                //$this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
+                //if($_SERVER['SERVER_PORT'] != '443') {
+                    header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login/logout?url='.$_SERVER["REQUEST_URI"]);
+                    exit();
+                //}
             }elseif(1 != $user_info['user_type']){
                 $this->_redirect('/merchant');
             }

@@ -16,7 +16,11 @@ class AjaxController extends Zend_Controller_Action
             $auth = Zend_Auth::getInstance();
             if(!$auth->hasIdentity())
             { 
-                $this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
+                //$this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
+                //if($_SERVER['SERVER_PORT'] != '443') {
+                header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login/logout?url='.$_SERVER["REQUEST_URI"]);
+                exit();
+                //}
             }
     }
 	

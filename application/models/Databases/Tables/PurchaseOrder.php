@@ -50,6 +50,7 @@ class Databases_Tables_PurchaseOrder extends Zend_Db_Table
                 "main_db_order_id" => $this->main_db_order_id,
                 "discount_amount" => $this->discount_amount,
                 "shipping_cost" => $this->shipping_cost,
+                "payment_type_id"   =>  $this->payment_type_id,
             );
             if($this->pickup)
             {

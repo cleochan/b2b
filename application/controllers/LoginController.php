@@ -60,9 +60,11 @@ class LoginController extends Zend_Controller_Action
                         {
                             $this->_redirect($this->_request->getPost('url'));
                         }elseif(1 == $data->user_type){ //admin
-                            $this->_redirect('/admin');
+                            //$this->_redirect('/admin');
+                            header('Location: http://' . $_SERVER['HTTP_HOST'] . '/admin');
                         }elseif(2 == $data->user_type){ //merchant
-                            $this->_redirect('/merchant');
+                            //$this->_redirect('/merchant');
+                            header('Location: http://' . $_SERVER['HTTP_HOST'] . '/merchant');
                         }
                     }else{
                         Zend_Auth::getInstance()->clearIdentity();
@@ -80,7 +82,8 @@ class LoginController extends Zend_Controller_Action
         $params = $this->_request->getParams();
 		
         Zend_Auth::getInstance()->clearIdentity();
-        $this->_redirect('/login?url='.$params['url']);
+        //$this->_redirect('/login?url='.$params['url']);
+        header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login?url='.$params['url']);
     }
 }
 
