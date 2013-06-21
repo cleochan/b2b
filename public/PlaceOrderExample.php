@@ -1,5 +1,5 @@
 <?php
-$url = 'http://203.213.123.150:8753/OrderService.svc?wsdl';
+$url = 'http://203.213.123.150:8743/OrderService.svc?wsdl';
 $client = new SoapClient($url);
 
 class MoneyType {
@@ -136,6 +136,7 @@ $order->ShipState = "VIC";
 $order->ShipZipCode = "3172";
 $order->ShipCountryCode = "AU";
 $order->ShipPhone = "123321123";
+$order->ShipMethod = "PickUp";
 
 $orderAmount = new MoneyType();
 $orderAmount->Value = 200;
@@ -155,7 +156,6 @@ $order->OrderItems = array($orderItem);
 
 $req = new PlaceOrderRequest();
 $req->OrderRequests = array($order);
-
 $response = $client->PlaceOrder(array('request' => $req)); 
 
 echo '<pre>';
