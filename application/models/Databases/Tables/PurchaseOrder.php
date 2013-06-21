@@ -56,7 +56,8 @@ class Databases_Tables_PurchaseOrder extends Zend_Db_Table
             {
                 $data['pickup'] = $this->pickup;
             }
-            
+            print_r($data);
+            exit();
             $purchase_order_id = $this->insert($data);
             
             return $purchase_order_id;

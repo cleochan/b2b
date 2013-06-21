@@ -499,8 +499,7 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->shipping_cost   =   round($check_result['shipping_cost'],2);
                     $getorders_model->item_amount   =   $order_amount;
                     $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
-                    print_r($sku_prices_info);
-                    exit();
+                    
                     if($params['flat_paypal'])
                     {
                         $getorders_model->payment_type_id   =   5;
