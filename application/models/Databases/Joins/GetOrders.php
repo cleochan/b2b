@@ -375,9 +375,10 @@ class Databases_Joins_GetOrders
                 $purchase_order_model->pickup = 1;
             }
             $purchase_order_id = $purchase_order_model->AddPurchaseOrder();
-            
+            echo '$purchase_order_id:'.$purchase_order_id.'<br>';
             $merchant_ref_pool[$this->merchant_ref] = $purchase_order_id;
         }else{ //update order amount 
+            echo '$this->merchant_ref'.$merchant_ref_pool[$this->merchant_ref].'<br>';
             $purchase_order_model->purchase_order_id    =   $merchant_ref_pool[$this->merchant_ref];
             $purchase_order_model->shipping_cost = $this->shipping_cost;
             $purchase_order_model->order_amount_change_value = $this->order_amount;
@@ -411,7 +412,7 @@ class Databases_Joins_GetOrders
         }
         //end add
         $logs_orders_id = $this->db->insert("logs_orders", $item_data);
-        
+        print_r('$item_data:'.$item_data);
         $result = array();
         $result['purchase_order_id'] = $merchant_ref_pool[$this->merchant_ref];
         $result['logs_orders_id'] = $logs_orders_id;
