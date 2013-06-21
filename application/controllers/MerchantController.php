@@ -529,8 +529,8 @@ class MerchantController extends Zend_Controller_Action
             $logs_orders_model      =   new Databases_Tables_LogsOrders();
             $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
             $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
-
-            if($purchase_orders)
+            
+           if($purchase_orders)
             {
                 foreach ($purchase_orders as $purchase_order)
                 {
@@ -607,6 +607,8 @@ class MerchantController extends Zend_Controller_Action
                             $crazySalesOrderItemTypeArray[$logs_order['merchant_ref']][]   =   $crazySalesOrderItemType;
                         }
                     }
+                    print_r($crazySalesOrderType);
+                    exit();
                     $order_service_model->crazySalesOrderItemType   =   $crazySalesOrderItemTypeArray[$logs_order['merchant_ref']];
                     $response_data   =   $order_service_model->WebServicePlaceOrder();
                     if($response_data['order_number']) 
