@@ -513,9 +513,10 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
                     $getorders_model->ship_cost             =   round($check_result['shipping_cost'],2);
                     try{
-                    $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
+                        $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     }catch (Zend_Exception $exp){
                         var_dump($exp->getMessage());
+                        exit();
                     }
                     //update merchant ref pool
                     $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
