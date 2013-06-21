@@ -1052,7 +1052,8 @@ class AdminController extends Zend_Controller_Action
                     $getorders_model->expected_item_cost    =   round($sku_prices_info['street_price'],2);
                     $getorders_model->final_item_cost       =   round($sku_prices_info['street_price'],2);
                     $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
-                    $getorders_model->ship_cost             =   round($check_result['ship_cost'],2);
+                    $getorders_model->ship_cost             =   round($check_result['shipping_cost'],2);
+                    $getorders_model->payment_type_id       =   9;
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     
                     //update merchant ref pool
@@ -1094,12 +1095,12 @@ class AdminController extends Zend_Controller_Action
                     $crazySalesOrderType->ShipPhone              =   $purchase_order['shipping_phone'];
 
 
-                    $user_info  =   $user_info_model->GetUserInfo($user_id);
+                    $user_info  =   $user_info_model->GetUserInfo($purchase_order['user_id']);
                     $order_amount_money_type->Value    =   round($purchase_order['order_amount'],2);                                  
                     $order_discount->Value  =   round($purchase_order['discount_amount'],2);
                     if($crazySalesOrderType)
                     {
-                        $crazySalesOrderType->OrderDiscount =   $order_discount;
+                        //$crazySalesOrderType->OrderDiscount =   $order_discount;
                         $crazySalesOrderType->PointsRate    =   0.00;
                         $crazySalesOrderType->OrderAmount            =   $order_amount_money_type;
                         $moeney_type->Value =   round($purchase_order['shipping_cost'],2);
@@ -1110,7 +1111,7 @@ class AdminController extends Zend_Controller_Action
                         $crazySalesOrderType->BillingCity            =   $user_info['suburb'];
                         $crazySalesOrderType->BillingCompany         =   $user_info['company'];      
                     }
-                    if($purchase_order['pick_up'])
+                    if($purchase_order['pickup']==1)
                     {
                         $crazySalesOrderType->ShipMethod    =   'PickUp';
                     }else{
@@ -1147,7 +1148,7 @@ class AdminController extends Zend_Controller_Action
                     }
                     $order_service_model->crazySalesOrderItemType   =   $crazySalesOrderItemTypeArray[$logs_order['merchant_ref']];
                     $response_data   =   $order_service_model->WebServicePlaceOrder();
-                    print_r($response_data);
+                    
                     if($response_data['order_number']) 
                     {
                         $getorders_model->main_order_id =   $response_data['order_number'];

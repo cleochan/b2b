@@ -556,7 +556,7 @@ class MerchantController extends Zend_Controller_Action
                     $crazySalesOrderType->ShipPhone              =   $purchase_order['shipping_phone'];
 
 
-                    $user_info  =   $user_info_model->GetUserInfo($user_id);
+                    $user_info  =   $user_info_model->GetUserInfo($purchase_order['user_id']);
                     $order_amount_money_type->Value    =   round($purchase_order['order_amount'],2);                                  
                     $order_discount->Value  =   round($purchase_order['discount_amount'],2);
                     if($crazySalesOrderType)
@@ -971,7 +971,7 @@ class MerchantController extends Zend_Controller_Action
                     $crazySalesOrderType->ShipPhone              =   $purchase_order['shipping_phone'];
 
 
-                    $user_info  =   $user_info_model->GetUserInfo($user_id);
+                    $user_info  =   $user_info_model->GetUserInfo($purchase_order['user_id']);
                     $order_amount_money_type->Value    =   round($purchase_order['order_amount'],2);                                  
                     $order_discount->Value  =   round($purchase_order['discount_amount'],2);
                     if($crazySalesOrderType)
