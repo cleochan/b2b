@@ -514,6 +514,7 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->ship_cost             =   round($check_result['shipping_cost'],2);
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     print_r('$place_order_return'.$place_order_return);
+                    exit();
                     //update merchant ref pool
                     $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
 
@@ -526,8 +527,7 @@ class MerchantController extends Zend_Controller_Action
             $logs_orders_model      =   new Databases_Tables_LogsOrders();
             $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
             $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
-            print_r($purchase_orders);
-            exit();
+            
             if($purchase_orders)
             {
                 foreach ($purchase_orders as $purchase_order)
