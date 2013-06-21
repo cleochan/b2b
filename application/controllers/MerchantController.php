@@ -435,8 +435,6 @@ class MerchantController extends Zend_Controller_Action
         $notice = "S1"; //success
         $users_extension_model = new Databases_Tables_UsersExtension();
         $crazySalesOrderItemTypeArray   =   array();
-        echo 1;
-        exit();
         if(count($params['supplier_sku']))
         {
             $group_instance_balance_array = array();
@@ -464,7 +462,8 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
 
                 $check_result = $getorders_model->PlaceOrderCheck();
-                
+                print_r($check_result);
+                exit();
                 if("Y" == $check_result[1]) //passed the validation
                 {
                     $order_amount = $check_result['order_amount'];
