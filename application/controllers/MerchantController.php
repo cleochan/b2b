@@ -527,7 +527,7 @@ class MerchantController extends Zend_Controller_Action
             $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
             $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
             print_r($purchase_orders);
-            exit()
+            exit();
             if($purchase_orders)
             {
                 foreach ($purchase_orders as $purchase_order)
