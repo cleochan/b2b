@@ -512,9 +512,11 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->final_item_cost       =   round($sku_prices_info['street_price'],2);
                     $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
                     $getorders_model->ship_cost             =   round($check_result['shipping_cost'],2);
+                    try{
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
-                    print_r('$place_order_return'.$place_order_return);
-                    exit();
+                    }catch (Zend_Exception $exp){
+                        var_dump($exp->getMessage());
+                    }
                     //update merchant ref pool
                     $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
 
@@ -527,7 +529,7 @@ class MerchantController extends Zend_Controller_Action
             $logs_orders_model      =   new Databases_Tables_LogsOrders();
             $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
             $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
-            
+
             if($purchase_orders)
             {
                 foreach ($purchase_orders as $purchase_order)
