@@ -516,7 +516,6 @@ class MerchantController extends Zend_Controller_Action
                         $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     }catch (Zend_Exception $exp){
                         var_dump($exp->getMessage());
-                        exit();
                     }
                     //update merchant ref pool
                     $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
@@ -525,7 +524,6 @@ class MerchantController extends Zend_Controller_Action
                     $notice = "E2";
                 }
             }
-            exit();
             $purchase_order_ids =   implode(',',$merchant_ref_pool);
             $purchase_order_model   =   new Databases_Tables_PurchaseOrder();
             $logs_orders_model      =   new Databases_Tables_LogsOrders();
