@@ -12,8 +12,8 @@ class Databases_Tables_ShippingStateInfo extends Zend_Db_Table{
         $select =   $this->select();
         $select->from($this->_name,array('count(post_code) as count'));
         $select->where('post_code = ?',$this->post_code);
-        $select->where('shipping_suburb = ?', $this->shipping_suburb);
-        $select->where('shipping_state = ?', $this->shipping_state);
+        $select->where('shipping_suburb = ?', strtoupper($this->shipping_suburb));
+        $select->where('shipping_state = ?', strtoupper($this->shipping_state));
         $result =   $this->fetchRow($select);
         return $result['count'];
     }
