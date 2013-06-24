@@ -328,7 +328,7 @@ class Databases_Joins_GetOrders
                         if($count==0)
                         {
                             $result[1] =  "N";
-                            $result[2] =  "Merchant shipping sate is not found";
+                            $result[2] =  "Shipping state is not found";
                             $error = 1;
                         }
                     }
