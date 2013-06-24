@@ -271,6 +271,7 @@ class Databases_Joins_GetOrders
             $users_extension_model = new Databases_Tables_UsersExtension();
             $users_extension_model->company = $this->merchant_company;
             $user_info = $users_extension_model->CheckCompanyInCsv();
+            $shipping_state_info_model  =   new Databases_Tables_ShippingStateInfo();
             
             $params_model = new Databases_Tables_Params();
             $document_fee = $params_model->GetVal("document_fee");
@@ -317,7 +318,20 @@ class Databases_Joins_GetOrders
                     $result['ship_cost']    =   $ship_cost;
                     $result['discount_amount']  =   $discount_amount;
                     $result['order_amount'] = $order_amount;
-
+                    
+                    if("Y" != $this->pick_up)
+                    {
+                        $shipping_state_info_model->post_code       =   $this->shipping_postcode;
+                        $shipping_state_info_model->shipping_suburb =   $this->shipping_suburb;
+                        $shipping_state_info_model->shipping_state  =   $this->shipping_state;
+                        $count  =   $shipping_state_info_model->GetShippingStateInfo();
+                        if($count==0)
+                        {
+                            $result[1] =  "N";
+                            $result[2] =  "Merchant shipping sate info is not found";
+                            $error = 1;
+                        }
+                    }
                     if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
                     {
                         $result['instant_balance'] = $this->group_instance_balance_array[$user_info['user_id']] - $order_amount;

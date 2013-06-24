@@ -140,7 +140,7 @@ $(document).ready(function()
                                 <td class="left"><span class="small">
                                         <select name="shipping_country" id="shipping_country">
                                             <?php foreach($this->countries as $ct_key => $ct_val):?>
-                                            <option value="<?=$ct_key?>" <?php if($ct_key==$_SESSION['place_order']['delivery']['shipping_country']){echo "selected='selected'";}?>><?=$ct_val?></option>
+                                            <option value="<?=$ct_val?>" <?php if($ct_key==$_SESSION['place_order']['delivery']['shipping_country']){echo "selected='selected'";}?>><?=$ct_val?></option>
                                             <?php endforeach;?>
                                         </select> <font color="red"> *</font>
                                     </span></td>
