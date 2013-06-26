@@ -888,6 +888,7 @@ class AdminController extends Zend_Controller_Action
         
         $this->view->title = "Admin Order Import Preview";
         $menu_model = new Algorithms_Core_Menu;
+        $product_filter_model   =   new Databases_Joins_ProductFilter();
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Admin Import Order"));
         
 
@@ -945,7 +946,8 @@ class AdminController extends Zend_Controller_Action
                                 $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
                                 $data_array[$da_key]['credit'] = $check_result['credit'];
                                 $data_array[$da_key]['user_id'] = $check_result['user_id'];
-                                
+                                $product_info   =   $product_filter_model->getProductInfo($da_val[12]);
+                                $data_array[$da_key]['product_name']    =   $product_info['product_name']; 
                                 //update instant balance
                                 $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
                             }

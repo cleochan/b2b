@@ -685,6 +685,7 @@ class MerchantController extends Zend_Controller_Action
         $group_instance_balance_array = array();
         $getorders_model = new Databases_Joins_GetOrders();
         $user_extension_model = new Databases_Tables_UsersExtension();
+        $product_filter_model   =   new Databases_Joins_ProductFilter();
         $user_info = $user_extension_model->UserInfo();
         $system_params_model    =   new Databases_Tables_Params();        
         $this->view->paypal_url         =   $system_params_model->GetVal('paypal_url');
@@ -722,7 +723,8 @@ class MerchantController extends Zend_Controller_Action
                 $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
                 $data_array[$da_key]['credit'] = $check_result['credit'];
                 $data_array[$da_key]['user_id'] = $check_result['user_id'];
-
+                $product_info   =   $product_filter_model->getProductInfo($da_val[12]);
+                $data_array[$da_key]['product_name']    =   $product_info['product_name']; 
 
                 //update instant balance
                 if ($check_result[2]=="Out of balance"):
@@ -789,7 +791,8 @@ class MerchantController extends Zend_Controller_Action
                                     $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
                                     $data_array[$da_key]['credit'] = $check_result['credit'];
                                     $data_array[$da_key]['user_id'] = $check_result['user_id'];
-
+                                    $product_info   =   $product_filter_model->getProductInfo($da_val[12]);
+                                    $data_array[$da_key]['product_name']    =   $product_info['product_name']; 
 
                                     //update instant balance
                                     if ($check_result[2]=="Out of balance"):

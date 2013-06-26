@@ -20,6 +20,8 @@
                                     <td class="form-title">Merchant</td>
                                     <td class="form-title">First Name</td>
                                     <td class="form-title">Last Name</td>
+                                    <td class="form-title">Product Name</td>
+                                    <td class="form-title">Thumbnail</td>
                                     <td class="form-title">Supplier SKU</td>
                                     <td class="form-title">Merchant SKU</td>
                                     <td class="form-title">Qty</td>
@@ -37,6 +39,8 @@
                                     <td class="center"><?=$list_val[20]?></td>
                                     <td class="center"><?=$list_val[1]?></td>
                                     <td class="center"><?=$list_val[2]?></td>
+                                    <td class="center"><?=$list_val['product_name']?></td>
+                                    <td class="center"><?php ?></td>
                                     <td class="center"><?=$list_val[12]?></td>
                                     <td class="center"><?=$list_val[13]?></td>
                                     <td class="center"><?=$list_val[14]?></td>
@@ -98,7 +102,7 @@
                                 <input type="hidden" name="currency_code" value="AUD" />
                                 
                                 <tr>
-                                    <td class="form-title" colspan="11">
+                                    <td class="form-title" colspan="13">
                                         <?php if($this->ifpay):?>
                                         <input type="submit" value="Pay by Paypal"/>
                                         <?php else: ?>
