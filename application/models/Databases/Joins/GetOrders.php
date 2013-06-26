@@ -266,12 +266,25 @@ class Databases_Joins_GetOrders
             $error = 1;
         }
         
+        $shipping_state_info_model  =   new Databases_Tables_ShippingStateInfo();
+        if("Y" != $this->pick_up)
+        {
+            $shipping_state_info_model->post_code       =   $this->shipping_postcode;
+            $shipping_state_info_model->shipping_suburb =   $this->shipping_suburb;
+            $shipping_state_info_model->shipping_state  =   $this->shipping_state;
+            $count  =   $shipping_state_info_model->GetShippingStateInfo();
+            if($count==0)
+            {
+                $result[1] =  "N";
+                $result[2] =  "Shipping state is not found";
+                $error = 1;
+            }
+        }
         if(!$error) //passed all above then:
         {
             $users_extension_model = new Databases_Tables_UsersExtension();
             $users_extension_model->company = $this->merchant_company;
             $user_info = $users_extension_model->CheckCompanyInCsv();
-            $shipping_state_info_model  =   new Databases_Tables_ShippingStateInfo();
             
             $params_model = new Databases_Tables_Params();
             $document_fee = $params_model->GetVal("document_fee");
@@ -283,7 +296,7 @@ class Databases_Joins_GetOrders
                 //calculate item price
                 $product_filter_model = new Databases_Joins_ProductFilter();
                 $prices = $product_filter_model->GetSkuPrices(trim($this->supplier_sku), $user_info['user_id']);
-                 
+                
                 if($prices['quantity_available'] < $this->quantity || $prices['quantity_available']<=0)
                 {
                     $result[1] =  "N";
@@ -319,19 +332,6 @@ class Databases_Joins_GetOrders
                     $result['discount_amount']  =   $discount_amount;
                     $result['order_amount'] = $order_amount;
                     
-                    if("Y" != $this->pick_up)
-                    {
-                        $shipping_state_info_model->post_code       =   $this->shipping_postcode;
-                        $shipping_state_info_model->shipping_suburb =   $this->shipping_suburb;
-                        $shipping_state_info_model->shipping_state  =   $this->shipping_state;
-                        $count  =   $shipping_state_info_model->GetShippingStateInfo();
-                        if($count==0)
-                        {
-                            $result[1] =  "N";
-                            $result[2] =  "Shipping state is not found";
-                            $error = 1;
-                        }
-                    }
                     if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
                     {
                         $result['instant_balance'] = $this->group_instance_balance_array[$user_info['user_id']] - $order_amount;

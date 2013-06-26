@@ -242,7 +242,7 @@ class Databases_Joins_ProductFilter
         if($data_source && $sku) // 1 or 2
         {
             $product_select = $this->db->select();
-            $product_select->from("product_info_".$data_source, array("product_id","supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","sc_class"));
+            $product_select->from("product_info_".$data_source, array("product_id","product_name","supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","sc_class"));
             $product_select->where("supplier_sku = ?", $sku);
             $product = $this->db->fetchRow($product_select);
             if($product['supplier_sku'])
@@ -255,6 +255,7 @@ class Databases_Joins_ProductFilter
                 $result['quantity_available'] = $product['quantity_available'];
                 $result['sc_class'] = $product['sc_class'];
                 $result['product_id']    = $product['product_id'];
+                $result['product_name']    = $product['product_name'];
             }
         }
         
@@ -518,6 +519,25 @@ class Databases_Joins_ProductFilter
             return $estimated_shipping_cost;
         }else{
             return FALSE;
+        }
+    }
+    
+    function getProductInfo($sku)
+    {
+        $result =   array();
+        $params_model = new Databases_Tables_Params();
+        $data_source = $params_model->GetVal("product_info_table");
+        if($data_source && $sku) // 1 or 2
+        {
+            $product_select = $this->db->select();
+            $product_select->from("product_info_".$data_source, array("product_id","product_name","supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","sc_class"));
+            $product_select->where("supplier_sku = ?", $sku);
+            $product = $this->db->fetchRow($product_select);
+            if($product['supplier_sku'])
+            {
+                $result['product_name']    = $product['product_name'];
+            }
+            return $result;
         }
     }
 }

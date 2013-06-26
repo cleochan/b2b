@@ -14,6 +14,8 @@
                                     <td class="form-title">Merchant</td>
                                     <td class="form-title">First Name</td>
                                     <td class="form-title">Last Name</td>
+                                    <td class="form-title">Product Name</td>
+                                    <td class="form-title">Thumbnail</td>
                                     <td class="form-title">Supplier SKU</td>
                                     <td class="form-title">Merchant SKU</td>
                                     <td class="form-title">Qty</td>
@@ -31,6 +33,8 @@
                                     <td class="center"><?=$list_val['merchant_company']?></td>
                                     <td class="center"><?=$list_val['shipping_first_name']?></td>
                                     <td class="center"><?=$list_val['shipping_last_name']?></td>
+                                    <td class="center"><?=$list_val['product_name']?></td>
+                                    <td class="center"><?php ?></td>
                                     <td class="center"><?=$list_val['supplier_sku']?></td>
                                     <td class="center"><?=$list_val['merchant_sku']?></td>
                                     <td class="center"><?=$list_val['quantity']?></td>
@@ -103,5 +107,10 @@
                         </table>
         </table>
     </form>
+    <script type="application/javascript">
+		$("input[type=submit]").click(function(){
+			$("input[type=submit]").attr('disabled','disabled');
+		})			
+	</script>
 </div>
 <?php endif;?>

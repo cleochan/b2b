@@ -63,7 +63,7 @@ function senfe(o,a,b,c,d){
                                 <td class="form-title">Merchant Ref</td>
                                 <td class="form-title">Supplier SKU</td>
                                 <td class="form-title">Merchant SKU</td>
-                                <td class="form-title">Order Amount</td>
+                                <td class="form-title">Order Amount<p style="margin:0">(Include GST and postage)</p></td>
                                 <td class="form-title">Pick Up</td>
                                 <td class="form-title">Status</td>
                             </tr>
@@ -72,7 +72,7 @@ function senfe(o,a,b,c,d){
                                     foreach($this->list as $list):
                             ?>
                             <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
-                                <td class="center"><span class="small"><?=$list['issue_time']?></span></td>
+                                <td class="center"><span class="small"><?=date('M d Y H:i:s',strtotime($list['issue_time']))?></span></td>
                                 <td class="center"><span class="small"><?=$list['main_db_order_id']?></span></td>
                                 <td class="center"><span class="small"><?=$list['merchant_ref']?></span></td>
                                 <td class="center"><span class="small"><?=$list['supplier_sku']?></span></td>

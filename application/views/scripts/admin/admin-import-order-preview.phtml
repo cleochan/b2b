@@ -87,5 +87,10 @@
             </tbody>
         </table>
     </form>
+    <script type="application/javascript">
+		$("input[type=submit]").click(function(){
+			$("input[type=submit]").attr('disabled','disabled');
+		})			
+	</script>
 </div>
 <?php endif;?>

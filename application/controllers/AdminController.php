@@ -193,7 +193,7 @@ class AdminController extends Zend_Controller_Action
                 }
                 
                 //Credit
-                if(0 > $formData['credit'])
+                if(0 > $formData['credit'] || $form->getValue('credit')>10000)
                 {
                     $this->view->notice="The credit is out of range.";
                     $form->populate($formData);
@@ -263,7 +263,7 @@ class AdminController extends Zend_Controller_Action
                 }
                 
                 //Credit
-                if(0 > $form->getValue('credit'))
+                if(0 > $form->getValue('credit') || $form->getValue('credit')>10000)
                 {
                     $this->view->notice="The credit is out of range.";
                     $form->populate($formData);

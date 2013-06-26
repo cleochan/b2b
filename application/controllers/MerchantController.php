@@ -258,6 +258,7 @@ class MerchantController extends Zend_Controller_Action
         $data_array = array();
         $getorders_model = new Databases_Joins_GetOrders();
         $user_extension_model = new Databases_Tables_UsersExtension();
+        $product_filter_model   =   new Databases_Joins_ProductFilter();
         $user_info = $user_extension_model->UserInfo();
         $group_instance_balance_array = array();
         
@@ -348,7 +349,8 @@ class MerchantController extends Zend_Controller_Action
                 $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
                 $data_array[$da_key]['credit'] = $check_result['credit'];
                 $data_array[$da_key]['user_id'] = $check_result['user_id'];
-
+                $product_info   =   $product_filter_model->getProductInfo($da_val['supplier_sku']);
+                $data_array[$da_key]['product_name']    =   $product_info['product_name'];
 
                 //update instant balance
                 if ($check_result[2]=="Out of balance"):
@@ -394,7 +396,8 @@ class MerchantController extends Zend_Controller_Action
                     $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
                     $data_array[$da_key]['credit'] = $check_result['credit'];
                     $data_array[$da_key]['user_id'] = $check_result['user_id'];
-
+                    $product_info   =   $product_filter_model->getProductInfo($da_val['supplier_sku']);
+                    $data_array[$da_key]['product_name']    =   $product_info['product_name']; 
                     //update instant balance
                     //update instant balance
                     if ($check_result[2]=="Out of balance"):
@@ -838,7 +841,7 @@ class MerchantController extends Zend_Controller_Action
          * update financial table
          * finish loop
          */
-        
+
         $this->view->title = "Order Import Confirmation";
         $params = $this->_request->getParams();
         //Algorithms_Extensions_Plugin::FormatArray($params);die;
