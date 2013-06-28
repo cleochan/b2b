@@ -20,6 +20,17 @@ class Algorithms_Core_ProductService extends SoapClient{
         'CategoryIDs'       =>  '',
         'Pagination'        =>  '',
     );
+    var $ProductDetailsLevelType    =   array(
+        'AdditionalFlag'    =>  '',
+        'OptionFlag'        =>  '',
+        'PackageFlag'       =>  '',
+        'PictureFlag'       =>  '',
+        'ProductCodeFlag'   =>  '',
+        'PromotionFlag'     =>  '',
+        'PurchaseFlag'      =>  '',
+        'ShippingDetailsFlag'   =>  '',
+        'WarehouseFlag'     =>  '',
+    );
     
     var $EntriesPerPage;
     var $PageNumber;
@@ -54,10 +65,20 @@ class Algorithms_Core_ProductService extends SoapClient{
     
     function WebServicesGetProducts()
     {
+        $this->ProductDetailsLevelType['AdditionalFlag']    =   1;
+        $this->ProductDetailsLevelType['OptionFlag']        =   1;
+        $this->ProductDetailsLevelType['PackageFlag']       =   1;
+        $this->ProductDetailsLevelType['PictureFlag']       =   1;
+        $this->ProductDetailsLevelType['ProductCodeFlag']   =   1;
+        $this->ProductDetailsLevelType['PromotionFlag']     =   1;
+        $this->ProductDetailsLevelType['PurchaseFlag']      =   1;
+        $this->ProductDetailsLevelType['ShippingDetailsFlag']    =   1;
+        $this->ProductDetailsLevelType['WarehouseFlag']     =   1;
         $this->PaginationType['EntriesPerPage'] =   $this->EntriesPerPage;
         $this->PaginationType['PageNumber']     =   $this->PageNumber;
         $req    =   $this->GetProductsRequest;
-        $req['Pagination']     =   $this->PaginationType;
+        $req['Pagination']      =   $this->PaginationType;
+        $req['DetailsLevel']    =   $this->ProductDetailsLevelType;
         $response   =   $this->GetProducts(array('request' => $req)); 
         $result     =   $this->object_array($response);
         return $result;
