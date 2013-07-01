@@ -4,18 +4,10 @@
                     <table class="width100" cellspacing="1">
                         <tbody>
                             <tr>
-                                <td class="form-title">Documentation</td>
                                 <td class="form-title">FAQ</td>
-                                <td class="form-title" width="220">Contact Us</td>
+                                <td class="form-title" width="40%">Contact Us</td>
                             </tr>
                             <tr class="row-2">
-                                <td class="left">
-                                        <?php if($this->documentation):?>
-                                            <?php foreach($this->documentation as $documentation):?>
-                                                <a href="/merchant/help-details/helpdesk_id/<?=$documentation['helpdesk_id']?>"><?=$documentation['h_subject']?></a><br />
-                                            <?php endforeach;?>
-                                        <?php endif;?>
-                                </td>
                                 <td class="left">
                                         <?php if($this->faq):?>
                                             <?php foreach($this->faq as $faq):?>
