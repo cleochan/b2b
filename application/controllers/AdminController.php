@@ -240,28 +240,9 @@ class AdminController extends Zend_Controller_Action
                     $form->populate($formData);
                     $error = 1;
                 }
-                
-                if(!trim($formData['contact_phone']))
+                if(!trim($formData['address']))
                 {
-                    $this->view->notice="Contact phone is required.";
-                    $form->populate($formData);
-                    $error = 1;
-                }
-                if(!trim($formData['contact_name']))
-                {
-                    $this->view->notice="Contact name is required.";
-                    $form->populate($formData);
-                    $error = 1;
-                }
-                if(!trim($formData['state']))
-                {
-                    $this->view->notice="State is required.";
-                    $form->populate($formData);
-                    $error = 1;
-                }
-                if(!trim($formData['suburb']))
-                {
-                    $this->view->notice="Suburb is required.";
+                    $this->view->notice="Address is required.";
                     $form->populate($formData);
                     $error = 1;
                 }
@@ -271,9 +252,27 @@ class AdminController extends Zend_Controller_Action
                     $form->populate($formData);
                     $error = 1;
                 }
-                if(!trim($formData['address']))
+                if(!trim($formData['suburb']))
                 {
-                    $this->view->notice="Address is required.";
+                    $this->view->notice="Suburb is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['state']))
+                {
+                    $this->view->notice="State is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['contact_name']))
+                {
+                    $this->view->notice="Contact name is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['contact_phone']))
+                {
+                    $this->view->notice="Contact phone is required.";
                     $form->populate($formData);
                     $error = 1;
                 }
