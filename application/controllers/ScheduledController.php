@@ -223,7 +223,7 @@ class ScheduledController extends Zend_Controller_Action
 
                 }
                 $product_list_data      =   $reponse_data['GetProductsResult']['Products']['CrazySalesProductType'];
-
+                
                 foreach ($product_list_data as $product_data){
                     $productFilter_model->normal_count  =   $count['normal_count'];
                     $productFilter_model->repeat_count  =   $count['repeat_count'];

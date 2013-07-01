@@ -109,34 +109,34 @@ $(document).ready(function()
                     <table class="width100" cellspacing="1">
                         <tbody>
                             <tr>
-                                <td class="form-title" colspan="4">Delivery ( Pick Up<input type="checkbox" name="pickup" id="pickup" class="pickup" <?php if($_SESSION['place_order']['delivery']['pickup']){echo "checked='checked'";}?> />)</td>
+                                <td class="form-title" colspan="4">Shipping Information ( Pick Up<input type="checkbox" name="pickup" id="pickup" class="pickup" <?php if($_SESSION['place_order']['delivery']['pickup']){echo "checked='checked'";}?> />)</td>
                             </tr>
                             <tr class="row-2">
-                                <td class="right" width="200"><span class="small">Shipping First Name</span></td>
+                                <td class="right" width="200"><span class="small">First Name</span></td>
                                 <td class="left"><span class="small"><input type="text" name="shipping_first_name" id="shipping_first_name" value="<?=$_SESSION['place_order']['delivery']['shipping_first_name']?>" /> <font color="red"> *</font></span></td>
-                                <td class="right"><span class="small">Shipping Last Name</span></td>
+                                <td class="right"><span class="small">Last Name</span></td>
                                 <td class="left"><span class="small"><input type="text" name="shipping_last_name" id="shipping_last_name" value="<?=$_SESSION['place_order']['delivery']['shipping_last_name']?>" /> <font color="red"> *</font></span></td>
                             </tr>
                             <tr class="row-1">
-                                <td class="right"><span class="small">Shipping Address 1</span></td>
+                                <td class="right"><span class="small">Address 1</span></td>
                                 <td class="left"><span class="small"><input type="text" name="shipping_address_1" id="shipping_address_1" value="<?=$_SESSION['place_order']['delivery']['shipping_address_1']?>" /> <font color="red"> *</font></span></td>
-                                <td class="right"><span class="small">Shipping Address 2</span></td>
+                                <td class="right"><span class="small">Address 2</span></td>
                                 <td class="left"><span class="small"><input type="text" name="shipping_address_2" id="shipping_address_2" value="<?=$_SESSION['place_order']['delivery']['shipping_address_2']?>" /></span></td>
                             </tr>
                             <tr class="row-2">
-                                <td class="right"><span class="small">Shipping Company</span></td>
+                                <td class="right"><span class="small">Company</span></td>
                                 <td class="left"><span class="small"><input type="text" name="shipping_company" id="shipping_company" value="<?=$_SESSION['place_order']['delivery']['shipping_company']?>" /> <font color="red"> *</font></span></td>
-                                <td class="right"><span class="small">Shipping Suburb</span></td>
+                                <td class="right"><span class="small">Suburb</span></td>
                                 <td class="left"><span class="small"><input type="text" name="shipping_suburb" id="shipping_suburb" value="<?=$_SESSION['place_order']['delivery']['shipping_suburb']?>" /><font color="red"> *</font></span></td>
                             </tr>
                             <tr class="row-1">
-                                <td class="right"><span class="small">Shipping State</span></td>
+                                <td class="right"><span class="small">State</span></td>
                                 <td class="left"><span class="small"><input type="text" name="shipping_state" id="shipping_state" value="<?=$_SESSION['place_order']['delivery']['shipping_state']?>" /><font color="red"> *</font></span></td>
-                                <td class="right"><span class="small">Shipping Postcode</span></td>
+                                <td class="right"><span class="small">Postcode</span></td>
                                 <td class="left"><span class="small"><input type="text" name="shipping_postcode" id="shipping_postcode" value="<?=$_SESSION['place_order']['delivery']['shipping_postcode']?>" /> <font color="red"> *</font></span></td>
                             </tr>
                             <tr class="row-2">
-                                <td class="right"><span class="small">Shipping Country</span></td>
+                                <td class="right"><span class="small">Country</span></td>
                                 <td class="left"><span class="small">
                                         <select name="shipping_country" id="shipping_country">
                                             <?php foreach($this->countries as $ct_key => $ct_val):?>
@@ -144,11 +144,11 @@ $(document).ready(function()
                                             <?php endforeach;?>
                                         </select> <font color="red"> *</font>
                                     </span></td>
-                                <td class="right"><span class="small">Shipping Phone</span></td>
+                                <td class="right"><span class="small">Phone</span></td>
                                 <td class="left"><span class="small"><input type="text" name="shipping_phone" id="shipping_phone" value="<?=$_SESSION['place_order']['delivery']['shipping_phone']?>" /></span></td>
                             </tr>
                             <tr class="row-1">
-                                <td class="right"><span class="small">Shipping Fax</span></td>
+                                <td class="right"><span class="small">Fax</span></td>
                                 <td class="left"><span class="small"><input type="text" name="shipping_fax" id="shipping_fax" value="<?=$_SESSION['place_order']['delivery']['shipping_fax']?>" /></span></td>
                                 <td class="right">&nbsp;</td>
                                 <td class="left">&nbsp;</td>
