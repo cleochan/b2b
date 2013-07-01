@@ -208,7 +208,6 @@ class ScheduledController extends Zend_Controller_Action
         try{
             do
             {
-
                 $product_webservice_model->PageNumber =   $page_now;
                 $product_webservice_model->PaginationType   =   $paginationType;
                 $reponse_data  =   $product_webservice_model->WebServicesGetProducts();
@@ -325,7 +324,6 @@ class ScheduledController extends Zend_Controller_Action
                 $page_now++;
 
             }while($page_now <= $TotalNumberOfPages);
-
             $page_now--;
             if($page_now == $TotalNumberOfPages)
             {

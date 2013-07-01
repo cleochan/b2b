@@ -1,0 +1,3 @@
+Refresh Products Begin at:2013-06-28 17:54:37
+initialize wdsl start ....
+initialize wdsl succeed :2013-06-28 17:54:48

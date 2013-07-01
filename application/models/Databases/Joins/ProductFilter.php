@@ -452,7 +452,7 @@ class Databases_Joins_ProductFilter
                 'package_depth'             =>  $this->package_depth,
                 'package_dimension_units'   =>  $this->package_dimension_units,
                 'ships_freight'             =>  $this->ships_freight,
-                'sc_class'             		=>  $this->sc_class,
+                'sc_class'                  =>  $this->sc_class,
                 'ships_alone'               =>  $this->ships_alone,
                 'max_ship_single_box'       =>  $this->max_ship_single_box,
                 'length'                    =>  $this->length,
@@ -578,12 +578,13 @@ class Databases_Joins_ProductFilter
         if($data_source && $sku) // 1 or 2
         {
             $product_select = $this->db->select();
-            $product_select->from("product_info_".$data_source, array("product_id","product_name","supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","sc_class"));
+            $product_select->from("product_info_".$data_source, array("product_id","product_name","supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","sc_class","imageURL5"));
             $product_select->where("supplier_sku = ?", $sku);
             $product = $this->db->fetchRow($product_select);
             if($product['supplier_sku'])
             {
                 $result['product_name']    = $product['product_name'];
+                $result['imageURL5']    = $product['imageURL5'];
             }
             return $result;
         }
