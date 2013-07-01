@@ -341,8 +341,9 @@ class Databases_Joins_GetOrders
                     if($result['credit'] < (0 - $result['instant_balance']))
                     {
                         $result[1] =  "N";
-                        $result[2] =  "Out of balance";
-                        $error = 1;
+                        $result[2] =  "Out of balance";                        
+                        $result[3] =  1;
+                        $error = 2;
                     }
                 }else{
                     $result[1] =  "N";
@@ -356,6 +357,8 @@ class Databases_Joins_GetOrders
                     $error = 1;
             }
         }
+        
+        $result[3] =$error;
         return $result;
     }
     

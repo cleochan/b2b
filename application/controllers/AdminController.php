@@ -948,7 +948,7 @@ class AdminController extends Zend_Controller_Action
                                 $data_array[$da_key]['user_id'] = $check_result['user_id'];
                                 $product_info   =   $product_filter_model->getProductInfo($da_val[12]);
                                 $data_array[$da_key]['product_name']    =   $product_info['product_name'];
-                                $data_array[$da_key]['imageURL5']       =   $product_info['imageURL5'];
+                                $data_array[$da_key]['imageURL1']       =   $product_info['imageURL1'];
                                 //update instant balance
                                 $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
                             }

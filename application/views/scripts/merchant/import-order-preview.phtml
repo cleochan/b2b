@@ -9,7 +9,7 @@
 <strong>*<font color="green"><?=$this->notice_paypal?></font></strong>
 <?php endif;?>
 <div align="center">
-    <form action="<?php if($this->ifpay){?>https://<?=$this->paypal_url?>/cgi-bin/webscr<?php }else{?>/merchant/import-order-confirm<?php };?>" method="POST" name='preview_form'>
+    <form action="<?php if($this->ifpay && $this->iferror==0){?>https://<?=$this->paypal_url?>/cgi-bin/webscr<?php }else{?>/merchant/import-order-confirm<?php };?>" method="POST" name='preview_form'>
         <table class="hide" border="0" cellpadding="0" cellspacing="1">
             <tbody>
                 <tr>
@@ -40,7 +40,7 @@
                                     <td class="center"><?=$list_val[1]?></td>
                                     <td class="center"><?=$list_val[2]?></td>
                                     <td class="center"><?=$list_val['product_name']?></td>
-                                    <td class="center"><image src="<?=$list_val['imageURL5'] ?>" height="50" /></td>
+                                    <td class="center"><image src="<?=$list_val['imageURL1'] ?>" height="50" /></td>
                                     <td class="center"><?=$list_val[12]?></td>
                                     <td class="center"><?=$list_val[13]?></td>
                                     <td class="center"><?=$list_val[14]?></td>
@@ -103,7 +103,7 @@
                                 
                                 <tr>
                                     <td class="form-title" colspan="13">
-                                        <?php if($this->ifpay):?>
+                                        <?php if($this->ifpay && $this->iferror!=1 ):?>
                                         <input type="submit" value="Pay by Paypal"/>
                                         <?php else: ?>
                                         <input type="submit" value="Confirm Update" <?php if($is_rejected){echo "disabled='disabled'";}?> /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?></td>

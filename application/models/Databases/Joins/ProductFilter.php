@@ -546,13 +546,13 @@ class Databases_Joins_ProductFilter
         if($data_source && $sku) // 1 or 2
         {
             $product_select = $this->db->select();
-            $product_select->from("product_info_".$data_source, array("product_id","product_name","supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","sc_class","imageURL5"));
+            $product_select->from("product_info_".$data_source, array("product_id","product_name","supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","sc_class","imageURL1"));
             $product_select->where("supplier_sku = ?", $sku);
             $product = $this->db->fetchRow($product_select);
             if($product['supplier_sku'])
             {
                 $result['product_name']    = $product['product_name'];
-                $result['imageURL5']    = $product['imageURL5'];
+                $result['imageURL1']    = $product['imageURL1'];
             }
             return $result;
         }
