@@ -8,7 +8,7 @@ class Algorithms_Core_Menu
             "Dashboard" => "/admin",
             "Merchants List" => "/admin/merchants",
             "BPay Import" => "/admin/bpay-import",
-            "Admin Order Import" => "/admin/admin-import-order",
+            "Import Order" => "/admin/admin-import-order",
             "Help Mgt" => "/admin/help-mgt"
         );
         
@@ -130,7 +130,7 @@ class Algorithms_Core_Menu
                 $link = "Help Mgt";
                 break;
             case "admin-import-order":
-                $link = "Admin Order Import";
+                $link = "Import Order";
                 break;
             default:
                 $link = "Dashboard";
