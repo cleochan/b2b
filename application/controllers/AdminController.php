@@ -111,6 +111,48 @@ class AdminController extends Zend_Controller_Action
                     $form->populate($formData);
                     $error = 1;
                 }
+                if(!$form->getValue('company'))
+                {
+                    $this->view->notice="The Company is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!$form->getValue('address'))
+                {
+                    $this->view->notice="The address is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!$form->getValue('post_code'))
+                {
+                    $this->view->notice="The post code is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!$form->getValue('suburb'))
+                {
+                    $this->view->notice="The suburb is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!$form->getValue('state'))
+                {
+                    $this->view->notice="The state is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!$form->getValue('contact_name'))
+                {
+                    $this->view->notice="The contact name is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!$form->getValue('contact_phone'))
+                {
+                    $this->view->notice="The contact phone is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
                 
                 //Discount
                 if(0 > $form->getValue('discount') || 30 < $form->getValue('discount'))
@@ -192,6 +234,49 @@ class AdminController extends Zend_Controller_Action
                     $error = 1;
                 }
                 
+                if(!trim($formData['company']))
+                {
+                    $this->view->notice="Company is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['address']))
+                {
+                    $this->view->notice="Address is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['post_code']))
+                {
+                    $this->view->notice="Post code is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['suburb']))
+                {
+                    $this->view->notice="Suburb is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['state']))
+                {
+                    $this->view->notice="State is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['contact_name']))
+                {
+                    $this->view->notice="Contact name is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['contact_phone']))
+                {
+                    $this->view->notice="Contact phone is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                                
                 //Credit
                 if(0 > $formData['credit'] || $form->getValue('credit')>10000)
                 {
@@ -278,6 +363,48 @@ class AdminController extends Zend_Controller_Action
                     $error = 1;
                 }
                 
+                if(!$form->getValue('company'))
+                {
+                    $this->view->notice="The Company is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!$form->getValue('address'))
+                {
+                    $this->view->notice="The address is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!$form->getValue('post_code'))
+                {
+                    $this->view->notice="The post code is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!$form->getValue('suburb'))
+                {
+                    $this->view->notice="The suburb is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!$form->getValue('state'))
+                {
+                    $this->view->notice="The state is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!$form->getValue('contact_name'))
+                {
+                    $this->view->notice="The contact name is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!$form->getValue('contact_phone'))
+                {
+                    $this->view->notice="The contact phone is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
                 //new users
                 $check_user_string = new Databases_Tables_Users();
 
@@ -342,7 +469,48 @@ class AdminController extends Zend_Controller_Action
                     $form->populate($formData);
                     $error = 1;
                 }
-                
+                                if(!trim($formData['company']))
+                {
+                    $this->view->notice="Company is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['address']))
+                {
+                    $this->view->notice="Address is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['post_code']))
+                {
+                    $this->view->notice="Post code is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['suburb']))
+                {
+                    $this->view->notice="Suburb is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['state']))
+                {
+                    $this->view->notice="State is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['contact_name']))
+                {
+                    $this->view->notice="Contact name is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['contact_phone']))
+                {
+                    $this->view->notice="Contact phone is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
                 //Credit
                 if(0 > $formData['credit'])
                 {
