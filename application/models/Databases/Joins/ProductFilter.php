@@ -73,30 +73,14 @@ class Databases_Joins_ProductFilter
     var $normal_count;
     var $repeat_count;
     
-    var $feature2;
-    var $feature3;
-    var $feature4;
-    var $feature5;
-    var $colour;
-    var $size;
-    var $factory_url;
-    var $package_content;
     var $imageURL1;
     var $imageURL2;
     var $imageURL3;
     var $imageURL4;
     var $imageURL5;
-    var $pm;
     var $options;
-    var $list_price;
-    var $num_of_parcel;
-    var $datafeed_line_end;
-    var $code;
-    var $title;
-    var $rro;
     var $dimension;
     var $description;
-    var $supplier_code;
     
     function __construct(){
         $this->db = Zend_Registry::get("db");
@@ -479,30 +463,14 @@ class Databases_Joins_ProductFilter
                 'case_pack_depth'           =>  $this->case_pack_depth,
                 'case_pack_units'           =>  $this->case_pack_units,
                 'case_pack_quantity'        =>  $this->case_pack_quantity,
-                'feature2'                  =>  $this->feature2,
-                'feature3'                  =>  $this->feature3,
-                'feature4'                  =>  $this->feature4,
-                'feature5'                  =>  $this->feature5,
-                'colour'                    =>  $this->colour,
-                'size'                      =>  $this->size,
-                'factory_url'               =>  $this->factory_url,
-                'package_content'           =>  $this->package_content,
                 'imageURL1'                 =>  $this->imageURL1,
                 'imageURL2'                 =>  $this->imageURL2,
                 'imageURL3'                 =>  $this->imageURL3,
                 'imageURL4'                 =>  $this->imageURL4,
                 'imageURL5'                 =>  $this->imageURL5,
-                'pm'                        =>  $this->pm,
                 'options'                   =>  $this->options,
-                'list_price'                =>  $this->list_price,
-                'num_of_parcel'             =>  $this->num_of_parcel,
-                'datafeed_line_end'         =>  $this->datafeed_line_end,
-                'code'                      =>  $this->code,
-                'title'                     =>  $this->title,
-                'rro'                       =>  $this->rro,
                 'dimension'                 =>  $this->dimension,
                 'description'               =>  $this->description,
-                'supplier_code'             =>  $this->supplier_code,
             );
             $this->normal_count++;
             $this->db->insert($source_table,$data);
