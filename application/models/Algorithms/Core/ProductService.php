@@ -84,5 +84,3 @@ class Algorithms_Core_ProductService extends SoapClient{
         return $result;
     }
 }
-
-?>
