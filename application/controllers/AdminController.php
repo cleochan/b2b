@@ -240,27 +240,10 @@ class AdminController extends Zend_Controller_Action
                     $form->populate($formData);
                     $error = 1;
                 }
-                if(!trim($formData['address']))
+                
+                if(!trim($formData['contact_phone']))
                 {
-                    $this->view->notice="Address is required.";
-                    $form->populate($formData);
-                    $error = 1;
-                }
-                if(!trim($formData['post_code']))
-                {
-                    $this->view->notice="Post code is required.";
-                    $form->populate($formData);
-                    $error = 1;
-                }
-                if(!trim($formData['suburb']))
-                {
-                    $this->view->notice="Suburb is required.";
-                    $form->populate($formData);
-                    $error = 1;
-                }
-                if(!trim($formData['state']))
-                {
-                    $this->view->notice="State is required.";
+                    $this->view->notice="Contact phone is required.";
                     $form->populate($formData);
                     $error = 1;
                 }
@@ -270,9 +253,27 @@ class AdminController extends Zend_Controller_Action
                     $form->populate($formData);
                     $error = 1;
                 }
-                if(!trim($formData['contact_phone']))
+                if(!trim($formData['state']))
                 {
-                    $this->view->notice="Contact phone is required.";
+                    $this->view->notice="State is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['suburb']))
+                {
+                    $this->view->notice="Suburb is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['post_code']))
+                {
+                    $this->view->notice="Post code is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                if(!trim($formData['address']))
+                {
+                    $this->view->notice="Address is required.";
                     $form->populate($formData);
                     $error = 1;
                 }
@@ -469,7 +470,7 @@ class AdminController extends Zend_Controller_Action
                     $form->populate($formData);
                     $error = 1;
                 }
-                                if(!trim($formData['company']))
+                if(!trim($formData['company']))
                 {
                     $this->view->notice="Company is required.";
                     $form->populate($formData);
