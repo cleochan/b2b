@@ -176,6 +176,7 @@ class ScheduledController extends Zend_Controller_Action
     
     function refreshProductsAction()
     {
+        set_time_limit(0);
         $params_model           =   new Databases_Tables_Params();
         $logs_path              =   $params_model->GetVal('logs_path');
         $f  =   @fopen($logs_path."productslogs/refreshproducts".date('YmdHis').".txt", "w+");
