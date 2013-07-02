@@ -65,7 +65,7 @@ class Algorithms_Core_ProductService extends SoapClient{
     
     function WebServicesGetProducts()
     {
-        set_time_limit(0);
+        set_time_limit(3600);
         $this->ProductDetailsLevelType['AdditionalFlag']    =   0;
         $this->ProductDetailsLevelType['OptionFlag']        =   0;
         $this->ProductDetailsLevelType['PackageFlag']       =   0;

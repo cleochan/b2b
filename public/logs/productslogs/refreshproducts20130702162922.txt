@@ -1,0 +1,47 @@
+Refresh Products Begin at:2013-07-02 16:29:22
+initialize wdsl start ....
+initialize wdsl succeed :2013-07-02 16:29:33
+Truncate Product Data : 2013-07-02 16:29:33
+TotalNumberOfPages : 80
+TotalNumberOfEntries : 7945
+EntriesPerPage : 100
+ page:1  succeed!  Date:2013-07-02 16:30:10
+ page:2  succeed!  Date:2013-07-02 16:30:52
+ page:3  succeed!  Date:2013-07-02 16:31:27
+ page:4  succeed!  Date:2013-07-02 16:32:02
+ page:5  succeed!  Date:2013-07-02 16:32:35
+ page:6  succeed!  Date:2013-07-02 16:33:08
+ page:7  succeed!  Date:2013-07-02 16:33:41
+ page:8  succeed!  Date:2013-07-02 16:34:16
+ page:9  succeed!  Date:2013-07-02 16:34:52
+ page:10  succeed!  Date:2013-07-02 16:35:25
+ page:11  succeed!  Date:2013-07-02 16:36:11
+ page:12  succeed!  Date:2013-07-02 16:36:49
+ page:13  succeed!  Date:2013-07-02 16:37:27
+ page:14  succeed!  Date:2013-07-02 16:38:02
+ page:15  succeed!  Date:2013-07-02 16:38:36
+ page:16  succeed!  Date:2013-07-02 16:39:10
+ page:17  succeed!  Date:2013-07-02 16:39:44
+ page:18  succeed!  Date:2013-07-02 16:40:20
+ page:19  succeed!  Date:2013-07-02 16:40:57
+ page:20  succeed!  Date:2013-07-02 16:41:36
+ page:21  succeed!  Date:2013-07-02 16:42:24
+ page:22  succeed!  Date:2013-07-02 16:43:07
+ page:23  succeed!  Date:2013-07-02 16:43:49
+ page:24  succeed!  Date:2013-07-02 16:44:42
+ page:25  succeed!  Date:2013-07-02 16:45:20
+ page:26  succeed!  Date:2013-07-02 16:45:58
+ page:27  succeed!  Date:2013-07-02 16:46:35
+ page:28  succeed!  Date:2013-07-02 16:47:07
+ page:29  succeed!  Date:2013-07-02 16:47:49
+ page:30  succeed!  Date:2013-07-02 16:48:26
+ page:31  succeed!  Date:2013-07-02 16:49:19
+ page:32  succeed!  Date:2013-07-02 16:49:55
+ page:33  succeed!  Date:2013-07-02 16:50:30
+ page:34  succeed!  Date:2013-07-02 16:51:10
+ page:35  succeed!  Date:2013-07-02 16:51:43
+ page:36  succeed!  Date:2013-07-02 16:52:23
+ page:37  succeed!  Date:2013-07-02 16:52:59
+ page:38  succeed!  Date:2013-07-02 16:53:34
+ page:39  succeed!  Date:2013-07-02 16:54:08
+ page:40  succeed!  Date:2013-07-02 16:54:44

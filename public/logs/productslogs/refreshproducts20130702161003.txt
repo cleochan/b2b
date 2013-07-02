@@ -1,0 +1,14 @@
+Refresh Products Begin at:2013-07-02 16:10:03
+initialize wdsl start ....
+initialize wdsl succeed :2013-07-02 16:10:14
+Truncate Product Data : 2013-07-02 16:10:14
+TotalNumberOfPages : 80
+TotalNumberOfEntries : 7945
+EntriesPerPage : 100
+ page:1  succeed!  Date:2013-07-02 16:10:52
+ page:2  succeed!  Date:2013-07-02 16:11:27
+ page:3  succeed!  Date:2013-07-02 16:12:05
+ page:4  succeed!  Date:2013-07-02 16:12:40
+ page:5  succeed!  Date:2013-07-02 16:13:17
+ page:6  succeed!  Date:2013-07-02 16:13:54
+ page:7  succeed!  Date:2013-07-02 16:14:44
