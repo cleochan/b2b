@@ -46,7 +46,7 @@ $(function()
                                     foreach($this->list as $list):
                             ?>
                             <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
-                                <td class="center"><span class="small"><?=date('M d Y H:i:s',strtotime($list['issue_time']))?></span></td>
+                                <td class="center"><span class="small"><?=date('H:i:s, d M Y ',strtotime($list['issue_time']))?></span></td>
                                 <td class="center"><span class="small"><?=$list['main_db_order_id']?></span></td>
                                 <td class="center"><span class="small"><?=$list['merchant_ref']?></span></td>
                                 <td class="center"><span class="small"><?=$list['supplier_sku']?></span></td>

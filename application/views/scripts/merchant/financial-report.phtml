@@ -71,7 +71,7 @@ function senfe(o,a,b,c,d){
                                     foreach($this->list as $list):
                             ?>
                             <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
-                                <td class="center"><span class="small"><?=date('M d Y H:i:s',strtotime($list['issue_time']))?></span></td>
+                                <td class="center"><span class="small"><?=date('H:i:s, d M Y ',strtotime($list['issue_time']))?></span></td>
                                 <td class="center"><span class="small"><?=$this->financial_action_type[$list['action_type']]?></span></td>
                                 <td class="center"><span class="small"><?=$list['trans_id']?></span></td>
                                 <td class="center"><span class="small"><?=$list['action_value']?></span></td>
