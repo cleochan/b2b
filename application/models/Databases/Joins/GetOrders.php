@@ -67,6 +67,7 @@ class Databases_Joins_GetOrders
     var $total_order_amount_array;
     
     var $payment_type_id;
+    var $quantity_array;
     
     function __construct(){
     	$this->db = Zend_Registry::get("db");
@@ -297,7 +298,7 @@ class Databases_Joins_GetOrders
                 $product_filter_model = new Databases_Joins_ProductFilter();
                 $prices = $product_filter_model->GetSkuPrices(trim($this->supplier_sku), $user_info['user_id']);
                 
-                if($prices['quantity_available'] < $this->quantity || $prices['quantity_available']<=0)
+                if($prices['quantity_available'] < $this->quantity || $prices['quantity_available']<=0 || $prices['quantity_available'] < $this->quantity_array[$this->supplier_sku])
                 {
                     $result[1] =  "N";
                     $result[2] =  "Out Of Stock";

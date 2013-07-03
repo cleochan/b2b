@@ -266,7 +266,7 @@ class MerchantController extends Zend_Controller_Action
         $this->view->paypal_url         =   $system_params_model->GetVal('paypal_url');
         $this->view->paypal_account     =   $system_params_model->GetVal('paypal_account');
         $this->view->paypal_return_url  =   $system_params_model->GetVal('paypal_return_url');
-        
+        $quantity_array =   array();
         //save delivery
         if(!$_SESSION['place_order']['delivery'])
         {
@@ -340,6 +340,8 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->pick_up = $da_val['pick_up'];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
                 $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
+                $quantity_array[$da_val['supplier_sku']]    +=   $da_val['quantity'];
+                $getorders_model->quantity_array    =   $quantity_array;
                 
                 $check_result = $getorders_model->PlaceOrderCheck();
 
@@ -386,7 +388,8 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->pick_up = $this->params['pickup']?"Y":"N"; 
                     $getorders_model->group_instance_balance_array = $group_instance_balance_array;
                     $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
-
+                    $quantity_array[$da_val['supplier_sku']]    +=   $da_val['quantity'];
+                    $getorders_model->quantity_array    =   $quantity_array;
                     $check_result = $getorders_model->PlaceOrderCheck();
                     
                     $data_array[$da_key]['pick_up']    =   $this->params['pickup']?"Y":"N";
@@ -696,7 +699,7 @@ class MerchantController extends Zend_Controller_Action
         $this->view->paypal_url         =   $system_params_model->GetVal('paypal_url');
         $this->view->paypal_account     =   $system_params_model->GetVal('paypal_account');
         $this->view->paypal_return_url  =   $system_params_model->GetVal('paypal_return_url');
-        
+        print_r($this->view->paypal_account);
         if ($_SESSION['import_order'][$this->params['sessionid']]&& $this->params['sessionid'])
         {
             $data_array =   $_SESSION['import_order'][$this->params['sessionid']];
@@ -719,7 +722,8 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->pick_up = $da_val[21];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
                 $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
-
+                $quantity_array[$da_val[12]]    +=   $da_val[14];
+                $getorders_model->quantity_array    =   $quantity_array;
                 $check_result = $getorders_model->PlaceOrderCheck();
 
                 $data_array[$da_key]['result'] = $check_result[1];
@@ -787,7 +791,8 @@ class MerchantController extends Zend_Controller_Action
                                     $getorders_model->pick_up = $da_val[21];
                                     $getorders_model->group_instance_balance_array = $group_instance_balance_array;
                                     $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
-                                    
+                                    $quantity_array[$da_val[12]]    +=   $da_val[14];
+                                    $getorders_model->quantity_array    =   $quantity_array;
                                     $check_result = $getorders_model->PlaceOrderCheck();
 
                                     $data_array[$da_key]['result'] = $check_result[1];

@@ -1105,7 +1105,8 @@ class AdminController extends Zend_Controller_Action
                                 $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
                                 $getorders_model->pick_up = $da_val[21];
                                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
-                                 
+                                $quantity_array[$da_val[12]]    +=   $da_val[14];
+                                $getorders_model->quantity_array    =   $quantity_array;
                                 $check_result = $getorders_model->PlaceOrderCheck();
 
                                 $data_array[$da_key]['result'] = $check_result[1];
