@@ -99,7 +99,7 @@
                                          <?php if($this->ifpay):?>
                                         <input type="submit" value="Pay by Paypal"/>
                                         <?php else: ?>
-                                        <input type="submit" value="Confirm Update" <?php if($is_rejected){echo "disabled='disabled'";}?> /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?>
+                                        <input type="button" value="Confirm Update" <?php if($is_rejected){echo "disabled='disabled'";}?> /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?>
                                         <?php endif ?>
                                      </td>   
                                 </tr>
@@ -108,8 +108,9 @@
         </table>
     </form>
     <script type="application/javascript">
-		$("input[type=submit]").click(function(){
-			$("input[type=submit]").attr('disabled','disabled');
+		$("input[type=button]").click(function(){
+			$("input[type=button]").attr('disabled','disabled');
+			$("form").submit();
 		})			
 	</script>
 </div>
