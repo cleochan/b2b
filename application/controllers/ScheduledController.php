@@ -302,6 +302,7 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->options                   =   '';
                     $productFilter_model->dimension                 =   '';
                     $productFilter_model->description               =   $product_data['Description'];
+                    $productFilter_model->product_code_type         =   $product_data['ProductCodeType'];
                     $count  =    $productFilter_model->AddProduct();
                 }
                 $logs_contents  =   ' page:'.$page_now.'  succeed!  Date:'.date('Y-m-d H:i:s')."\n";

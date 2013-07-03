@@ -81,6 +81,7 @@ class Databases_Joins_ProductFilter
     var $options;
     var $dimension;
     var $description;
+    var $product_code_type;
     
     function __construct(){
         $this->db = Zend_Registry::get("db");
@@ -154,6 +155,7 @@ class Databases_Joins_ProductFilter
                 default :
                     break;
             }
+            $select->where("product_code_type <> ?", 'PART');
             $select->order("category ASC");
             $select->order("brand ASC");
             
@@ -471,6 +473,7 @@ class Databases_Joins_ProductFilter
                 'options'                   =>  $this->options,
                 'dimension'                 =>  $this->dimension,
                 'description'               =>  $this->description,
+                'product_code_type'         =>  $this->product_code_type,
             );
             $this->normal_count++;
             $this->db->insert($source_table,$data);
