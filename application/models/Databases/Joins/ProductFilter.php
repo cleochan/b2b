@@ -560,4 +560,23 @@ class Databases_Joins_ProductFilter
             return $result;
         }
     }
+    
+    function updateQuantityAvailable($sku,$quantity_available)
+    {
+        $params_model = new Databases_Tables_Params();
+        $data_source = $params_model->GetVal("product_info_table");
+        if($data_source && $sku) // 1 or 2
+        {
+            $product_select = $this->db->select();
+            $product_select->from("product_info_".$data_source);
+            $product_select->where("supplier_sku = ?", $sku);
+            $row = $this->db->fetchRow($product_select);
+            $row['quantity_available'] -= $quantity_available;
+            $where = $this->db->quoteInto('supplier_sku = ?', $sku);
+            $set    =   array(
+                'quantity_available'    =>  $row['quantity_available'],
+            );
+            $this->db->update("product_info_".$data_source, $set, $where);
+        }
+    }
 }

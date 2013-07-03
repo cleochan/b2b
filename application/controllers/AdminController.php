@@ -1322,6 +1322,10 @@ class AdminController extends Zend_Controller_Action
                     
                     if($response_data['order_number']) 
                     {
+                        foreach ($logs_orders as $logs_order)
+                        {
+                            $product_filter_model->updateQuantityAvailable($logs_order['supplier_sku'], $logs_order['quantity']);
+                        }
                         $getorders_model->main_order_id =   $response_data['order_number'];
                         $getorders_model->item_status   =   1;
 
