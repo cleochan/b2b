@@ -45,7 +45,7 @@ class Algorithms_Core_Menu
             "Adjust Balance" => "/admin/merchant-recharge/user_id",
             "BPay Import Preview" => "/admin/bpay-import-preview",
             "Feed Generation" => "/admin/merchant-feed-generation/user_id",
-            "Place Order Preview" => "/merchant/place-order-preview",
+            //"Place Order Preview" => "/merchant/place-order-preview",
         );
         
         return $menu;

@@ -238,6 +238,12 @@ class Databases_Joins_GetOrders
                                         2 => "Shipping country is required"
                                         );
                 $error = 1;
+            }elseif(!trim($this->shipping_phone))
+            {
+                $result = array(1 => "N",
+                                        2 => "Shipping phone is required"
+                                        );
+                $error = 1;
             }
         }
         
@@ -297,8 +303,11 @@ class Databases_Joins_GetOrders
                 //calculate item price
                 $product_filter_model = new Databases_Joins_ProductFilter();
                 $prices = $product_filter_model->GetSkuPrices(trim($this->supplier_sku), $user_info['user_id']);
-                
-                if($prices['quantity_available'] < $this->quantity || $prices['quantity_available']<=0 || $prices['quantity_available'] < $this->quantity_array[$this->supplier_sku])
+                if(!$prices){
+                    $result[1] =  "N";
+                    $result[2] =  "SKU is not found";
+                    $error = 1;
+                }elseif($prices['quantity_available'] < $this->quantity || $prices['quantity_available']<=0 || $prices['quantity_available'] < $this->quantity_array[$this->supplier_sku])
                 {
                     $result[1] =  "N";
                     $result[2] =  "Out Of Stock";
@@ -346,10 +355,6 @@ class Databases_Joins_GetOrders
                         $result[3] =  1;
                         $error = 2;
                     }
-                }else{
-                    $result[1] =  "N";
-                    $result[2] =  "SKU is not found";
-                    $error = 1;
                 }
 
             }else{

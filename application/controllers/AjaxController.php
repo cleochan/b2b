@@ -16,11 +16,12 @@ class AjaxController extends Zend_Controller_Action
             $auth = Zend_Auth::getInstance();
             if(!$auth->hasIdentity())
             { 
-                //$this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
-                //if($_SERVER['SERVER_PORT'] != '443') {
-                header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login/logout?url='.$_SERVER["REQUEST_URI"]);
-                exit();
-                //}
+                if($_SERVER['HTTP_HOST']=='b2b.crazysales.com.au'){
+                    header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login/logout?url='.$_SERVER["REQUEST_URI"]);
+                    exit();
+                }else{
+                    $this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
+                }
             }
     }
 	

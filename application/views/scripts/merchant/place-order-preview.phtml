@@ -63,14 +63,11 @@
                                 <input type="hidden" name="shipping_postcode[<?=$list_key?>]" value="<?=$list_val['shipping_postcode']?>" />
                                 <input type="hidden" name="shipping_country[<?=$list_key?>]" value="<?=$list_val['shipping_country']?>" />
                                 <input type="hidden" name="shipping_phone[<?=$list_key?>]" value="<?=$list_val['shipping_phone']?>" />
-                                <input type="hidden" name="shipping_fax[<?=$list_key?>]" value="<?=$list_val['shipping_fax']?>" />
                                 <input type="hidden" name="supplier_sku[<?=$list_key?>]" value="<?=$list_val['supplier_sku']?>" />
                                 <input type="hidden" name="merchant_sku[<?=$list_key?>]" value="<?=$list_val['merchant_sku']?>" />
                                 <input type="hidden" name="quantity[<?=$list_key?>]" value="<?=$list_val['quantity']?>" />
                                 <input type="hidden" name="shipping_method[<?=$list_key?>]" value="<?=$list_val['shipping_method']?>" />
                                 <input type="hidden" name="shipping_instruction[<?=$list_key?>]" value="<?=$list_val['shipping_instruction']?>" />
-                                <input type="hidden" name="tracking_number[<?=$list_key?>]" value="<?=$list_val['tracking_number']?>" />
-                                <input type="hidden" name="serial_no[<?=$list_key?>]" value="<?=$list_val['serial_no']?>" />
                                 <input type="hidden" name="comments[<?=$list_key?>]" value="<?=$list_val['comments']?>" />
                                 <input type="hidden" name="pick_up[<?=$list_key?>]" value="<?=$list_val['pick_up']?>" />
 				<?php
@@ -96,10 +93,14 @@
                                 <input type="hidden" name="currency_code" value="AUD" />
                                 <tr>
                                     <td class="info_Recharge" colspan="12">
-                                         <?php if($this->ifpay):?>
+                                         <?php if($this->ifpay && $this->iferror!=1 ):?>
                                         <input type="submit" value="Pay by Paypal"/>
                                         <?php else: ?>
-                                        <input type="button" value="Confirm Update" <?php if($is_rejected){echo "disabled='disabled'";}?> /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?>
+                                            <?php if($is_rejected):?>
+                                            <input type="button" id="backtoedit" value="Back to edit" />
+                                            <?php else:?>
+                                            <input type="button" id="submit_form" value="Confirm Update" /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?>
+                                            <?php endif?>
                                         <?php endif ?>
                                      </td>   
                                 </tr>
@@ -108,10 +109,14 @@
         </table>
     </form>
     <script type="application/javascript">
-		$("input[type=button]").click(function(){
-			$("input[type=button]").attr('disabled','disabled');
+		$("#submit_form").click(function(){
+			$("#submit_form").attr('disabled','disabled');
 			$("form").submit();
-		})			
+		})
+                
+                $("#backtoedit").click(function (){
+                        location.href ="/merchant/place-order";
+                })
 	</script>
 </div>
 <?php endif;?>

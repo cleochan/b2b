@@ -17,11 +17,12 @@ class MerchantController extends Zend_Controller_Action
 
         if(!$auth->hasIdentity())
         { 
-            //$this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
-            //if($_SERVER['SERVER_PORT'] != '443') {
+            if($_SERVER['HTTP_HOST']=='b2b.crazysales.com.au'){
                 header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login/logout?url='.$_SERVER["REQUEST_URI"]);
                 exit();
-            //}
+            }else{
+                $this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
+            }
         }elseif(2 != $user_info['user_type']){
             $this->_redirect('/admin');
         }
@@ -229,8 +230,8 @@ class MerchantController extends Zend_Controller_Action
                 "merchant_ref" => $this->params['merchant_ref'],
                 "shipping_method" => $this->params['shipping_method'],
                 "shipping_instruction" => $this->params['shipping_instruction'],
-                "tracking_number" => $this->params['tracking_number'],
-                "serial_no" => $this->params['serial_no'],
+                //"tracking_number" => $this->params['tracking_number'],
+                //"serial_no" => $this->params['serial_no'],
                 "comments" => $this->params['comments']
             );
         }
@@ -252,7 +253,7 @@ class MerchantController extends Zend_Controller_Action
     {
         $this->view->title = "Place Order Preview";
         $menu_model = new Algorithms_Core_Menu;
-        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Place Order Preview"));
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Place Order", "Place Order Preview"));
         
         //make $data_array
         $data_array = array();
@@ -276,16 +277,15 @@ class MerchantController extends Zend_Controller_Action
         $_SESSION['place_order']['delivery'] = array(
             "shipping_first_name" => $this->params['shipping_first_name'],
             "shipping_last_name" => $this->params['shipping_last_name'],
+            "merchant_company" => $user_info['company'],
             "shipping_company" => $this->params['shipping_company'],
             "shipping_address_1" => $this->params['shipping_address_1'],
             "shipping_address_2" => $this->params['shipping_address_2'],
-            "shipping_company" => $this->params['shipping_company'],
             "shipping_suburb" => $this->params['shipping_suburb'],
             "shipping_state" => $this->params['shipping_state'],
             "shipping_postcode" => $this->params['shipping_postcode'],
             "shipping_country" => $this->params['shipping_country'],
             "shipping_phone" => $this->params['shipping_phone'],
-            "shipping_fax" => $this->params['shipping_fax'],
             "pickup" => $this->params['pickup']
         );
         
@@ -300,21 +300,17 @@ class MerchantController extends Zend_Controller_Action
                     "merchant_company" => $user_info['company'],
                     "shipping_address_1" => $this->params['shipping_address_1'],
                     "shipping_address_2" => $this->params['shipping_address_2'],
-                    "shipping_company" => $this->params['shipping_company'],
                     "shipping_suburb" => $this->params['shipping_suburb'],
                     "shipping_state" => $this->params['shipping_state'],
                     "shipping_postcode" => $this->params['shipping_postcode'],
                     "shipping_country" => $this->params['shipping_country'],
                     "shipping_phone" => $this->params['shipping_phone'],
-                    "shipping_fax" => $this->params['shipping_fax'],
                     "supplier_sku" => $items['supplier_sku'],
                     "merchant_sku" => $items['merchant_sku'],
                     "quantity" => $items['quantity'],
                     "merchant_ref" => $items['merchant_ref'],
                     "shipping_method" => $items['shipping_method'],
                     "shipping_instruction" => $items['shipping_instruction'],
-                    "tracking_number" => $items['tracking_number'],
-                    "serial_no" => $items['serial_no'],
                     "comments" => $items['comments'],
                     "pick_up" => $this->params['pickup']
                 );
@@ -340,6 +336,7 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->pick_up = $da_val['pick_up'];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
                 $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
+                $getorders_model->shipping_phone    =   $da_val['shipping_phone'];
                 $quantity_array[$da_val['supplier_sku']]    +=   $da_val['quantity'];
                 $getorders_model->quantity_array    =   $quantity_array;
                 
@@ -368,7 +365,7 @@ class MerchantController extends Zend_Controller_Action
             foreach($data_array as $da_key => $da_val)
             {
                 $count_column = count($da_val);
-                if(22 != $count_column) //Reject due to the column amount
+                if(19 != $count_column) //Reject due to the column amount
                 {
                     $data_array[$da_key]['result'] = "N";
                     $data_array[$da_key]['reason'] = "Column Amount Error.";
@@ -390,6 +387,7 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
                     $quantity_array[$da_val['supplier_sku']]    +=   $da_val['quantity'];
                     $getorders_model->quantity_array    =   $quantity_array;
+                    $getorders_model->shipping_phone    =   $da_val['shipping_phone'];
                     $check_result = $getorders_model->PlaceOrderCheck();
                     
                     $data_array[$da_key]['pick_up']    =   $this->params['pickup']?"Y":"N";
@@ -403,6 +401,9 @@ class MerchantController extends Zend_Controller_Action
                     $data_array[$da_key]['product_name']    =   $product_info['product_name'];
                     $data_array[$da_key]['imageURL1']       =   $product_info['imageURL1'];
                     //update instant balance
+                    if ($check_result[3]==1 ):
+                        $this->view->iferror=1;
+                    endif;
                     //update instant balance
                     if ($check_result[2]=="Out of balance"):
                         $this->view->ifpay=1;
@@ -492,7 +493,7 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->shipping_postcode = $params['shipping_postcode'][$loop_key];
                     $getorders_model->shipping_country = $params['shipping_country'][$loop_key];
                     $getorders_model->shipping_phone = $params['shipping_phone'][$loop_key];
-                    $getorders_model->shipping_fax = $params['shipping_fax'][$loop_key];
+                    //->shipping_fax = $params['shipping_fax'][$loop_key];
                     $getorders_model->supplier_sku = $params['supplier_sku'][$loop_key];
                     $getorders_model->merchant_sku = $params['merchant_sku'][$loop_key];
                     $getorders_model->quantity = $params['quantity'][$loop_key];
@@ -688,7 +689,7 @@ class MerchantController extends Zend_Controller_Action
         
         $this->view->title = "Order Import Preview";
         $menu_model = new Algorithms_Core_Menu;
-        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Import Order"));
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Import Order", "Import Order Preview"));
         
         $group_instance_balance_array = array();
         $getorders_model = new Databases_Joins_GetOrders();
@@ -710,19 +711,20 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->shipping_first_name = $da_val[1];
                 $getorders_model->shipping_last_name = $da_val[2];
                 $getorders_model->shipping_company = $da_val[3];
-                $getorders_model->merchant_company = $da_val[20]; // REQUIRED AND IMPORTANT !!!
+                $getorders_model->merchant_company = $da_val[17]; // REQUIRED AND IMPORTANT !!!
                 $getorders_model->shipping_address_1 = $da_val[4];
                 $getorders_model->shipping_suburb = $da_val[6];
                 $getorders_model->shipping_state = $da_val[7];
                 $getorders_model->shipping_postcode = $da_val[8];
                 $getorders_model->shipping_country = $da_val[9];
-                $getorders_model->supplier_sku = $da_val[12];
-                $getorders_model->quantity = $da_val[14];
+                $getorders_model->shipping_phone    =   $da_val[10];
+                $getorders_model->supplier_sku = $da_val[11];
+                $getorders_model->quantity = $da_val[13];
                 $getorders_model->operator_id = $this->params['user_id'];
-                $getorders_model->pick_up = $da_val[21];
+                $getorders_model->pick_up = $da_val[18];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
                 $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
-                $quantity_array[$da_val[12]]    +=   $da_val[14];
+                $quantity_array[$da_val[11]]    +=   $da_val[13];
                 $getorders_model->quantity_array    =   $quantity_array;
                 $check_result = $getorders_model->PlaceOrderCheck();
 
@@ -732,7 +734,7 @@ class MerchantController extends Zend_Controller_Action
                 $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
                 $data_array[$da_key]['credit'] = $check_result['credit'];
                 $data_array[$da_key]['user_id'] = $check_result['user_id'];
-                $product_info   =   $product_filter_model->getProductInfo($da_val[12]);
+                $product_info   =   $product_filter_model->getProductInfo($da_val[11]);
                 $data_array[$da_key]['product_name']    =   $product_info['product_name']; 
                 $data_array[$da_key]['imageURL1']       =   $product_info['imageURL1'];
                 //update instant balance
@@ -771,7 +773,7 @@ class MerchantController extends Zend_Controller_Action
                             {
                                 $count_column = count($da_val);
 
-                                if(22 != $count_column) //Reject due to the column amount
+                                if(19 != $count_column) //Reject due to the column amount
                                 {
                                     $data_array[$da_key]['result'] = "N";
                                     $data_array[$da_key]['reason'] = "Column Amount Error.";
@@ -779,29 +781,30 @@ class MerchantController extends Zend_Controller_Action
                                     $getorders_model->shipping_first_name = $da_val[1];
                                     $getorders_model->shipping_last_name = $da_val[2];
                                     $getorders_model->shipping_company = $da_val[3];
-                                    $getorders_model->merchant_company = $da_val[20]; // REQUIRED AND IMPORTANT !!!
+                                    $getorders_model->merchant_company = $da_val[17]; // REQUIRED$da_val[17] AND IMPORTANT !!!
                                     $getorders_model->shipping_address_1 = $da_val[4];
                                     $getorders_model->shipping_suburb = $da_val[6];
                                     $getorders_model->shipping_state = $da_val[7];
                                     $getorders_model->shipping_postcode = $da_val[8];
                                     $getorders_model->shipping_country = $da_val[9];
-                                    $getorders_model->supplier_sku = $da_val[12];
-                                    $getorders_model->quantity = $da_val[14];
+                                    $getorders_model->shipping_phone    =   $da_val[10];
+                                    $getorders_model->supplier_sku = $da_val[11];
+                                    $getorders_model->quantity = $da_val[13];
                                     $getorders_model->operator_id = $this->params['user_id'];
-                                    $getorders_model->pick_up = $da_val[21];
+                                    $getorders_model->pick_up = $da_val[18];
                                     $getorders_model->group_instance_balance_array = $group_instance_balance_array;
                                     $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
-                                    $quantity_array[$da_val[12]]    +=   $da_val[14];
+                                    $quantity_array[$da_val[11]]    +=   $da_val[13];
                                     $getorders_model->quantity_array    =   $quantity_array;
                                     $check_result = $getorders_model->PlaceOrderCheck();
-
+                                   
                                     $data_array[$da_key]['result'] = $check_result[1];
                                     $data_array[$da_key]['reason'] = $check_result[2];
                                     $data_array[$da_key]['order_amount'] = $check_result['order_amount'];
                                     $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
                                     $data_array[$da_key]['credit'] = $check_result['credit'];
                                     $data_array[$da_key]['user_id'] = $check_result['user_id'];
-                                    $product_info   =   $product_filter_model->getProductInfo($da_val[12]);
+                                    $product_info   =   $product_filter_model->getProductInfo($da_val[11]);
                                     $data_array[$da_key]['product_name']    =   $product_info['product_name']; 
                                     $data_array[$da_key]['imageURL1']       =   $product_info['imageURL1'];
                                     //update instant balance

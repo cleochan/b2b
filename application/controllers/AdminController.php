@@ -18,11 +18,12 @@ class AdminController extends Zend_Controller_Action
             $user_info = $users->UserInfo();
             if(!$auth->hasIdentity())
             { 
-                //$this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
-                //if($_SERVER['SERVER_PORT'] != '443') {
+                if($_SERVER['HTTP_HOST']=='b2b.crazysales.com.au'){
                     header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login/logout?url='.$_SERVER["REQUEST_URI"]);
                     exit();
-                //}
+                }else{
+                    $this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
+                }
             }elseif(1 != $user_info['user_type']){
                 $this->_redirect('/merchant');
             }
@@ -1085,7 +1086,7 @@ class AdminController extends Zend_Controller_Action
                         {
                             $count_column = count($da_val);
                             
-                            if(22 != $count_column) //Reject due to the column amount
+                            if(19 != $count_column) //Reject due to the column amount
                             {
                                 $data_array[$da_key]['result'] = "N";
                                 $data_array[$da_key]['reason'] = "Column Amount Error.";
@@ -1094,18 +1095,19 @@ class AdminController extends Zend_Controller_Action
                                 $getorders_model->shipping_first_name = $da_val[1];
                                 $getorders_model->shipping_last_name = $da_val[2];
                                 $getorders_model->shipping_company = $da_val[3];
-                                $getorders_model->merchant_company = $da_val[20]; // REQUIRED AND IMPORTANT !!!
+                                $getorders_model->merchant_company = $da_val[17]; // REQUIRED AND IMPORTANT !!!
                                 $getorders_model->shipping_address_1 = $da_val[4];
                                 $getorders_model->shipping_suburb = $da_val[6];
                                 $getorders_model->shipping_state = $da_val[7];
                                 $getorders_model->shipping_postcode = $da_val[8];
+                                $getorders_model->shipping_phone    =   $da_val[10];
                                 $getorders_model->shipping_country = $da_val[9];
-                                $getorders_model->supplier_sku = $da_val[12];
-                                $getorders_model->quantity = $da_val[14];
+                                $getorders_model->supplier_sku = $da_val[11];
+                                $getorders_model->quantity = $da_val[13];
                                 $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
-                                $getorders_model->pick_up = $da_val[21];
+                                $getorders_model->pick_up = $da_val[18];
                                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
-                                $quantity_array[$da_val[12]]    +=   $da_val[14];
+                                $quantity_array[$da_val[11]]    +=   $da_val[13];
                                 $getorders_model->quantity_array    =   $quantity_array;
                                 $check_result = $getorders_model->PlaceOrderCheck();
 
@@ -1115,7 +1117,7 @@ class AdminController extends Zend_Controller_Action
                                 $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
                                 $data_array[$da_key]['credit'] = $check_result['credit'];
                                 $data_array[$da_key]['user_id'] = $check_result['user_id'];
-                                $product_info   =   $product_filter_model->getProductInfo($da_val[12]);
+                                $product_info   =   $product_filter_model->getProductInfo($da_val[11]);
                                 $data_array[$da_key]['product_name']    =   $product_info['product_name'];
                                 $data_array[$da_key]['imageURL1']       =   $product_info['imageURL1'];
                                 //update instant balance
