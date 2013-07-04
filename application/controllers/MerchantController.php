@@ -699,7 +699,7 @@ class MerchantController extends Zend_Controller_Action
         $this->view->paypal_url         =   $system_params_model->GetVal('paypal_url');
         $this->view->paypal_account     =   $system_params_model->GetVal('paypal_account');
         $this->view->paypal_return_url  =   $system_params_model->GetVal('paypal_return_url');
-        print_r($this->view->paypal_account);
+        
         if ($_SESSION['import_order'][$this->params['sessionid']]&& $this->params['sessionid'])
         {
             $data_array =   $_SESSION['import_order'][$this->params['sessionid']];
