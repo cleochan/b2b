@@ -287,12 +287,12 @@ class Databases_Joins_GetOrders
                 $error = 1;
             }
         }
+        $order_amount   =   0;
+        $users_extension_model = new Databases_Tables_UsersExtension();
+        $users_extension_model->company = $this->merchant_company;
+        $user_info = $users_extension_model->CheckCompanyInCsv();
         if(!$error) //passed all above then:
-        {
-            $users_extension_model = new Databases_Tables_UsersExtension();
-            $users_extension_model->company = $this->merchant_company;
-            $user_info = $users_extension_model->CheckCompanyInCsv();
-            
+        {            
             $params_model = new Databases_Tables_Params();
             $document_fee = $params_model->GetVal("document_fee");
             if($user_info['user_id'])
@@ -340,21 +340,7 @@ class Databases_Joins_GetOrders
                     $result['shipping_cost']    =   $shipping_cost;
                     $result['ship_cost']    =   $ship_cost;
                     $result['discount_amount']  =   $discount_amount;
-                    $result['order_amount'] = $order_amount;
                     
-                    if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
-                    {
-                        $result['instant_balance'] = $this->group_instance_balance_array[$user_info['user_id']] - $order_amount;
-                    }else{
-                        $result['instant_balance'] = (float)$user_info['balance'] - (float)$order_amount;
-                    }
-                    if($result['credit'] < (0 - $result['instant_balance']))
-                    {
-                        $result[1] =  "N";
-                        $result[2] =  "Out of balance";                        
-                        $result[3] =  1;
-                        $error = 2;
-                    }
                 }
 
             }else{
@@ -363,7 +349,22 @@ class Databases_Joins_GetOrders
                     $error = 1;
             }
         }
-        
+        if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
+        {
+            
+            $result['instant_balance'] = $this->group_instance_balance_array[$user_info['user_id']] - $order_amount;
+        }else{
+            $result['instant_balance'] = $user_info['balance'] - $order_amount;
+        }
+        $result['instant_balance']  =   (round($result['instant_balance'],2)==-0)?0.00:$result['instant_balance'];
+        if($result['credit'] < (0 - round($result['instant_balance'],2)))
+        {
+            $result[1] =  "N";
+            $result[2] =  "Out of balance";                        
+            $result[3] =  1;
+            $error = 2;
+        }
+        $result['order_amount'] = $order_amount;
         $result[3] =$error;
         return $result;
     }

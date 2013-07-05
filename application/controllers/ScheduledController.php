@@ -176,7 +176,13 @@ class ScheduledController extends Zend_Controller_Action
     
     function refreshProductsAction()
     {
-        $params_model           =   new Databases_Tables_Params();
+        $params_model   =   new Databases_Tables_Params();
+        $permit_ip      =   $params_model->GetVal('permit_ip');
+        $permit_ip_array    = explode(',', $permit_ip);
+        $ip =   $this->getIP();
+        if(!in_array($ip, $permit_ip_array)){
+            //exit();
+        }
         $logs_path              =   $params_model->GetVal('logs_path');
         $f  =   @fopen($logs_path."productslogs/refreshproducts".date('YmdHis').".txt", "w+");
         @fwrite($f, 'Refresh Products Begin at:'.date("Y-m-d H:i:s")."\n");
@@ -352,6 +358,12 @@ class ScheduledController extends Zend_Controller_Action
     {
         $category_webservice_model  =   new Algorithms_Core_CategoryService();
         $params_model               =   new Databases_Tables_Params();
+        $permit_ip      =   $params_model->GetVal('permit_ip');
+        $permit_ip_array    = explode(',', $permit_ip);
+        $ip =   $this->getIP();
+        if(!in_array($ip, $permit_ip_array)){
+            //exit();
+        }
         $category_model             =   new Databases_Tables_ProductCategories();
         $entries_perpage        =   $params_model->GetVal("product_request_qty_per_page");
         $logs_path              =   $params_model->GetVal('logs_path');
@@ -494,6 +506,12 @@ class ScheduledController extends Zend_Controller_Action
     function refreshProductsPostAction()
     {
             $params_model           =   new Databases_Tables_Params();
+            $permit_ip      =   $params_model->GetVal('permit_ip');
+            $permit_ip_array    = explode(',', $permit_ip);
+            $ip =   $this->getIP();
+            if(!in_array($ip, $permit_ip_array)){
+                //exit();
+            }
             $productFilter_model    =   new Databases_Joins_ProductFilter();
             $param_postage_api_url    =   $params_model->GetVal('postage_api_url');
             $logs_path              =   $params_model->GetVal('logs_path');
@@ -517,5 +535,17 @@ class ScheduledController extends Zend_Controller_Action
             }
             die('update success');
       }
+    function getIP()
+    {
+        $ip =   '';
+        if (getenv("HTTP_CLIENT_IP"))
+            $ip = getenv("HTTP_CLIENT_IP");
+        else if(getenv("HTTP_X_FORWARDED_FOR"))
+            $ip = getenv("HTTP_X_FORWARDED_FOR");
+        else if(getenv("REMOTE_ADDR"))
+            $ip = getenv("REMOTE_ADDR");
+        else $ip = "Unknow";
+        return $ip;
+    }
       
 }

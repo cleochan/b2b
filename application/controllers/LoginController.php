@@ -83,6 +83,7 @@ class LoginController extends Zend_Controller_Action
     {
         $params = $this->_request->getParams();
         unset($_SESSION['place_order']);
+        session_destroy();
         Zend_Auth::getInstance()->clearIdentity();
         header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login?url='.$params['url']);
 	exit();

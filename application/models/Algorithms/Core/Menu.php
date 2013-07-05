@@ -9,6 +9,7 @@ class Algorithms_Core_Menu
             "Merchants List" => "/admin/merchants",
             "BPay Import" => "/admin/bpay-import",
             "Import Order" => "/admin/admin-import-order",
+            "Import Order Preview" => "/admin/admin-import-order",
             "Help Mgt" => "/admin/help-mgt"
         );
         

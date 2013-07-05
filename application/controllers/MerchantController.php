@@ -316,9 +316,11 @@ class MerchantController extends Zend_Controller_Action
                 );
             }
         }
+        
         if ($_SESSION['place_order'][$this->params['sessionid']]&& $this->params['sessionid'])
         {
             $data_array =   $_SESSION['place_order'][$this->params['sessionid']];
+            
              foreach($data_array as $da_key => $da_val)
             {
                 $getorders_model->shipping_first_name = $da_val['shipping_first_name'];
@@ -389,14 +391,17 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->quantity_array    =   $quantity_array;
                     $getorders_model->shipping_phone    =   $da_val['shipping_phone'];
                     $check_result = $getorders_model->PlaceOrderCheck();
-                    
+
                     $data_array[$da_key]['pick_up']    =   $this->params['pickup']?"Y":"N";
                     $data_array[$da_key]['result'] = $check_result[1];
                     $data_array[$da_key]['reason'] = $check_result[2];
-                    $data_array[$da_key]['order_amount'] = $check_result['order_amount'];
-                    $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
+                    
+                    $data_array[$da_key]['order_amount']    =   (float)$check_result['order_amount'];
+                    $data_array[$da_key]['instant_balance'] =   (float)$check_result['instant_balance'];
+                    
                     $data_array[$da_key]['credit'] = $check_result['credit'];
                     $data_array[$da_key]['user_id'] = $check_result['user_id'];
+                     
                     $product_info   =   $product_filter_model->getProductInfo($da_val['supplier_sku']);
                     $data_array[$da_key]['product_name']    =   $product_info['product_name'];
                     $data_array[$da_key]['imageURL1']       =   $product_info['imageURL1'];
@@ -411,8 +416,10 @@ class MerchantController extends Zend_Controller_Action
                     $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
                 }
             }
+            
             $sessionId  =   base64_encode($this->params['user_id'].date('YmdHis'));
             $_SESSION['place_order'][$sessionId]   =   $data_array;
+            
             $this->view->sessionId  =   $sessionId;
             $this->view->userId     =   $this->params['user_id'];
         }
@@ -800,8 +807,8 @@ class MerchantController extends Zend_Controller_Action
                                    
                                     $data_array[$da_key]['result'] = $check_result[1];
                                     $data_array[$da_key]['reason'] = $check_result[2];
-                                    $data_array[$da_key]['order_amount'] = $check_result['order_amount'];
-                                    $data_array[$da_key]['instant_balance'] = $check_result['instant_balance'];
+                                    $data_array[$da_key]['order_amount'] = (float)$check_result['order_amount'];
+                                    $data_array[$da_key]['instant_balance'] = (float)$check_result['instant_balance'];
                                     $data_array[$da_key]['credit'] = $check_result['credit'];
                                     $data_array[$da_key]['user_id'] = $check_result['user_id'];
                                     $product_info   =   $product_filter_model->getProductInfo($da_val[11]);
