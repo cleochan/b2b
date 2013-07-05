@@ -545,7 +545,7 @@ class MerchantController extends Zend_Controller_Action
             $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
             $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
             
-           if($purchase_orders)
+            if($purchase_orders)
             {
                 foreach ($purchase_orders as $purchase_order)
                 {
@@ -902,6 +902,7 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->shipping_state = $params['shipping_state'][$loop_key];
                 $getorders_model->shipping_postcode = $params['shipping_postcode'][$loop_key];
                 $getorders_model->shipping_country = $params['shipping_country'][$loop_key];
+                $getorders_model->shipping_phone = $params['shipping_phone'][$loop_key];
                 $getorders_model->supplier_sku = $supplier_sku;
                 $getorders_model->quantity = $params['quantity'][$loop_key];
                 $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
@@ -912,7 +913,7 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
 
                 $check_result = $getorders_model->PlaceOrderCheck();
-
+                
                 if("Y" == $check_result[1]) //passed the validation
                 {
                     $order_amount = $check_result['order_amount'];
@@ -921,7 +922,6 @@ class MerchantController extends Zend_Controller_Action
                     
                     //update instant balance
                     $group_instance_balance_array[$user_id] = $instant_balance;
-
                     //Insert Into Orders
                     $getorders_model->merchant_ref = $params['merchant_ref'][$loop_key];
                     $getorders_model->order_amount = $order_amount;

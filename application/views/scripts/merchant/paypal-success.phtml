@@ -11,12 +11,15 @@
   
    function timedown()
    {
-    time=time-1;
-    if (time<0)
-        window.location.href='/merchant/import-order-preview/sessionid/<?=$this->sessionId?>' ;
-    else
-        document.getElementById("second").innerHTML = time;
+        time=time-1;
+        if (time<0){
+            clearInterval(oTimer);
+            window.location.href='/merchant/import-order-preview/sessionid/<?=$this->sessionId?>' ;
+        }
+        else{
+            document.getElementById("second").innerHTML = time;
+        }
    }
   
-   setInterval("timedown()",1000);
+   oTimer   =   setInterval("timedown()",1000);
 </script>
