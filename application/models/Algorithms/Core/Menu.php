@@ -9,7 +9,6 @@ class Algorithms_Core_Menu
             "Merchants List" => "/admin/merchants",
             "BPay Import" => "/admin/bpay-import",
             "Import Order" => "/admin/admin-import-order",
-            "Import Order Preview" => "/admin/admin-import-order",
             "Help Mgt" => "/admin/help-mgt"
         );
         
@@ -46,7 +45,6 @@ class Algorithms_Core_Menu
             "Adjust Balance" => "/admin/merchant-recharge/user_id",
             "BPay Import Preview" => "/admin/bpay-import-preview",
             "Feed Generation" => "/admin/merchant-feed-generation/user_id",
-            //"Place Order Preview" => "/merchant/place-order-preview",
         );
         
         return $menu;
@@ -130,12 +128,43 @@ class Algorithms_Core_Menu
             case "help-add":
                 $link = "Help Mgt";
                 break;
+            case "admin-import-order-preview":
+                $link = "Import Order";
+                break;
             case "admin-import-order":
                 $link = "Import Order";
+                break;
+            case "place-order-preview":
+                $link = "Place Order";
+                break;
+            case "import-order-preview":
+                $link = "Import Order";
+                break;
+            case "recharge":
+                $link = "Recharge";
+                break;
+            case "merchant-add":
+                $link = "Merchants List";
+                break;
+            case "merchant-edit":
+                $link = "Merchants List";
+                break;
+            case "merchant-recharge":
+                $link = "Merchants List";
+                break;
+            case "merchant-feed-generation":
+                $link = "Merchants List";
+                break;
+            case "admin-order-report":
+                $link = "Merchants List";
+                break;
+            case "admin-financial-report":
+                $link = "Merchants List";
                 break;
             default:
                 $link = "Dashboard";
                 break;
+            
         }
         
         $html_array = array();

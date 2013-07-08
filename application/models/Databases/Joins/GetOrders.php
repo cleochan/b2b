@@ -291,14 +291,17 @@ class Databases_Joins_GetOrders
         $users_extension_model = new Databases_Tables_UsersExtension();
         $users_extension_model->company = $this->merchant_company;
         $user_info = $users_extension_model->CheckCompanyInCsv();
+        if($user_info['user_id'])
+        {
+            $result['user_id'] = $user_info['user_id'];
+            $result['credit'] = $user_info['credit'];
+        }
         if(!$error) //passed all above then:
         {            
             $params_model = new Databases_Tables_Params();
             $document_fee = $params_model->GetVal("document_fee");
             if($user_info['user_id'])
             {
-                $result['user_id'] = $user_info['user_id'];
-                $result['credit'] = $user_info['credit'];
                 $discount = ( $user_info['discount']) / 100;
                 //calculate item price
                 $product_filter_model = new Databases_Joins_ProductFilter();
@@ -357,7 +360,7 @@ class Databases_Joins_GetOrders
             $result['instant_balance'] = $user_info['balance'] - $order_amount;
         }
         $result['instant_balance']  =   (round($result['instant_balance'],2)==-0)?0.00:$result['instant_balance'];
-        if($result['credit'] < (0 - round($result['instant_balance'],2)))
+        if($result['credit'] < (0 - round($result['instant_balance'],2)) && 1 != $error)
         {
             $result[1] =  "N";
             $result[2] =  "Out of balance";                        

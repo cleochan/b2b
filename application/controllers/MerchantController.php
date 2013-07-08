@@ -466,6 +466,7 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->shipping_suburb = $params['shipping_suburb'][$loop_key];
                 $getorders_model->shipping_state = $params['shipping_state'][$loop_key];
                 $getorders_model->shipping_postcode = $params['shipping_postcode'][$loop_key];
+                $getorders_model->shipping_phone = $params['shipping_phone'][$loop_key];
                 $getorders_model->shipping_country = $params['shipping_country'][$loop_key];
                 $getorders_model->supplier_sku = $supplier_sku;
                 $getorders_model->quantity = $params['quantity'][$loop_key];
@@ -1087,7 +1088,7 @@ class MerchantController extends Zend_Controller_Action
         }else{
             $notice = "E1";
         }
-        $this->_redirect("/merchant/order-report/notice/".$notice);
+         $this->_redirect("/merchant/order-report/notice/".$notice);
     }
     
     

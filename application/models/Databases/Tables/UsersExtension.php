@@ -95,7 +95,7 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
     //This function is called in LogsFinancial::AddLog() already, don't call it in any other way!!!!!!
     function UpdateBalance()
     {
-        if($this->user_id && $this->balance)
+        if($this->user_id && NULL !== $this->balance)
         {
             $row = $this->fetchRow("user_id='".$this->user_id."'");
             $row->balance = $this->balance;
