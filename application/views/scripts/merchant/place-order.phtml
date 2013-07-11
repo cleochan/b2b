@@ -78,7 +78,7 @@ $(document).ready(function()
                     <table class="width100" cellspacing="1">
                         <tbody>
                             <tr>
-                                <td class="form-title" colspan="7" align="left">Items <a href="#" id="add_item_href"><img src="/images/add.png" border="0" title="Add new item" alt="Add new item" /></a></td>
+                                <td class="form-title" colspan="7" align="left">Items <a href="#" id="add_item_href"><img src="/styles/<?=$this->system_css?>/images/add.png" border="0" title="Add new item" alt="Add new item" /></a></td>
                             </tr>
                             <tr class="row-2">
                                 <td class="center"><span class="small">Merchant Ref</span></td>
@@ -96,7 +96,7 @@ $(document).ready(function()
                                 <td class="center"><span class="small"><?=$items['supplier_sku']?></span></td>
                                 <td class="center"><span class="small"><?=$items['merchant_sku']?></span></td>
                                 <td class="center"><span class="small"><?=$items['quantity']?></span></td>
-                                <td class="center"><span class="small"><a href="/merchant/place-order-remove-item/ikey/<?=$ikey?>"><img src="/images/del.png" border="0" /></a></span></td>
+                                <td class="center"><span class="small"><a href="/merchant/place-order-remove-item/ikey/<?=$ikey?>"><img src="/styles/<?=$this->system_css?>/images/del.png" border="0" /></a></span></td>
                             </tr>
                             <?php
                                     endforeach;

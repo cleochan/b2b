@@ -15,6 +15,7 @@ class LoginController extends Zend_Controller_Action
         //get system title
         $get_title = new Databases_Tables_Params();
         $this->view->system_title = $get_title -> GetVal("system_title");
+        $this->view->system_css     = $get_title->GetVal('system_css');
     }
 	
     function indexAction()

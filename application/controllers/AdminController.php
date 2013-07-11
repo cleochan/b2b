@@ -1062,7 +1062,6 @@ class AdminController extends Zend_Controller_Action
         $menu_model = new Algorithms_Core_Menu;
         $product_filter_model   =   new Databases_Joins_ProductFilter();
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Admin Import Order"));
-        
 
         if ($_FILES["csvf"]["error"] > 0)
         {

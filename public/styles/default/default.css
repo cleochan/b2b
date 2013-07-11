@@ -209,7 +209,7 @@ div.quick-summary-right	{ width: 49%; padding: 2px; text-align: right; float: ri
 .special_button_style_green,#submitx
 {
     
-    background: url("../images/buttom.gif") no-repeat left top;
+    background: url("images/buttom.gif") no-repeat left top;
     color: #FFFFFF;
     cursor: pointer;
     font-family: Arial,Helvetica,sans-serif;
@@ -279,49 +279,49 @@ h2{ padding: 30px 0px; margin: 0px;}
 
 
 /*login*/
-.login_topbg{ background: url("../images/login/login_topbg.jpg") repeat-x left; height: 69px; width: 100%; overflow: hidden;}
-.login_logo{background: url("../images/login/logo.gif") no-repeat left; width: 218px; height: 69px; }
-.login_main{width: 620px; margin: 136px auto 0px auto;background: url("../images/login/login_mainbg.jpg") no-repeat left; height: 264px;}
+.login_topbg{ background: url("images/login/login_topbg.jpg") repeat-x left; height: 69px; width: 100%; overflow: hidden;}
+.login_logo{background: url("images/login/logo.gif") no-repeat left; width: 218px; height: 69px; }
+.login_main{width: 620px; margin: 136px auto 0px auto;background: url("images/login/login_mainbg.jpg") no-repeat left; height: 264px;}
 .login_txt{ padding-top: 95px; _padding-top: 110px; width: 620px;}
 .login_txt ul{ width: 620px; height: 40px; overflow:  hidden}
 .login_txt ul li{ list-style: none; float: left;}
 .login_txt ul li.font{ width: 200px; text-align: right; padding-right: 10px; padding-top: 2px; font-weight: bold}
-.login_input{background: url("../images/login/login_inputbg.gif") no-repeat left; height: 24px; width: 189px; border:0px; list-style: 22px; padding: 0px 5px 0px 5px}
-.login_button{background: url("../images/login/login_button.gif") no-repeat left; width: 124px; height: 28px; border:0px;  margin-left: 250px;  cursor: pointer }
+.login_input{background: url("images/login/login_inputbg.gif") no-repeat left; height: 24px; width: 189px; border:0px; list-style: 22px; padding: 0px 5px 0px 5px}
+.login_button{background: url("images/login/login_button.gif") no-repeat left; width: 124px; height: 28px; border:0px;  margin-left: 250px;  cursor: pointer }
 .login_footer{margin: 10px auto 0px auto;text-align:right; font-family: Verdana, Arial, Helvetica, sans-serif; 
     font-size: 8pt}
 .login_prompt{ padding: 0px 0px 0px 10px;font-weight: bold; color:  #FF0000}
 
 
 /*info*/
-.info_topbg{background: url("../images/info_topbg.gif") repeat-x left; height:41px; width: 100%; overflow: hidden;}
-.info_logo{background: url("../images/info_logo.gif") no-repeat left;height:41px; width: 127px; overflow: hidden;float: left; }
+.info_topbg{background: url("images/info_topbg.gif") repeat-x left; height:41px; width: 100%; overflow: hidden;}
+.info_logo{background: url("images/info_logo.gif") no-repeat left;height:41px; width: 127px; overflow: hidden;float: left; }
 .info_toptxt{ color:#FFFFFF; width: 500px;float: left; padding-top: 12px; font-style: italic;}
 .info_help{ float: right; padding-right: 30px; _margin-top: 10px;}
-.info_help ul li{ float: left;color:#fff; width: 71px; height: 22px;background: url("../images/info_topmenu.gif") no-repeat left; list-style:  none; margin-right: 10px; text-align:  center; line-height:18px; color:  floralwhite; font-weight:  bold;}
+.info_help ul li{ float: left;color:#fff; width: 71px; height: 22px;background: url("images/info_topmenu.gif") no-repeat left; list-style:  none; margin-right: 10px; text-align:  center; line-height:18px; color:  floralwhite; font-weight:  bold;}
 .info_help ul li a{ color:#fff; display:  block}
 .info_help ul li a:hover{ color:#fff; display:  block}
-.info_menu {background: url("../images/info_menubg.gif") repeat-x left top ; height:30px; width: 100%; overflow: hidden; background-color:  #82BB20}
+.info_menu {background: url("images/info_menubg.gif") repeat-x left top ; height:30px; width: 100%; overflow: hidden; background-color:  #82BB20}
 .info_menu ul{ width:960px; margin: 0px auto}
 .info_menu ul li{ list-style:  none; float: left; width: 14%; line-height:30px; text-align:  center; font-weight:  bold; padding: 0px; }
 .info_menu01 { color:#FFFfff;}
 .info_menu01 a{ color:#FFFfff;}
 .info_menu01 a:hover{ color:#FFFfff;}
-.info_menu02 {background: url("../images/info_menu02.gif") no-repeat  bottom;height:30px;  overflow: hidden; display: block}
+.info_menu02 {background: url("images/info_menu02.gif") no-repeat  bottom;height:30px;  overflow: hidden; display: block}
 .info_menu02 a { color:#00679a;}
 
 .info_place{ width: 100%}
 .info_place ul{ margin: 0px; padding:10px 0px 10px 1%}
 .info_place ul li{ list-style: none; }
-.info_botton{background: url("../images/buttom.gif") no-repeat left -29px;color: #000;cursor: pointer;font-family: Arial,Helvetica,sans-serif;font-size: 12px; width: 87px;height: 22px; border: 0px;}
+.info_botton{background: url("images/buttom.gif") no-repeat left -29px;color: #000;cursor: pointer;font-family: Arial,Helvetica,sans-serif;font-size: 12px; width: 87px;height: 22px; border: 0px;}
 .info_bottonp{ padding: 15px 0px;}
 .info_botton2{ padding:15px 0px 15px 0px;}
 .red,.red a{ color:#FF0000}
 .info_tablebox{ width: 99%; margin: 0px auto; border: 1px solid #cacaca; overflow:  hidden }
-.info_searchbox{ background: url("../images/searchbg.jpg") repeat-x left; height: 28px; overflow:  hidden; padding: 7px 0px 0px 0px ; border: 1px solid #fff; border-bottom: 0px;}
+.info_searchbox{ background: url("images/searchbg.jpg") repeat-x left; height: 28px; overflow:  hidden; padding: 7px 0px 0px 0px ; border: 1px solid #fff; border-bottom: 0px;}
 .info_searchbox .input{ height: 16px;}
 .info_Recharge{  color: #086d9d; font-weight: bold; text-align: center; width: 100%}
-.info_search_botton{background: url("../images/buttom.gif") no-repeat left -55px;color: #fff;cursor: pointer;font-family: Arial,Helvetica,sans-serif;font-size: 12px; width: 57px;height: 20px; line-height: 20px; border: 0px;}
+.info_search_botton{background: url("images/buttom.gif") no-repeat left -55px;color: #fff;cursor: pointer;font-family: Arial,Helvetica,sans-serif;font-size: 12px; width: 57px;height: 20px; line-height: 20px; border: 0px;}
 .info_footer{ padding-right: 10px;}
 
 /*api_response*/
