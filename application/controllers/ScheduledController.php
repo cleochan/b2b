@@ -53,8 +53,8 @@ class ScheduledController extends Zend_Controller_Action
             $logs_contents              =   ' ';
             $merchant_ref_pool = array();
             $getorder_model->item_status    =   0;
-            //$getorder_model->order_api_trying_times     =   $order_api_trying_times;
-            //$getorder_model->order_api_trying_interval  =   $order_api_trying_interval;
+            $getorder_model->order_api_trying_times     =   $order_api_trying_times;
+            $getorder_model->order_api_trying_interval  =   $order_api_trying_interval;
             $orders_pending_list    =   $getorder_model->getPendinglist();
             if($orders_pending_list){
                 foreach($orders_pending_list as $order_pending){
@@ -546,6 +546,32 @@ class ScheduledController extends Zend_Controller_Action
             $ip = getenv("REMOTE_ADDR");
         else $ip = "Unknow";
         return $ip;
+    }
+    
+    function refreshFeedsAction()
+    {
+        $user_model =   new Databases_Joins_GetUserInfo();
+        $params_model           =   new Databases_Tables_Params();
+        $user_list  =   $user_model->GetUserList();
+        $logs_path              =   $params_model->GetVal('logs_path');
+        $f_logs_feeds  =   @fopen($logs_path."feedslogs/refreshfeeds".date('YmdHis').".txt", "w+");
+        foreach ($user_list as $user)
+        {
+            $user_id_array[]    =   $user['user_id'];
+        }
+        if($user_id_array){
+            $model = new Algorithms_Core_Feed();
+            $model->user_id_array = $user_id_array;
+            $result = $model->Publish();
+            if($result){
+                $logs_feeds   .=   ' Generate Feed:'.$result."\n";
+            }else{
+                $logs_feeds   .=   " Generate Feed faild\n";
+            }
+            @fwrite($f_logs_feeds, $logs_feeds);
+            @fclose($f_logs_feeds);
+        }
+        die('Refresh Feeds Complete.');
     }
       
 }

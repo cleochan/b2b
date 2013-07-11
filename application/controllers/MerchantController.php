@@ -13,11 +13,12 @@ class MerchantController extends Zend_Controller_Action
     {
         $auth = Zend_Auth::getInstance();
         $users = new Databases_Tables_Users();
+        $params_model    =   new Databases_Tables_Params();
+        $running_mode   =   $params_model->GetVal('running_mode');
         $user_info = $users->UserInfo();
-
         if(!$auth->hasIdentity())
-        { 
-            if($_SERVER['HTTP_HOST']=='b2b.crazysales.com.au'){
+        {
+            if($running_mode=='production' && $_SERVER["HTTPS"]<>'on'){
                 header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login/logout?url='.$_SERVER["REQUEST_URI"]);
                 exit();
             }else{
@@ -31,7 +32,8 @@ class MerchantController extends Zend_Controller_Action
         $get_title = new Databases_Tables_Params();
         $this->view->system_title = $get_title -> GetVal("system_title");
         $this->view->system_version = $get_title -> GetVal("system_version");
-
+        $this->view->system_css     = $get_title->GetVal('system_css');
+        
         //make top menu
         $menu = new Algorithms_Core_Menu();
         $top_menu = $menu->MenuForMerchant();

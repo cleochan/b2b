@@ -155,7 +155,7 @@ class Databases_Joins_ProductFilter
                 default :
                     break;
             }
-            $select->where("product_code_type <> ?", 'PART');
+            $select->where("product_code_type <> 'PART' or product_code_type is null");
             $select->order("category ASC");
             $select->order("brand ASC");
             

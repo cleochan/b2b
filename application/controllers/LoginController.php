@@ -43,7 +43,6 @@ class LoginController extends Zend_Controller_Action
 
                 $auth_back = Zend_Auth::getInstance();
                 $result = $auth_back->authenticate($authAdapter);
-
                 if ($result->isValid()) {				
                     $data = $authAdapter->getResultRowObject(null, 'password');
                     if($data->user_status) //user_status=0
@@ -84,9 +83,15 @@ class LoginController extends Zend_Controller_Action
         $params = $this->_request->getParams();
         unset($_SESSION['place_order']);
         session_destroy();
+        $params_model    =   new Databases_Tables_Params();
+        $running_mode   =   $params_model->GetVal('running_mode');
         Zend_Auth::getInstance()->clearIdentity();
-        header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login?url='.$params['url']);
-	exit();
+        if($running_mode=='production' && $_SERVER["HTTPS"]<>'on'){
+            header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login?url='.$params['url']);
+            exit();
+        }else{
+            $this->_redirect('/login?url='.$params['url']);
+        }
     }
 }
 
