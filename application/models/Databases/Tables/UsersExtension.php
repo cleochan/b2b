@@ -127,8 +127,15 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
         if($this->company)
         {
             $row = $this->fetchRow("company = '".trim($this->company)."'");
-            $row    =   $row?$row->toArray():null;
-            return $row;
+            
+            if(empty($row))
+            {
+                $result = array(); 
+            }else{
+                $result = $row->toArray();
+            }
+            
+            return $result;
         }
     }
 }
