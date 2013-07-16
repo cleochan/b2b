@@ -418,7 +418,7 @@ if($result)
     function strTestAction()
     {
         $feed_column_value = 'hello "world", how are you ?';
-        $feed_column_value = str_replace('\"', "\'", $feed_column_value);
+        $feed_column_value = str_replace('"', "'", $feed_column_value);
         
         echo $feed_column_value;
         die;
