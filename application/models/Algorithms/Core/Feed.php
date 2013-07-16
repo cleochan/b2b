@@ -74,7 +74,17 @@ class Algorithms_Core_Feed
 
                             foreach($collect_feed_info['users_feed_definition'] as $users_feed_definition)
                             {
-                                $contents_tmp_array[] = $qualifier.$this->StringReplacement($pl, $users_feed_definition['column_value'], $array_for_replacement, $users_feed_definition['column_value_adjustment']).$qualifier;
+                                $string_replacement_result = $this->StringReplacement($pl, $users_feed_definition['column_value'], $array_for_replacement, $users_feed_definition['column_value_adjustment']);
+                                
+                                if('"' === $qualifier)
+                                {
+                                    $string_replacement_result = str_replace('"', "'", $string_replacement_result);
+                                }elseif("'" === $qualifier)
+                                {
+                                    $string_replacement_result = str_replace("'", '"', $string_replacement_result);
+                                }
+                                
+                                $contents_tmp_array[] = $qualifier.$string_replacement_result.$qualifier;
                             }
 
                             $contents .= implode($delimeter, $contents_tmp_array)."\r\n";
@@ -193,7 +203,6 @@ class Algorithms_Core_Feed
             }
         }
         
-        $feed_column_value = str_replace('"', "'", $feed_column_value);
         $feed_column_value = str_replace("\n", "", $feed_column_value);
         $feed_column_value = str_replace("\r", "", $feed_column_value);
         $feed_column_value = str_replace("\r\n", "", $feed_column_value);
