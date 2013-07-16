@@ -193,6 +193,8 @@ class Algorithms_Core_Feed
             }
         }
         
+        $feed_column_value = str_replace('\"', "'", $feed_column_value);
+        
         return $feed_column_value;
     }
     
