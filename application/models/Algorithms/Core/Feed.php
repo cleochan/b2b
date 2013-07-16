@@ -78,7 +78,7 @@ class Algorithms_Core_Feed
                                 
                                 if('"' === $qualifier)
                                 {
-                                    $string_replacement_result = str_replace('"', "'", $string_replacement_result);
+                                    $string_replacement_result = str_replace('"', '""', $string_replacement_result);
                                 }elseif("'" === $qualifier)
                                 {
                                     $string_replacement_result = str_replace("'", '"', $string_replacement_result);
