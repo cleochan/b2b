@@ -185,10 +185,10 @@ class ScheduledController extends Zend_Controller_Action
         }
         $logs_path              =   $params_model->GetVal('logs_path');
         $f  =   @fopen($logs_path."productslogs/refreshproducts".date('YmdHis').".txt", "w+");
-        @fwrite($f, 'Refresh Products Begin at:'.date("Y-m-d H:i:s")."\r\n");
+        @fwrite($f, 'Refresh Products Begin at:'.date("Y-m-d H:i:s")."\n");
         @fwrite($f, "initialize wdsl start ....\n");
         $product_webservice_model   =   new Algorithms_Core_ProductService();
-        @fwrite($f, 'initialize wdsl succeed :'.date("Y-m-d H:i:s")."\r\n");
+        @fwrite($f, 'initialize wdsl succeed :'.date("Y-m-d H:i:s")."\n");
         $productFilter_model    =   new Databases_Joins_ProductFilter();
         $data_source            =   $params_model->GetVal("product_info_table");
         $entries_perpage        =   $params_model->GetVal("product_request_qty_per_page");
@@ -204,7 +204,7 @@ class ScheduledController extends Zend_Controller_Action
             'PageNumber'       =>   $page_now,
         );
         $product_webservice_model->EntriesPerPage =   $paginationType['EntriesPerPage'];
-        @fwrite($f, 'Truncate Product Data : '.date("Y-m-d H:i:s")."\r\n");
+        @fwrite($f, 'Truncate Product Data : '.date("Y-m-d H:i:s")."\n");
         $productFilter_model->truncateProduct();
         $count  =   array(
             'normal_count'  =>  0,
@@ -219,7 +219,7 @@ class ScheduledController extends Zend_Controller_Action
                 try{
                     $reponse_data  =   $product_webservice_model->WebServicesGetProducts();
                 }  catch (Zend_Exception $e){
-                    $logs_contents  =   ' page:'.$page_now.'/'.$TotalNumberOfPages .'  Faild!  Date:'.date('Y-m-d H:i:s') ."\r\n";
+                    $logs_contents  =   ' page:'.$page_now.'/'.$TotalNumberOfPages .'  Faild!  Date:'.date('Y-m-d H:i:s') ."\n";
                     $page_now++;
                     continue;
                 }
@@ -230,9 +230,9 @@ class ScheduledController extends Zend_Controller_Action
                 if ($has)
                 {
                     $has=0;
-                    @fwrite($f, 'TotalNumberOfPages : '.$TotalNumberOfPages."\r\n");
-                    @fwrite($f, 'TotalNumberOfEntries : '.$TotalNumberOfEntries."\r\n");
-                    @fwrite($f, 'EntriesPerPage : '.$paginationType['EntriesPerPage']."\r\n");
+                    @fwrite($f, 'TotalNumberOfPages : '.$TotalNumberOfPages."\n");
+                    @fwrite($f, 'TotalNumberOfEntries : '.$TotalNumberOfEntries."\n");
+                    @fwrite($f, 'EntriesPerPage : '.$paginationType['EntriesPerPage']."\n");
 
                 }
                 $product_list_data      =   $reponse_data['GetProductsResult']['Products']['CrazySalesProductType'];
@@ -317,7 +317,7 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->product_code_type         =   $product_data['ProductCodeType'];
                     $count  =    $productFilter_model->AddProduct();
                 }
-                $logs_contents  =   ' page:'.$page_now.'/'.$TotalNumberOfPages .'  succeed!  Date:'.date('Y-m-d H:i:s') ."\r\n";
+                $logs_contents  =   ' page:'.$page_now.'/'.$TotalNumberOfPages .'  succeed!  Date:'.date('Y-m-d H:i:s') ."\n";
                 @fwrite($f, $logs_contents);
                 $page_now++;
 
@@ -334,19 +334,19 @@ class ScheduledController extends Zend_Controller_Action
                 }
                 $params_model->UpdateVal('product_info_table_refresh_time',date('Y-m-d H:i:s'));
             }
-            @fwrite($f, "Refresh Products normal:".$count['normal_count'] ."  Product Repeat:".$count['repeat_count']."\r\n");
+            @fwrite($f, "Refresh Products normal:".$count['normal_count'] ."  Product Repeat:".$count['repeat_count']."\n");
         
             $products_all       =   $productFilter_model->getProductAll();
             if($products_all)
             {
                 $logs_postage   =   '';
-                @fwrite($f, 'Update Estimated Shipping Cost Start : '.date("Y-m-d H:i:s")."\r\n");
+                @fwrite($f, 'Update Estimated Shipping Cost Start : '.date("Y-m-d H:i:s")."\n");
                 foreach ($products_all as $product)
                 {
                     $postage_api_url    =   $param_postage_api_url.'?pid='.$product['product_id'].'&zip=4270&qty=1';
                     $result =   $productFilter_model->updateEstimatedShippingCost($postage_api_url,$product['product_id']);
                 }
-                @fwrite($f, 'Update Estimated Shipping Cost End : '.date("Y-m-d H:i:s")."\r\n");
+                @fwrite($f, 'Update Estimated Shipping Cost End : '.date("Y-m-d H:i:s")."\n");
             }
             @fwrite($f, $logs_postage);
             @fwrite($f, "Refresh Products Completed.\n");
