@@ -185,10 +185,10 @@ class ScheduledController extends Zend_Controller_Action
         }
         $logs_path              =   $params_model->GetVal('logs_path');
         $f  =   @fopen($logs_path."productslogs/refreshproducts".date('YmdHis').".txt", "w+");
-        @fwrite($f, 'Refresh Products Begin at:'.date("Y-m-d H:i:s")."\n");
+        @fwrite($f, 'Refresh Products Begin at:'.date("Y-m-d H:i:s")."\r\n");
         @fwrite($f, "initialize wdsl start ....\n");
         $product_webservice_model   =   new Algorithms_Core_ProductService();
-        @fwrite($f, 'initialize wdsl succeed :'.date("Y-m-d H:i:s")."\n");
+        @fwrite($f, 'initialize wdsl succeed :'.date("Y-m-d H:i:s")."\r\n");
         $productFilter_model    =   new Databases_Joins_ProductFilter();
         $data_source            =   $params_model->GetVal("product_info_table");
         $entries_perpage        =   $params_model->GetVal("product_request_qty_per_page");
@@ -204,29 +204,35 @@ class ScheduledController extends Zend_Controller_Action
             'PageNumber'       =>   $page_now,
         );
         $product_webservice_model->EntriesPerPage =   $paginationType['EntriesPerPage'];
-        @fwrite($f, 'Truncate Product Data : '.date("Y-m-d H:i:s")."\n");
+        @fwrite($f, 'Truncate Product Data : '.date("Y-m-d H:i:s")."\r\n");
         $productFilter_model->truncateProduct();
         $count  =   array(
             'normal_count'  =>  0,
             'repeat_count'  =>  0,
         );
         $has=1;
-        try{
             do
             {
                 set_time_limit(3600);
                 $product_webservice_model->PageNumber =   $page_now;
                 $product_webservice_model->PaginationType   =   $paginationType;
-                $reponse_data  =   $product_webservice_model->WebServicesGetProducts();
-                $TotalNumberOfEntries   =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfEntries'];
-                $TotalNumberOfPages     =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfPages'];
-
+                try{
+                    $reponse_data  =   $product_webservice_model->WebServicesGetProducts();
+                }  catch (Zend_Exception $e){
+                    $logs_contents  =   ' page:'.$page_now.'/'.$TotalNumberOfPages .'  Faild!  Date:'.date('Y-m-d H:i:s') ."\r\n";
+                    $page_now++;
+                    continue;
+                }
+                if(!$TotalNumberOfEntries && !$TotalNumberOfPages){
+                    $TotalNumberOfEntries   =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfEntries'];
+                    $TotalNumberOfPages     =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfPages'];
+                }
                 if ($has)
                 {
                     $has=0;
-                    @fwrite($f, 'TotalNumberOfPages : '.$TotalNumberOfPages."\n");
-                    @fwrite($f, 'TotalNumberOfEntries : '.$TotalNumberOfEntries."\n");
-                    @fwrite($f, 'EntriesPerPage : '.$paginationType['EntriesPerPage']."\n");
+                    @fwrite($f, 'TotalNumberOfPages : '.$TotalNumberOfPages."\r\n");
+                    @fwrite($f, 'TotalNumberOfEntries : '.$TotalNumberOfEntries."\r\n");
+                    @fwrite($f, 'EntriesPerPage : '.$paginationType['EntriesPerPage']."\r\n");
 
                 }
                 $product_list_data      =   $reponse_data['GetProductsResult']['Products']['CrazySalesProductType'];
@@ -261,8 +267,8 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->gtin                      =   $product_data['GTIN'];
                     $productFilter_model->country_of_origin         =   $product_data['CountryOfOrigin'];
                     $productFilter_model->catalog                   =   $product_data['Catalog'];
-                    $productFilter_model->catalog_start_date        =   $product_data['CatalogStartDate'];
-                    $productFilter_model->catalog_end_date          =   $product_data['CatalogEndDate'];
+                    $productFilter_model->catalog_start_date        =   $product_data['CatalogStartDate']['Value'];
+                    $productFilter_model->catalog_end_date          =   $product_data['CatalogEndDate']['Value'];
                     $productFilter_model->category                  =   $product_data['Category']['CategoryName'];
                     $productFilter_model->category_id               =   $product_data['Category']['CategoryID'];
                     $productFilter_model->cross_sell_skus           =   $product_data['CrossSellSkus'];
@@ -300,18 +306,18 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->case_pack_depth           =   $product_data['CasePackDimension']['Depth'];
                     $productFilter_model->case_pack_units           =   $product_data['CasePackDimension']['Units'];
                     $productFilter_model->case_pack_quantity        =   $product_data['CasePackQuantity']['Value'];
-                    $productFilter_model->imageURL1                 =   $product_data['ProductImages']['CrazySalesProductPictureType'][0]['Path'];
-                    $productFilter_model->imageURL2                 =   $product_data['ProductImages']['CrazySalesProductPictureType'][1]['Path'];
-                    $productFilter_model->imageURL3                 =   $product_data['ProductImages']['CrazySalesProductPictureType'][2]['Path'];
-                    $productFilter_model->imageURL4                 =   $product_data['ProductImages']['CrazySalesProductPictureType'][3]['Path'];
-                    $productFilter_model->imageURL5                 =   $product_data['ProductImages']['CrazySalesProductPictureType'][4]['Path'];
+                    $productFilter_model->imageURL1                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][0]['Path'];
+                    $productFilter_model->imageURL2                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][1]['Path'];
+                    $productFilter_model->imageURL3                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][2]['Path'];
+                    $productFilter_model->imageURL4                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][3]['Path'];
+                    $productFilter_model->imageURL5                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][4]['Path'];
                     $productFilter_model->options                   =   '';
                     $productFilter_model->dimension                 =   '';
                     $productFilter_model->description               =   $product_data['Description'];
                     $productFilter_model->product_code_type         =   $product_data['ProductCodeType'];
                     $count  =    $productFilter_model->AddProduct();
                 }
-                $logs_contents  =   ' page:'.$page_now.'  succeed!  Date:'.date('Y-m-d H:i:s')."\n";
+                $logs_contents  =   ' page:'.$page_now.'/'.$TotalNumberOfPages .'  succeed!  Date:'.date('Y-m-d H:i:s') ."\r\n";
                 @fwrite($f, $logs_contents);
                 $page_now++;
 
@@ -328,29 +334,23 @@ class ScheduledController extends Zend_Controller_Action
                 }
                 $params_model->UpdateVal('product_info_table_refresh_time',date('Y-m-d H:i:s'));
             }
-            @fwrite($f, "Refresh Products normal:".$count['normal_count'] ."  Product Repeat:".$count['repeat_count']."\n");
+            @fwrite($f, "Refresh Products normal:".$count['normal_count'] ."  Product Repeat:".$count['repeat_count']."\r\n");
         
             $products_all       =   $productFilter_model->getProductAll();
             if($products_all)
             {
                 $logs_postage   =   '';
-                @fwrite($f, 'Update Estimated Shipping Cost Start : '.date("Y-m-d H:i:s")."\n");
+                @fwrite($f, 'Update Estimated Shipping Cost Start : '.date("Y-m-d H:i:s")."\r\n");
                 foreach ($products_all as $product)
                 {
                     $postage_api_url    =   $param_postage_api_url.'?pid='.$product['product_id'].'&zip=4270&qty=1';
                     $result =   $productFilter_model->updateEstimatedShippingCost($postage_api_url,$product['product_id']);
                 }
-                @fwrite($f, 'Update Estimated Shipping Cost End : '.date("Y-m-d H:i:s")."\n");
+                @fwrite($f, 'Update Estimated Shipping Cost End : '.date("Y-m-d H:i:s")."\r\n");
             }
             @fwrite($f, $logs_postage);
             @fwrite($f, "Refresh Products Completed.\n");
             @fclose($f);
-        
-        }  catch (Zend_Exception $exp){
-            $error  =   $exp->getMessage();
-            @fwrite($f, $error);
-            @fclose($f);
-        }
         die();
     }
     

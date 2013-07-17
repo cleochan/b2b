@@ -66,21 +66,25 @@ class Algorithms_Core_ProductService extends SoapClient{
     function WebServicesGetProducts()
     {
         set_time_limit(3600);
-        $this->ProductDetailsLevelType['AdditionalFlag']    =   0;
-        $this->ProductDetailsLevelType['OptionFlag']        =   0;
-        $this->ProductDetailsLevelType['PackageFlag']       =   0;
+        $this->ProductDetailsLevelType['AdditionalFlag']    =   1;
+        $this->ProductDetailsLevelType['OptionFlag']        =   1;
+        $this->ProductDetailsLevelType['PackageFlag']       =   1;
         $this->ProductDetailsLevelType['PictureFlag']       =   1;
-        $this->ProductDetailsLevelType['ProductCodeFlag']   =   0;
-        $this->ProductDetailsLevelType['PromotionFlag']     =   0;
-        $this->ProductDetailsLevelType['PurchaseFlag']      =   0;
-        $this->ProductDetailsLevelType['ShippingDetailsFlag']    =   0;
-        $this->ProductDetailsLevelType['WarehouseFlag']     =   0;
+        $this->ProductDetailsLevelType['ProductCodeFlag']   =   1;
+        $this->ProductDetailsLevelType['PromotionFlag']     =   1;
+        $this->ProductDetailsLevelType['PurchaseFlag']      =   1;
+        $this->ProductDetailsLevelType['ShippingDetailsFlag']    =   1;
+        $this->ProductDetailsLevelType['WarehouseFlag']     =   1;
         $this->PaginationType['EntriesPerPage'] =   $this->EntriesPerPage;
         $this->PaginationType['PageNumber']     =   $this->PageNumber;
         $req    =   $this->GetProductsRequest;
         $req['Pagination']      =   $this->PaginationType;
         $req['DetailsLevel']    =   $this->ProductDetailsLevelType;
-        $response   =   $this->GetProducts(array('request' => $req)); 
+        try{
+            $response   =   $this->GetProducts(array('request' => $req)); 
+        }  catch (Exception $e){
+            $response   =   array();
+        }
         $result     =   $this->object_array($response);
         return $result;
     }
