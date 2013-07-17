@@ -168,6 +168,7 @@ class Databases_Joins_ProductFilter
                 {
                     $cal_result = $this->OfferPriceCalculation($d_val['street_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
                     
+                    $data[$d_key]['original_street_price'] = $d_val['street_price']; //keep original price
                     $data[$d_key]['street_price'] = $cal_result[1]; //update price
                     
                     if($cost_protection && $cal_result[0])
