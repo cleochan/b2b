@@ -224,7 +224,6 @@ class ScheduledController extends Zend_Controller_Action
                     continue;
                 }
                 
-                    exit();
                 if(!$TotalNumberOfEntries && !$TotalNumberOfPages){
                     $TotalNumberOfEntries   =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfEntries'];
                     $TotalNumberOfPages     =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfPages'];
