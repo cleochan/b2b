@@ -96,6 +96,7 @@ class Databases_Joins_ProductFilter
         
         //get markup
         $params_model = new Databases_Tables_Params();
+        $product_category_mode  =   new Databases_Tables_ProductCategories();
         $cost_markup = $params_model->GetVal("cost_markup");
         $data_source = $params_model->GetVal("product_info_table");
         
@@ -167,6 +168,12 @@ class Databases_Joins_ProductFilter
                 foreach($data as $d_key => $d_val)
                 {
                     $cal_result = $this->OfferPriceCalculation($d_val['street_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
+                    
+                    $category_array = $this->getProductCategoryInfo($d_val['category_id']);
+                    
+                    $data[$d_key]['main_category']  =   @$product_category_mode->getCategoryInfo($category_array[0]);
+                    $data[$d_key]['sub_category']   =   @$product_category_mode->getCategoryInfo($category_array[1]);
+                    $data[$d_key]['bottom_category']=   @$product_category_mode->getCategoryInfo($category_array[2]);
                     
                     $data[$d_key]['original_street_price'] = $d_val['street_price']; //keep original price
                     $data[$d_key]['street_price'] = $cal_result[1]; //update price
@@ -579,5 +586,16 @@ class Databases_Joins_ProductFilter
             );
             $this->db->update("product_info_".$data_source, $set, $where);
         }
+    }
+    
+    function getProductCategoryInfo($category_id){
+        $category_model =   new Databases_Tables_ProductCategories();
+        $parent_category_list   =   $category_model->GetParentIdArray($category_id);
+        if($parent_category_list && $parent_category_list[0] !== '1')
+        {
+            $categorys  =   $this->getProductCategoryInfo($parent_category_list[0]);
+        }
+        $categorys[]   =   $category_id;
+        return $categorys;
     }
 }

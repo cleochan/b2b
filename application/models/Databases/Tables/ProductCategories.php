@@ -200,4 +200,18 @@ class Databases_Tables_ProductCategories extends Zend_Db_Table
         );
         $this->db->insert($this->_name,$data);
     }
+    
+    function getCategoryInfo($category_id)
+    {
+        $result =   '';
+        if($category_id)
+        {
+            $select =   $this->select();
+            $select->where("category_id = ?", $category_id);
+            $data =   $this->fetchRow($select);
+            $result =   $data['category_name'];
+        }
+        
+        return $result;
+    }
 }
