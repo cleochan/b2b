@@ -248,7 +248,7 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->product_name  =   $product_data['ProductName'];
                     $productFilter_model->retailer_account_id   =   '';
                     $productFilter_model->wholesale_cost    =   $product_data['Cost']['Value'];
-                    $productFilter_model->street_price      =   $product_data['StreetPrice']['Value'];
+                    $productFilter_model->street_price      =   $product_data['SupplierPrice']['Value'];
                     $productFilter_model->estimated_shipping_cost   =   $product_data['EstimatedShippingCost']['Value'];
                     $productFilter_model->estimated_handling_fee    =   $product_data['EstimatedHandlingCost']['Value'];
                     $productFilter_model->quantity_available        =   $product_data['QuantityAvailable']['Value'];
