@@ -51,11 +51,15 @@ class Algorithms_Core_CategoryService extends SoapClient{
     function WebServicesGetCategories()
     {
 
-        $this->PaginationType['EntriesPerPage'] =   '';
-        $this->PaginationType['PageNumber']     =   '';
+        $this->PaginationType['EntriesPerPage'] = $this->EntriesPerPage;
+        $this->PaginationType['PageNumber']     = $this->PageNumber;
         $req    =   $this->GetCategoryRequest;
         $req['Pagination']     =   $this->PaginationType;
-        $response   =   $this->GetCategory(array('categoryRequest' => $req)); 
+        try{
+            $response   =   $this->GetCategory(array('categoryRequest' => $req)); 
+        }  catch (Exception $e){
+            $response   =   array();
+        }
         $result     =   $this->object_array($response);
         return $result;
     }

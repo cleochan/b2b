@@ -223,6 +223,8 @@ class ScheduledController extends Zend_Controller_Action
                     $page_now++;
                     continue;
                 }
+                
+                    exit();
                 if(!$TotalNumberOfEntries && !$TotalNumberOfPages){
                     $TotalNumberOfEntries   =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfEntries'];
                     $TotalNumberOfPages     =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfPages'];
@@ -367,32 +369,39 @@ class ScheduledController extends Zend_Controller_Action
         $category_model             =   new Databases_Tables_ProductCategories();
         $entries_perpage        =   $params_model->GetVal("product_request_qty_per_page");
         $logs_path              =   $params_model->GetVal('logs_path');
+        $f  =   @fopen($logs_path."categorieslogs/refreshcategories".date('YmdHis').".txt", "w+");
+        @fwrite($f, 'Refresh Catrgories Begin at:'.date("Y-m-d H:i:s")."\n");
         $logs_contents  =   '';
         $page_now   =   1;
         $paginationType =   array(
             'EntriesPerPage'   =>   $entries_perpage,
             'PageNumber'       =>   $page_now,
         );
-        $category_webservice_model->EntriesPerPage =   $paginationType['EntriesPerPage'];
-        $category_webservice_model->EntriesPerPage =   $paginationType['EntriesPerPage'];
         $category_model->truncateCategory();
-        $category_webservice_model->PageNumber =   $page_now;
-        $category_webservice_model->PaginationType   =   $paginationType;
-        $reponse_data  =   $category_webservice_model->WebServicesGetCategories();
-        $category_list_data      =   $reponse_data['GetCategoryResult']['Categories']['CrazySalesCategoryType'];
         $category_model->category_id    =  1;
         $category_model->category_name  =  'ROOT';
         $category_model->parent_id      =   '';
+        $category_webservice_model->EntriesPerPage =   300;
         $category_model->addCategory();
-        foreach ($category_list_data as $category_data){                
-            $category_model->category_id    =   $category_data['CategoryID'];
-            $category_model->category_name  =   $category_data['CategoryName'];
-            $category_model->parent_id      =   $category_data['ParentID'];
-            $category_model->addCategory();
-            $logs_contents  .=   ' CategoryID:'.$category_data['CategoryID'].' , CategoryName:'.$category_data['CategoryName'].' ,                 Date:'.date('Y-m-d H:i:s')."\n";
-        }
-               
-        $f  =   @fopen($logs_path."categorieslogs/refreshcategories".date('YmdHis').".txt", "w+");
+        do{
+            $category_webservice_model->PageNumber =   $page_now;
+            $category_webservice_model->PaginationType   =   $paginationType;
+            $reponse_data  =   $category_webservice_model->WebServicesGetCategories();
+            //print_r($reponse_data);
+            if($reponse_data){
+                $category_list_data      =   $reponse_data['GetCategoryResult']['Categories']['CrazySalesCategoryType'];
+                foreach ($category_list_data as $category_data){                
+                    $category_model->category_id    =   $category_data['CategoryID'];
+                    $category_model->category_name  =   $category_data['CategoryName'];
+                    $category_model->parent_id      =   $category_data['ParentID'];
+                    $category_model->addCategory();
+                    @fwrite($f,' CategoryID:'.$category_data['CategoryID'].' , CategoryName:'.$category_data['CategoryName'].' ,                 Date:'.date('Y-m-d H:i:s')."\n");
+                }
+            }  else {
+                break;
+            }
+            $page_now++;
+        }while($page_now<=5);
         @fwrite($f, $logs_contents);
         @fwrite($f,"Refresh Categories Completed.\n");
         @fclose($f);
