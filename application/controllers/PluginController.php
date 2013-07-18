@@ -423,4 +423,24 @@ if($result)
         echo $feed_column_value;
         die;
     }
+    
+    function categoryTestAction()
+    {
+        $cat_id =   $this->_request->getParam('cat_id');
+        $productFilter  =   new Databases_Joins_ProductFilter();
+        print_r($productFilter->getProductCategoryInfo($cat_id));
+        die();
+    }
+    
+    function getProductsAction()
+    {
+        $page_now =   $this->_request->getParam('now');
+        $PerPage =   $this->_request->getParam('per');
+        $product_webservice_model   =   new Algorithms_Core_ProductService();
+        $product_webservice_model->EntriesPerPage =   $PerPage;
+        $product_webservice_model->PageNumber =   $page_now;
+        $reponse_data  =   $product_webservice_model->WebServicesGetProducts();
+        print_r($reponse_data);
+        die();
+    }
 }

@@ -250,7 +250,7 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->street_price      =   $product_data['SupplierPrice']['Value'];
                     $productFilter_model->estimated_shipping_cost   =   $product_data['EstimatedShippingCost']['Value'];
                     $productFilter_model->estimated_handling_fee    =   $product_data['EstimatedHandlingCost']['Value'];
-                    $productFilter_model->quantity_available        =   $product_data['QuantityAvailable']['Value'];
+                    $productFilter_model->quantity_available        =   $product_data['QuantityAvailable']['Value']?$product_data['QuantityAvailable']['Value']:0;
                     $productFilter_model->long_html_description     =   $product_data['Description'];
                     $productFilter_model->inventory_id              =   '';
                     $productFilter_model->short_html_description    =   '';
@@ -281,6 +281,7 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->package_dimension_units   =   $product_data['PackageDimension']['Units'];
                     $productFilter_model->ships_freight             =   '';
                     $productFilter_model->sc_class             	    =   $product_data['ShippingCourier']['ClassID'];
+                    $productFilter_model->shipping_courier          =   $product_data['ShippingCourier']['Name'];
                     $productFilter_model->ships_alone               =   '';
                     $productFilter_model->max_ship_single_box       =   $product_data['MaxShippingSingleBox'];
                     $productFilter_model->length                    =   $product_data['ProductDimension']['Length'];
@@ -307,11 +308,19 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->case_pack_depth           =   $product_data['CasePackDimension']['Depth'];
                     $productFilter_model->case_pack_units           =   $product_data['CasePackDimension']['Units'];
                     $productFilter_model->case_pack_quantity        =   $product_data['CasePackQuantity']['Value'];
-                    $productFilter_model->imageURL1                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][0]['Path'];
-                    $productFilter_model->imageURL2                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][1]['Path'];
-                    $productFilter_model->imageURL3                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][2]['Path'];
-                    $productFilter_model->imageURL4                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][3]['Path'];
-                    $productFilter_model->imageURL5                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][4]['Path'];
+                    if($product_data['ProductImages']['CrazySalesProductPictureType']['Path']){
+                        $productFilter_model->imageURL1             =   @$product_data['ProductImages']['CrazySalesProductPictureType']['Path'];
+                        $productFilter_model->imageURL2             =   '';
+                        $productFilter_model->imageURL3             =   '';
+                        $productFilter_model->imageURL4             =   '';
+                        $productFilter_model->imageURL5             =   '';
+                    }else{
+                        $productFilter_model->imageURL1                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][0]['Path'];
+                        $productFilter_model->imageURL2                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][1]['Path'];
+                        $productFilter_model->imageURL3                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][2]['Path'];
+                        $productFilter_model->imageURL4                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][3]['Path'];
+                        $productFilter_model->imageURL5                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][4]['Path'];
+                    }
                     $productFilter_model->options                   =   '';
                     $productFilter_model->dimension                 =   '';
                     $productFilter_model->description               =   $product_data['Description'];

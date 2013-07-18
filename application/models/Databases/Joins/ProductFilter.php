@@ -44,6 +44,7 @@ class Databases_Joins_ProductFilter
     var $package_dimension_units;
     var $ships_freight;
     var $sc_class;
+    var $shipping_courier;
     var $ships_alone;
     var $max_ship_single_box;
     var $length;
@@ -447,6 +448,7 @@ class Databases_Joins_ProductFilter
                 'package_dimension_units'   =>  $this->package_dimension_units,
                 'ships_freight'             =>  $this->ships_freight,
                 'sc_class'                  =>  $this->sc_class,
+                'shipping_courier'          =>  $this->shipping_courier,
                 'ships_alone'               =>  $this->ships_alone,
                 'max_ship_single_box'       =>  $this->max_ship_single_box,
                 'length'                    =>  $this->length,
