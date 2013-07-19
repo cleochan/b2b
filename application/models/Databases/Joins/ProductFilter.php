@@ -171,7 +171,7 @@ class Databases_Joins_ProductFilter
                 foreach($data as $d_key => $d_val)
                 {
                     $cal_result = $this->OfferPriceCalculation($d_val['street_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
-                    echo "u";die;
+                    
                     $category_array = $this->getProductCategoryInfo($d_val['category_id']);
                     
                     $data[$d_key]['main_category']  =   @$product_category_mode->getCategoryInfo($category_array[0]);
@@ -190,6 +190,7 @@ class Databases_Joins_ProductFilter
                     $data[$d_key]['estimated_shipping_cost'] = number_format($d_val['estimated_shipping_cost'], 2);
                     //$data[$d_key]['list_price'] = number_format($d_val['list_price'], 2);
                     $data[$d_key]['quantity_available'] = (0 < $d_val['quantity_available'])?$d_val['quantity_available']:0;
+                    echo "u";die;
                 }
             }
         }else{
