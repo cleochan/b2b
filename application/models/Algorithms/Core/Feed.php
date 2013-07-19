@@ -9,10 +9,10 @@ class Algorithms_Core_Feed
         if(count($this->user_id_array))
         {
             $product_filter_model = new Databases_Joins_ProductFilter();
-            echo "b";
+            echo "b";die;
             foreach($this->user_id_array as $user_id)
             {
-                echo "c";
+                echo "c";die;
                 $collect_feed_info = $this->CollectFeedInfo($user_id);
                 echo "d";die;
                 $product_list = $product_filter_model->Push($collect_feed_info, $user_id);
