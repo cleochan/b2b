@@ -146,6 +146,7 @@ class Databases_Joins_ProductFilter
             {
                 $select->where("supplier_sku NOT IN (?)", $sku_excluded_array);
             }
+            echo "a";die;
             switch ($stock)
             {
                 case 2: //in stock
@@ -163,7 +164,7 @@ class Databases_Joins_ProductFilter
             $select->order("brand ASC");
             
             $data = $this->db->fetchAll($select);
-            echo "a";die;
+            
             //update for discount/cost protection
             if(!empty($data))
             {
