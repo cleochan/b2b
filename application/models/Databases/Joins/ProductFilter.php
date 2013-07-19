@@ -593,6 +593,11 @@ class Databases_Joins_ProductFilter
     }
     
     function getProductCategoryInfo($category_id){
+        if(!$category_model)
+        {
+            echo ">>>>".$category_model."<<<<";
+            die;
+        }
         $category_model =   new Databases_Tables_ProductCategories();
         $parent_category_list   =   $category_model->GetParentIdArray($category_id);
         if($parent_category_list && $parent_category_list[0] !== '1')
