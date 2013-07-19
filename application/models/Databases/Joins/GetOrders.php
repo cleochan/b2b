@@ -300,6 +300,8 @@ class Databases_Joins_GetOrders
         {            
             $params_model = new Databases_Tables_Params();
             $document_fee = $params_model->GetVal("document_fee");
+            $shipping_courier   =   $params_model->GetVal('shipping_courier');
+            $shipping_courier_array =  explode(',',$shipping_courier);
             if($user_info['user_id'])
             {
                 $discount = ( $user_info['discount']) / 100;
@@ -327,7 +329,7 @@ class Databases_Joins_GetOrders
                         }
                         $shipping_cost  =   $prices['estimated_handling_fee']  * trim($this->quantity);
                         $ship_cost      =   $prices['estimated_handling_fee'];
-                    }elseif($this->flat_rate_shipping == 1 && in_array ($prices['sc_class'], array(3,5,6))){
+                    }elseif($this->flat_rate_shipping == 1 && in_array ($prices['sc_class'], $shipping_courier_array)){
                         $order_amount = ( $prices['street_price'] + $prices['estimated_shipping_cost'] ) * trim($this->quantity);
                         $shipping_cost  =   $prices['estimated_shipping_cost'] * trim($this->quantity);
                         $ship_cost  =   $shipping_cost;

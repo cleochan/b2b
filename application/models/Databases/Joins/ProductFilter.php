@@ -100,7 +100,7 @@ class Databases_Joins_ProductFilter
         $product_category_mode  =   new Databases_Tables_ProductCategories();
         $cost_markup = $params_model->GetVal("cost_markup");
         $data_source = $params_model->GetVal("product_info_table");
-        
+        $shipping_courier   =   $params_model->GetVal('shipping_courier');
         if($data_source) // 1 or 2
         {
             $feed_category = $feed_info_array['users_feed']['feed_category'];
@@ -150,6 +150,7 @@ class Databases_Joins_ProductFilter
             {
                 case 2: //in stock
                     $select->where("quantity_available > ?", 0);
+                    $select->where("sc_class in ($shipping_courier)");
                     break;
                 case 3: //out of stock
                     $select->where("quantity_available = ?", 0);
