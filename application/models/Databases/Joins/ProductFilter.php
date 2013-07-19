@@ -171,7 +171,7 @@ class Databases_Joins_ProductFilter
                 foreach($data as $d_key => $d_val)
                 {
                     $cal_result = $this->OfferPriceCalculation($d_val['street_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
-                    
+                    echo "u";die;
                     $category_array = $this->getProductCategoryInfo($d_val['category_id']);
                     
                     $data[$d_key]['main_category']  =   @$product_category_mode->getCategoryInfo($category_array[0]);
@@ -195,7 +195,7 @@ class Databases_Joins_ProductFilter
         }else{
             $data = array();
         }
-        echo "u";die;
+        
         return $data;
     }
     
