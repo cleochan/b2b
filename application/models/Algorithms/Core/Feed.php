@@ -6,6 +6,7 @@ class Algorithms_Core_Feed
     
     function Publish()
     {
+        echo "a";die;
         if(count($this->user_id_array))
         {
             $product_filter_model = new Databases_Joins_ProductFilter();
