@@ -6,16 +6,14 @@ class Algorithms_Core_Feed
     
     function Publish()
     {
-        echo "a";die;
         if(count($this->user_id_array))
         {
             $product_filter_model = new Databases_Joins_ProductFilter();
-            echo "b";die;
+            
             foreach($this->user_id_array as $user_id)
             {
-                echo "c";die;
                 $collect_feed_info = $this->CollectFeedInfo($user_id);
-                echo "d";die;
+                
                 $product_list = $product_filter_model->Push($collect_feed_info, $user_id);
                 
                 if(!empty($collect_feed_info['users_feed_definition']) && !empty($product_list))
