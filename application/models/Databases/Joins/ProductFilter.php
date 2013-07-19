@@ -90,7 +90,6 @@ class Databases_Joins_ProductFilter
     
     function Push($feed_info_array, $user_id)
     {
-        echo "a";die;
         $get_user_info = new Databases_Joins_GetUserInfo();
         $user_info = $get_user_info->GetUserInfo($user_id);
         
