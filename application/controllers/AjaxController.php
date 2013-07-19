@@ -75,6 +75,7 @@ class AjaxController extends Zend_Controller_Action
     
     function refreshFeedAction()
     {
+        echo "acc";die;
         $params = $this->_request->getParams();
         
         if($params['UserId'])
