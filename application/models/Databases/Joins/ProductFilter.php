@@ -172,11 +172,11 @@ class Databases_Joins_ProductFilter
                 {
                     $cal_result = $this->OfferPriceCalculation($d_val['street_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
                     
-                    $category_array = $this->getProductCategoryInfo($d_val['category_id']);
-                    
-                    $data[$d_key]['main_category']  =   @$product_category_mode->getCategoryInfo($category_array[0]);
-                    $data[$d_key]['sub_category']   =   @$product_category_mode->getCategoryInfo($category_array[1]);
-                    $data[$d_key]['bottom_category']=   @$product_category_mode->getCategoryInfo($category_array[2]);
+//                    $category_array = $this->getProductCategoryInfo($d_val['category_id']);
+//                    
+//                    $data[$d_key]['main_category']  =   @$product_category_mode->getCategoryInfo($category_array[0]);
+//                    $data[$d_key]['sub_category']   =   @$product_category_mode->getCategoryInfo($category_array[1]);
+//                    $data[$d_key]['bottom_category']=   @$product_category_mode->getCategoryInfo($category_array[2]);
                     
                     $data[$d_key]['original_street_price'] = $d_val['street_price']; //keep original price
                     $data[$d_key]['street_price'] = $cal_result[1]; //update price
@@ -190,13 +190,12 @@ class Databases_Joins_ProductFilter
                     $data[$d_key]['estimated_shipping_cost'] = number_format($d_val['estimated_shipping_cost'], 2);
                     //$data[$d_key]['list_price'] = number_format($d_val['list_price'], 2);
                     $data[$d_key]['quantity_available'] = (0 < $d_val['quantity_available'])?$d_val['quantity_available']:0;
-                    echo "u";die;
                 }
             }
         }else{
             $data = array();
         }
-        
+        echo "p";die;
         return $data;
     }
     
