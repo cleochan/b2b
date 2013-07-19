@@ -146,7 +146,7 @@ class Databases_Joins_ProductFilter
             {
                 $select->where("supplier_sku NOT IN (?)", $sku_excluded_array);
             }
-            
+            echo "t";die;
             switch ($stock)
             {
                 case 2: //in stock
