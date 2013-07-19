@@ -163,7 +163,7 @@ class Databases_Joins_ProductFilter
             $select->order("brand ASC");
             
             $data = $this->db->fetchAll($select);
-            echo "a";die;
+            
             //update for discount/cost protection
             if(!empty($data))
             {
@@ -194,7 +194,7 @@ class Databases_Joins_ProductFilter
         }else{
             $data = array();
         }
-        
+        echo "b";die;
         return $data;
     }
     
