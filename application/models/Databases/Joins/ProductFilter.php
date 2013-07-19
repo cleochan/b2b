@@ -194,7 +194,7 @@ class Databases_Joins_ProductFilter
         }else{
             $data = array();
         }
-        echo "b";die;
+        
         return $data;
     }
     
