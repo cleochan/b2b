@@ -443,9 +443,4 @@ if($result)
         print_r($reponse_data);
         die();
     }
-    function pkAction()
-    {
-        echo md5("lk32kgsiU,ykjhl2k3rsfAlkjh!3hEsdgf");
-        die;
-    }
 }
