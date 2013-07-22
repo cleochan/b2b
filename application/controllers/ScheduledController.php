@@ -569,21 +569,17 @@ class ScheduledController extends Zend_Controller_Action
     {
         $user_model =   new Databases_Joins_GetUserInfo();
         $params_model           =   new Databases_Tables_Params();
+        $logs_feeds =   '';
         $user_list  =   $user_model->GetUserList();
         $logs_path              =   $params_model->GetVal('logs_path');
         $f_logs_feeds  =   @fopen($logs_path."feedslogs/refreshfeeds".date('YmdHis').".txt", "w+");
-        foreach ($user_list as $user)
-        {
-            $user_id_array[]    =   $user['user_id'];
-        }
-        if($user_id_array){
-            $model = new Algorithms_Core_Feed();
-            $model->user_id_array = $user_id_array;
-            $result = $model->Publish();
-            if($result){
+        @fwrite($f_logs_feeds, 'Refresh Feeds Begin at:'.date("Y-m-d H:i:s")."\n");
+        if($user_list){
+            $model = new Algorithms_Core_Feed();            
+            foreach($user_list as $user){
+                $model->user_id_array = array($user['user_id']);
+                $result = $model->Publish();
                 $logs_feeds   .=   ' Generate Feed:'.$result."\n";
-            }else{
-                $logs_feeds   .=   " Generate Feed faild\n";
             }
             @fwrite($f_logs_feeds, $logs_feeds);
             @fclose($f_logs_feeds);
