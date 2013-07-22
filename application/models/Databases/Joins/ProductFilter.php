@@ -74,6 +74,7 @@ class Databases_Joins_ProductFilter
     var $normal_count;
     var $repeat_count;
     
+    var $imageURL0;
     var $imageURL1;
     var $imageURL2;
     var $imageURL3;
@@ -172,12 +173,13 @@ class Databases_Joins_ProductFilter
                 {
                     $cal_result = $this->OfferPriceCalculation($d_val['street_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
                     
-                    $category_array = $this->getProductCategoryInfo($d_val['category_id']);
-                    
-                    $data[$d_key]['main_category']  =   @$product_category_mode->getCategoryInfo($category_array[0]);
-                    $data[$d_key]['sub_category']   =   @$product_category_mode->getCategoryInfo($category_array[1]);
-                    $data[$d_key]['bottom_category']=   @$product_category_mode->getCategoryInfo($category_array[2]);
-                    
+                    if($d_val['category_id']){
+                        $category_array = $this->getProductCategoryInfo($d_val['category_id']);
+
+                        $data[$d_key]['main_category']  =   @$product_category_mode->getCategoryInfo($category_array[0]);
+                        $data[$d_key]['sub_category']   =   @$product_category_mode->getCategoryInfo($category_array[1]);
+                        $data[$d_key]['bottom_category']=   @$product_category_mode->getCategoryInfo($category_array[2]);
+                    }
                     $data[$d_key]['original_street_price'] = $d_val['street_price']; //keep original price
                     $data[$d_key]['street_price'] = $cal_result[1]; //update price
                     
@@ -477,6 +479,7 @@ class Databases_Joins_ProductFilter
                 'case_pack_depth'           =>  $this->case_pack_depth,
                 'case_pack_units'           =>  $this->case_pack_units,
                 'case_pack_quantity'        =>  $this->case_pack_quantity,
+                'imageURL0'                 =>  $this->imageURL0,
                 'imageURL1'                 =>  $this->imageURL1,
                 'imageURL2'                 =>  $this->imageURL2,
                 'imageURL3'                 =>  $this->imageURL3,

@@ -288,7 +288,7 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->height                    =   $product_data['ProductDimension']['Width'];
                     $productFilter_model->depth                     =   $product_data['ProductDimension']['Depth'];
                     $productFilter_model->dimension_units           =   $product_data['ProductDimension']['Units'];
-                    $productFilter_model->weight                    =   $product_data['ProductWeight']['Value'];
+                    $productFilter_model->weight                    =   round($product_data['ProductWeight']['Value'],8);
                     $productFilter_model->weight_units              =   $product_data['ProductWeight']['Units'];
                     $productFilter_model->dimension_description     =   '';
                     $productFilter_model->min_purchase_quantity     =   $product_data['MinPurchaseQuantity'];
@@ -309,23 +309,35 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->case_pack_units           =   $product_data['CasePackDimension']['Units'];
                     $productFilter_model->case_pack_quantity        =   $product_data['CasePackQuantity']['Value'];
                     if($product_data['ProductImages']['CrazySalesProductPictureType']['Path']){
-                        $productFilter_model->imageURL1             =   @$product_data['ProductImages']['CrazySalesProductPictureType']['Path'];
+                        $productFilter_model->imageURL0             =   @$product_data['ProductImages']['CrazySalesProductPictureType']['Path'];
+                        $productFilter_model->imageURL1             =   '';
                         $productFilter_model->imageURL2             =   '';
                         $productFilter_model->imageURL3             =   '';
                         $productFilter_model->imageURL4             =   '';
                         $productFilter_model->imageURL5             =   '';
                     }else{
-                        $productFilter_model->imageURL1                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][0]['Path'];
-                        $productFilter_model->imageURL2                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][1]['Path'];
-                        $productFilter_model->imageURL3                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][2]['Path'];
-                        $productFilter_model->imageURL4                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][3]['Path'];
-                        $productFilter_model->imageURL5                 =   @$product_data['ProductImages']['CrazySalesProductPictureType'][4]['Path'];
+                        foreach ($product_data['ProductImages']['CrazySalesProductPictureType'] as $picture_data){
+                            if($picture_data['DefalutFlag']==1){
+                                $productFilter_model->imageURL0     =   $picture_data['Path'];
+                                break;
+                            }
+                        }
+                        if(!$productFilter_model->imageURL0){
+                            $productFilter_model->imageURL0         =   @$product_data['ProductImages']['CrazySalesProductPictureType'][0]['Path'];
+                        }
+                        $productFilter_model->imageURL1             =   @$product_data['ProductImages']['CrazySalesProductPictureType'][1]['Path'];
+                        $productFilter_model->imageURL2             =   @$product_data['ProductImages']['CrazySalesProductPictureType'][2]['Path'];
+                        $productFilter_model->imageURL3             =   @$product_data['ProductImages']['CrazySalesProductPictureType'][3]['Path'];
+                        $productFilter_model->imageURL4             =   @$product_data['ProductImages']['CrazySalesProductPictureType'][4]['Path'];
+                        $productFilter_model->imageURL5             =   @$product_data['ProductImages']['CrazySalesProductPictureType'][5]['Path'];
                     }
                     $productFilter_model->options                   =   '';
                     $productFilter_model->dimension                 =   '';
                     $productFilter_model->description               =   $product_data['Description'];
                     $productFilter_model->product_code_type         =   $product_data['ProductCodeType'];
-                    $count  =    $productFilter_model->AddProduct();
+                    if( !empty($product_data['Category']['CategoryName'])&& !empty( $product_data['Category']['CategoryID'])){
+                        $count  =    $productFilter_model->AddProduct();
+                    }
                 }
                 $logs_contents  =   ' page:'.$page_now.'/'.$TotalNumberOfPages .'  succeed!  Date:'.date('Y-m-d H:i:s') ."\n";
                 @fwrite($f, $logs_contents);
