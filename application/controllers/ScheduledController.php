@@ -16,28 +16,6 @@ class ScheduledController extends Zend_Controller_Action
         die;
     }
     
-    function refreshProductAction()
-    {
-        /**
-         * truncate the secondary table
-         * send initial request
-         */
-        $params_model = new Databases_Tables_Params();
-        $secondary = $params_model->GetSecondaryProductTableName();
-        
-        if($secondary['table_num'])
-        {
-            $product_filter_model = new Databases_Joins_ProductFilter();
-            if($product_filter_model->TruncateProductTable($secondary['table_num']))
-            {
-                $product_filter_model->PostXmlToRefreshProducts(); 
-            }
-        }
-        
-        echo "End.";
-        die;
-    }
-    
     function refreshOrdersAction() 
     {
         try{
@@ -335,7 +313,7 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->dimension                 =   '';
                     $productFilter_model->description               =   $product_data['Description'];
                     $productFilter_model->product_code_type         =   $product_data['ProductCodeType'];
-                    if( !empty($product_data['Category']['CategoryName'])&& !empty( $product_data['Category']['CategoryID'])){
+                    if($product_data['Category']['CategoryName'] && $product_data['Category']['CategoryID']){
                         $count  =    $productFilter_model->AddProduct();
                     }
                 }
