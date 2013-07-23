@@ -570,7 +570,7 @@ class Databases_Joins_ProductFilter
             if($product['supplier_sku'])
             {
                 $result['product_name']    = $product['product_name'];
-                $result['imageURL1']    = $product['imageURL1'];
+                $result['imageURL0']    = $product['imageURL0'];
             }
             return $result;
         }
