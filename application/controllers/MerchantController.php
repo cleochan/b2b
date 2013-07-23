@@ -403,7 +403,7 @@ class MerchantController extends Zend_Controller_Action
                     
                     $data_array[$da_key]['credit'] = $check_result['credit'];
                     $data_array[$da_key]['user_id'] = $check_result['user_id'];
-                     
+                     echo "c";die;
                     $product_info   =   $product_filter_model->getProductInfo($da_val['supplier_sku']);
                     $data_array[$da_key]['product_name']    =   $product_info['product_name'];
                     $data_array[$da_key]['imageURL1']       =   $product_info['imageURL1'];
