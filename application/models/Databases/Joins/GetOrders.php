@@ -272,7 +272,7 @@ class Databases_Joins_GetOrders
                                     );
             $error = 1;
         }
-        echo "a";die;
+        
         $shipping_state_info_model  =   new Databases_Tables_ShippingStateInfo();
         if("Y" != $this->pick_up)
         {
