@@ -418,7 +418,7 @@ class MerchantController extends Zend_Controller_Action
                     $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
                 }
             }
-            Algorithms_Extensions_Plugin::FormatArray($data_array);die;
+            
             $sessionId  =   base64_encode($this->params['user_id'].date('YmdHis'));
             $_SESSION['place_order'][$sessionId]   =   $data_array;
             
