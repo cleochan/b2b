@@ -1,0 +1,8 @@
+Your Record # (Optional),Buyer First Name (Required when Pickup N),Buyer Last Name (Required when Pickup N),Buyer Company (Optional),Buyer Address Line 1 (Required when Pickup N),Buyer Address Line 2 (Optional),Buyer Suburb (Required when Pickup N),Buyer State (Required when Pickup N),Buyer Postal Code (Required when Pickup N),Buyer Country (Required when Pickup N),Buyer Phone (Optional),Supplier Item Code (Required),Merchant SKU (Optional),Qty (Required),Shipping Method (Optional),Shipping Instruction (Optional),Comments (Optional),Merchant Company (Required),Pick Up (Required)
+309826,Ross,Pascoe,Google,20 koonwarra parade,Macleay Island,MACLEAY ISLAND,QLD,4184,AU,123456,CJD-1002,TBLC-XX1033989                ,1,standard,aa,,A Company,N
+309835,Wieslaw,Golec,Microsoft,14 clairville road,,CAMPBELLTOWN,SA,5074,AU,123456,M0781,LAK330,2,standard,aa,,A Company,N
+309872,,,,,,,,,,,Q750B1,LS3227,1,,,aa,A Company,Y
+309872,,,,,,,,,,,DD38C_BK+S,LS3228,1,,,,A Company,Y
+309894,David,Menning,Tencent,31 shaw place,redland bay,REDLAND BAY,QLD,4165,AU,123456,MP110,LLK33987,3,standard,aa,,A Company,N
+,Mark,Chan,Auspac,14 clairville road,,CAMPBELLTOWN,SA,5074,AU,123456,JW0140,,1,,,,A Company,N
+,,,,,,,,,,,JW0140,,1,,,,A Company,Y
