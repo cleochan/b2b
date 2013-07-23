@@ -559,6 +559,9 @@ class Databases_Joins_ProductFilter
     function getProductInfo($sku)
     {
         $result =   array();
+        $result['product_name']    = "";
+        $result['imageURL0']    = "";
+        
         $params_model = new Databases_Tables_Params();
         $data_source = $params_model->GetVal("product_info_table");
         if($data_source && $sku) // 1 or 2
@@ -571,13 +574,10 @@ class Databases_Joins_ProductFilter
             {
                 $result['product_name']    = $product['product_name'];
                 $result['imageURL0']    = $product['imageURL0'];
-            }else{
-                $result['product_name']    = "";
-                $result['imageURL0']    = "";
             }
-            
-            return $result;
         }
+        
+        return $result;
     }
     
     function updateQuantityAvailable($sku,$quantity_available)
