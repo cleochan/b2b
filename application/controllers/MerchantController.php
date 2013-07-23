@@ -416,7 +416,7 @@ class MerchantController extends Zend_Controller_Action
                     if ($check_result[2]=="Out of balance"):
                         $this->view->ifpay=1;
                     endif;
-//                    $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
+                    $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
                 }
             }
             
