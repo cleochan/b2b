@@ -443,4 +443,15 @@ if($result)
         print_r($reponse_data);
         die();
     }
+    
+    function paAction()
+    {
+        if($a < 1)
+        {
+            echo "a";
+        }else{
+            echo "b";
+        }
+        die;
+    }
 }
