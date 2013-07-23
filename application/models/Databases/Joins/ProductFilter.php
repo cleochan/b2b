@@ -571,6 +571,7 @@ class Databases_Joins_ProductFilter
             {
                 $result['product_name']    = $product['product_name'];
                 $result['imageURL0']    = $product['imageURL0'];
+                echo $product['imageURL0'];die;
             }
             return $result;
         }
