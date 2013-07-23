@@ -417,7 +417,6 @@ class MerchantController extends Zend_Controller_Action
                         $this->view->ifpay=1;
                     endif;
                     $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
-                    Algorithms_Extensions_Plugin::FormatArray($data_array);die;
                 }
             }
             
