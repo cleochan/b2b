@@ -354,7 +354,7 @@ class MerchantController extends Zend_Controller_Action
                 $data_array[$da_key]['user_id'] = $check_result['user_id'];
                 $product_info   =   $product_filter_model->getProductInfo($da_val['supplier_sku']);
                 $data_array[$da_key]['product_name']    =   $product_info['product_name'];
-                $data_array[$da_key]['imageURL1']       =   $product_info['imageURL0'];
+                $data_array[$da_key]['imageURL0']       =   $product_info['imageURL0'];
                 //update instant balance
                 if ($check_result[2]=="Out of balance"):
                     $this->view->ifpay=1;
@@ -406,7 +406,7 @@ class MerchantController extends Zend_Controller_Action
                     
                     $product_info   =   $product_filter_model->getProductInfo($da_val['supplier_sku']);
                     $data_array[$da_key]['product_name']    =   $product_info['product_name'];
-                    $data_array[$da_key]['imageURL1']       =   $product_info['imageURL0'];
+                    $data_array[$da_key]['imageURL0']       =   $product_info['imageURL0'];
                     //update instant balance
                     if ($check_result[3]==1 ):
                         $this->view->iferror=1;
@@ -746,7 +746,7 @@ class MerchantController extends Zend_Controller_Action
                 $data_array[$da_key]['user_id'] = $check_result['user_id'];
                 $product_info   =   $product_filter_model->getProductInfo($da_val[11]);
                 $data_array[$da_key]['product_name']    =   $product_info['product_name']; 
-                $data_array[$da_key]['imageURL1']       =   $product_info['imageURL0'];
+                $data_array[$da_key]['imageURL0']       =   $product_info['imageURL0'];
                 //update instant balance
                 if ($check_result[2]=="Out of balance"):
                     $this->view->ifpay=1;
