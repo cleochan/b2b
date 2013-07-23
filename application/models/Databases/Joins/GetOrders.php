@@ -371,6 +371,7 @@ class Databases_Joins_GetOrders
         }
         $result['order_amount'] = $order_amount;
         $result[3] =$error;
+        echo "b";die;
         return $result;
     }
     
