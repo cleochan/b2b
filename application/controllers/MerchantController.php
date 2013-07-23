@@ -425,7 +425,7 @@ class MerchantController extends Zend_Controller_Action
             $this->view->sessionId  =   $sessionId;
             $this->view->userId     =   $this->params['user_id'];
         }
-        
+        Algorithms_Extensions_Plugin::FormatArray($data_array);die;
         $this->view->list = $data_array;
     }
     
