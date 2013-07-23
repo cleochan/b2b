@@ -393,7 +393,7 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->quantity_array    =   $quantity_array;
                     $getorders_model->shipping_phone    =   $da_val['shipping_phone'];
                     $check_result = $getorders_model->PlaceOrderCheck();
-echo "a";die;
+
                     $data_array[$da_key]['pick_up']    =   $this->params['pickup']?"Y":"N";
                     $data_array[$da_key]['result'] = $check_result[1];
                     $data_array[$da_key]['reason'] = $check_result[2];
@@ -425,7 +425,7 @@ echo "a";die;
             $this->view->sessionId  =   $sessionId;
             $this->view->userId     =   $this->params['user_id'];
         }
-        
+        echo "a";die;
         $this->view->list = $data_array;
     }
     
