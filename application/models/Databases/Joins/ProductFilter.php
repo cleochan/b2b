@@ -571,7 +571,11 @@ class Databases_Joins_ProductFilter
             {
                 $result['product_name']    = $product['product_name'];
                 $result['imageURL0']    = $product['imageURL0'];
+            }else{
+                $result['product_name']    = "";
+                $result['imageURL0']    = "";
             }
+            
             return $result;
         }
     }
