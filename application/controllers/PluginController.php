@@ -446,7 +446,7 @@ if($result)
     
     function paAction()
     {
-        if($a < 1)
+        if(1 != $a)
         {
             echo "a";
         }else{
