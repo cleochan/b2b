@@ -190,6 +190,8 @@ class Databases_Joins_GetOrders
     
     function PlaceOrderCheck()
     {
+        $error = 0;
+        
         $result = array(1 => "Y",
                                 2 => "Approved"
                                 );

@@ -418,7 +418,7 @@ class MerchantController extends Zend_Controller_Action
                     endif;
                     if($check_result['user_id'])
                     {
-//                        $group_instance_balance_array[$check_result['user_id']] = (float)$check_result['instant_balance'];
+                        $group_instance_balance_array[$check_result['user_id']] = (float)$check_result['instant_balance'];
                     }
                 }
             }
