@@ -398,9 +398,10 @@ class MerchantController extends Zend_Controller_Action
                     $data_array[$da_key]['result'] = $check_result[1];
                     $data_array[$da_key]['reason'] = $check_result[2];
                     
-//                    $data_array[$da_key]['order_amount']    =   (float)$check_result['order_amount'];
-//                    $data_array[$da_key]['instant_balance'] =   (float)$check_result['instant_balance'];
-                    
+                    $data_array[$da_key]['order_amount']    =   (float)$check_result['order_amount'];
+                    $data_array[$da_key]['instant_balance'] =   (float)$check_result['instant_balance'];
+                    echo $data_array[$da_key]['order_amount']."<br />";
+                    echo $data_array[$da_key]['instant_balance']."<br />";
                     $data_array[$da_key]['credit'] = $check_result['credit'];
                     $data_array[$da_key]['user_id'] = $check_result['user_id'];
                     
