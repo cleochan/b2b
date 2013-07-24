@@ -181,7 +181,7 @@ class Databases_Joins_ProductFilter
                         $data[$d_key]['sub_category']   =   @$product_category_mode->getCategoryInfo($category_array[1]);
                         $data[$d_key]['bottom_category']=   @$product_category_mode->getCategoryInfo($category_array[2]);
                     }
-                    $data[$d_key]['original_street_price'] = $d_val['street_price']; //keep original price
+                    $data[$d_key]['original_supplier_price'] = $d_val['supplier_price']; //keep original price
                     $data[$d_key]['supplier_price'] = $cal_result[1]; //update price
                     
                     if($cost_protection && $cal_result[0])

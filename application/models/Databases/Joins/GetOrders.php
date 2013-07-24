@@ -310,7 +310,6 @@ class Databases_Joins_GetOrders
                 //calculate item price
                 $product_filter_model = new Databases_Joins_ProductFilter();
                 $prices = $product_filter_model->GetSkuPrices(trim($this->supplier_sku), $user_info['user_id']);
-                print_r($prices);
                 if(!$prices){
                     $result[1] =  "N";
                     $result[2] =  "SKU is not found";
