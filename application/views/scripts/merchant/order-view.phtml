@@ -1,0 +1,81 @@
+<div class="info_tablebox">
+    <h2>Order Summary</h2>
+    <div>
+        <p><span>Order Date:</span><span><?=date('H:i:s, d M Y ',strtotime($this->purchase_order['issue_time']))?></span></p>
+        <p><span>Order ID:</span><span><?=$this->purchase_order['main_db_order_id']?></span></p>
+        <p><span>Order Status:</span><span><?php 
+                                        switch ($this->list[0]['item_status'])
+                                        {
+                                            case 0:
+                                                echo "<font color='red'>Pending</font>";
+                                                break;
+                                            case 1:
+                                                echo "<font color='green'>Approved</font>";
+                                                break;
+                                            case 2:
+                                                echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div class='api_response'>".$this->list[0]['api_response']."</div>";
+                                                break;
+                                        }
+                                        ?></span></p>
+        <p><span>Order Subtotal:</span><span><?=number_format($this->purchase_order['order_amount'],2)?></span></p>
+        <p><span>Order Shipping Cost:</span><span><?=number_format($this->purchase_order['shipping_cost'],2)?></span></p>
+        <p><span>Order Amount:</span><span><?=number_format($this->purchase_order['order_amount'],2)?></span></p>
+    </div>
+    
+    <h2>Items</h2>
+    <div>
+        <table class="hide" border="0" cellpadding="0" cellspacing="1">
+                        <table class="width100" cellspacing="1">
+                            <tbody>
+                                <tr>
+                                    <td class="form-title">Merchant Ref</td>
+                                    <td class="form-title">Product Name</td>
+                                    <td class="form-title">Thumbnail</td>
+                                    <td class="form-title">Supplier SKU</td>
+                                    <td class="form-title">Merchant SKU</td>
+                                    <td class="form-title">Qty</td>
+                                    <td class="form-title">Amount</td>
+                                    <td class="form-title">Shipping Cost</td>
+				</tr>
+                                <?php if($this->list):
+                                        $n = 1;
+                                        foreach($this->list as $list_key => $list_val):
+				?>
+                                <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+                                    <td class="center"><?=$list_val['merchant_ref']?></td>
+                                    <td class="center"><?=$list_val['product_name']?></td>
+                                    <td class="center"><image src="<?=$list_val['imageURL0'] ?>" height="50" /></td>
+                                    <td class="center"><?=$list_val['supplier_sku']?></td>
+                                    <td class="center"><?=$list_val['merchant_sku']?></td>
+                                    <td class="center"><?=$list_val['quantity']?></td>
+                                    <td class="center"><?=number_format($list_val['item_amount'],2)?></td>
+                                    <td class="center"><?=number_format($list_val['final_ship_cost'],2)?></td>
+                                </tr>
+				<?php
+                                            endforeach;
+                                    else:
+                                        $is_rejected = 1; //no items
+                                    endif;
+				?>
+                            </tbody>
+                        </table>
+        </table>
+    </div>
+    
+    <h2>Shipping Information</h2>
+    <div>
+        <p><span>Pickup:</span><span class="small blue"><?=($this->purchase_order['pickup']==1)?'<font color="red">Yes</font>':'<font>NO</font>';?></span></p>
+        <?php if($this->purchase_order['pickup']==0):?>
+        <p><span>First Name:</span><span><?=$this->purchase_order['shipping_first_name']?></span></p>
+        <p><span>Last Name:</span><span><?=$this->purchase_order['shipping_last_name']?></span></p>
+        <p><span>Address1:</span><span><?=$this->purchase_order['shipping_address_1']?></span></p>
+        <p><span>Address2:</span><span><?=$this->purchase_order['shipping_address_2']?></span></p>
+        <p><span>Company:</span><span><?=$this->purchase_order['shipping_company']?></span></p>
+        <p><span>Suburb:</span><span><?=$this->purchase_order['shipping_suburb']?></span></p>
+        <p><span>State:</span><span><?=$this->purchase_order['shipping_state']?></span></p>
+        <p><span>Postcode:</span><span><?=$this->purchase_order['shipping_postcode']?></span></p>
+        <p><span>Country:</span><span><?=$this->purchase_order['shipping_country']?></span></p>
+        <p><span>Phone:</span><span><?=$this->purchase_order['shipping_phone']?></span></p>
+        <?php endif;?>
+    </div>
+</div>

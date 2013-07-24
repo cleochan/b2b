@@ -11,6 +11,7 @@ class Databases_Joins_ProductFilter
     var $retailer_account_id;
     var $wholesale_cost;
     var $street_price;
+    var $supplier_price;
     var $estimated_shipping_cost;
     var $estimated_handling_fee;
     var $quantity_available;
@@ -171,7 +172,7 @@ class Databases_Joins_ProductFilter
             {
                 foreach($data as $d_key => $d_val)
                 {
-                    $cal_result = $this->OfferPriceCalculation($d_val['street_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
+                    $cal_result = $this->OfferPriceCalculation($d_val['supplier_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
                     
                     if($d_val['category_id']){
                         $category_array = $this->getProductCategoryInfo($d_val['category_id']);
@@ -181,7 +182,7 @@ class Databases_Joins_ProductFilter
                         $data[$d_key]['bottom_category']=   @$product_category_mode->getCategoryInfo($category_array[2]);
                     }
                     $data[$d_key]['original_street_price'] = $d_val['street_price']; //keep original price
-                    $data[$d_key]['street_price'] = $cal_result[1]; //update price
+                    $data[$d_key]['supplier_price'] = $cal_result[1]; //update price
                     
                     if($cost_protection && $cal_result[0])
                     {
@@ -265,14 +266,14 @@ class Databases_Joins_ProductFilter
         if($data_source && $sku) // 1 or 2
         {
             $product_select = $this->db->select();
-            $product_select->from("product_info_".$data_source, array("product_id","product_name","supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","sc_class"));
+            $product_select->from("product_info_".$data_source, array("product_id","product_name","supplier_sku", "street_price","supplier_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","sc_class"));
             $product_select->where("supplier_sku = ?", $sku);
             $product = $this->db->fetchRow($product_select);
             if($product['supplier_sku'])
             {
-                $offer_price_cal = $this->OfferPriceCalculation($product['street_price'], $product['wholesale_cost'], $discount, $cost_markup/100);
+                $offer_price_cal = $this->OfferPriceCalculation($product['supplier_price'], $product['wholesale_cost'], $discount, $cost_markup/100);
                 
-                $result['street_price'] = $offer_price_cal[1];
+                $result['supplier_price'] = $offer_price_cal[1];
                 $result['estimated_shipping_cost'] = $product['estimated_shipping_cost'];
                 $result['estimated_handling_fee'] = $product['estimated_handling_fee'];
                 $result['quantity_available'] = $product['quantity_available'];
@@ -419,6 +420,7 @@ class Databases_Joins_ProductFilter
                 'retailer_account_id'   =>  $this->retailer_account_id,
                 'wholesale_cost'        =>  $this->wholesale_cost,
                 'street_price'          =>  $this->street_price,
+                'supplier_price'        =>  $this->supplier_price,
                 'estimated_shipping_cost'   =>  $this->estimated_shipping_cost,
                 'estimated_handling_fee'    =>  $this->estimated_handling_fee,
                 'quantity_available'        =>  $this->quantity_available,

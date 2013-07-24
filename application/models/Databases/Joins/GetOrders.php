@@ -144,7 +144,7 @@ class Databases_Joins_GetOrders
     {
         //Get amount page qty
         $select = $this->db->select();
-        $select->from("purchase_order as p", array("main_db_order_id", "issue_time", "user_id", "order_amount", "pickup"));
+        $select->from("purchase_order as p", array("main_db_order_id","purchase_order_id", "issue_time", "user_id", "order_amount", "pickup"));
         $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("merchant_ref", "item_status", "api_response", "item_amount", "supplier_sku", "merchant_sku", "quantity"));
         $cond = array();
         if($this->start_date)
@@ -310,6 +310,7 @@ class Databases_Joins_GetOrders
                 //calculate item price
                 $product_filter_model = new Databases_Joins_ProductFilter();
                 $prices = $product_filter_model->GetSkuPrices(trim($this->supplier_sku), $user_info['user_id']);
+                print_r($prices);
                 if(!$prices){
                     $result[1] =  "N";
                     $result[2] =  "SKU is not found";
@@ -319,29 +320,29 @@ class Databases_Joins_GetOrders
                     $result[1] =  "N";
                     $result[2] =  "Out Of Stock";
                     $error = 1;
-                }elseif(NULL !== $prices['street_price'])
+                }elseif(NULL !== $prices['supplier_price'])
                 {
                     if("Y" == $this->pick_up)
                     {
                         if(NULL !== $this->group_instance_balance_array[$user_info['user_id']]) //has calculated document fee already
                         {
-                            $order_amount = ( $prices['street_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity);
+                            $order_amount = ( $prices['supplier_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity);
                         }else{
-                            $order_amount = ( $prices['street_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity) + $document_fee;
+                            $order_amount = ( $prices['supplier_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity) + $document_fee;
                         }
                         $shipping_cost  =   $prices['estimated_handling_fee']  * trim($this->quantity);
                         $ship_cost      =   $prices['estimated_handling_fee'];
                     }elseif($this->flat_rate_shipping == 1 && in_array ($prices['sc_class'], $shipping_courier_array)){
-                        $order_amount = ( $prices['street_price'] + $prices['estimated_shipping_cost'] ) * trim($this->quantity);
+                        $order_amount = ( $prices['supplier_price'] + $prices['estimated_shipping_cost'] ) * trim($this->quantity);
                         $shipping_cost  =   $prices['estimated_shipping_cost'] * trim($this->quantity);
                         $ship_cost  =   $shipping_cost;
                     }else{
                         $estimated_shipping_cost    =   $product_filter_model->getEstimatedShippingCost($prices['product_id'], $user_info['post_code'], trim($this->quantity) );
-                        $order_amount = ( $prices['street_price'] * trim($this->quantity) ) + $estimated_shipping_cost;
+                        $order_amount = ( $prices['supplier_price'] * trim($this->quantity) ) + $estimated_shipping_cost;
                         $shipping_cost  =   $estimated_shipping_cost;
                         $ship_cost  =   $estimated_shipping_cost;
                     }
-                    $subtotal   =   $prices['street_price'] * trim($this->quantity);
+                    $subtotal   =   $prices['supplier_price'] * trim($this->quantity);
                     $discount_amount    =   $subtotal * $discount;
                     $result['subtotal']     =   $subtotal;
                     $result['shipping_cost']    =   $shipping_cost;

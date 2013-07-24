@@ -66,6 +66,7 @@ function senfe(o,a,b,c,d){
                                 <td class="form-title">Order Amount<p style="margin:0">(Include GST and postage)</p></td>
                                 <td class="form-title">Pick Up</td>
                                 <td class="form-title">Status</td>
+                                <td class="form-title">Action</td>
                             </tr>
                             <?php if($this->list):
                                     $n = 1;
@@ -95,6 +96,7 @@ function senfe(o,a,b,c,d){
                                         }
                                         ?>
                                     </span></td>
+                                    <td class="center"<span class="small"><a href="/merchant/order-view/order_id/<?=$list['purchase_order_id']?>">View</a></span></td>
                             </tr>
                             <?php
                                     endforeach;

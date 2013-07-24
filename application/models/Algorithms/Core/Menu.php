@@ -161,6 +161,9 @@ class Algorithms_Core_Menu
             case "admin-financial-report":
                 $link = "Merchants List";
                 break;
+			case "order-view":
+                $link = "Order Report";
+                break;
             default:
                 $link = "Dashboard";
                 break;

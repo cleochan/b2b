@@ -530,8 +530,8 @@ class MerchantController extends Zend_Controller_Action
                         $getorders_model->payment_type_id   =   9;
                     }
                     
-                    $getorders_model->expected_item_cost    =   round($sku_prices_info['street_price'],2);
-                    $getorders_model->final_item_cost       =   round($sku_prices_info['street_price'],2);
+                    $getorders_model->expected_item_cost    =   round($sku_prices_info['supplier_price'],2);
+                    $getorders_model->final_item_cost       =   round($sku_prices_info['supplier_price'],2);
                     $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
                     $getorders_model->ship_cost             =   round($check_result['shipping_cost'],2);
                     try{
@@ -959,8 +959,8 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->item_amount   =   $order_amount;
                     $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
                     
-                    $getorders_model->expected_item_cost    =   round($sku_prices_info['street_price'],2);
-                    $getorders_model->final_item_cost       =   round($sku_prices_info['street_price'],2);
+                    $getorders_model->expected_item_cost    =   round($sku_prices_info['supplier_price'],2);
+                    $getorders_model->final_item_cost       =   round($sku_prices_info['supplier_price'],2);
                     $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
                     $getorders_model->ship_cost             =   round($check_result['shipping_cost'],2);
                     if($params['flat_paypal'])
@@ -1097,6 +1097,29 @@ class MerchantController extends Zend_Controller_Action
          $this->_redirect("/merchant/order-report/notice/".$notice);
     }
     
+    function orderViewAction()
+    {
+        $this->view->title      =   "Order View";
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation =   $menu_model->GetNavigation(array("Dashboard", "Order Report","Order View"));
+        $params =   $this->_request->getParams();
+        $purchase_order_id  =   $params['order_id'];
+        $product_info_model =   new Databases_Joins_ProductFilter();
+        $purchase_order_model   =   new Databases_Tables_PurchaseOrder();
+        $log_order_model        =   new Databases_Tables_LogsOrders();
+        $purchase_order_model->purchase_order_ids    =   $purchase_order_id;
+        $log_order_model->purchase_order_id         =   $purchase_order_id;
+        $purchase_order_info    =   $purchase_order_model->GetPurchaseOrder();
+        $logs_order_list        =   $log_order_model->GetLogsOrderList();
+        foreach ($logs_order_list as $key => $logs_order)
+        {
+            $product_info   =   $product_info_model->getProductInfo($logs_order['supplier_sku']);
+            $logs_order_list[$key]['product_name']  =   $product_info['product_name'];
+            $logs_order_list[$key]['imageURL0']     =   $product_info['imageURL0'];
+        }
+        $this->view->list   =   $logs_order_list;
+        $this->view->purchase_order =   $purchase_order_info[0];
+    }
     
 }
 

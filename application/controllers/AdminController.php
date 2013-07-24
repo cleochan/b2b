@@ -1226,8 +1226,8 @@ class AdminController extends Zend_Controller_Action
                     
                     $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
                     
-                    $getorders_model->expected_item_cost    =   round($sku_prices_info['street_price'],2);
-                    $getorders_model->final_item_cost       =   round($sku_prices_info['street_price'],2);
+                    $getorders_model->expected_item_cost    =   round($sku_prices_info['supplier_price'],2);
+                    $getorders_model->final_item_cost       =   round($sku_prices_info['supplier_price'],2);
                     $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
                     $getorders_model->ship_cost             =   round($check_result['shipping_cost'],2);
                     $getorders_model->payment_type_id       =   9;
