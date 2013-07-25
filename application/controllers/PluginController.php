@@ -460,10 +460,13 @@ if($result)
         $order_service_model    =   new Algorithms_Core_OrderService();
         $crazySalesOrderStatusType1 =   new CrazySalesOrderStatusType();
         $crazySalesOrderStatusType2 =   new CrazySalesOrderStatusType();
-        $crazySalesOrderStatusType1->OrderNumber    =   '37850675';//37850576
+        $crazySalesOrderStatusType1->OrderNumber    =   '39468112';//37850576
         $crazySalesOrderStatusType1->Status         =   'Processing';
         $crazySalesOrderStatusType1->StatusID       =   3;
-        $crazySalesOrderStatusType2->OrderNumber    =   '37850576';//37850576
+        $crazySalesOrderStatusType2->OrderNumber    =   '39468138';//37850576
+        $crazySalesOrderStatusType2->Status         =   'Processing';
+        $crazySalesOrderStatusType2->StatusID       =   3;
+        $crazySalesOrderStatusType2->OrderNumber    =   '39468070';//37850576
         $crazySalesOrderStatusType2->Status         =   'Processing';
         $crazySalesOrderStatusType2->StatusID       =   3;
         $crazySalesOrderStatusType  =   array();
