@@ -256,7 +256,7 @@ class MerchantController extends Zend_Controller_Action
         $this->view->title = "Place Order Preview";
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Place Order", "Place Order Preview"));
-//        Algorithms_Extensions_Plugin::FormatArray($this->params);die;
+        Algorithms_Extensions_Plugin::FormatArray($this->params);die;
 
         //make $data_array
         $data_array = array();
