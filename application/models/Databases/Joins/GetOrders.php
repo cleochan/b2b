@@ -357,6 +357,7 @@ class Databases_Joins_GetOrders
                     $error = 1;
             }
         }
+                        echo "b";die;
         if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
         {
             
@@ -364,7 +365,6 @@ class Databases_Joins_GetOrders
         }else{
             $result['instant_balance'] = $user_info['balance'] - $order_amount;
         }
-                        echo "b";die;
         $result['instant_balance']  =   (round($result['instant_balance'],2)==-0)?0.00:$result['instant_balance'];
         if($result['credit'] < (0 - round($result['instant_balance'],2)) && 1 != $error)
         {
