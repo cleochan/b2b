@@ -347,8 +347,6 @@ class Databases_Joins_GetOrders
                     $result['shipping_cost']    =   $shipping_cost;
                     $result['ship_cost']    =   $ship_cost;
                     $result['discount_amount']  =   $discount_amount;
-                    
-                        echo "a";
                 }
 
             }else{
@@ -357,12 +355,12 @@ class Databases_Joins_GetOrders
                     $error = 1;
             }
         }
-                        echo "b";die;
         if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
         {
-            
+            echo "a";die;
             $result['instant_balance'] = $this->group_instance_balance_array[$user_info['user_id']] - $order_amount;
         }else{
+            echo "b";die;
             $result['instant_balance'] = $user_info['balance'] - $order_amount;
         }
         $result['instant_balance']  =   (round($result['instant_balance'],2)==-0)?0.00:$result['instant_balance'];
