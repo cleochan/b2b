@@ -12,6 +12,8 @@ class Algorithms_Core_OrderService extends SoapClient{
     
     var $crazySalesOrderItemType;
     
+    var $crazySalesOrderStatusType;
+    
     private static $classmap = array();
     
     function __construct($options = array()) {
@@ -23,6 +25,13 @@ class Algorithms_Core_OrderService extends SoapClient{
                 $options['classmap'][$key] = $value;
             }
         }
+        $options = array( 
+            'encoding' => 'UTF-8',
+            'soap_version'=>SOAP_1_1, 
+            'exceptions'=>true, 
+            'trace'=>1, 
+            'cache_wsdl'=>WSDL_CACHE_NONE 
+         );
         parent::__construct($wsdl, $options);
     }
     
@@ -51,7 +60,20 @@ class Algorithms_Core_OrderService extends SoapClient{
         $result['MessageType']  =   $message_info['MessageType'];
         return $result;
     }
- 
+    
+    function WebServiceSetOrderStatus(){
+        $req    =   new SetOrderStatusRequest();
+        $req->OrderStatus   =   $this->crazySalesOrderStatusType;
+        print_r($req);
+        $response   =   $this->SetOrderStatus(array('request'=>$req));
+        $response   =   $this->object_array($response);
+        print_r($response);
+        exit();
+        $orders_info    =   $response['PlaceOrderResult']['Orders'];
+        $order_number   =   $orders_info['CrazySalesOrderType']['OrderNumber'];
+        $message_info   =   $response['PlaceOrderResult']['Messages'];
+        $result['order_number'] =   $order_number;
+        $result['MessageType']  =   $message_info['MessageType'];
+        return $result;
+    }
 }
-
-?>

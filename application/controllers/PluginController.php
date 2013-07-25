@@ -454,4 +454,24 @@ if($result)
         }
         die;
     }
+    
+    function setStatusAction()
+    {
+        $order_service_model    =   new Algorithms_Core_OrderService();
+        $crazySalesOrderStatusType1 =   new CrazySalesOrderStatusType();
+        $crazySalesOrderStatusType2 =   new CrazySalesOrderStatusType();
+        $crazySalesOrderStatusType1->OrderNumber    =   '37850675';//37850576
+        $crazySalesOrderStatusType1->Status         =   'Processing';
+        $crazySalesOrderStatusType1->StatusID       =   3;
+        $crazySalesOrderStatusType2->OrderNumber    =   '37850576';//37850576
+        $crazySalesOrderStatusType2->Status         =   'Processing';
+        $crazySalesOrderStatusType2->StatusID       =   3;
+        $crazySalesOrderStatusType  =   array();
+        $crazySalesOrderStatusType[]    =   $crazySalesOrderStatusType1;
+        $crazySalesOrderStatusType[]    =   $crazySalesOrderStatusType2;
+        $order_service_model->crazySalesOrderStatusType =   $crazySalesOrderStatusType;
+        $order_service_model->WebServiceSetOrderStatus();
+        die;
+        
+    }
 }
