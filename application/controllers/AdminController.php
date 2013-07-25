@@ -1507,5 +1507,29 @@ class AdminController extends Zend_Controller_Action
         }
     }
     
+    function adminOrderViewAction()
+    {
+        $this->view->title      =   "Order View";
+        $menu_model = new Algorithms_Core_Menu;
+        $params =   $this->_request->getParams();
+        $this->view->navigation =   $menu_model->GetNavigation(array("Dashboard", "Merchants List","Admin - Order Report|".$params['user_id'],"Order View"));
+        $purchase_order_id  =   $params['order_id'];
+        $product_info_model =   new Databases_Joins_ProductFilter();
+        $purchase_order_model   =   new Databases_Tables_PurchaseOrder();
+        $log_order_model        =   new Databases_Tables_LogsOrders();
+        $purchase_order_model->purchase_order_ids    =   $purchase_order_id;
+        $log_order_model->purchase_order_id         =   $purchase_order_id;
+        $purchase_order_info    =   $purchase_order_model->GetPurchaseOrder();
+        $logs_order_list        =   $log_order_model->GetLogsOrderList();
+        foreach ($logs_order_list as $key => $logs_order)
+        {
+            $product_info   =   $product_info_model->getProductInfo($logs_order['supplier_sku']);
+            $logs_order_list[$key]['product_name']  =   $product_info['product_name'];
+            $logs_order_list[$key]['imageURL0']     =   $product_info['imageURL0'];
+        }
+        $this->view->list   =   $logs_order_list;
+        $this->view->purchase_order =   $purchase_order_info[0];
+    }
+    
 }
 
