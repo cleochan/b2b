@@ -323,6 +323,7 @@ class Databases_Joins_GetOrders
                 {
                     if("Y" == $this->pick_up)
                     {
+                        echo "AAA";die;
                         if(NULL !== $this->group_instance_balance_array[$user_info['user_id']]) //has calculated document fee already
                         {
                             $order_amount = ( $prices['supplier_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity);
