@@ -355,7 +355,8 @@ class Databases_Joins_GetOrders
                     $error = 1;
             }
         }
-        if(NULL != $this->group_instance_balance_array[$user_info['user_id']])
+        echo "111";die;
+        if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
         {
             echo "a";die;
             $result['instant_balance'] = $this->group_instance_balance_array[$user_info['user_id']] - $order_amount;
