@@ -323,13 +323,18 @@ class Databases_Joins_GetOrders
                 {
                     if("Y" == $this->pick_up)
                     {
-                        echo "AAA";die;
-                        if(NULL !== $this->group_instance_balance_array[$user_info['user_id']]) //has calculated document fee already
+                        if(empty($this->group_instance_balance_array))
                         {
-                            $order_amount = ( $prices['supplier_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity);
-                        }else{
                             $order_amount = ( $prices['supplier_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity) + $document_fee;
+                        }else{
+                            if(NULL !== $this->group_instance_balance_array[$user_info['user_id']]) //has calculated document fee already
+                            {
+                                $order_amount = ( $prices['supplier_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity);
+                            }else{
+                                $order_amount = ( $prices['supplier_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity) + $document_fee;
+                            }
                         }
+
                         $shipping_cost  =   $prices['estimated_handling_fee']  * trim($this->quantity);
                         $ship_cost      =   $prices['estimated_handling_fee'];
                     }elseif($this->flat_rate_shipping == 1 && in_array ($prices['sc_class'], $shipping_courier_array)){
@@ -356,12 +361,18 @@ class Databases_Joins_GetOrders
                     $error = 1;
             }
         }
-        if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
+        if(empty($this->group_instance_balance_array))
         {
-            $result['instant_balance'] = $this->group_instance_balance_array[$user_info['user_id']] - $order_amount;
-        }else{
             $result['instant_balance'] = $user_info['balance'] - $order_amount;
+        }else{
+            if(NULL !== $this->group_instance_balance_array[$user_info['user_id']])
+            {
+                $result['instant_balance'] = $this->group_instance_balance_array[$user_info['user_id']] - $order_amount;
+            }else{
+                $result['instant_balance'] = $user_info['balance'] - $order_amount;
+            }
         }
+
         $result['instant_balance']  =   (round($result['instant_balance'],2)==-0)?0.00:$result['instant_balance'];
         if($result['credit'] < (0 - round($result['instant_balance'],2)) && 1 != $error)
         {
