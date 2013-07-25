@@ -226,15 +226,15 @@ class MerchantController extends Zend_Controller_Action
         if($this->params['supplier_sku'])
         {
             $_SESSION['place_order']['items'][] = array(
-                "supplier_sku" => $this->params['supplier_sku'],
-                "merchant_sku" => $this->params['merchant_sku'],
-                "quantity" => $this->params['quantity'],
-                "merchant_ref" => $this->params['merchant_ref'],
-                "shipping_method" => $this->params['shipping_method'],
-                "shipping_instruction" => $this->params['shipping_instruction'],
+                "supplier_sku" => trim($this->params['supplier_sku']),
+                "merchant_sku" => trim($this->params['merchant_sku']),
+                "quantity" => trim($this->params['quantity']),
+                "merchant_ref" => trim($this->params['merchant_ref']),
+                "shipping_method" => trim($this->params['shipping_method']),
+                "shipping_instruction" => trim($this->params['shipping_instruction']),
                 //"tracking_number" => $this->params['tracking_number'],
                 //"serial_no" => $this->params['serial_no'],
-                "comments" => $this->params['comments']
+                "comments" => trim($this->params['comments'])
             );
         }
         
@@ -725,15 +725,15 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->shipping_first_name = $da_val[1];
                 $getorders_model->shipping_last_name = $da_val[2];
                 $getorders_model->shipping_company = $da_val[3];
-                $getorders_model->merchant_company = $da_val[17]; // REQUIRED AND IMPORTANT !!!
+                $getorders_model->merchant_company = trim($da_val[17]); // REQUIRED AND IMPORTANT !!!
                 $getorders_model->shipping_address_1 = $da_val[4];
                 $getorders_model->shipping_suburb = $da_val[6];
                 $getorders_model->shipping_state = $da_val[7];
                 $getorders_model->shipping_postcode = $da_val[8];
                 $getorders_model->shipping_country = $da_val[9];
                 $getorders_model->shipping_phone    =   $da_val[10];
-                $getorders_model->supplier_sku = $da_val[11];
-                $getorders_model->quantity = $da_val[13];
+                $getorders_model->supplier_sku = trim($da_val[11]);
+                $getorders_model->quantity = trim($da_val[13]);
                 $getorders_model->operator_id = $this->params['user_id'];
                 $getorders_model->pick_up = $da_val[18];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
@@ -802,8 +802,8 @@ class MerchantController extends Zend_Controller_Action
                                     $getorders_model->shipping_postcode = $da_val[8];
                                     $getorders_model->shipping_country = $da_val[9];
                                     $getorders_model->shipping_phone    =   $da_val[10];
-                                    $getorders_model->supplier_sku = $da_val[11];
-                                    $getorders_model->quantity = $da_val[13];
+                                    $getorders_model->supplier_sku = trim($da_val[11]);
+                                    $getorders_model->quantity = trim($da_val[13]);
                                     $getorders_model->operator_id = $this->params['user_id'];
                                     $getorders_model->pick_up = $da_val[18];
                                     $getorders_model->group_instance_balance_array = $group_instance_balance_array;
