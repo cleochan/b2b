@@ -323,7 +323,6 @@ class Databases_Joins_GetOrders
                 {
                     if("Y" == $this->pick_up)
                     {
-                        echo "a";die;
                         if(NULL !== $this->group_instance_balance_array[$user_info['user_id']]) //has calculated document fee already
                         {
                             $order_amount = ( $prices['supplier_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity);
@@ -332,6 +331,7 @@ class Databases_Joins_GetOrders
                         }
                         $shipping_cost  =   $prices['estimated_handling_fee']  * trim($this->quantity);
                         $ship_cost      =   $prices['estimated_handling_fee'];
+                        echo "b";die;
                     }elseif($this->flat_rate_shipping == 1 && in_array ($prices['sc_class'], $shipping_courier_array)){
                         $order_amount = ( $prices['supplier_price'] + $prices['estimated_shipping_cost'] ) * trim($this->quantity);
                         $shipping_cost  =   $prices['estimated_shipping_cost'] * trim($this->quantity);
