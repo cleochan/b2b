@@ -331,7 +331,6 @@ class Databases_Joins_GetOrders
                         }
                         $shipping_cost  =   $prices['estimated_handling_fee']  * trim($this->quantity);
                         $ship_cost      =   $prices['estimated_handling_fee'];
-                        echo "b";die;
                     }elseif($this->flat_rate_shipping == 1 && in_array ($prices['sc_class'], $shipping_courier_array)){
                         $order_amount = ( $prices['supplier_price'] + $prices['estimated_shipping_cost'] ) * trim($this->quantity);
                         $shipping_cost  =   $prices['estimated_shipping_cost'] * trim($this->quantity);
@@ -374,6 +373,7 @@ class Databases_Joins_GetOrders
         }
         $result['order_amount'] = $order_amount;
         $result[3] =$error;
+                        echo "c";die;
         return $result;
     }
     
