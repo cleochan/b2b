@@ -325,10 +325,8 @@ class Databases_Joins_GetOrders
                     {
                         if(NULL !== $this->group_instance_balance_array[$user_info['user_id']]) //has calculated document fee already
                         {
-                            echo "c";die;
                             $order_amount = ( $prices['supplier_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity);
                         }else{
-                            echo "d";die;
                             $order_amount = ( $prices['supplier_price'] + $prices['estimated_handling_fee'] ) * trim($this->quantity) + $document_fee;
                         }
                         $shipping_cost  =   $prices['estimated_handling_fee']  * trim($this->quantity);
