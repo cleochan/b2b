@@ -466,12 +466,13 @@ if($result)
         $crazySalesOrderStatusType2->OrderNumber    =   '39468138';//37850576
         $crazySalesOrderStatusType2->Status         =   'Processing';
         $crazySalesOrderStatusType2->StatusID       =   3;
-        $crazySalesOrderStatusType2->OrderNumber    =   '39468070';//37850576
-        $crazySalesOrderStatusType2->Status         =   'Processing';
-        $crazySalesOrderStatusType2->StatusID       =   3;
+        $crazySalesOrderStatusType3->OrderNumber    =   '39468070';//37850576
+        $crazySalesOrderStatusType3->Status         =   'Processing';
+        $crazySalesOrderStatusType3->StatusID       =   3;
         $crazySalesOrderStatusType  =   array();
         $crazySalesOrderStatusType[]    =   $crazySalesOrderStatusType1;
         $crazySalesOrderStatusType[]    =   $crazySalesOrderStatusType2;
+        $crazySalesOrderStatusType[]    =   $crazySalesOrderStatusType3;
         $order_service_model->crazySalesOrderStatusType =   $crazySalesOrderStatusType;
         $order_service_model->WebServiceSetOrderStatus();
         die;
