@@ -372,7 +372,7 @@ class Databases_Joins_GetOrders
                 $result['instant_balance'] = $user_info['balance'] - $order_amount;
             }
         }
-
+//
         $result['instant_balance']  =   (round($result['instant_balance'],2)==-0)?0.00:$result['instant_balance'];
         if($result['credit'] < (0 - round($result['instant_balance'],2)) && 1 != $error)
         {
