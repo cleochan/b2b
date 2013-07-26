@@ -1272,6 +1272,7 @@ class AdminController extends Zend_Controller_Action
                     $crazySalesOrderType->ShipZipCode            =   $purchase_order['shipping_postcode'];
                     $crazySalesOrderType->ShipCountryCode        =   $purchase_order['shipping_country'];
                     $crazySalesOrderType->ShipPhone              =   $purchase_order['shipping_phone'];
+                    $crazySalesOrderType->SiteID                 =   6;
 
 
                     $user_info  =   $user_info_model->GetUserInfo($purchase_order['user_id']);
@@ -1339,7 +1340,7 @@ class AdminController extends Zend_Controller_Action
                         $getorders_model->api_response  =   'Pending';
 
                         //Update Financial Info
-                        $logs_financial->user_id = $user_id;
+                        $logs_financial->user_id = $purchase_order['user_id'];
                         $logs_financial->action_type = 1; //place order
                         $logs_financial->action_affect = 2; //deduct
                         $logs_financial->action_value = $purchase_order['order_amount'];
@@ -1401,7 +1402,7 @@ class AdminController extends Zend_Controller_Action
                         $logs_orders_model->api_response    =   '';
                         $logs_orders_model->item_status     =   1;
                         $logs_orders_model->UpdateLogsOrderStatus();
-                        $logs_financial->user_id = $user_id;
+                        $logs_financial->user_id = $purchase_order_info['user_id'];
                         $logs_financial->action_type = 1; //place order
                         $logs_financial->action_affect = 2; //deduct
                         $logs_financial->action_value = $crazy_sales_order->order_amount;
