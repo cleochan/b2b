@@ -478,4 +478,18 @@ if($result)
         die;
         
     }
+    
+    function t2Action()
+    {
+        $a = array();
+        
+        if($a['b'])
+        {
+            echo "yes";
+        }else{
+            echo "no";
+        }
+        
+        die;
+    }
 }
