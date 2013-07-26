@@ -483,7 +483,7 @@ if($result)
     {
         $a = array();
         
-        if($a['b'])
+        if(NULL !== $a['b'])
         {
             echo "yes";
         }else{
