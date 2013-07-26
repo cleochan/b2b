@@ -1335,7 +1335,8 @@ class AdminController extends Zend_Controller_Action
                             $product_filter_model->updateQuantityAvailable($logs_order['supplier_sku'], $logs_order['quantity']);
                         }
                         $getorders_model->main_order_id =   $response_data['order_number'];
-                        $getorders_model->item_status   =   1;
+                        $getorders_model->item_status   =   0;
+                        $getorders_model->api_response  =   'Pending';
 
                         //Update Financial Info
                         $logs_financial->user_id = $user_id;
@@ -1343,13 +1344,14 @@ class AdminController extends Zend_Controller_Action
                         $logs_financial->action_affect = 2; //deduct
                         $logs_financial->action_value = $purchase_order['order_amount'];
                         // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
-                        $logs_financial->AddLog();
+                        //$logs_financial->AddLog();
                         
                         $crazySalesOrderStatusType  =   new CrazySalesOrderStatusType();
                         $crazySalesOrderStatusType->OrderNumber     =   $response_data['order_number'];
                         $crazySalesOrderStatusType->Status          =   'Processing';
                         $crazySalesOrderStatusType->StatusID        =   3;
-                        $crazy_sales_order_status_array[]           =   $crazySalesOrderStatusType;
+                        $crazySalesOrderStatusType->OrderAmount     =   $purchase_order['order_amount'];
+                        $crazy_sales_order_status_array[$response_data['order_number']]   =   $crazySalesOrderStatusType;
 
                     }elseif($response_data['MessageType']['Description'])
                     {
@@ -1374,6 +1376,7 @@ class AdminController extends Zend_Controller_Action
                         $logs_orders_model->api_response    =   $result_message['MessageType']['Description'];
                         $logs_orders_model->item_status     =   2;
                         $logs_orders_model->UpdateLogsOrderStatus();
+                        unset($crazy_sales_order_status_array[$message_main_order_id]);
                     }else{
                         foreach ($result_message['MessageType'] as $message_type)
                         {
@@ -1384,7 +1387,26 @@ class AdminController extends Zend_Controller_Action
                             $logs_orders_model->api_response    =   $message_type['Description'];
                             $logs_orders_model->item_status     =   2;
                             $logs_orders_model->UpdateLogsOrderStatus();
+                            unset($crazy_sales_order_status_array[$message_main_order_id]);
                         }
+                    }
+                }
+                if(!empty($crazy_sales_order_status_array))
+                {
+                    foreach ($crazy_sales_order_status_array as $crazy_sales_order)
+                    {
+                        $purchase_order_model->main_db_order_id =   $crazy_sales_order->OrderNumber;
+                        $purchase_order_info                    =   $purchase_order_model->GetPurchaseOrderInMainOrderId();
+                        $logs_orders_model->purchase_order_id   =   $purchase_order_info['purchase_order_id'];
+                        $logs_orders_model->api_response    =   '';
+                        $logs_orders_model->item_status     =   1;
+                        $logs_orders_model->UpdateLogsOrderStatus();
+                        $logs_financial->user_id = $user_id;
+                        $logs_financial->action_type = 1; //place order
+                        $logs_financial->action_affect = 2; //deduct
+                        $logs_financial->action_value = $crazy_sales_order->order_amount;
+                        // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
+                        $logs_financial->AddLog();
                     }
                 }
             }            
