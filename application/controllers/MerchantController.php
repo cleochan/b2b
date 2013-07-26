@@ -657,6 +657,8 @@ class MerchantController extends Zend_Controller_Action
                         $crazySalesOrderStatusType->Status          =   'Processing';
                         $crazySalesOrderStatusType->StatusID        =   3;
                         $crazySalesOrderStatusType->OrderAmount     =   $purchase_order['order_amount'];
+                        $crazySalesOrderStatusType->PurchaseOrderId =   $purchase_order['purchase_order_id'];
+                        $crazySalesOrderStatusType->PurchaseOrderUserId =   $purchase_order['user_id'];
                         $crazy_sales_order_status_array[$response_data['order_number']] =   $crazySalesOrderStatusType;
                     }elseif($response_data['MessageType']['Description'])
                     {
@@ -699,12 +701,11 @@ class MerchantController extends Zend_Controller_Action
                     foreach ($crazy_sales_order_status_array as $crazy_sales_order)
                     {
                         $purchase_order_model->main_db_order_id =   $crazy_sales_order->OrderNumber;
-                        $purchase_order_info                    =   $purchase_order_model->GetPurchaseOrderInMainOrderId();
-                        $logs_orders_model->purchase_order_id   =   $purchase_order_info['purchase_order_id'];
+                        $logs_orders_model->purchase_order_id   =   $crazy_sales_order->PurchaseOrderId;
                         $logs_orders_model->api_response    =   '';
                         $logs_orders_model->item_status     =   1;
                         $logs_orders_model->UpdateLogsOrderStatus();
-                        $logs_financial->user_id = $purchase_order_info['user_id'];
+                        $logs_financial->user_id = $crazy_sales_order->PurchaseOrderUserId;
                         $logs_financial->action_type = 1; //place order
                         $logs_financial->action_affect = 2; //deduct
                         $logs_financial->action_value = $crazy_sales_order->order_amount;
@@ -1145,6 +1146,8 @@ class MerchantController extends Zend_Controller_Action
                         $crazySalesOrderStatusType->Status          =   'Processing';
                         $crazySalesOrderStatusType->StatusID        =   3;
                         $crazySalesOrderStatusType->OrderAmount     =   $purchase_order['order_amount'];
+                        $crazySalesOrderStatusType->PurchaseOrderId =   $purchase_order['purchase_order_id'];
+                        $crazySalesOrderStatusType->PurchaseOrderUserId =   $purchase_order['user_id'];
                         $crazy_sales_order_status_array[$response_data['order_number']] =   $crazySalesOrderStatusType;
 
                     }elseif($response_data['MessageType']['Description'])
@@ -1189,12 +1192,11 @@ class MerchantController extends Zend_Controller_Action
                     foreach ($crazy_sales_order_status_array as $crazy_sales_order)
                     {
                         $purchase_order_model->main_db_order_id =   $crazy_sales_order->OrderNumber;
-                        $purchase_order_info                    =   $purchase_order_model->GetPurchaseOrderInMainOrderId();
-                        $logs_orders_model->purchase_order_id   =   $purchase_order_info['purchase_order_id'];
+                        $logs_orders_model->purchase_order_id   =   $crazy_sales_order->PurchaseOrderId;
                         $logs_orders_model->api_response    =   '';
                         $logs_orders_model->item_status     =   1;
                         $logs_orders_model->UpdateLogsOrderStatus();
-                        $logs_financial->user_id = $purchase_order_info['user_id'];
+                        $logs_financial->user_id = $crazy_sales_order->PurchaseOrderUserId;
                         $logs_financial->action_type = 1; //place order
                         $logs_financial->action_affect = 2; //deduct
                         $logs_financial->action_value = $crazy_sales_order->order_amount;

@@ -4,6 +4,8 @@ class CrazySalesOrderStatusType {
     var $Status;
     var $StatusID;
     var $OrderAmount;
+    var $PurchaseOrderId;
+    var $PurchaseOrderUserId;
 }
 
 ?>
