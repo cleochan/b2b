@@ -279,4 +279,18 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
             }
         }
     }
+    
+    function UpdateLogsOrderStatus()
+    {
+        if($this->purchase_order_id)
+        {
+            $db     =   $this->getAdapter(); 
+            $data   =   array(
+                'api_response'  =>  $this->api_response,
+                'item_status'   =>  $this->item_status,
+            );
+            $where  =   $db->quoteInto("purchase_order_id = ?", $this->purchase_order_id); 
+            $this->update($data, $where);
+        }
+    }
 }

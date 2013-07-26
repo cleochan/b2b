@@ -1245,6 +1245,8 @@ class AdminController extends Zend_Controller_Action
             $logs_orders_model      =   new Databases_Tables_LogsOrders();
             $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
             $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
+            $order_core_model       =   new Algorithms_Core_Order();
+            $crazy_sales_order_status_array =   array();
             
             if($purchase_orders)
             {
@@ -1342,6 +1344,12 @@ class AdminController extends Zend_Controller_Action
                         $logs_financial->action_value = $purchase_order['order_amount'];
                         // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
                         $logs_financial->AddLog();
+                        
+                        $crazySalesOrderStatusType  =   new CrazySalesOrderStatusType();
+                        $crazySalesOrderStatusType->OrderNumber     =   $response_data['order_number'];
+                        $crazySalesOrderStatusType->Status          =   'Processing';
+                        $crazySalesOrderStatusType->StatusID        =   3;
+                        $crazy_sales_order_status_array[]           =   $crazySalesOrderStatusType;
 
                     }elseif($response_data['MessageType']['Description'])
                     {
@@ -1351,6 +1359,33 @@ class AdminController extends Zend_Controller_Action
                     $getorders_model->logs_order_ids    =  $logs_order_ids;
                     $getorders_model->purchase_order_id   =   $purchase_order['purchase_order_id'];
                     $getorders_model->UpdateOrder();
+                }
+                
+                                
+                $order_service_model->crazySalesOrderStatusType =   $crazy_sales_order_status_array;
+                $result_message =   $order_service_model->WebServiceSetOrderStatus();
+                if($result_message['MessageType'])
+                {
+                    if($result_message['MessageType']['Description']){
+                        $message_main_order_id = $order_core_model->ValueAdjustmentReader($result_message['MessageType']['Description']);
+                        $purchase_order_model->main_db_order_id =   $message_main_order_id;
+                        $purchase_order_info                =   $purchase_order_model->GetPurchaseOrderInMainOrderId();
+                        $logs_orders_model->purchase_order_id   =   $purchase_order_info['purchase_order_id'];
+                        $logs_orders_model->api_response    =   $result_message['MessageType']['Description'];
+                        $logs_orders_model->item_status     =   2;
+                        $logs_orders_model->UpdateLogsOrderStatus();
+                    }else{
+                        foreach ($result_message['MessageType'] as $message_type)
+                        {
+                            $message_main_order_id = $order_core_model->ValueAdjustmentReader($message_type['Description']);
+                            $purchase_order_model->main_db_order_id =   $message_main_order_id;
+                            $purchase_order_info                    =   $purchase_order_model->GetPurchaseOrderInMainOrderId();
+                            $logs_orders_model->purchase_order_id   =   $purchase_order_info['purchase_order_id'];
+                            $logs_orders_model->api_response    =   $message_type['Description'];
+                            $logs_orders_model->item_status     =   2;
+                            $logs_orders_model->UpdateLogsOrderStatus();
+                        }
+                    }
                 }
             }            
         }else{

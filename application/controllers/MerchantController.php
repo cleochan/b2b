@@ -226,15 +226,15 @@ class MerchantController extends Zend_Controller_Action
         if($this->params['supplier_sku'])
         {
             $_SESSION['place_order']['items'][] = array(
-                "supplier_sku" => trim($this->params['supplier_sku']),
-                "merchant_sku" => trim($this->params['merchant_sku']),
-                "quantity" => trim($this->params['quantity']),
-                "merchant_ref" => trim($this->params['merchant_ref']),
-                "shipping_method" => trim($this->params['shipping_method']),
-                "shipping_instruction" => trim($this->params['shipping_instruction']),
+                "supplier_sku" => $this->params['supplier_sku'],
+                "merchant_sku" => $this->params['merchant_sku'],
+                "quantity" => $this->params['quantity'],
+                "merchant_ref" => $this->params['merchant_ref'],
+                "shipping_method" => $this->params['shipping_method'],
+                "shipping_instruction" => $this->params['shipping_instruction'],
                 //"tracking_number" => $this->params['tracking_number'],
                 //"serial_no" => $this->params['serial_no'],
-                "comments" => trim($this->params['comments'])
+                "comments" => $this->params['comments']
             );
         }
         
@@ -256,8 +256,7 @@ class MerchantController extends Zend_Controller_Action
         $this->view->title = "Place Order Preview";
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Place Order", "Place Order Preview"));
-//        Algorithms_Extensions_Plugin::FormatArray($this->params);die;
-
+        
         //make $data_array
         $data_array = array();
         $getorders_model = new Databases_Joins_GetOrders();
@@ -552,7 +551,9 @@ class MerchantController extends Zend_Controller_Action
             $logs_orders_model      =   new Databases_Tables_LogsOrders();
             $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
             $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
-            
+            $order_service_model    =   new Algorithms_Core_OrderService();
+            $order_core_model       =   new Algorithms_Core_Order();
+            $crazy_sales_order_status_array =   array();
             if($purchase_orders)
             {
                 foreach ($purchase_orders as $purchase_order)
@@ -648,7 +649,12 @@ class MerchantController extends Zend_Controller_Action
                         $logs_financial->action_value = $purchase_order['order_amount'];
                         // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
                         $logs_financial->AddLog();
-
+                        
+                        $crazySalesOrderStatusType  =   new CrazySalesOrderStatusType();
+                        $crazySalesOrderStatusType->OrderNumber     =   $response_data['order_number'];
+                        $crazySalesOrderStatusType->Status          =   'Processing';
+                        $crazySalesOrderStatusType->StatusID        =   3;
+                        $crazy_sales_order_status_array[]           =   $crazySalesOrderStatusType;
                     }elseif($response_data['MessageType']['Description'])
                     {
                         $getorders_model->item_status   =   2;
@@ -657,6 +663,32 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->logs_order_ids    =  $logs_order_ids;
                     $getorders_model->purchase_order_id   =   $purchase_order['purchase_order_id'];
                     $getorders_model->UpdateOrder();
+                }
+                
+                $order_service_model->crazySalesOrderStatusType =   $crazy_sales_order_status_array;
+                $result_message =   $order_service_model->WebServiceSetOrderStatus();
+                if($result_message['MessageType'])
+                {
+                    if($result_message['MessageType']['Description']){
+                        $message_main_order_id = $order_core_model->ValueAdjustmentReader($result_message['MessageType']['Description']);
+                        $purchase_order_model->main_db_order_id =   $message_main_order_id;
+                        $purchase_order_info                =   $purchase_order_model->GetPurchaseOrderInMainOrderId();
+                        $logs_orders_model->purchase_order_id   =   $purchase_order_info['purchase_order_id'];
+                        $logs_orders_model->api_response    =   $result_message['MessageType']['Description'];
+                        $logs_orders_model->item_status     =   2;
+                        $logs_orders_model->UpdateLogsOrderStatus();
+                    }else{
+                        foreach ($result_message['MessageType'] as $message_type)
+                        {
+                            $message_main_order_id = $order_core_model->ValueAdjustmentReader($message_type['Description']);
+                            $purchase_order_model->main_db_order_id =   $message_main_order_id;
+                            $purchase_order_info                    =   $purchase_order_model->GetPurchaseOrderInMainOrderId();
+                            $logs_orders_model->purchase_order_id   =   $purchase_order_info['purchase_order_id'];
+                            $logs_orders_model->api_response    =   $message_type['Description'];
+                            $logs_orders_model->item_status     =   2;
+                            $logs_orders_model->UpdateLogsOrderStatus();
+                        }
+                    }
                 }
             }
         }else{
@@ -726,15 +758,15 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->shipping_first_name = $da_val[1];
                 $getorders_model->shipping_last_name = $da_val[2];
                 $getorders_model->shipping_company = $da_val[3];
-                $getorders_model->merchant_company = trim($da_val[17]); // REQUIRED AND IMPORTANT !!!
+                $getorders_model->merchant_company = $da_val[17]; // REQUIRED AND IMPORTANT !!!
                 $getorders_model->shipping_address_1 = $da_val[4];
                 $getorders_model->shipping_suburb = $da_val[6];
                 $getorders_model->shipping_state = $da_val[7];
                 $getorders_model->shipping_postcode = $da_val[8];
                 $getorders_model->shipping_country = $da_val[9];
                 $getorders_model->shipping_phone    =   $da_val[10];
-                $getorders_model->supplier_sku = trim($da_val[11]);
-                $getorders_model->quantity = trim($da_val[13]);
+                $getorders_model->supplier_sku = $da_val[11];
+                $getorders_model->quantity = $da_val[13];
                 $getorders_model->operator_id = $this->params['user_id'];
                 $getorders_model->pick_up = $da_val[18];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
@@ -803,8 +835,8 @@ class MerchantController extends Zend_Controller_Action
                                     $getorders_model->shipping_postcode = $da_val[8];
                                     $getorders_model->shipping_country = $da_val[9];
                                     $getorders_model->shipping_phone    =   $da_val[10];
-                                    $getorders_model->supplier_sku = trim($da_val[11]);
-                                    $getorders_model->quantity = trim($da_val[13]);
+                                    $getorders_model->supplier_sku = $da_val[11];
+                                    $getorders_model->quantity = $da_val[13];
                                     $getorders_model->operator_id = $this->params['user_id'];
                                     $getorders_model->pick_up = $da_val[18];
                                     $getorders_model->group_instance_balance_array = $group_instance_balance_array;
@@ -984,6 +1016,8 @@ class MerchantController extends Zend_Controller_Action
             $logs_orders_model      =   new Databases_Tables_LogsOrders();
             $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
             $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
+            $order_core_model       =   new Algorithms_Core_Order();
+            $crazy_sales_order_status_array =   array();
             
             if($purchase_orders)
             {
@@ -1080,6 +1114,12 @@ class MerchantController extends Zend_Controller_Action
                         $logs_financial->action_value = $purchase_order['order_amount'];
                         // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
                         $logs_financial->AddLog();
+                        
+                        $crazySalesOrderStatusType  =   new CrazySalesOrderStatusType();
+                        $crazySalesOrderStatusType->OrderNumber     =   $response_data['order_number'];
+                        $crazySalesOrderStatusType->Status          =   'Processing';
+                        $crazySalesOrderStatusType->StatusID        =   3;
+                        $crazy_sales_order_status_array[]           =   $crazySalesOrderStatusType;
 
                     }elseif($response_data['MessageType']['Description'])
                     {
@@ -1089,6 +1129,32 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->logs_order_ids    =  $logs_order_ids;
                     $getorders_model->purchase_order_id   =   $purchase_order['purchase_order_id'];
                     $getorders_model->UpdateOrder();
+                }
+                
+                $order_service_model->crazySalesOrderStatusType =   $crazy_sales_order_status_array;
+                $result_message =   $order_service_model->WebServiceSetOrderStatus();
+                if($result_message['MessageType'])
+                {
+                    if($result_message['MessageType']['Description']){
+                        $message_main_order_id = $order_core_model->ValueAdjustmentReader($result_message['MessageType']['Description']);
+                        $purchase_order_model->main_db_order_id =   $message_main_order_id;
+                        $purchase_order_info                =   $purchase_order_model->GetPurchaseOrderInMainOrderId();
+                        $logs_orders_model->purchase_order_id   =   $purchase_order_info['purchase_order_id'];
+                        $logs_orders_model->api_response    =   $result_message['MessageType']['Description'];
+                        $logs_orders_model->item_status     =   2;
+                        $logs_orders_model->UpdateLogsOrderStatus();
+                    }else{
+                        foreach ($result_message['MessageType'] as $message_type)
+                        {
+                            $message_main_order_id = $order_core_model->ValueAdjustmentReader($message_type['Description']);
+                            $purchase_order_model->main_db_order_id =   $message_main_order_id;
+                            $purchase_order_info                    =   $purchase_order_model->GetPurchaseOrderInMainOrderId();
+                            $logs_orders_model->purchase_order_id   =   $purchase_order_info['purchase_order_id'];
+                            $logs_orders_model->api_response    =   $message_type['Description'];
+                            $logs_orders_model->item_status     =   2;
+                            $logs_orders_model->UpdateLogsOrderStatus();
+                        }
+                    }
                 }
             }
             

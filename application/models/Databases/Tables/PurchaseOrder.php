@@ -110,4 +110,17 @@ class Databases_Tables_PurchaseOrder extends Zend_Db_Table
         }
         return $result;
     }
+    
+    function GetPurchaseOrderInMainOrderId()
+    {
+        $result =   FALSE;
+        if($this->main_db_order_id)
+        {
+            $select   =   $this->select();
+            $select->where("main_db_order_id in(".$this->main_db_order_id.")" );
+            $rows =   $this->fetchRow($select);
+            $result =   $rows->toArray();
+        }
+        return $result;
+    }
 }

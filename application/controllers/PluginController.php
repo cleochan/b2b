@@ -460,36 +460,56 @@ if($result)
         $order_service_model    =   new Algorithms_Core_OrderService();
         $crazySalesOrderStatusType1 =   new CrazySalesOrderStatusType();
         $crazySalesOrderStatusType2 =   new CrazySalesOrderStatusType();
-        $crazySalesOrderStatusType1->OrderNumber    =   '39468112';//37850576
+        $crazySalesOrderStatusType3 =   new CrazySalesOrderStatusType();
+        $crazySalesOrderStatusType1->OrderNumber    =   '37850675';//37850576
         $crazySalesOrderStatusType1->Status         =   'Processing';
         $crazySalesOrderStatusType1->StatusID       =   3;
-        $crazySalesOrderStatusType2->OrderNumber    =   '39468138';//37850576
+        $crazySalesOrderStatusType1->PurchaseOrderId       =   429;
+        $crazySalesOrderStatusType2->OrderNumber    =   '37850576';//37850576
         $crazySalesOrderStatusType2->Status         =   'Processing';
         $crazySalesOrderStatusType2->StatusID       =   3;
-        $crazySalesOrderStatusType3->OrderNumber    =   '39468070';//37850576
+        $crazySalesOrderStatusType1->PurchaseOrderId       =   428;
+        $crazySalesOrderStatusType3->OrderNumber    =   '37850535';//37850576
         $crazySalesOrderStatusType3->Status         =   'Processing';
         $crazySalesOrderStatusType3->StatusID       =   3;
+        $crazySalesOrderStatusType1->PurchaseOrderId       =   427;
         $crazySalesOrderStatusType  =   array();
         $crazySalesOrderStatusType[]    =   $crazySalesOrderStatusType1;
         $crazySalesOrderStatusType[]    =   $crazySalesOrderStatusType2;
         $crazySalesOrderStatusType[]    =   $crazySalesOrderStatusType3;
         $order_service_model->crazySalesOrderStatusType =   $crazySalesOrderStatusType;
-        $order_service_model->WebServiceSetOrderStatus();
-        die;
-        
-    }
-    
-    function t2Action()
-    {
-        $a = array();
-        
-        if(NULL !== $a['b'])
+        $result_message =   $order_service_model->WebServiceSetOrderStatus();
+        $feed_class =   new Algorithms_Core_Feed();
+        if($result_message['MessageType'])
         {
-            echo "yes";
-        }else{
-            echo "no";
+            foreach ($result_message['MessageType'] as $message_type)
+            {
+                $string = trim($message_type['Description']);
+                $result =   '';
+                if($string)
+                {
+                    $length = strlen($string);
+
+                    while($length)
+                    {
+                        $from = strpos($string, "[");
+                        $to = strpos($string, "]");
+
+                        if(FALSE !== $from && FALSE !== $to && $from < $to)
+                        {
+                            $result = substr($string, $from+1, $to-$from-1);
+
+                            $string = substr($string, $to+1);
+
+                            $length = strlen($string);
+                        }else{
+                            $length = 0; // Exit
+                        }
+                    }
+                }
+            }
         }
-        
         die;
+        
     }
 }
