@@ -64,16 +64,14 @@ class Algorithms_Core_OrderService extends SoapClient{
     function WebServiceSetOrderStatus(){
         $req    =   new SetOrderStatusRequest();
         $req->OrderStatus   =   $this->crazySalesOrderStatusType;
-        print_r($req);
         $response   =   $this->SetOrderStatus(array('request'=>$req));
         $response   =   $this->object_array($response);
-        print_r($response);
-        exit();
-        $orders_info    =   $response['PlaceOrderResult']['Orders'];
-        $order_number   =   $orders_info['CrazySalesOrderType']['OrderNumber'];
-        $message_info   =   $response['PlaceOrderResult']['Messages'];
-        $result['order_number'] =   $order_number;
+        $message_info   =   $response['SetOrderStatusResult']['Messages'];
         $result['MessageType']  =   $message_info['MessageType'];
+        if(!$result['MessageType'])
+        {
+            $result['MessageType']  =   array();
+        }
         return $result;
     }
 }
