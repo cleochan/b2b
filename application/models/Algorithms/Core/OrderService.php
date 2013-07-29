@@ -63,8 +63,12 @@ class Algorithms_Core_OrderService extends SoapClient{
     
     function WebServiceSetOrderStatus(){
         $req    =   new SetOrderStatusRequest();
+        $logs_wsdl_order_status_model   =   new Databases_Tables_LogsWsdlOrderStatus();
         $req->OrderStatus   =   $this->crazySalesOrderStatusType;
+        $logs_wsdl_order_status_model->status_resquest  = Zend_Json::encode($this->crazySalesOrderStatusType);
         $response   =   $this->SetOrderStatus(array('request'=>$req));
+        $logs_wsdl_order_status_model->status_message_response  = Zend_Json::encode($response);
+        $logs_wsdl_order_status_model->AddLogs();
         $response   =   $this->object_array($response);
         $message_info   =   $response['SetOrderStatusResult']['Messages'];
         $result['MessageType']  =   $message_info['MessageType'];
