@@ -656,8 +656,6 @@ class MerchantController extends Zend_Controller_Action
                         $crazySalesOrderStatusType  =   new CrazySalesOrderStatusType();
                         $crazySalesOrderStatusType1 =   new CrazySalesOrderStatusType1();
                         $crazySalesOrderStatusType->OrderNumber     =   $response_data['order_number'];
-                        $crazySalesOrderStatusType->Status          =   'Processing';
-                        $crazySalesOrderStatusType->StatusID        =   3;
                         $crazySalesOrderStatusType->OrderAmount     =   $purchase_order['order_amount'];
                         $crazySalesOrderStatusType->PurchaseOrderId =   $purchase_order['purchase_order_id'];
                         $crazySalesOrderStatusType->PurchaseOrderUserId =   $purchase_order['user_id'];
@@ -1049,6 +1047,7 @@ class MerchantController extends Zend_Controller_Action
             $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
             $order_core_model       =   new Algorithms_Core_Order();
             $crazy_sales_order_status_array =   array();
+            $crazy_sales_order_status_array1 =   array();
             
             if($purchase_orders)
             {
@@ -1149,12 +1148,16 @@ class MerchantController extends Zend_Controller_Action
                         //$logs_financial->AddLog();
                         
                         $crazySalesOrderStatusType  =   new CrazySalesOrderStatusType();
+                        $crazySalesOrderStatusType1 =   new CrazySalesOrderStatusType1();
                         $crazySalesOrderStatusType->OrderNumber     =   $response_data['order_number'];
-                        $crazySalesOrderStatusType->Status          =   'Processing';
-                        $crazySalesOrderStatusType->StatusID        =   3;
                         $crazySalesOrderStatusType->OrderAmount     =   $purchase_order['order_amount'];
                         $crazySalesOrderStatusType->PurchaseOrderId =   $purchase_order['purchase_order_id'];
                         $crazySalesOrderStatusType->PurchaseOrderUserId =   $purchase_order['user_id'];
+                        
+                        $crazySalesOrderStatusType1->OrderNumber     =   $response_data['order_number'];
+                        $crazySalesOrderStatusType1->StatusID        =   3;
+                        $crazy_sales_order_status_array1[]           =   $crazySalesOrderStatusType1;
+                        
                         $crazy_sales_order_status_array[$response_data['order_number']] =   $crazySalesOrderStatusType;
 
                     }elseif($response_data['MessageType']['Description'])
@@ -1167,7 +1170,7 @@ class MerchantController extends Zend_Controller_Action
                     $getorders_model->UpdateOrder();
                 }
                 
-                $order_service_model->crazySalesOrderStatusType =   $crazy_sales_order_status_array;
+                $order_service_model->crazySalesOrderStatusType =   $crazy_sales_order_status_array1;
                 $result_message =   $order_service_model->WebServiceSetOrderStatus();
                 if($result_message['MessageType'])
                 {
