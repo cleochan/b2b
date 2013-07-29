@@ -654,7 +654,7 @@ class MerchantController extends Zend_Controller_Action
                         //$logs_financial->AddLog();
                         
                         $crazySalesOrderStatusType  =   new CrazySalesOrderStatusType();
-                        $crazySalesOrderStatusType1 =   new CrazySalesOrderStatusType();
+                        $crazySalesOrderStatusType1 =   new CrazySalesOrderStatusType1();
                         $crazySalesOrderStatusType->OrderNumber     =   $response_data['order_number'];
                         $crazySalesOrderStatusType->Status          =   'Processing';
                         $crazySalesOrderStatusType->StatusID        =   3;
