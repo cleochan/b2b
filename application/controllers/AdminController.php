@@ -1264,7 +1264,8 @@ class AdminController extends Zend_Controller_Action
                     {
                         $crazySalesOrderType->PaymentTypeID          =   9; 
                     }
-                    $crazySalesOrderType->RetailerAccountEmail   =   $_SESSION["Zend_Auth"]["storage"]->email;
+                    $user_info  =   $user_info_model->GetUserInfo($purchase_order['user_id']);
+                    $crazySalesOrderType->RetailerAccountEmail   =   $user_info['email'];
                     $crazySalesOrderType->ShipFirstName          =   $purchase_order['shipping_first_name'];
                     $crazySalesOrderType->ShipAddress_1          =   $purchase_order['shipping_address_1'];
                     $crazySalesOrderType->ShipAddress_2          =   $purchase_order['shipping_address_2'];
@@ -1276,7 +1277,6 @@ class AdminController extends Zend_Controller_Action
                     $crazySalesOrderType->SiteID                 =   6;
 
 
-                    $user_info  =   $user_info_model->GetUserInfo($purchase_order['user_id']);
                     $order_amount_money_type->Value    =   round($purchase_order['order_amount'],2);                                  
                     $order_discount->Value  =   round($purchase_order['discount_amount'],2);
                     if($crazySalesOrderType)
