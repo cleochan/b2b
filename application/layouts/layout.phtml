@@ -13,9 +13,10 @@
 <body>
     <div class="info_topbg">
     <div class="info_logo"></div>
-    <div class="info_toptxt">Hi <?=$_SESSION["Zend_Auth"]["storage"]->email?> </div>
+    <div class="info_toptxt">Hi <a style="color: #FFFFFF;" href="/merchant/profile-edit"><?=$_SESSION["Zend_Auth"]["storage"]->email?></a></div>
     <div class="info_help">
         <ul>
+	    <li><a  href="/merchant/profile-edit">Profile</a></li>
             <li><a  href="/login/logout">Logout</a></li>
         </ul>
     </div>

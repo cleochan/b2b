@@ -1,0 +1,65 @@
+<br />
+<?php if($this->notice):?>
+<font color="#ff0000"><strong>* <?php echo $this->notice;?></strong></font><br /><br />
+<?php endif;?>
+<?php if($this->notice_success):?>
+<font color="green"><strong>&nbsp; <?php echo $this->notice_success;?></strong></font><br /><br />
+<?php endif;?>
+<div align="center" class="info_tablebox">
+<form action="/merchant/profile-edit" method="post">
+	<table class="width100" cellspacing="1">
+		<tbody>
+			<tr>
+				<td class="form-title" colspan="4">Edit Profile</td>
+			</tr>		
+			<tr class="row-1">
+				<td class="category">Email </td>
+				<td colspan="3"><?php echo $this->form->email;?><font color="red">*</font></td>
+			</tr>			
+			<tr class="row-2">
+				<td class="category">Password </td>
+				<td colspan="3"><?php echo $this->form->password;?><font color="red">*</font>Leave field blank if you do not wish to change  your password</td>
+			</tr>
+			<tr class="row-1">
+				<td class="category">Confirm Password </td>
+				<td colspan="3"><?php echo $this->form->password_r;?><font color="red">*</font></td>
+			</tr>
+			<tr class="row-2">
+				<td class="category">Company</td>
+				<td colspan="3"><?php echo $this->form->company;?><font color="red">*</font></td>
+			</tr>
+                        
+                        <tr class="row-2">
+				<td class="category">Address</td>
+				<td colspan="3" align="left"><?php echo $this->form->address;?><font color="red">*</font></td>
+			</tr>
+                        <tr class="row-2">
+				<td class="category">Post Code</td>
+				<td colspan="3" align="left"><?php echo $this->form->post_code;?><font color="red">*</font></td>
+			</tr>
+                        <tr class="row-2">
+				<td class="category">Suburb</td>
+				<td colspan="3" align="left"><?php echo $this->form->suburb;?><font color="red">*</font></td>
+			</tr>
+                        <tr class="row-2">
+				<td class="category">State</td>
+				<td colspan="3" align="left"><?php echo $this->form->state;?><font color="red">*</font></td>
+			</tr>
+                        
+                        
+			<tr class="row-1">
+				<td class="category">Contact Name</td>
+				<td colspan="3"><?php echo $this->form->contact_name;?><font color="red">*</font></td>
+			</tr>
+			<tr class="row-2">
+				<td class="category">Contact Phone</td>
+				<td colspan="3"><?php echo $this->form->contact_phone;?><font color="red">*</font></td>
+			</tr>	
+			<tr >
+                <td ></td>
+				<td colspan="3" class="info_botton2"><?php echo $this->form->submitx;?></td>
+			</tr>
+		</tbody>
+	</table>
+</form>
+</div>

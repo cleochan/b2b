@@ -1265,6 +1265,212 @@ class MerchantController extends Zend_Controller_Action
             $this->view->purchase_order =   $purchase_order_info[0];
         }
     }
+
+    function profileEditAction()
+    {
+		if(!isset($_SESSION["Zend_Auth"]["storage"]->user_id) || !is_numeric($_SESSION["Zend_Auth"]["storage"]->user_id))
+		{
+			// user id doesn't exists, someone is doing something nasty
+			// LOGOUT
+			return $this->_redirect("/login/logout");
+		}
+
+        $get_user_info = new Databases_Joins_GetUserInfo();
+        $user = $get_user_info->GetUserInfo($_SESSION["Zend_Auth"]["storage"]->user_id);
+		
+		if(!isset($user['user_id']) || !is_numeric($user['user_id']))
+		{
+			// user id doesn't exists. account was deleted, logging out
+			return $this->_redirect("/login/logout");
+		}	
+
+        $this->view->title = "Edit Profile";
+        $params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Edit Profile"));
+		
+        $form = new Forms_ProfileMerchant();
+        $form->submitx->setLabel('Update');
+        $this->view->form = $form;
+
+        if($this->_request->isPost())
+		{
+			$error = false;
+			$password_change = false;
+            $formData = $this->_request->getPost();
+            if($form->isValid($formData))
+			{
+                $form->getValues();
+
+                ///////////////////////////////////////////////////////////
+                //check valid start
+
+                //password check
+                if($form->getValue('password') || $form->getValue('password_r'))
+                {
+                    if($form->getValue('password') != $form->getValue('password_r'))
+                    {
+                        $this->view->notice="The passwords you typed twice were different.";
+                        $error = true;
+                    }
+                }
+				else
+                {
+                    $password_changed = true;
+                }
+                
+                //Email format check
+                if(!Algorithms_Extensions_Plugin::EmailCheck($form->getValue('email')))
+                {
+                    $this->view->notice="Email format is incorrect.";
+                    $error = true;
+                }
+                                
+                if(!$form->getValue('company'))
+                {
+                    $this->view->notice="The Company is required.";
+                    $error = true;
+                }
+                if(!$form->getValue('address'))
+                {
+                    $this->view->notice="The address is required.";
+                    $error = true;
+                }
+                if(!$form->getValue('post_code'))
+                {
+                    $this->view->notice="The post code is required.";
+                    $error = true;
+                }
+                if(!$form->getValue('suburb'))
+                {
+                    $this->view->notice="The suburb is required.";
+                    $error = true;
+                }
+                if(!$form->getValue('state'))
+                {
+                    $this->view->notice="The state is required.";
+                    $error = true;
+                }
+                if(!$form->getValue('contact_name'))
+                {
+                    $this->view->notice="The contact name is required.";
+                    $error = true;
+                }
+                if(!$form->getValue('contact_phone'))
+                {
+                    $this->view->notice="The contact phone is required.";
+                    $error = true;
+                }
+                //new users
+                $check_user_string = new Databases_Tables_Users();
+				$check_user_string->SetUser($user);
+
+                //username exist
+				if($user['email'] !== $form->getValue('email')) // check email only if changed
+				{
+		            $check_user_string->email = $form->getValue('email');
+		            $check_user_exist = $check_user_string ->IsUserExist();
+		            if($check_user_exist)
+		            {
+		                $this->view->notice="Email exists for user id: ".$check_user_exist.".";
+						$error = true;
+		            }
+				}
+                
+                //check valid end
+                ///////////////////////////////////////////////////////////
+
+                if($error === false) // no error
+                {
+                    //update to db
+                    if($password_change === true)
+                    {
+                        $check_user_string->password = $form->getValue('password');
+                    }
+                    $check_user_string->company = $form->getValue('company');
+                    $check_user_string->contact_name = $form->getValue('contact_name');
+                    $check_user_string->contact_phone = $form->getValue('contact_phone');
+                    
+                    $check_user_string->address     =   $form->getValue('address');
+                    $check_user_string->post_code   =   $form->getValue('post_code');
+                    $check_user_string->suburb      =   $form->getValue('suburb');
+                    $check_user_string->state       =   $form->getValue('state');
+  
+                    $check_user_string->EditUser();
+					$this->view->notice_success = "Changes saved.";
+                }
+				else
+				{
+					$form->populate($formData);
+				}
+            }
+			else
+			{
+                ///////////////////////////////////////////////////////////
+                //check valid start
+
+                if(!$formData['email'])
+                {
+                    $this->view->notice="Email is required.";
+                    $error = true;
+                }
+                
+                if(!Algorithms_Extensions_Plugin::EmailCheck($formData['email']))
+                {
+                    $this->view->notice="Email format is incorrect.";
+                    $error = true;
+                }
+                if(!trim($formData['company']))
+                {
+                    $this->view->notice="Company is required.";
+                    $error = true;
+                }
+                if(!trim($formData['address']))
+                {
+                    $this->view->notice="Address is required.";
+                    $error = true;
+                }
+                if(!trim($formData['post_code']))
+                {
+                    $this->view->notice="Post code is required.";
+                    $error = true;
+                }
+                if(!trim($formData['suburb']))
+                {
+                    $this->view->notice="Suburb is required.";
+                    $error = true;
+                }
+                if(!trim($formData['state']))
+                {
+                    $this->view->notice="State is required.";
+                    $error = true;
+                }
+                if(!trim($formData['contact_name']))
+                {
+                    $this->view->notice="Contact name is required.";
+                    $error = true;
+                }
+                if(!trim($formData['contact_phone']))
+                {
+                    $this->view->notice="Contact phone is required.";
+                    $error = true;
+                }
+
+                //check valid end
+                ///////////////////////////////////////////////////////////
+
+                if($error === true)
+                {
+                    $this->view->notice="Some information are inValid";
+                    $form->populate($formData);
+                }
+            }
+        }
+		else
+        {
+            $form->populate($user);
+        }
+    }
     
 }
 

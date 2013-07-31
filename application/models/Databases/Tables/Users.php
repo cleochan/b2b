@@ -19,6 +19,44 @@ class Databases_Tables_Users extends Zend_Db_Table
     var $state;
     var $flat_rate_shipping;
     
+	function SetUser($obj)
+	{
+		$variables = array('user_id', 
+			'email',
+			'password', 
+			'user_type', 
+			'user_status', 
+			'company', 
+			'contact_name', 
+			'contact_phone', 
+			'credit', 
+			'discount', 
+			'address', 
+			'post_code', 
+			'suburb', 
+			'state', 
+			'flat_rate_shipping'
+		);
+
+		foreach($variables as $key)
+		{
+			if(is_object($obj))
+			{
+				if(isset($this->$key) && isset($obj->$key))
+				{
+					$this->$key = $obj->$key;
+				}
+			}
+			else if(is_array($obj))
+			{
+				if(isset($this->$key) && isset($obj[$key]))
+				{
+					$this->$key = $obj[$key];
+				}
+			}
+		}
+	}
+
     function AddUser()
     {
         if($this->email && $this->password && $this->user_type)
