@@ -26,26 +26,16 @@ class ScheduledController extends Zend_Controller_Action
         $crazySalesOrderItemTypeArray   =   array();
 
         $order_api_trying_times     =   $system_params_model->GetVal('order_api_trying_times');
-        $order_api_trying_interval  =   $system_params_model->GetVal('order_api_trying_interval');
         $logs_path                  =   $system_params_model->GetVal('logs_path');
         $logs_contents              =   ' ';
         $getorder_model->item_status    =   0;
         $getorder_model->order_api_trying_times     =   $order_api_trying_times;
-        $getorder_model->order_api_trying_interval  =   $order_api_trying_interval;
-        $orders_pending_list    =   $getorder_model->getPendinglist();
-        if($orders_pending_list){
-            foreach($orders_pending_list as $order_pending){
-                $purchase_order_ids[$order_pending['purchase_order_id']]    =   $order_pending['purchase_order_id'];
-            }
-        }
-        $purchase_order_ids =   implode(',',$purchase_order_ids);
+        $purchase_orders    =   $getorder_model->getPendinglist();
         $purchase_order_model   =   new Databases_Tables_PurchaseOrder();
         $logs_orders_model      =   new Databases_Tables_LogsOrders();
-        $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
-        $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
         $order_core_model       =   new Algorithms_Core_Order();
 
-        if($purchase_orders)
+        if(!empty($purchase_orders))
         {
             foreach ($purchase_orders as $purchase_order)
             {
@@ -94,6 +84,7 @@ class ScheduledController extends Zend_Controller_Action
                 {
                     foreach ($logs_orders as $logs_order)
                     {
+                        $logs_order_ids             =   array();
                         $logs_order_ids[]           =   $logs_order['logs_orders_id'];
                         $crazySalesOrderItemType    =   new CrazySalesOrderItemType();
                         $expected_item_cost =   new MoneyType();
@@ -143,15 +134,13 @@ class ScheduledController extends Zend_Controller_Action
                     $getorder_model->api_response  =   $response_data['MessageType']['Description'];
                 }else
                 {
-                     $api_trying_times  =   $order_pending['api_trying_times']  +  1;
-                     $getorder_model->order_api_trying_times    =   $api_trying_times;
                      $getorder_model->api_response   =  "Time out.";
                 }
                 $getorder_model->logs_order_ids    =  $logs_order_ids;
                 $getorder_model->purchase_order_id   =   $purchase_order['purchase_order_id'];
                 $getorder_model->UpdateOrder();
 
-                 $logs_contents   .=   'log_order_id: '.$order_pending['logs_orders_id'].', supplier_sku: '.$order_pending['supplier_sku']. ', OrderNumber: '.$response_data['order_number'].', DateTime: '.date('Y-m-d H:i:s').', ApiResponse: '.$getorder_model->api_response." \n ";
+                $logs_contents   .=   'purchase_order_id: '.$purchase_order['purchase_order_id'].', OrderNumber: '.$response_data['order_number'].', DateTime: '.date('Y-m-d H:i:s').', ApiResponse: '.$getorder_model->api_response." \n ";
             }
             $order_webservice_model->crazySalesOrderStatusType =   $crazy_sales_order_status_array1;
             $result_message =   $order_webservice_model->WebServiceSetOrderStatus();
@@ -200,6 +189,7 @@ class ScheduledController extends Zend_Controller_Action
                     $logs_financial->AddLog();
                 }
             }
+            $system_params_model->UpdateVal('pending_order_refresh_time',date('Y-m-d H:i:s'));
             $f  =   fopen($logs_path."orderslogs/refreshorders".date('YmdHis').".txt", "w+");
             @fwrite($f, $logs_contents);
             @fwrite($f,"Refresh Orders Completed.\n");
@@ -439,25 +429,28 @@ class ScheduledController extends Zend_Controller_Action
         $category_model->parent_id      =   '';
         $category_webservice_model->EntriesPerPage =   300;
         $category_model->addCategory();
+        $category_num   =   1;
         do{
             $category_webservice_model->PageNumber =   $page_now;
             $category_webservice_model->PaginationType   =   $paginationType;
             $reponse_data  =   $category_webservice_model->WebServicesGetCategories();
-            //print_r($reponse_data);
-            if($reponse_data){
+            if(!empty($reponse_data)){
                 $category_list_data      =   $reponse_data['GetCategoryResult']['Categories']['CrazySalesCategoryType'];
-                foreach ($category_list_data as $category_data){                
+                foreach ($category_list_data as $category_data){
                     $category_model->category_id    =   $category_data['CategoryID'];
                     $category_model->category_name  =   $category_data['CategoryName'];
                     $category_model->parent_id      =   $category_data['ParentID'];
                     $category_model->addCategory();
+                    $category_num++;
                     @fwrite($f,' CategoryID:'.$category_data['CategoryID'].' , CategoryName:'.$category_data['CategoryName'].' ,                 Date:'.date('Y-m-d H:i:s')."\n");
                 }
             }  else {
                 break;
             }
             $page_now++;
-        }while($page_now<=5);
+        }while($page_now<=10);
+        
+        $params_model->UpdateVal('product_categories_table_refresh_time',date('Y-m-d H:i:s'));
         @fwrite($f, $logs_contents);
         @fwrite($f,"Refresh Categories Completed.\n");
         @fclose($f);
@@ -632,6 +625,7 @@ class ScheduledController extends Zend_Controller_Action
             @fwrite($f_logs_feeds, $logs_feeds);
             @fclose($f_logs_feeds);
         }
+        $params_model->UpdateVal('merchant_feed_refresh_time',date('Y-m-d H:i:s'));
         die('Refresh Feeds Complete.');
     }
       

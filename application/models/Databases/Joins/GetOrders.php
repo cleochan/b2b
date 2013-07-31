@@ -168,7 +168,7 @@ class Databases_Joins_GetOrders
             
             $cond[] = "merchant_ref=".$this->merchant_ref;
         }
-        if($this->item_status)
+        if(isset($this->item_status) && $this->item_status !=3)//3 == select all of the logs_order
         {
             $select->where("item_status = ?", $this->item_status);
             $cond[] = "item_status=".$this->item_status;
@@ -550,7 +550,7 @@ class Databases_Joins_GetOrders
     function getPendinglist()
     {
         $select = $this->db->select();
-        $select->from("purchase_order as p", "distinct(p.purchase_order_id) as purchase_order_id");
+        $select->from("purchase_order as p", "distinct(p.purchase_order_id) as purchase_order_id,p.user_id as user_id");
         $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id");
         
         if($this->item_status == 0 )
@@ -560,16 +560,6 @@ class Databases_Joins_GetOrders
         if($this->order_api_trying_times)
         {
             $select->where("api_trying_times < ?",$this->order_api_trying_times);
-        }
-        if($this->order_api_trying_interval>0)
-        {
-            $time_now_unix  =   time();
-            $time_yes_unix  =   $time_now_unix - $this->order_api_trying_interval;
-            
-            $time_now   =   date('Y-m-d H:i:s', $time_now_unix);
-            $time_yes   =   date('Y-m-d H:i:s', $time_yes_unix);
-            $select->where("p.issue_time >= ?", $time_yes);
-            $select->where("p.issue_time <= ?", $time_now);
         }
         $result =   $this->db->fetchAll($select);
         

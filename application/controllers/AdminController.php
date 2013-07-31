@@ -48,6 +48,53 @@ class AdminController extends Zend_Controller_Action
         //$params = $this->_request->getParams();
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard"));
+        $time_now       =   time();
+        $params_model   =   new Databases_Tables_Params();
+        $product_info_table_refresh_time    =   $params_model->GetVal('product_info_table_refresh_time');
+        $pending_order_refresh_time         =   $params_model->GetVal('pending_order_refresh_time');
+        $product_categories_table_refresh_time  =   $params_model->GetVal('product_categories_table_refresh_time');
+        $merchant_feed_refresh_time             =   $params_model->GetVal('merchant_feed_refresh_time');
+        if(($time_now - strtotime($product_info_table_refresh_time))>86400)
+        {
+            $this->view->product_info_table_refresh_flag    =   1;
+        }else{
+            $this->view->product_info_table_refresh_flag    =   0;
+        }
+        if(($time_now - strtotime($pending_order_refresh_time))>86400)
+        {
+            $this->view->pending_order_refresh_flag    =   1;
+        }else{
+            $this->view->pending_order_refresh_flag    =   0;
+        }
+        if(($time_now - strtotime($product_categories_table_refresh_time))>86400)
+        {
+            $this->view->product_categories_table_refresh_flag    =   1;
+        }else{
+            $this->view->product_categories_table_refresh_flag    =   0;
+        }
+        if(($time_now - strtotime($merchant_feed_refresh_time))>86400)
+        {
+            $this->view->merchant_feed_refresh_flag    =   1;
+        }else{
+            $this->view->merchant_feed_refresh_flag    =   0;
+        }
+        $this->view->product_info_table_refresh_time    =   $product_info_table_refresh_time;
+        $this->view->pending_order_refresh_time         =   $pending_order_refresh_time;
+        $this->view->product_categories_table_refresh_time    =   $product_categories_table_refresh_time;
+        $this->view->merchant_feed_refresh_time         =   $merchant_feed_refresh_time;
+        
+        /*Get Pending Order Info*/
+        $getorders_model = new Databases_Joins_GetOrders();
+        $getorders_model->item_status   =   0;
+        $this->view->list = $getorders_model->PushList();
+    }
+    
+    function adminRefreshPendingOrdersAction()
+    {
+        $operate_orders_model   =   new Databases_Joins_OperateOrders();
+        $result =   $operate_orders_model->PlaceOrder();
+        echo Zend_Json::encode($result);
+        die();
     }
     
     function merchantsAction()
@@ -1257,13 +1304,8 @@ class AdminController extends Zend_Controller_Action
                     $moeney_type                =   new MoneyType();
                     $order_discount             =   new MoneyType();
                     $order_amount_money_type    =   new MoneyType();
-                    if($params['flat_paypal'])
-                    {
-                        $crazySalesOrderType->PaymentTypeID          =   5; 
-                    }else
-                    {
-                        $crazySalesOrderType->PaymentTypeID          =   9; 
-                    }
+                    
+                    $crazySalesOrderType->PaymentTypeID          =   $purchase_order['payment_type_id']; 
                     $user_info  =   $user_info_model->GetUserInfo($purchase_order['user_id']);
                     $crazySalesOrderType->RetailerAccountEmail   =   $user_info['email'];
                     $crazySalesOrderType->ShipFirstName          =   $purchase_order['shipping_first_name'];
@@ -1304,6 +1346,7 @@ class AdminController extends Zend_Controller_Action
                     {
                         foreach ($logs_orders as $logs_order)
                         {
+                            $logs_order_ids             =   array();
                             $logs_order_ids[]           =   $logs_order['logs_orders_id'];
                             $crazySalesOrderItemType    =   new CrazySalesOrderItemType();
                             $expected_item_cost =   new MoneyType();

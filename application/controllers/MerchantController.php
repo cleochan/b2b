@@ -116,7 +116,10 @@ class MerchantController extends Zend_Controller_Action
         }else{
             $getorders_model->p_current_page = 1; //from the first page
         }
-        
+        if(is_numeric($this->params['item_status'])){
+            $getorders_model->item_status   =   $this->params['item_status'];
+            $this->view->item_status = $this->params['item_status'];
+        }
         $this->view->list = $getorders_model->PushList();
         $this->view->pagination = $getorders_model->Pagination();
         
@@ -610,6 +613,7 @@ class MerchantController extends Zend_Controller_Action
                     {
                         foreach ($logs_orders as $logs_order)
                         {
+                            $logs_order_ids             =   array();
                             $logs_order_ids[]           =   $logs_order['logs_orders_id'];
                             $crazySalesOrderItemType    =   new CrazySalesOrderItemType();
                             $expected_item_cost =   new MoneyType();
@@ -1104,6 +1108,7 @@ class MerchantController extends Zend_Controller_Action
                     {
                         foreach ($logs_orders as $logs_order)
                         {
+                            $logs_order_ids             =   array();
                             $logs_order_ids[]           =   $logs_order['logs_orders_id'];
                             $crazySalesOrderItemType    =   new CrazySalesOrderItemType();
                             $expected_item_cost =   new MoneyType();

@@ -1,2 +1,84 @@
+<script language="javascript">
+    $(function (){
+        $("#refresh_order").click(function (){
+            $.ajax({
+                        url:"/admin/admin-refresh-pending-orders",
+                        dataType:"json",
+                        type:"POST",
+                        
+                        beforeSend:function(){
+                            $("#refresh_order").attr('disabled','disabled');
+                            $("#refresh_order").attr('value','Refreshing');
+                        },
+                        success:function(req){
+                            location.reload();
+                        },
+                    })
+        });
+    });
+</script>
 <br />
 &nbsp;Welcome back, Admin.
+<div class="info_tablebox">
+    <h2>Scheduled Summary</h2>
+    <div>
+        <p><span>Product Info Refresh Time: </span><span <?php if($this->product_info_table_refresh_flag){?>class="red"<?php }?>><?=date('H:i:s, d M Y ',strtotime($this->product_info_table_refresh_time))?></span></p>
+        <p><span>Pending Order Refresh Time: </span><span <?php if($this->pending_order_refresh_flag){?>class="red"<?php }?>><?=date('H:i:s, d M Y ',strtotime($this->pending_order_refresh_time))?></span></p>
+        <p><span>Product Categories Refresh Time: </span><span <?php if($this->product_categories_table_refresh_flag){?>class="red"<?php }?>><?=date('H:i:s, d M Y ',strtotime($this->product_categories_table_refresh_time))?></span></p>
+        <p><span>Merchant Feed Refresh Time: </span><span <?php if($this->merchant_feed_refresh_flag){?>class="red"<?php }?>><?=date('H:i:s, d M Y ',strtotime($this->merchant_feed_refresh_time))?></span></p>
+    </div>
+    <h2>Pending Orders</h2>
+    <div align="center">
+        <table class="width100" cellspacing="1">
+            <tbody>
+                <tr>
+                    <td class="form-title">Time</td>
+                    <td class="form-title">Order ID</td>
+                    <td class="form-title">Merchant Ref</td>
+                    <td class="form-title">Supplier SKU</td>
+                    <td class="form-title">Merchant SKU</td>
+                    <td class="form-title">Order Amount<p style="margin:0">(Include GST and postage)</p></td>
+                    <td class="form-title">Status</td>
+                    <td class="form-title">Action</td>
+                </tr>
+                <?php if($this->list):
+                        $n = 1;
+                        foreach($this->list as $list):
+                ?>
+                <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+                    <td class="center"><span class="small"><?=date('H:i:s, d M Y ',strtotime($list['issue_time']))?></span></td>
+                    <td class="center"><span class="small"><?=$list['main_db_order_id']?></span></td>
+                    <td class="center"><span class="small"><?=$list['merchant_ref']?></span></td>
+                    <td class="center"><span class="small"><?=$list['supplier_sku']?></span></td>
+                    <td class="center"><span class="small"><?=$list['merchant_sku']?></span></td>
+                    <td class="center"><span class="small"><?=$list['item_amount']?></span></td>
+                    <td class="center"><span class="small">
+                            <?php 
+                            switch ($list['item_status'])
+                            {
+                                case 0:
+                                    echo "<font color='red'>Pending</font>";
+                                    break;
+                                case 1:
+                                    echo "<font color='green'>Approved</font>";
+                                    break;
+                                case 2:
+                                    echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div class='api_response'>".$list['api_response']."</div>";
+                                    break;
+                            }
+                            ?>
+
+                        </span></td>
+                    <td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/<?=$this->user_id?>/order_id/<?=$list['purchase_order_id']?>">View</a></span></td>
+                </tr>
+                <?php
+                        endforeach;
+                    endif;
+                ?>
+            </tbody>
+        </table>
+        <div class="info_bottonp" align="center">
+            <input class="special_button_style_green" type="button" value="Refresh Order" id="refresh_order">
+        <br>
+    </div>
+</div>
