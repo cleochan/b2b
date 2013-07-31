@@ -215,20 +215,16 @@ class MerchantController extends Zend_Controller_Action
         $this->view->countries = $countries_model->CountriesArray();
     }
     
-    function placeOrderAddItemAction()
+    function placeOrderItemFormAction()
     {
-        $this->view->title = "Place Order";
-        $menu_model = new Algorithms_Core_Menu;
-        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Place Order"));
-        
-        if(!$_SESSION['place_order']['items'])
-        {
-            $_SESSION['place_order']['items'] = array();
-        }
-        
         if($this->params['supplier_sku'])
         {
-            $_SESSION['place_order']['items'][] = array(
+			if(!is_array($_SESSION['place_order']['items']))
+			{
+				$_SESSION['place_order']['items'] = array();
+			}
+
+			$arr = array(
                 "supplier_sku" => $this->params['supplier_sku'],
                 "merchant_sku" => $this->params['merchant_sku'],
                 "quantity" => $this->params['quantity'],
@@ -239,6 +235,18 @@ class MerchantController extends Zend_Controller_Action
                 //"serial_no" => $this->params['serial_no'],
                 "comments" => $this->params['comments']
             );
+
+			// is numeric and bigger than 0 == edit, else add
+			if(is_numeric($this->params['id']) && isset($_SESSION['place_order']['items'][$this->params['id']])) 
+		    {
+		        $_SESSION['place_order']['items'][$this->params['id']] = $arr;
+		    }
+			else
+			{
+            	$_SESSION['place_order']['items'][] = $arr;
+			}
+
+			array_splice($_SESSION['place_order']['items'], 0, 0);
         }
         
         $this->_redirect("/merchant/place-order");
@@ -246,9 +254,10 @@ class MerchantController extends Zend_Controller_Action
     
     function placeOrderRemoveItemAction()
     {
-        if(NULL !== $this->params['ikey'])
+        if(is_numeric($this->params['id']))
         {
-            unset($_SESSION['place_order']['items'][$this->params['ikey']]);
+            unset($_SESSION['place_order']['items'][$this->params['id']]);
+			array_splice($_SESSION['place_order']['items'], 0, 0);
         }
         
         $this->_redirect("/merchant/place-order");

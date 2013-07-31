@@ -1,71 +1,118 @@
 <script type="text/javascript" src="/scripts/jquery.ui.core.js"></script>
 <script type="text/javascript" src="/scripts/jquery.ui.dialog.js"></script>
 
-<script>
+<script language="JavaScript">
 $(document).ready(function()
 {
     $( "#dialog:ui-dialog" ).dialog( "destroy" );
     
-    var dialog_modal=document.getElementById('dialog-modal');
-	dialog_modal.style.display="none";  
+	document.getElementById('dialog-modal').style.display="none";
+ 
+    $('#add_item_href').click(function() 
+	{
+		$('input[name="id"]').val('');
 
-    $('#add_item_href').click(function() {
+		$('input[name="supplier_sku"]').val('');
+		$('input[name="merchant_sku"]').val('');
+		$('input[name="quantity"]').val('');
+		$('input[name="merchant_ref"]').val('');
+		$('input[name="shipping_method"]').val('');
+		$('input[name="shipping_instruction"]').val('');
+		$('input[name="comments"]').val('');
+
+	    $('input[name="submit_form"]').val("Add");
 		$( "#dialog-modal" ).dialog({
                     height: 400,
                     width: 550,
                     modal: true
 		});
 	});
-});
-</script>
-<script language="JavaScript">
-		$(document).ready(function() {
-			$(".pickup").click(function() {
-                                var checked_status = this.checked;
 
-                                if(checked_status==true)
-                                {
-                                    document.getElementById('shipping_first_name').disabled='disabled';
-                                    document.getElementById('shipping_last_name').disabled='disabled';
-                                    document.getElementById('shipping_address_1').disabled='disabled';
-                                    document.getElementById('shipping_address_2').disabled='disabled';
-                                    document.getElementById('shipping_company').disabled='disabled';
-                                    document.getElementById('shipping_suburb').disabled='disabled';
-                                    document.getElementById('shipping_state').disabled='disabled';
-                                    document.getElementById('shipping_postcode').disabled='disabled';
-                                    document.getElementById('shipping_country').disabled='disabled';
-                                    document.getElementById('shipping_phone').disabled='disabled';
-                                    document.getElementById('shipping_fax').disabled='disabled';
-                                }else{
-                                    document.getElementById('shipping_first_name').disabled=false;
-                                    document.getElementById('shipping_last_name').disabled=false;
-                                    document.getElementById('shipping_address_1').disabled=false;
-                                    document.getElementById('shipping_address_2').disabled=false;
-                                    document.getElementById('shipping_company').disabled=false;
-                                    document.getElementById('shipping_suburb').disabled=false;
-                                    document.getElementById('shipping_state').disabled=false;
-                                    document.getElementById('shipping_postcode').disabled=false;
-                                    document.getElementById('shipping_country').disabled=false;
-                                    document.getElementById('shipping_phone').disabled=false;
-                                    document.getElementById('shipping_fax').disabled=false;
-                                }
-				
-			});
-        
-                        <?php if($_SESSION['place_order']['delivery']['pickup']):?>
-                        document.getElementById('shipping_first_name').disabled='disabled';
-                        document.getElementById('shipping_last_name').disabled='disabled';
-                        document.getElementById('shipping_address_1').disabled='disabled';
-                        document.getElementById('shipping_address_2').disabled='disabled';
-                        document.getElementById('shipping_company').disabled='disabled';
-                        document.getElementById('shipping_suburb').disabled='disabled';
-                        document.getElementById('shipping_state').disabled='disabled';
-                        document.getElementById('shipping_postcode').disabled='disabled';
-                        document.getElementById('shipping_country').disabled='disabled';
-                        document.getElementById('shipping_phone').disabled='disabled';
-                        document.getElementById('shipping_fax').disabled='disabled';
-                        <?php endif;?>
+	$(".pickup").click(function() 
+	{
+        if(this.checked==true)
+        {
+            document.getElementById('shipping_first_name').disabled='disabled';
+            document.getElementById('shipping_last_name').disabled='disabled';
+            document.getElementById('shipping_address_1').disabled='disabled';
+            document.getElementById('shipping_address_2').disabled='disabled';
+            document.getElementById('shipping_company').disabled='disabled';
+            document.getElementById('shipping_suburb').disabled='disabled';
+            document.getElementById('shipping_state').disabled='disabled';
+            document.getElementById('shipping_postcode').disabled='disabled';
+            document.getElementById('shipping_country').disabled='disabled';
+            document.getElementById('shipping_phone').disabled='disabled';
+        }
+		else
+		{
+            document.getElementById('shipping_first_name').disabled=false;
+            document.getElementById('shipping_last_name').disabled=false;
+            document.getElementById('shipping_address_1').disabled=false;
+            document.getElementById('shipping_address_2').disabled=false;
+            document.getElementById('shipping_company').disabled=false;
+            document.getElementById('shipping_suburb').disabled=false;
+            document.getElementById('shipping_state').disabled=false;
+            document.getElementById('shipping_postcode').disabled=false;
+            document.getElementById('shipping_country').disabled=false;
+            document.getElementById('shipping_phone').disabled=false;
+        }
+	
+	});
+
+    <?php if($_SESSION['place_order']['delivery']['pickup']):?>
+    document.getElementById('shipping_first_name').disabled='disabled';
+    document.getElementById('shipping_last_name').disabled='disabled';
+    document.getElementById('shipping_address_1').disabled='disabled';
+    document.getElementById('shipping_address_2').disabled='disabled';
+    document.getElementById('shipping_company').disabled='disabled';
+    document.getElementById('shipping_suburb').disabled='disabled';
+    document.getElementById('shipping_state').disabled='disabled';
+    document.getElementById('shipping_postcode').disabled='disabled';
+    document.getElementById('shipping_country').disabled='disabled';
+    document.getElementById('shipping_phone').disabled='disabled';
+    <?php endif;?>
+});
+
+function edit_item(index)
+{
+	var session = [ <?php 
+
+	if(is_array($_SESSION['place_order']['items']))
+	{	
+		$i = 0;
+
+		foreach($_SESSION['place_order']['items'] as $key => $item)
+		{
+			echo (($i++ === 0) ? "" : ",\n")."{ 'id': '".$key."'";
+
+			foreach($item as $obj_name => $obj_value)
+			{
+				echo ", '".$obj_name."': '".$obj_value."'";
+			}
+			echo " }";
+		}
+	}
+?> ];
+
+	if(index > -1 && index < session.length) // check
+	{
+		$('input[name="submit_form"]').val("Edit");
+
+		for(var key in session[index])
+		{
+			if($('input[name="'+key+'"]')) // input exists
+			{
+				$('input[name="'+key+'"]').val(session[index][key]); // set value
+			}
+		}
+
+		$( "#dialog-modal" ).dialog({
+		            height: 400,
+		            width: 550,
+		            modal: true
 		});
+	}
+}
 </script>
 <br />&nbsp;&nbsp;
 <?php if($this->notice):?>
@@ -96,7 +143,8 @@ $(document).ready(function()
                                 <td class="center"><span class="small"><?=$items['supplier_sku']?></span></td>
                                 <td class="center"><span class="small"><?=$items['merchant_sku']?></span></td>
                                 <td class="center"><span class="small"><?=$items['quantity']?></span></td>
-                                <td class="center"><span class="small"><a href="/merchant/place-order-remove-item/ikey/<?=$ikey?>"><img src="/styles/<?=$this->system_css?>/images/del.png" border="0" /></a></span></td>
+                                <td class="center"><span class="small"><a href="#" onclick="edit_item(<?php echo $ikey; ?>); return false;"><img src="/styles/<?=$this->system_css?>/images/edit.png" border="0" /></a>
+<a href="/merchant/place-order-remove-item/id/<?=$ikey?>"><img src="/styles/<?=$this->system_css?>/images/del.png" border="0" /></a></span></td>
                             </tr>
                             <?php
                                     endforeach;
@@ -168,8 +216,9 @@ $(document).ready(function()
     </form>
 </div>
 
-<div id="dialog-modal" title="Add Item">
-    <form action="/merchant/place-order-add-item" method="POST" id="add_item_form" name="add_item_form">
+<div id="dialog-modal" title="Item form">
+    <form action="/merchant/place-order-item-form" method="POST" id="item_form" name="item_form">
+		<input type="hidden" name="id" />
         <table width="100%" border="0">
             <tr>
                 <td>Supplier SKU:</td>
@@ -193,14 +242,14 @@ $(document).ready(function()
             </tr>
             <tr>
                 <td>Shipping Instruction:</td>
-                <td><input type="text" name="shipping_instruction" /></td>
+                <td><input type="text" name="shipping_instruction"  /></td>
             </tr>
             <tr>
                 <td>Comments:</td>
-                <td><input type="text" name="comments" /></td>
+                <td><input type="text" name="comments"  /></td>
             </tr>
             <tr>
-                <td colspan="2"><input type="submit" value="Add" /></td>
+                <td colspan="2"><input name="submit_form" type="submit" value="Apply" /></td>
             </tr>
         </table>
     </form>
