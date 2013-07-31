@@ -1,2 +1,5 @@
-<br />
-&nbsp;Welcome back, <?=$this->user['company']?>.
+<div style="margin: 5px;">
+<p>Welcome back, <?php echo $this->user['company']; ?>.</p>
+<p>Your current balance is <?php echo $this->user['balance']; ?>.</p>
+<p><?php echo $this->user['credits']; ?> credits left on your account.</p>
+</div>

@@ -44,7 +44,7 @@ $(function()
                             </tr>
                             <?php if($this->list):
                                     $n = 1;
-                                    foreach($this->list as $list):
+                                    foreach($this->list as $key => $list):
                             ?>
                             <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
                                 <td class="center"><span class="small"><?=date('H:i:s, d M Y ',strtotime($list['issue_time']))?></span></td>
@@ -53,22 +53,21 @@ $(function()
                                 <td class="center"><span class="small"><?=$list['supplier_sku']?></span></td>
                                 <td class="center"><span class="small"><?=$list['merchant_sku']?></span></td>
                                 <td class="center"><span class="small"><?=$list['item_amount']?></span></td>
-                                <td class="center"><span class="small">
-                                        <?php 
-                                        switch ($list['item_status'])
-                                        {
-                                            case 0:
-                                                echo "<font color='red'>Pending</font>";
-                                                break;
-                                            case 1:
-                                                echo "<font color='green'>Approved</font>";
-                                                break;
-                                            case 2:
-                                                echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div class='api_response'>".$list['api_response']."</div>";
-                                                break;
-                                        }
-                                        ?>
-                                        
+                                <td class="center" onmouseover="show_status(<?php echo $key; ?>);" onmouseout="hide_status(<?php echo $key; ?>);"><span class="small">
+								<?php
+                                    switch ($list['item_status'])
+                                    {
+                                        case 0:
+                                            echo "<font color='red'>Pending</font>";
+                                            break;
+                                        case 1:
+                                            echo "<font color='green'>Approved</font>";
+                                            break;
+                                        case 2:
+                                            echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div id='status_".$key."' class='api_response' style='display: none;'>".$list['api_response']."</div>";
+                                            break;
+                                    }
+								?>      
                                     </span></td>
                                 <td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/<?=$this->user_id?>/order_id/<?=$list['purchase_order_id']?>">View</a></span></td>
                             </tr>
@@ -82,9 +81,19 @@ $(function()
 <div align="right"><?=$this->pagination?>&nbsp;&nbsp;</div>
 </div>
 <script language="javascript">
-    $(".small font[color='red']").mouseover(function() {
-        $(this).next().show();
-    }).mouseout(function() {  
-        $(this).next().hide();  
-    });
+function show_status(index)
+{
+	if($("#status_"+index))
+	{
+	 	$("#status_"+index).show();
+	}
+}
+
+function hide_status(index)
+{
+	if($("#status_"+index))
+	{
+	 	$("#status_"+index).hide();
+	}
+}
 </script>
