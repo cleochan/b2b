@@ -33,6 +33,7 @@ class MerchantController extends Zend_Controller_Action
         $this->view->system_title = $get_title -> GetVal("system_title");
         $this->view->system_version = $get_title -> GetVal("system_version");
         $this->view->system_css     = $get_title->GetVal('system_css');
+        $this->view->user_type      = $user_info['user_type'];
         
         //make top menu
         $menu = new Algorithms_Core_Menu();
