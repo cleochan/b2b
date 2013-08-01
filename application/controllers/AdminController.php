@@ -87,6 +87,11 @@ class AdminController extends Zend_Controller_Action
         $getorders_model = new Databases_Joins_GetOrders();
         $getorders_model->item_status   =   0;
         $this->view->list = $getorders_model->PushList();
+        
+        /*Get recent 10 orders*/
+        $getorders_model->item_status   =   3;
+        $getorders_model->limit =   10;
+        $this->view->recent_orders_list =   $getorders_model->PushList();
     }
     
     function adminRefreshPendingOrdersAction()

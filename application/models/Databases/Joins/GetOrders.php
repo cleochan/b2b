@@ -69,6 +69,8 @@ class Databases_Joins_GetOrders
     var $payment_type_id;
     var $quantity_array;
     
+    var $limit;
+    
     function __construct(){
     	$this->db = Zend_Registry::get("db");
     }
@@ -181,6 +183,12 @@ class Databases_Joins_GetOrders
         if($this->p_qty_per_page && $this->p_current_page)
         {
             $select->limit($this->p_qty_per_page, $this->p_qty_per_page*($this->p_current_page-1));
+        }
+        
+        if($this->limit)
+        {
+            $select->limit(0,  $this->limit);
+            $select->order("p.issue_time DESC");
         }
         
         $result= $this->db->fetchAll($select);

@@ -270,7 +270,6 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->supplier_sku  =   $product_data['SupplierSku'];
                     $productFilter_model->retailer_sku  =   $product_data['RetailerSku'];
                     $productFilter_model->product_name  =   $product_data['ProductName'];
-                    $productFilter_model->retailer_account_id   =   '';
                     $productFilter_model->wholesale_cost    =   $product_data['Cost']['Value'];
                     $productFilter_model->street_price      =   $product_data['StreetPrice']['Value'];
                     $productFilter_model->supplier_price      =   $product_data['SupplierPrice']['Value'];
@@ -278,14 +277,8 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->estimated_handling_fee    =   $product_data['EstimatedHandlingCost']['Value'];
                     $productFilter_model->quantity_available        =   $product_data['QuantityAvailable']['Value']?$product_data['QuantityAvailable']['Value']:0;
                     $productFilter_model->long_html_description     =   $product_data['Description'];
-                    $productFilter_model->inventory_id              =   '';
-                    $productFilter_model->short_html_description    =   '';
-                    $productFilter_model->long_text_description     =   '';
-                    $productFilter_model->short_text_description    =   '';
                     $productFilter_model->brand                     =   $product_data['Brand'];
-                    $productFilter_model->brand_id                  =   '';
                     $productFilter_model->manufacturer              =   $product_data['Manufacturer'];
-                    $productFilter_model->condition_id              =   '';
                     $productFilter_model->last_update_date          =   $product_data['LastUpdateDate']['Value'];
                     $productFilter_model->mpn                       =   $product_data['MPN'];
                     $productFilter_model->upc                       =   $product_data['UPC'];
@@ -305,10 +298,8 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->package_height            =   $product_data['PackageDimension']['Width'];
                     $productFilter_model->package_depth             =   $product_data['PackageDimension']['Depth'];
                     $productFilter_model->package_dimension_units   =   $product_data['PackageDimension']['Units'];
-                    $productFilter_model->ships_freight             =   '';
                     $productFilter_model->sc_class             	    =   $product_data['ShippingCourier']['ClassID'];
                     $productFilter_model->shipping_courier          =   $product_data['ShippingCourier']['Name'];
-                    $productFilter_model->ships_alone               =   '';
                     $productFilter_model->max_ship_single_box       =   $product_data['MaxShippingSingleBox'];
                     $productFilter_model->length                    =   $product_data['ProductDimension']['Length'];
                     $productFilter_model->height                    =   $product_data['ProductDimension']['Width'];
@@ -316,15 +307,11 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->dimension_units           =   $product_data['ProductDimension']['Units'];
                     $productFilter_model->weight                    =   round($product_data['ProductWeight']['Value'],8);
                     $productFilter_model->weight_units              =   $product_data['ProductWeight']['Units'];
-                    $productFilter_model->dimension_description     =   '';
                     $productFilter_model->min_purchase_quantity     =   $product_data['MinPurchaseQuantity'];
                     $productFilter_model->max_purchase_quantity     =   $product_data['MaxPurchaseQuantity'];
                     $productFilter_model->bin_number                =   $product_data['BinNumber'];
                     $productFilter_model->accessory_skus            =   $product_data['AccessorySkus'];
                     $productFilter_model->keywords                  =   $product_data['Keywords'];
-                    $productFilter_model->pers_available            =   '';
-                    $productFilter_model->gift_wrap_available       =   '';
-                    $productFilter_model->details                   =   '';
                     $productFilter_model->features                  =   $product_data['Features'];
                     $productFilter_model->specification             =   $product_data['Specification'];
                     $productFilter_model->warranty                  =   $product_data['Warranty'];
@@ -357,9 +344,6 @@ class ScheduledController extends Zend_Controller_Action
                         $productFilter_model->imageURL4             =   @$product_data['ProductImages']['CrazySalesProductPictureType'][4]['Path'];
                         $productFilter_model->imageURL5             =   @$product_data['ProductImages']['CrazySalesProductPictureType'][5]['Path'];
                     }
-                    $productFilter_model->options                   =   '';
-                    $productFilter_model->dimension                 =   '';
-                    $productFilter_model->description               =   $product_data['Description'];
                     $productFilter_model->product_code_type         =   $product_data['ProductCodeType'];
                     if($product_data['Category']['CategoryName'] && $product_data['Category']['CategoryID']){
                         $count  =    $productFilter_model->AddProduct();

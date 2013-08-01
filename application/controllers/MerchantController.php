@@ -1241,7 +1241,7 @@ class MerchantController extends Zend_Controller_Action
     {
         $this->view->title      =   "Order View";
         $menu_model = new Algorithms_Core_Menu;
-        $this->view->navigation =   $menu_model->GetNavigation(array("Dashboard", "Merchants List  ","Order View"));
+        $this->view->navigation =   $menu_model->GetNavigation(array("Dashboard", "Order Report","Order View"));
         $params =   $this->_request->getParams();
         $purchase_order_id  =   $params['order_id'];
         $product_info_model =   new Databases_Joins_ProductFilter();
