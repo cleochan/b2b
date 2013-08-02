@@ -38,26 +38,26 @@ $(function ()
 
 								data += '<td class="center"><span class="small">'+date('H:i:s, d M Y ', strtotime(a.issue_time))+'</span></td>';
 								data += '<td class="center"><span class="small">'+a.main_db_order_id+'</span></td>';
-								date += '<td class="center"><span class="small">'+a.merchant_ref+'</span></td>';
-								date += '<td class="center"><span class="small">'+a.supplier_sku+'</span></td>';
-								date += '<td class="center"><span class="small">'+a.merchant_sku+'</span></td>';
-								date += '<td class="center"><span class="small">'+a.item_amount+'</span></td>';
-								date += '<td class="center" onmouseover="show_status(\'recent_'+i+'\');" onmouseout="hide_status(\'recent_'+i+'\');"><span class="small">';
+								data += '<td class="center"><span class="small">'+a.merchant_ref+'</span></td>';
+								data += '<td class="center"><span class="small">'+a.supplier_sku+'</span></td>';
+								data += '<td class="center"><span class="small">'+a.merchant_sku+'</span></td>';
+								data += '<td class="center"><span class="small">'+a.item_amount+'</span></td>';
+								data += '<td class="center" onmouseover="show_status(\'recent_'+i+'\');" onmouseout="hide_status(\'recent_'+i+'\');"><span class="small">';
 
                             	switch (a.item_status)
 		                        {
 		                            case 0:
-		                                date += "<font color='red'>Pending</font>";
+		                                data += "<font color='red'>Pending</font>";
 		                                break;
 		                            case 1:
-		                                date += "<font color='green'>Approved</font>";
+		                                data += "<font color='green'>Approved</font>";
 		                                break;
 		                            case 2:
-		                                date += "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div id='status_recent_"+i+"' class='api_response' style='display: none;'>"+a.api_response+"</div>";
+		                                data += "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div id='status_recent_"+i+"' class='api_response' style='display: none;'>"+a.api_response+"</div>";
 		                                break;
 		                        }
 								data += '</span></td>';
-                    			date += '<td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/'+a.user_id+'/order_id/'+a.purchase_order_id+'">View</a></span></td>';
+                    			data += '<td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/'+a.user_id+'/order_id/'+a.purchase_order_id+'">View</a></span></td>';
                 				data += '</tr>';
 
 								console.log(data);
