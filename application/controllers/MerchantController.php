@@ -43,11 +43,29 @@ class MerchantController extends Zend_Controller_Action
     
     function indexAction()
     {
-        $this->view->title = "Dashboard";
-        $menu_model = new Algorithms_Core_Menu;
-        
+        $this->view->title = "Dashboard";        
         $get_user_info = new Databases_Joins_GetUserInfo();
         $this->view->user = $get_user_info->GetUserInfo($this->params['user_id']);
+        /*Get Pending Order Info*/
+        $getorders_model = new Databases_Joins_GetOrders();
+        $getorders_model->item_status   =   0;
+        $getorders_model->user_id      =    $this->params['user_id'];
+        $this->view->list = $getorders_model->PushList();
+    }
+    
+    function refreshPendingOrdersAction()
+    {
+        $operate_orders_model   =   new Databases_Joins_OperateOrders();
+        $result = $operate_orders_model->PlaceOrder();
+
+        $getorders_model = new Databases_Joins_GetOrders();
+	$getorders_model->item_status  =   0;
+        $getorders_model->user_id      =    $this->params['user_id'];
+        /*Get Pending Order Info*/
+        $result['recent_orders_list'] = $getorders_model->PushList();
+
+        echo Zend_Json::encode($result);
+        die();
     }
     
     function financialReportAction()

@@ -1,5 +1,171 @@
+<script language="javascript">
+$(function ()
+{
+    $("#refresh_order").click(function (){
+        $.ajax({
+                    url:"/merchant/refresh-pending-orders",
+                    dataType:"json",
+                    type:"POST",
+                    
+                    beforeSend:function(){
+                        $("#refresh_order").attr('disabled','disabled');
+                        $("#refresh_order").attr('value','Refreshing');
+                    },
+                    success:function(req){
+						var obj = (typeof req == "string") ? jQuery.parseJSON(req) : req;
+
+						//console.log("got reply "+ (typeof req == "string") ? "string" : "object");
+
+						if(obj.recent_orders_list)
+						{
+							if(obj.recent_orders_list.length)
+							{
+								//console.log("obj.recent_orders_list exists, length: "+obj.recent_orders_list.length);
+
+								$('#pending_orders tbody').html('');
+
+								for(var i = 0; i < obj.recent_orders_list.length; i++)
+								{
+									a = obj.recent_orders_list[i];
+									var data = '';
+
+									if(i%2 == 0)
+									{
+										data = '<tr class="row-1">';
+									}
+									else
+									{
+										data = '<tr class="row-2">';
+									}
+
+									data += '<td class="center"><span class="small">'+date('H:i:s, d M Y ', strtotime(a.issue_time))+'</span></td>';
+									data += '<td class="center"><span class="small">'+a.main_db_order_id+'</span></td>';
+									data += '<td class="center"><span class="small">'+a.merchant_ref+'</span></td>';
+									data += '<td class="center"><span class="small">'+a.supplier_sku+'</span></td>';
+									data += '<td class="center"><span class="small">'+a.merchant_sku+'</span></td>';
+									data += '<td class="center"><span class="small">'+a.item_amount+'</span></td>';
+									data += '<td class="center" onmouseover="show_status(\'recent_'+i+'\');" onmouseout="hide_status(\'recent_'+i+'\');"><span class="small">';
+
+		                        	switch (a.item_status)
+				                    {
+				                        case 0:
+				                            data += "<font color='red'>Pending</font>";
+				                            break;
+				                        case 1:
+				                            data += "<font color='green'>Approved</font>";
+				                            break;
+				                        case 2:
+				                            data += "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div id='status_recent_"+i+"' class='api_response' style='display: none;'>"+a.api_response+"</div>";
+				                            break;
+				                    }
+									data += '</span></td>';
+		                			data += '<td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/'+a.user_id+'/order_id/'+a.purchase_order_id+'">View</a></span></td>';
+		            				data += '</tr>';
+
+									//console.log(data);
+									$('#pending_orders tbody').append(data);
+
+									//console.log("appending data "+i);
+								}
+							}
+							else
+							{
+								$('#pending_order_container').hide();
+							}
+							$('#notice_message').html('Action complete, '+obj.refresh_num+' order(s) affected.');
+							$('#notice_container').show();
+						} 
+		                //        location.reload();
+
+                    },
+					error: function(msg) {
+						alert(msg);
+					}
+                })
+    });
+});
+
+function show_status(index)
+{
+	if($("#status_"+index))
+	{
+		$("#status_"+index).show();
+	}
+}
+
+function hide_status(index)
+{
+	if($("#status_"+index))
+	{
+		$("#status_"+index).hide();
+	}
+}
+</script>
+<div id="notice_container" style="display: none;"><font color="green">&nbsp; <strong id="notice_message"></strong></font><br />
+</div>
 <div style="margin: 5px;">
 <p>Welcome back, <?php echo $this->user['company']; ?>.</p>
 <p>Account Balance: $<?php echo $this->user['balance']; ?></p>
 <p>Account Credits: $<?php echo $this->user['credit']; ?></p>
 </div>
+<?php if($this->list):?>
+	<div id="pending_order_container">
+		<h2>Pending Orders</h2>
+		<div align="center">
+		    <table id="pending_orders" class="width100" cellspacing="1">
+				<thead>
+		            <tr>
+		                <th class="form-title">Time</th>
+		                <th class="form-title">Order ID</th>
+		                <th class="form-title">Merchant Ref</th>
+		                <th class="form-title">Supplier SKU</th>
+		                <th class="form-title">Merchant SKU</th>
+		                <th class="form-title">Order Amount<p style="margin:0">(Include GST and postage)</p></th>
+		                <th class="form-title">Status</th>
+		                <th class="form-title">Action</th>
+		            </tr>
+				<thead>
+		        <tbody>
+		            <?php if($this->list):
+		                    $n = 1;
+		                    foreach($this->list as $key => $list):
+		            ?>
+		            <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+		                <td class="center"><span class="small"><?=date('H:i:s, d M Y ',strtotime($list['issue_time']))?></span></td>
+		                <td class="center"><span class="small"><?=$list['main_db_order_id']?></span></td>
+		                <td class="center"><span class="small"><?=$list['merchant_ref']?></span></td>
+		                <td class="center"><span class="small"><?=$list['supplier_sku']?></span></td>
+		                <td class="center"><span class="small"><?=$list['merchant_sku']?></span></td>
+		                <td class="center"><span class="small"><?=$list['item_amount']?></span></td>
+		                <td class="center" onmouseover="show_status('<?php echo 'pending_'.$key; ?>');" onmouseout="hide_status('<?php echo 'pending_'.$key; ?>');"><span class="small">
+		                        <?php 
+		                        switch ($list['item_status'])
+		                        {
+		                            case 0:
+		                                echo "<font color='red'>Pending</font>";
+		                                break;
+		                            case 1:
+		                                echo "<font color='green'>Approved</font>";
+		                                break;
+		                            case 2:
+		                                echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div id='status_pending_".$key."' class='api_response' style='display: none;'>".$list['api_response']."</div>";
+		                                break;
+		                        }
+		                        ?>
+
+		                    </span></td>
+		                <td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/<?=$list['user_id']?>/order_id/<?=$list['purchase_order_id']?>">View</a></span></td>
+		            </tr>
+		            <?php
+		                    endforeach;
+		                endif;
+		            ?>
+		        </tbody>
+		    </table>
+		    <div class="info_bottonp" align="center">
+		        <input class="special_button_style_green" type="button" value="Refresh Order" id="refresh_order">
+		        <br>
+		    </div>
+		</div>
+	</div>
+    <?php endif;?>
