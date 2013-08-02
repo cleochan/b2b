@@ -1277,9 +1277,9 @@ class MerchantController extends Zend_Controller_Action
 		}
 
         $get_user_info = new Databases_Joins_GetUserInfo();
-        $user = $get_user_info->GetUserInfo($_SESSION["Zend_Auth"]["storage"]->user_id);
+        $this->view->user = $get_user_info->GetUserInfo($_SESSION["Zend_Auth"]["storage"]->user_id);
 		
-		if(!isset($user['user_id']) || !is_numeric($user['user_id']))
+		if(!isset($this->view->user['user_id']) || !is_numeric($this->view->user['user_id']))
 		{
 			// user id doesn't exists. account was deleted, logging out
 			return $this->_redirect("/login/logout");
@@ -1293,7 +1293,7 @@ class MerchantController extends Zend_Controller_Action
         $form = new Forms_ProfileMerchant();
         $form->submitx->setLabel('Update');
         $this->view->form = $form;
-
+		
         if($this->_request->isPost())
 		{
 			$error = false;
@@ -1320,18 +1320,6 @@ class MerchantController extends Zend_Controller_Action
                     $password_changed = true;
                 }
                 
-                //Email format check
-                if(!Algorithms_Extensions_Plugin::EmailCheck($form->getValue('email')))
-                {
-                    $this->view->notice="Email format is incorrect.";
-                    $error = true;
-                }
-                                
-                if(!$form->getValue('company'))
-                {
-                    $this->view->notice="The Company is required.";
-                    $error = true;
-                }
                 if(!$form->getValue('address'))
                 {
                     $this->view->notice="The address is required.";
@@ -1364,20 +1352,8 @@ class MerchantController extends Zend_Controller_Action
                 }
                 //new users
                 $check_user_string = new Databases_Tables_Users();
-				$check_user_string->SetUser($user);
-
-                //username exist
-				if($user['email'] !== $form->getValue('email')) // check email only if changed
-				{
-		            $check_user_string->email = $form->getValue('email');
-		            $check_user_exist = $check_user_string ->IsUserExist();
-		            if($check_user_exist)
-		            {
-		                $this->view->notice="Email exists for user id: ".$check_user_exist.".";
-						$error = true;
-		            }
-				}
-                
+				$check_user_string->SetUser($this->view->user);
+              
                 //check valid end
                 ///////////////////////////////////////////////////////////
 
@@ -1388,7 +1364,6 @@ class MerchantController extends Zend_Controller_Action
                     {
                         $check_user_string->password = $form->getValue('password');
                     }
-                    $check_user_string->company = $form->getValue('company');
                     $check_user_string->contact_name = $form->getValue('contact_name');
                     $check_user_string->contact_phone = $form->getValue('contact_phone');
                     
@@ -1469,7 +1444,7 @@ class MerchantController extends Zend_Controller_Action
         }
 		else
         {
-            $form->populate($user);
+            $form->populate($this->view->user);
         }
     }
     

@@ -7,38 +7,38 @@ class Forms_ProfileMerchant extends Zend_Form
 		parent::__construct($options);
 		$this->setName('ProfileMerchant');
 		
-		$email = new Zend_Form_Element_Text('email');
-		$email -> setDecorators(array(array('ViewHelper'),));
+		$email = new Zend_Form_Element_Text('email', array("readonly" => "readonly"));
+		$email -> setDecorators(array(array('ViewHelper')));
         
         $password = new Zend_Form_Element_Password('password');
-		$password -> setDecorators(array(array('ViewHelper'),));
+		$password -> setDecorators(array(array('ViewHelper')));
         
         $password_r = new Zend_Form_Element_Password('password_r');
-		$password_r -> setDecorators(array(array('ViewHelper'),));
+		$password_r -> setDecorators(array(array('ViewHelper')));
         
-		$company = new Zend_Form_Element_Text('company');
-		$company -> setDecorators(array(array('ViewHelper'),));
+		$company = new Zend_Form_Element_Text('company', array("readonly" => "readonly"));
+		$company -> setDecorators(array(array('ViewHelper')));
         
         $address = new Zend_Form_Element_Text('address');
-		$address -> setDecorators(array(array('ViewHelper'),));
+		$address -> setDecorators(array(array('ViewHelper')));
                 
         $post_code = new Zend_Form_Element_Text('post_code');
-		$post_code -> setDecorators(array(array('ViewHelper'),));
+		$post_code -> setDecorators(array(array('ViewHelper')));
                 
         $suburb = new Zend_Form_Element_Text('suburb');
-		$suburb -> setDecorators(array(array('ViewHelper'),));
+		$suburb -> setDecorators(array(array('ViewHelper')));
                 
         $state = new Zend_Form_Element_Text('state');
-		$state -> setDecorators(array(array('ViewHelper'),));
+		$state -> setDecorators(array(array('ViewHelper')));
                 
         $contact_name = new Zend_Form_Element_Text('contact_name');
-		$contact_name -> setDecorators(array(array('ViewHelper'),));
+		$contact_name -> setDecorators(array(array('ViewHelper')));
                         
         $contact_phone = new Zend_Form_Element_Text('contact_phone');
-		$contact_phone -> setDecorators(array(array('ViewHelper'),));
+		$contact_phone -> setDecorators(array(array('ViewHelper')));
         
 		$submitx = new Zend_Form_Element_Submit('submitx');
-		$submitx -> setDecorators(array(array('ViewHelper'),));
+		$submitx -> setDecorators(array(array('ViewHelper')));
 
 		$this -> addElements(array(
                                 $email,

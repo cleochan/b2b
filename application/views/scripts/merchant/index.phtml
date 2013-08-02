@@ -1,8 +1,5 @@
 <div style="margin: 5px;">
 <p>Welcome back, <?php echo $this->user['company']; ?>.</p>
-<p>Your current balance is <?php echo $this->user['balance']; ?>.</p>
-<p><?php echo $this->user['credit']; ?> credits left on your account.</p>
-<?php if($this->user['credit'] < 10): ?>
-<p>You can recharge your account <a href="/merchant/recharge">here</a>.</p>
-<?php endif; ?>
+<p>Account Balance: $<?php echo $this->user['balance']; ?></p>
+<p>Account Credits: $<?php echo $this->user['credit']; ?></p>
 </div>
