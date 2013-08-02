@@ -1,5 +1,6 @@
 <script language="javascript">
-$(function (){
+$(function ()
+{
     $("#refresh_order").click(function (){
         $.ajax({
                     url:"/admin/admin-refresh-pending-orders",
@@ -14,12 +15,6 @@ $(function (){
                         location.reload();
                     },
                 })
-    });
-    
-    $(".small font[color='red']").mouseover(function() {
-        $(this).next().show();
-    }).mouseout(function() {  
-        $(this).next().hide();  
     });
 });
 
