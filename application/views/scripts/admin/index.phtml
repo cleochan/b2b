@@ -12,11 +12,14 @@ $(function ()
                         $("#refresh_order").attr('value','Refreshing');
                     },
                     success:function(req){
-						
-						var obj = $.toJSON(req);
+						var obj = (typeof req == "string") ? jQuery.parseJSON(req) : req;
+
+						console.log("got reply "+ (typeof req == "string") ? "string" : "object");
 
 						if(obj.recent_orders_list)
 						{
+							console.log("obj.recent_orders_list exists, length: "+obj.recent_orders_list.length);
+
 							$('#pending_orders tbody').html('');
 
 							for(var i = 0; i < obj.recent_orders_list.length; i++)
@@ -59,14 +62,15 @@ $(function ()
 
 								$('#pending_orders tbody').append(data);
 
-								if(obj.refresh_num)
-								{
-									alert(obj.refresh_num+' was affected');
-								}
+								console.log("appending data "+i);
+							}
+							//if(obj.refresh_num)
+							{
+								console.log(obj.refresh_num+' was affected');
 							}
 						} 
 		                //        location.reload();
-						alert(req);
+
                     },
 					error: function(msg) {
 						alert(msg);
@@ -159,16 +163,16 @@ function hide_status(index)
     <div align="center">
         <table id="pending_orders" class="width100" cellspacing="1">
 			<thead>
-                <th>
-                    <td class="form-title">Time</td>
-                    <td class="form-title">Order ID</td>
-                    <td class="form-title">Merchant Ref</td>
-                    <td class="form-title">Supplier SKU</td>
-                    <td class="form-title">Merchant SKU</td>
-                    <td class="form-title">Order Amount<p style="margin:0">(Include GST and postage)</p></td>
-                    <td class="form-title">Status</td>
-                    <td class="form-title">Action</td>
-                </th>
+                <tr>
+                    <th class="form-title">Time</th>
+                    <th class="form-title">Order ID</th>
+                    <th class="form-title">Merchant Ref</th>
+                    <th class="form-title">Supplier SKU</th>
+                    <th class="form-title">Merchant SKU</th>
+                    <th class="form-title">Order Amount<p style="margin:0">(Include GST and postage)</p></th>
+                    <th class="form-title">Status</th>
+                    <th class="form-title">Action</th>
+                </tr>
 			<thead>
             <tbody>
                 <?php if($this->list):
