@@ -15,7 +15,15 @@
                         },
                     })
         });
+        
+        $(".small font[color='red']").mouseover(function() {
+            $(this).next().show();
+        }).mouseout(function() {  
+            $(this).next().hide();  
+        });
     });
+</script>
+<script language="javascript">
 </script>
 <br />
 &nbsp;Welcome back, Admin.
@@ -64,7 +72,7 @@
                                     echo "<font color='green'>Approved</font>";
                                     break;
                                 case 2:
-                                    echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div class='api_response'>".$list['api_response']."</div>";
+                                    echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div class='api_response'>".$recent_order['api_response']."</div>";
                                     break;
                             }
                             ?>
@@ -130,9 +138,11 @@
                 ?>
             </tbody>
         </table>
+        <?php if($this->list):?>
         <div class="info_bottonp" align="center">
             <input class="special_button_style_green" type="button" value="Refresh Order" id="refresh_order">
             <br>
         </div>
+        <?php endif;?>
     </div>
 </div>

@@ -187,7 +187,7 @@ class Databases_Joins_GetOrders
         
         if($this->limit)
         {
-            $select->limit(0,  $this->limit);
+            $select->limit($this->limit);
             $select->order("p.issue_time DESC");
         }
         
@@ -558,7 +558,7 @@ class Databases_Joins_GetOrders
     function getPendinglist()
     {
         $select = $this->db->select();
-        $select->from("purchase_order as p", "distinct(p.purchase_order_id) as purchase_order_id,p.user_id as user_id");
+        $select->from("purchase_order as p", array("distinct(p.purchase_order_id) as purchase_order_id","*"));
         $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id");
         
         if($this->item_status == 0 )
