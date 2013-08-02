@@ -28,7 +28,7 @@ class ScheduledController extends Zend_Controller_Action
         $order_api_trying_times     =   $system_params_model->GetVal('order_api_trying_times');
         $logs_path                  =   $system_params_model->GetVal('logs_path');
         $f  =   fopen($logs_path."orderslogs/refreshorders".date('YmdHis').".txt", "w+");
-        $logs_contents              =   'Refresh Pending Orders Begin at:'.date("Y-m-d H:i:s")."\n";
+        $logs_contents              =   'Refresh Pending Orders Begin at:'.date("Y-m-d H:i:s").".\n";
         $getorder_model->item_status    =   0;
         $getorder_model->order_api_trying_times     =   $order_api_trying_times;
         $purchase_orders    =   $getorder_model->getPendinglist();
@@ -195,7 +195,7 @@ class ScheduledController extends Zend_Controller_Action
         }
         $system_params_model->UpdateVal('pending_order_refresh_time',date('Y-m-d H:i:s'));
         @fwrite($f, $logs_contents);
-        @fwrite($f,"Refresh Orders Completed.\n");
+        @fwrite($f,"Refresh Orders Completed at: ".date('Y-m-d H:i:s').".\n");
         @fclose($f);
         die();
     }
