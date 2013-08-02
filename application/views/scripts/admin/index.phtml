@@ -60,6 +60,7 @@ $(function ()
                     			date += '<td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/'+a.user_id+'/order_id/'+a.purchase_order_id+'">View</a></span></td>';
                 				data += '</tr>';
 
+								console.log(data);
 								$('#pending_orders tbody').append(data);
 
 								console.log("appending data "+i);
