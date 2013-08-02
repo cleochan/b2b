@@ -19,9 +19,7 @@ class Databases_Joins_OperateOrders {
         $crazy_sales_order_status_array1    =   array();
         $crazySalesOrderItemTypeArray       =   array();
         $refresh_num =   0;
-        $result =   array(
-            'refresh_num' =>  0,
-        );
+        $result =   array('refresh_num' =>  0);
         
         if($this->purchase_order_ids){
             $purchase_order_model->purchase_order_ids    =   $this->purchase_order_ids;

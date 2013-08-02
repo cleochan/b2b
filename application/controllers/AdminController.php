@@ -97,7 +97,13 @@ class AdminController extends Zend_Controller_Action
     function adminRefreshPendingOrdersAction()
     {
         $operate_orders_model   =   new Databases_Joins_OperateOrders();
-        $result =   $operate_orders_model->PlaceOrder();
+        $result = $operate_orders_model->PlaceOrder();
+
+        $getorders_model = new Databases_Joins_GetOrders();
+		$getorders_model->item_status  =   0;
+        /*Get Pending Order Info*/
+        $result['recent_orders_list'] = $getorders_model->PushList();
+
         echo Zend_Json::encode($result);
         die();
     }

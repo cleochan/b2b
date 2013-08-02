@@ -12,8 +12,65 @@ $(function ()
                         $("#refresh_order").attr('value','Refreshing');
                     },
                     success:function(req){
-                        location.reload();
+						
+						var obj = $.toJSON(req);
+
+						if(obj.recent_orders_list)
+						{
+							$('#pending_orders tbody').html('');
+
+							for(var i = 0; i < obj.recent_orders_list.length; i++)
+							{
+								a = obj.recent_orders_list[i];
+								var data = '';
+
+								if(i%2 == 0)
+								{
+									data = '<tr class="row-1">';
+								}
+								else
+								{
+									data = '<tr class="row-2">';
+								}
+
+								data += '<td class="center"><span class="small">'+date('H:i:s, d M Y ', strtotime(a.issue_time))+'</span></td>';
+								data += '<td class="center"><span class="small">'+a.main_db_order_id+'</span></td>';
+								date += '<td class="center"><span class="small">'+a.merchant_ref+'</span></td>';
+								date += '<td class="center"><span class="small">'+a.supplier_sku+'</span></td>';
+								date += '<td class="center"><span class="small">'+a.merchant_sku+'</span></td>';
+								date += '<td class="center"><span class="small">'+a.item_amount+'</span></td>';
+								date += '<td class="center" onmouseover="show_status(\'recent_'+i+'\');" onmouseout="hide_status(\'recent_'+i+'\');"><span class="small">';
+
+                            	switch (a.item_status)
+		                        {
+		                            case 0:
+		                                date += "<font color='red'>Pending</font>";
+		                                break;
+		                            case 1:
+		                                date += "<font color='green'>Approved</font>";
+		                                break;
+		                            case 2:
+		                                date += "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div id='status_recent_"+i+"' class='api_response' style='display: none;'>"+a.api_response+"</div>";
+		                                break;
+		                        }
+								data += '</span></td>';
+                    			date += '<td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/'+a.user_id+'/order_id/'+a.purchase_order_id+'">View</a></span></td>';
+                				data += '</tr>';
+
+								$('#pending_orders tbody').append(data);
+
+								if(obj.refresh_num)
+								{
+									alert(obj.refresh_num+' was affected');
+								}
+							}
+						} 
+		                //        location.reload();
+						alert(req);
                     },
+					error: function(msg) {
+						alert(msg);
+					}
                 })
     });
 });
@@ -49,7 +106,7 @@ function hide_status(index)
     <div align="center">
         <table class="width100" cellspacing="1">
             <tbody>
-                <tr>
+                <tr> 
                     <td class="form-title">Time</td>
                     <td class="form-title">Order ID</td>
                     <td class="form-title">Merchant Ref</td>
@@ -97,12 +154,12 @@ function hide_status(index)
         </table>
     </div>
     
-    <?php if($this->list):?>
+    <?php //if($this->list):?>
     <h2>Pending Orders</h2>
     <div align="center">
-        <table class="width100" cellspacing="1">
-            <tbody>
-                <tr>
+        <table id="pending_orders" class="width100" cellspacing="1">
+			<thead>
+                <th>
                     <td class="form-title">Time</td>
                     <td class="form-title">Order ID</td>
                     <td class="form-title">Merchant Ref</td>
@@ -111,7 +168,9 @@ function hide_status(index)
                     <td class="form-title">Order Amount<p style="margin:0">(Include GST and postage)</p></td>
                     <td class="form-title">Status</td>
                     <td class="form-title">Action</td>
-                </tr>
+                </th>
+			<thead>
+            <tbody>
                 <?php if($this->list):
                         $n = 1;
                         foreach($this->list as $key => $list):
@@ -153,5 +212,5 @@ function hide_status(index)
             <br>
         </div>
     </div>
-    <?php endif;?>
+    <?php //endif;?>
 </div>
