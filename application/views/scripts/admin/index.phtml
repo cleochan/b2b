@@ -114,60 +114,7 @@ function hide_status(index)
         <p><span>Product Categories Refresh Time: </span><span <?php if($this->product_categories_table_refresh_flag){?>class="red"<?php }?>><?=date('H:i:s, d M Y ',strtotime($this->product_categories_table_refresh_time))?></span></p>
         <p><span>Merchant Feed Refresh Time: </span><span <?php if($this->merchant_feed_refresh_flag){?>class="red"<?php }?>><?=date('H:i:s, d M Y ',strtotime($this->merchant_feed_refresh_time))?></span></p>
     </div>
-    
-    <h2>Recent 10 Orders</h2>
-    <div align="center">
-        <table class="width100" cellspacing="1">
-            <tbody>
-                <tr> 
-                    <td class="form-title">Time</td>
-                    <td class="form-title">Order ID</td>
-                    <td class="form-title">Merchant Ref</td>
-                    <td class="form-title">Supplier SKU</td>
-                    <td class="form-title">Merchant SKU</td>
-                    <td class="form-title">Order Amount<p style="margin:0">(Include GST and postage)</p></td>
-                    <td class="form-title">Status</td>
-                    <td class="form-title">Action</td>
-                </tr>
-                <?php if($this->recent_orders_list):
-                        $n = 1;
-                        foreach($this->recent_orders_list as $key => $recent_order):
-                ?>
-                <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
-                    <td class="center"><span class="small"><?=date('H:i:s, d M Y ',strtotime($recent_order['issue_time']))?></span></td>
-                    <td class="center"><span class="small"><?=$recent_order['main_db_order_id']?></span></td>
-                    <td class="center"><span class="small"><?=$recent_order['merchant_ref']?></span></td>
-                    <td class="center"><span class="small"><?=$recent_order['supplier_sku']?></span></td>
-                    <td class="center"><span class="small"><?=$recent_order['merchant_sku']?></span></td>
-                    <td class="center"><span class="small"><?=$recent_order['item_amount']?></span></td>
-                    <td class="center" onmouseover="show_status('<?php echo 'recent_'.$key; ?>');" onmouseout="hide_status('<?php echo 'recent_'.$key; ?>');"><span class="small">
-                            <?php 
-                            switch ($recent_order['item_status'])
-                            {
-                                case 0:
-                                    echo "<font color='red'>Pending</font>";
-                                    break;
-                                case 1:
-                                    echo "<font color='green'>Approved</font>";
-                                    break;
-                                case 2:
-                                    echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div id='status_recent_".$key."' class='api_response' style='display: none;'>".$recent_order['api_response']."</div>";
-                                    break;
-                            }
-                            ?>
-
-                        </span></td>
-                    <td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/<?=$recent_order['user_id']?>/order_id/<?=$recent_order['purchase_order_id']?>">View</a></span></td>
-                </tr>
-                <?php
-                        endforeach;
-                    endif;
-                ?>
-            </tbody>
-        </table>
-    </div>
-    
-    <?php if($this->list):?>
+        <?php if($this->list):?>
 	<div id="pending_order_container">
 		<h2>Pending Orders</h2>
 		<div align="center">
@@ -228,4 +175,57 @@ function hide_status(index)
 		</div>
 	</div>
     <?php endif;?>
+    
+    <h2>Recent 10 Orders</h2>
+    <div align="center">
+        <table class="width100" cellspacing="1">
+            <tbody>
+                <tr> 
+                    <td class="form-title">Time</td>
+                    <td class="form-title">Order ID</td>
+                    <td class="form-title">Merchant Ref</td>
+                    <td class="form-title">Supplier SKU</td>
+                    <td class="form-title">Merchant SKU</td>
+                    <td class="form-title">Order Amount<p style="margin:0">(Include GST and postage)</p></td>
+                    <td class="form-title">Status</td>
+                    <td class="form-title">Action</td>
+                </tr>
+                <?php if($this->recent_orders_list):
+                        $n = 1;
+                        foreach($this->recent_orders_list as $key => $recent_order):
+                ?>
+                <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+                    <td class="center"><span class="small"><?=date('H:i:s, d M Y ',strtotime($recent_order['issue_time']))?></span></td>
+                    <td class="center"><span class="small"><?=$recent_order['main_db_order_id']?></span></td>
+                    <td class="center"><span class="small"><?=$recent_order['merchant_ref']?></span></td>
+                    <td class="center"><span class="small"><?=$recent_order['supplier_sku']?></span></td>
+                    <td class="center"><span class="small"><?=$recent_order['merchant_sku']?></span></td>
+                    <td class="center"><span class="small"><?=$recent_order['item_amount']?></span></td>
+                    <td class="center" onmouseover="show_status('<?php echo 'recent_'.$key; ?>');" onmouseout="hide_status('<?php echo 'recent_'.$key; ?>');"><span class="small">
+                            <?php 
+                            switch ($recent_order['item_status'])
+                            {
+                                case 0:
+                                    echo "<font color='red'>Pending</font>";
+                                    break;
+                                case 1:
+                                    echo "<font color='green'>Approved</font>";
+                                    break;
+                                case 2:
+                                    echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div id='status_recent_".$key."' class='api_response' style='display: none;'>".$recent_order['api_response']."</div>";
+                                    break;
+                            }
+                            ?>
+
+                        </span></td>
+                    <td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/<?=$recent_order['user_id']?>/order_id/<?=$recent_order['purchase_order_id']?>">View</a></span></td>
+                </tr>
+                <?php
+                        endforeach;
+                    endif;
+                ?>
+            </tbody>
+        </table>
+    </div>
+    
 </div>
