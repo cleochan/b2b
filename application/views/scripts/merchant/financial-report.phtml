@@ -7,15 +7,20 @@ $(function()
         showButtonPanel: true,
         dateFormat: 'yy-mm-dd'
     });
-});
-$(function() 
-{
+
     $('#end_date').datepicker(
     {
         numberOfMonths: 1,
         showButtonPanel: true,
         dateFormat: 'yy-mm-dd'
     });
+
+	// BUGFIX: workaround for linux chrome browser
+	// datepicker div is not hidden during load, this fix it
+	if($('#ui-datepicker-div') && $('#ui-datepicker-div').css("display") != 'none')
+	{
+		$('#ui-datepicker-div').css("display", "none");
+	}
 });
 </script>
 <script language="javascript"><!--

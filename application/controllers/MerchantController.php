@@ -45,7 +45,6 @@ class MerchantController extends Zend_Controller_Action
     {
         $this->view->title = "Dashboard";
         $menu_model = new Algorithms_Core_Menu;
-        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard"));
         
         $get_user_info = new Databases_Joins_GetUserInfo();
         $this->view->user = $get_user_info->GetUserInfo($this->params['user_id']);
