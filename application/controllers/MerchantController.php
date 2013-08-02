@@ -1350,15 +1350,29 @@ class MerchantController extends Zend_Controller_Action
                     $this->view->notice="The contact phone is required.";
                     $error = true;
                 }
-                //new users
-                $check_user_string = new Databases_Tables_Users();
-				$check_user_string->SetUser($this->view->user);
-              
+
+				if($error === false) // check if previously no error
+				{
+					$shipping_state_info_model  =   new Databases_Tables_ShippingStateInfo();
+				    $shipping_state_info_model->post_code       =   $form->getValue('post_code');
+				    $shipping_state_info_model->shipping_suburb =   $form->getValue('suburb');
+				    $shipping_state_info_model->shipping_state  =   $form->getValue('state');
+				    if($shipping_state_info_model->GetShippingStateInfo() == 0)
+				    {
+				        $this->view->notice = "Shipping state is not found";
+				        $error = true;
+				    }
+				}
+
                 //check valid end
                 ///////////////////////////////////////////////////////////
 
                 if($error === false) // no error
-                {
+		        {
+		            //new users
+		            $check_user_string = new Databases_Tables_Users();
+					$check_user_string->SetUser($this->view->user);
+
                     //update to db
                     if($password_change === true)
                     {

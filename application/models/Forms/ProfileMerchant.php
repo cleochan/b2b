@@ -6,19 +6,13 @@ class Forms_ProfileMerchant extends Zend_Form
 	{
 		parent::__construct($options);
 		$this->setName('ProfileMerchant');
-		
-		$email = new Zend_Form_Element_Text('email', array("readonly" => "readonly", "disabled" => "disabled"));
-		$email -> setDecorators(array(array('ViewHelper')));
         
         $password = new Zend_Form_Element_Password('password');
 		$password -> setDecorators(array(array('ViewHelper')));
         
         $password_r = new Zend_Form_Element_Password('password_r');
 		$password_r -> setDecorators(array(array('ViewHelper')));
-        
-		$company = new Zend_Form_Element_Text('company', array("readonly" => "readonly", "disabled" => "disabled"));
-		$company -> setDecorators(array(array('ViewHelper')));
-        
+               
         $address = new Zend_Form_Element_Text('address');
 		$address -> setDecorators(array(array('ViewHelper')));
                 
@@ -41,11 +35,9 @@ class Forms_ProfileMerchant extends Zend_Form
 		$submitx -> setDecorators(array(array('ViewHelper')));
 
 		$this -> addElements(array(
-                                $email,
                                 $password,
                                 $password_r,
                                 $user_status,
-                                $company,
                                 $contact_name,
                                 $address,
                                 $post_code,
