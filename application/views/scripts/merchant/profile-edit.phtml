@@ -14,8 +14,12 @@
 			</tr>		
 			<tr class="row-1">
 				<td class="category">Email </td>
-				<td colspan="3"><?php echo $this->form->email;?><font color="red">*</font></td>
+				<td colspan="3"><?php echo $this->form->email;?><font color="green">*</font>read only</td>
 			</tr>			
+			<tr class="row-2">
+				<td class="category">Company</td>
+				<td colspan="3"><?php echo $this->form->company;?><font color="green">*</font>read only</td>
+			</tr>
 			<tr class="row-2">
 				<td class="category">Password </td>
 				<td colspan="3"><?php echo $this->form->password;?><font color="red">*</font>Leave field blank if you do not wish to change  your password</td>
@@ -23,10 +27,6 @@
 			<tr class="row-1">
 				<td class="category">Confirm Password </td>
 				<td colspan="3"><?php echo $this->form->password_r;?><font color="red">*</font></td>
-			</tr>
-			<tr class="row-2">
-				<td class="category">Company</td>
-				<td colspan="3"><?php echo $this->form->company;?><font color="red">*</font></td>
 			</tr>
             <tr class="row-2">
 				<td class="category">Address</td>
