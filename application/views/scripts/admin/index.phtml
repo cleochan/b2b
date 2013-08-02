@@ -1,29 +1,43 @@
 <script language="javascript">
-    $(function (){
-        $("#refresh_order").click(function (){
-            $.ajax({
-                        url:"/admin/admin-refresh-pending-orders",
-                        dataType:"json",
-                        type:"POST",
-                        
-                        beforeSend:function(){
-                            $("#refresh_order").attr('disabled','disabled');
-                            $("#refresh_order").attr('value','Refreshing');
-                        },
-                        success:function(req){
-                            location.reload();
-                        },
-                    })
-        });
-        
-        $(".small font[color='red']").mouseover(function() {
-            $(this).next().show();
-        }).mouseout(function() {  
-            $(this).next().hide();  
-        });
+$(function (){
+    $("#refresh_order").click(function (){
+        $.ajax({
+                    url:"/admin/admin-refresh-pending-orders",
+                    dataType:"json",
+                    type:"POST",
+                    
+                    beforeSend:function(){
+                        $("#refresh_order").attr('disabled','disabled');
+                        $("#refresh_order").attr('value','Refreshing');
+                    },
+                    success:function(req){
+                        location.reload();
+                    },
+                })
     });
-</script>
-<script language="javascript">
+    
+    $(".small font[color='red']").mouseover(function() {
+        $(this).next().show();
+    }).mouseout(function() {  
+        $(this).next().hide();  
+    });
+});
+
+function show_status(index)
+{
+	if($("#status_"+index))
+	{
+		$("#status_"+index).show();
+	}
+}
+
+function hide_status(index)
+{
+	if($("#status_"+index))
+	{
+		$("#status_"+index).hide();
+	}
+}
 </script>
 <br />
 &nbsp;Welcome back, Admin.
@@ -52,7 +66,7 @@
                 </tr>
                 <?php if($this->recent_orders_list):
                         $n = 1;
-                        foreach($this->recent_orders_list as $recent_order):
+                        foreach($this->recent_orders_list as $key => $recent_order):
                 ?>
                 <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
                     <td class="center"><span class="small"><?=date('H:i:s, d M Y ',strtotime($recent_order['issue_time']))?></span></td>
@@ -61,7 +75,7 @@
                     <td class="center"><span class="small"><?=$recent_order['supplier_sku']?></span></td>
                     <td class="center"><span class="small"><?=$recent_order['merchant_sku']?></span></td>
                     <td class="center"><span class="small"><?=$recent_order['item_amount']?></span></td>
-                    <td class="center"><span class="small">
+                    <td class="center" onmouseover="show_status(<?php echo 'recent_'.$key; ?>);" onmouseout="hide_status(<?php echo 'recent_'$key; ?>);"><span class="small">
                             <?php 
                             switch ($recent_order['item_status'])
                             {
@@ -72,7 +86,7 @@
                                     echo "<font color='green'>Approved</font>";
                                     break;
                                 case 2:
-                                    echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div class='api_response'>".$recent_order['api_response']."</div>";
+                                    echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div id='status_recent_".$key."' class='api_response' style='display: none;'>".$list['api_response']."</div>";
                                     break;
                             }
                             ?>
@@ -104,7 +118,7 @@
                 </tr>
                 <?php if($this->list):
                         $n = 1;
-                        foreach($this->list as $list):
+                        foreach($this->list as $key => $list):
                 ?>
                 <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
                     <td class="center"><span class="small"><?=date('H:i:s, d M Y ',strtotime($list['issue_time']))?></span></td>
@@ -113,7 +127,7 @@
                     <td class="center"><span class="small"><?=$list['supplier_sku']?></span></td>
                     <td class="center"><span class="small"><?=$list['merchant_sku']?></span></td>
                     <td class="center"><span class="small"><?=$list['item_amount']?></span></td>
-                    <td class="center"><span class="small">
+                    <td class="center" onmouseover="show_status(<?php echo 'pending_'.$key; ?>);" onmouseout="hide_status(<?php echo 'pending_'.$key; ?>);"><span class="small">
                             <?php 
                             switch ($list['item_status'])
                             {
@@ -124,7 +138,7 @@
                                     echo "<font color='green'>Approved</font>";
                                     break;
                                 case 2:
-                                    echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div class='api_response'>".$list['api_response']."</div>";
+                                    echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div id='status_pending_".$key."' class='api_response' style='display: none;'>".$list['api_response']."</div>";
                                     break;
                             }
                             ?>
