@@ -70,7 +70,7 @@ function hide_status(index)
                     <td class="center"><span class="small"><?=$recent_order['supplier_sku']?></span></td>
                     <td class="center"><span class="small"><?=$recent_order['merchant_sku']?></span></td>
                     <td class="center"><span class="small"><?=$recent_order['item_amount']?></span></td>
-                    <td class="center" onmouseover="show_status(<?php echo 'recent_'.$key; ?>);" onmouseout="hide_status(<?php echo 'recent_'$key; ?>);"><span class="small">
+                    <td class="center" onmouseover="show_status('<?php echo 'recent_'.$key; ?>');" onmouseout="hide_status('<?php echo 'recent_'.$key; ?>');"><span class="small">
                             <?php 
                             switch ($recent_order['item_status'])
                             {
@@ -81,7 +81,7 @@ function hide_status(index)
                                     echo "<font color='green'>Approved</font>";
                                     break;
                                 case 2:
-                                    echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div id='status_recent_".$key."' class='api_response' style='display: none;'>".$list['api_response']."</div>";
+                                    echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div id='status_recent_".$key."' class='api_response' style='display: none;'>".$recent_order['api_response']."</div>";
                                     break;
                             }
                             ?>
@@ -122,7 +122,7 @@ function hide_status(index)
                     <td class="center"><span class="small"><?=$list['supplier_sku']?></span></td>
                     <td class="center"><span class="small"><?=$list['merchant_sku']?></span></td>
                     <td class="center"><span class="small"><?=$list['item_amount']?></span></td>
-                    <td class="center" onmouseover="show_status(<?php echo 'pending_'.$key; ?>);" onmouseout="hide_status(<?php echo 'pending_'.$key; ?>);"><span class="small">
+                    <td class="center" onmouseover="show_status('<?php echo 'pending_'.$key; ?>');" onmouseout="hide_status('<?php echo 'pending_'.$key; ?>');"><span class="small">
                             <?php 
                             switch ($list['item_status'])
                             {
