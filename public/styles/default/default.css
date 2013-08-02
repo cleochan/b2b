@@ -95,7 +95,7 @@ td.category			{ background-color: #efefef; color: #000000; font-weight: bold; ve
 
 td.col-1			{ background-color: #d8d8d8; color: #000000; }
 td.col-2			{ background-color: #e8e8e8; color: #000000; }
-td.form-title		{ background-color: #77d6ef; color: #086d9d; font-weight: bold; text-align: center; }
+td.form-title,th.form-title		{ background-color: #77d6ef; color: #086d9d; font-weight: bold; text-align: center; }
 td.nopad			{ padding: 0px; }
 td.small-caption	{ font-size: 8pt; }
 td.print			{ font-size: 8pt; text-align: left; padding: 2px; }
