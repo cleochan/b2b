@@ -97,6 +97,7 @@ function hide_status(index)
         </table>
     </div>
     
+    <?php if($this->list):?>
     <h2>Pending Orders</h2>
     <div align="center">
         <table class="width100" cellspacing="1">
@@ -147,11 +148,10 @@ function hide_status(index)
                 ?>
             </tbody>
         </table>
-        <?php if($this->list):?>
         <div class="info_bottonp" align="center">
             <input class="special_button_style_green" type="button" value="Refresh Order" id="refresh_order">
             <br>
         </div>
-        <?php endif;?>
     </div>
+    <?php endif;?>
 </div>

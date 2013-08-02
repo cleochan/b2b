@@ -2,6 +2,7 @@
 class Databases_Joins_OperateOrders {
     var $purchase_order_ids;
     var $order_api_trying_times;
+    var $user_id;
     
     function PlaceOrder()
     {
@@ -17,12 +18,11 @@ class Databases_Joins_OperateOrders {
         $crazy_sales_order_status_array     =   array();
         $crazy_sales_order_status_array1    =   array();
         $crazySalesOrderItemTypeArray       =   array();
-        $order_fail_num =   0;
-        $order_success_num  =   0;
+        $refresh_num =   0;
         $result =   array(
-            'order_fail'    =>  0,
-            'order_success' =>  0,
+            'refresh_num' =>  0,
         );
+        
         if($this->purchase_order_ids){
             $purchase_order_model->purchase_order_ids    =   $this->purchase_order_ids;
             $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
@@ -31,6 +31,9 @@ class Databases_Joins_OperateOrders {
             if($this->order_api_trying_times)
             {
                 $getorder_model->order_api_trying_times     =   $this->order_api_trying_times;
+            }
+            if($this->user_id){
+                $getorder_model->user_id    =   $this->user_id;
             }
             $purchase_orders    =   $getorder_model->getPendinglist();
         }
@@ -139,9 +142,8 @@ class Databases_Joins_OperateOrders {
                     $crazySalesOrderStatusType1->OrderNumber     =   $response_data['order_number'];
                     $crazySalesOrderStatusType1->StatusID        =   3;
                     $crazy_sales_order_status_array1[]           =   $crazySalesOrderStatusType1;
-
+                    
                     $crazy_sales_order_status_array[$response_data['order_number']] =   $crazySalesOrderStatusType;
-
                 }elseif($response_data['MessageType']['Description'])
                 {
                     $getorders_model->item_status   =   2;
@@ -150,6 +152,7 @@ class Databases_Joins_OperateOrders {
                 $getorders_model->logs_order_ids    =  $logs_order_ids;
                 $getorders_model->purchase_order_id   =   $purchase_order['purchase_order_id'];
                 $getorders_model->UpdateOrder();
+                $refresh_num++;
             }
 
             $order_service_model->crazySalesOrderStatusType =   $crazy_sales_order_status_array1;
@@ -165,7 +168,6 @@ class Databases_Joins_OperateOrders {
                     $logs_orders_model->item_status     =   2;
                     $logs_orders_model->UpdateLogsOrderStatus();
                     unset($crazy_sales_order_status_array[$message_main_order_id]);
-                    $order_fail_num++;
                 }else{
                     foreach ($result_message['MessageType'] as $message_type)
                     {
@@ -177,7 +179,6 @@ class Databases_Joins_OperateOrders {
                         $logs_orders_model->item_status     =   2;
                         $logs_orders_model->UpdateLogsOrderStatus();
                         unset($crazy_sales_order_status_array[$message_main_order_id]);
-                        $order_fail_num++;
                     }
                 }
             }
@@ -196,12 +197,10 @@ class Databases_Joins_OperateOrders {
                     $logs_financial->action_value = $crazy_sales_order->order_amount;
                     // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
                     $logs_financial->AddLog();
-                    $order_success_num++;
                 }
             }
         }
-        $result['order_success']    =   $order_success_num;
-        $result['order_fail']       =   $order_fail_num;
+        $result['refresh_num']    =   $refresh_num;
         return $result;
     }
     

@@ -569,6 +569,9 @@ class Databases_Joins_GetOrders
         {
             $select->where("api_trying_times < ?",$this->order_api_trying_times);
         }
+        if($this->user_id){
+            $select->where("p.user_id = ?", $this->user_id);
+        }
         $result =   $this->db->fetchAll($select);
         
         return $result;
