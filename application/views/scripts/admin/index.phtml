@@ -87,7 +87,7 @@ function hide_status(index)
                             ?>
 
                         </span></td>
-                    <td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/<?=$this->user_id?>/order_id/<?=$recent_order['purchase_order_id']?>">View</a></span></td>
+                    <td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/<?=$recent_order['user_id']?>/order_id/<?=$recent_order['purchase_order_id']?>">View</a></span></td>
                 </tr>
                 <?php
                         endforeach;
@@ -140,7 +140,7 @@ function hide_status(index)
                             ?>
 
                         </span></td>
-                    <td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/<?=$this->user_id?>/order_id/<?=$list['purchase_order_id']?>">View</a></span></td>
+                    <td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/<?=$list['user_id']?>/order_id/<?=$list['purchase_order_id']?>">View</a></span></td>
                 </tr>
                 <?php
                         endforeach;
