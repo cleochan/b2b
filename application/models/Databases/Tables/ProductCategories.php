@@ -214,4 +214,13 @@ class Databases_Tables_ProductCategories extends Zend_Db_Table
         
         return $result;
     }
+    
+    function getAllCategoryArray(){
+        $result =   array();
+        $category_list   =   $this->fetchAll()->toArray();
+        foreach ($category_list as $category){
+            $result[$category['category_id']]   =   $category;
+        }
+        return $result;
+    }
 }

@@ -20,8 +20,15 @@ class LoginController extends Zend_Controller_Action
 	
     function indexAction()
     {
-        $this->view->title = "Login"; // title of this page
         $params = $this->_request->getParams();
+        $params_model    =   new Databases_Tables_Params();
+        $running_mode   =   $params_model->GetVal('running_mode');
+        Zend_Auth::getInstance()->clearIdentity();
+        if($running_mode=='production' && $_SERVER["HTTPS"]<>'on'){
+            header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login?url='.$params['url']);
+            exit();
+        }
+        $this->view->title = "Login"; // title of this page
         $this->view->url = $params['url'];
         if ($this->_request->isPost()) {
             Zend_Loader::loadClass('Zend_Filter_StripTags');
@@ -84,15 +91,8 @@ class LoginController extends Zend_Controller_Action
         $params = $this->_request->getParams();
         unset($_SESSION['place_order']);
         session_destroy();
-        $params_model    =   new Databases_Tables_Params();
-        $running_mode   =   $params_model->GetVal('running_mode');
         Zend_Auth::getInstance()->clearIdentity();
-        if($running_mode=='production' && $_SERVER["HTTPS"]<>'on'){
-            header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login?url='.$params['url']);
-            exit();
-        }else{
-            $this->_redirect('/login?url='.$params['url']);
-        }
+        $this->_redirect('/login?url='.$params['url']);
     }
 }
 

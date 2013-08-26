@@ -2,6 +2,15 @@
 
 class ScheduledController extends Zend_Controller_Action
 {
+    function preDispatch() {
+        $params_model   =   new Databases_Tables_Params();
+        $permit_ip      =   $params_model->GetVal('permit_ip');
+        $permit_ip_array    = explode(',', $permit_ip);
+        $ip =   $this->getIP();
+        if(!in_array($ip, $permit_ip_array)){
+            //exit("Invalid Action.");
+        }
+    }
     function indexAction()
     {
         echo "Invalid Action";
@@ -16,6 +25,17 @@ class ScheduledController extends Zend_Controller_Action
         die;
     }
     
+    /**
+     * Refresh Pending Orders With WebService And Create logs
+     * get pending orders
+     * start loop
+     * WebServicePlaceOrder
+     * finish loop
+     * WebServiceSetOrderStatus
+     * update financial table
+     * update params table
+     * create log file
+     */
     function refreshOrdersAction() 
     {
         $getorder_model         =   new Databases_Joins_GetOrders();
@@ -200,15 +220,21 @@ class ScheduledController extends Zend_Controller_Action
         die();
     }
     
+    /**
+     * Get Products From CrazySales with WebServices And Create logs
+     * get params table info
+     * truncate product table data
+     * start loog
+     * WebServicesGetProducts
+     * insert into prodcuts
+     * finish loop
+     * update product table param
+     * update estimated shipping cost
+     * create log file
+     */
     function refreshProductsAction()
     {
         $params_model   =   new Databases_Tables_Params();
-        $permit_ip      =   $params_model->GetVal('permit_ip');
-        $permit_ip_array    = explode(',', $permit_ip);
-        $ip =   $this->getIP();
-        if(!in_array($ip, $permit_ip_array)){
-            //exit();
-        }
         $logs_path              =   $params_model->GetVal('logs_path');
         $f  =   @fopen($logs_path."productslogs/refreshproducts".date('YmdHis').".txt", "w+");
         @fwrite($f, 'Refresh Products Begin at:'.date("Y-m-d H:i:s")."\n");
@@ -387,16 +413,21 @@ class ScheduledController extends Zend_Controller_Action
         die();
     }
     
+    /**
+     * Get Categories Data From Crazysales Database with WebServices
+     * get params
+     * truncate category
+     * start loog
+     * WebServicesGetCategories
+     * insert into category
+     * finish loop
+     * update category refresh params
+     * create log file
+     */
     function refreshCategoriesAction()
     {
         $category_webservice_model  =   new Algorithms_Core_CategoryService();
         $params_model               =   new Databases_Tables_Params();
-        $permit_ip      =   $params_model->GetVal('permit_ip');
-        $permit_ip_array    = explode(',', $permit_ip);
-        $ip =   $this->getIP();
-        if(!in_array($ip, $permit_ip_array)){
-            //exit();
-        }
         $category_model             =   new Databases_Tables_ProductCategories();
         $entries_perpage        =   $params_model->GetVal("product_request_qty_per_page");
         $logs_path              =   $params_model->GetVal('logs_path');
@@ -464,6 +495,14 @@ class ScheduledController extends Zend_Controller_Action
         die;
     }
     
+    /**
+     * Check The Post Data from Paypal And Recharge For The Merchant
+     * get post data
+     * fsockopen paypal
+     * start loop
+     * update financial table
+     * finish loop
+     */
     function paypalNotifyAction ()
     {
         $system_params_model    =   new Databases_Tables_Params();        
@@ -546,15 +585,13 @@ class ScheduledController extends Zend_Controller_Action
         }
         die;
     }
+    
+    /**
+     * Update Products' Postage
+     */
     function refreshProductsPostAction()
     {
             $params_model           =   new Databases_Tables_Params();
-            $permit_ip      =   $params_model->GetVal('permit_ip');
-            $permit_ip_array    = explode(',', $permit_ip);
-            $ip =   $this->getIP();
-            if(!in_array($ip, $permit_ip_array)){
-                //exit();
-            }
             $productFilter_model    =   new Databases_Joins_ProductFilter();
             $param_postage_api_url    =   $params_model->GetVal('postage_api_url');
             $logs_path              =   $params_model->GetVal('logs_path');
@@ -591,6 +628,14 @@ class ScheduledController extends Zend_Controller_Action
         return $ip;
     }
     
+    /**
+     * Create Merchants' Feed
+     * get merchant list
+     * start loop
+     * refresh merchant feed
+     * finish loop
+     * create log file
+     */
     function refreshFeedsAction()
     {
         $user_model =   new Databases_Joins_GetUserInfo();

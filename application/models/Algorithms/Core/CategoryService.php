@@ -1,27 +1,51 @@
 <?php
 
-/*
- *  @author Tim Wu <TimWu@crazysales.com.au>
+/**
+ * Interact with WebService of CrazySales To Get Categories Data from CrazySales Database
+ * @author Tim Wu <TimWu@crazysales.com.au>
  */
 class Algorithms_Core_CategoryService extends SoapClient{
     
+    /**
+     * GetCategoryRequest 
+     *  CategoryIDs     ArrayOfint
+     *  CategoryNames   ArrayOfstring
+     *  Pagination      PaginationType
+     * @var array 
+     */
     var $GetCategoryRequest =   array(
         'CategoryIDs'   =>  array(),
         'CategoryNames' =>  array(),
         'Pagination'    =>  array(),
     );
     
+    /**
+     *  PaginationType
+     * @var array
+     */
     var $PaginationType =   array(
         'EntriesPerPage'    =>  '',
         
     );
     
+    /**
+     *  Entries Per Page
+     * @var int 
+     */
     var $EntriesPerPage =   '';
+    
+    /**
+     *  Page Number
+     * @var int
+     */
     var $PageNumber     =   '';
   
     
     private static $classmap = array();
     
+    /**
+     * @param array $options
+     */
     function __construct($options = array()) {
         $params_model   =   new Databases_Tables_Params();
         $web_service_url    =   $params_model->GetVal('web_service_url');
@@ -34,6 +58,11 @@ class Algorithms_Core_CategoryService extends SoapClient{
         parent::__construct($wsdl, $options);
     }
     
+    /**
+     * Change Oject To Array
+     * @param array $array
+     * @return array $array;
+     */
     function object_array($array){
         if(is_object($array))
         {
@@ -48,6 +77,15 @@ class Algorithms_Core_CategoryService extends SoapClient{
         return $array;
     }
     
+    /**
+     * Get Category Data from CrazySales Database
+     * 
+     * PageNumber and EntriesPerPage need to be get in the controller
+     * 
+     * @param int $EntriesPerPage Entries Per Page
+     * @param int $PageNumber Page Number
+     * @return array $result;
+     */
     function WebServicesGetCategories()
     {
 

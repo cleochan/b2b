@@ -1,21 +1,52 @@
 <?php
-
+/**
+ * Interact with WebService of CrazySales To Place Order and Set Order Status to Crazysales
+ * @author Tim Wu <TimWu@crazysales.com.au>
+ */
 class Algorithms_Core_OrderService extends SoapClient{
     
+    /**
+     * Money Type
+     * @var MoneyType
+     */
     var $moneyType;
     
+    /**
+     * Quantity Tpe
+     * @var QuantityTpe
+     */
     var $quantityType;
     
+    /**
+     * Message Type
+     * @var array
+     */
     var $messageType;
     
+    /**
+     * CrazySalesOrderType
+     * @var CrazySalesOrderType
+     */
     var $crazySalesOrderType;
     
+    /**
+     *  CrazySalesOrderItemType
+     * @var CrazySalesOrderItemType
+     */
     var $crazySalesOrderItemType;
     
+    /**
+     *  CrazySalesOrderStatusType
+     * @var CrazySalesOrderStatusType
+     */
     var $crazySalesOrderStatusType;
     
     private static $classmap = array();
     
+    /**
+     * __construct()
+     * @param array $options
+     */
     function __construct($options = array()) {
         $params_model   =   new Databases_Tables_Params();
         $web_service_url    =   $params_model->GetVal('web_service_url');
@@ -35,6 +66,11 @@ class Algorithms_Core_OrderService extends SoapClient{
         parent::__construct($wsdl, $options);
     }
     
+    /**
+     * Change Oject To Array
+     * @param array $array
+     * @return array $array;
+     */
     function object_array($array){
         if(is_object($array)){
           $array = (array)$array;
@@ -47,6 +83,11 @@ class Algorithms_Core_OrderService extends SoapClient{
         return $array;
     }
     
+    /**
+     * Place Order to CrazySales
+     * @param CrazySalesOrderItemType $crazySalesOrderItemType The item of the orders need to give in the controller
+     * @return array $result
+     */
     function WebServicePlaceOrder(){
         $this->crazySalesOrderType->OrderItems  =   $this->crazySalesOrderItemType;
         $req = new PlaceOrderRequest();
@@ -61,6 +102,14 @@ class Algorithms_Core_OrderService extends SoapClient{
         return $result;
     }
     
+    /**
+     * Set Order Status to CrazySales with Webservice
+     * 
+     * the crazySalesOrderStatusType must has OrderNumber, StatusID
+     * 
+     * @param CrazySalesOrderStatusType $crazySalesOrderStatusType The Status info of the orders
+     * @return array $result
+     */
     function WebServiceSetOrderStatus(){
         $req    =   new SetOrderStatusRequest();
         $logs_wsdl_order_status_model   =   new Databases_Tables_LogsWsdlOrderStatus();

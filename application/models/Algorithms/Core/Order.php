@@ -1,7 +1,20 @@
 <?php
+/**
+ * @author Tim Wu <TimWu@crazysales.com.au>
+ */
 class Algorithms_Core_Order {
     
-    
+   /**
+    * find the string in '[]'
+    * get params
+    * strat loop
+    * substr
+    * finish loop
+    * return string
+    * 
+    * @param string $column_value_adjustment
+    * @return string
+    */ 
     function ValueAdjustmentReader($column_value_adjustment)
     {
         $string =   trim($column_value_adjustment);

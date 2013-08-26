@@ -15,17 +15,10 @@ class AdminController extends Zend_Controller_Action
     {  
             $auth = Zend_Auth::getInstance();
             $users = new Databases_Tables_Users();
-            $params_model    =   new Databases_Tables_Params();
-            $running_mode   =   $params_model->GetVal('running_mode');
             $user_info = $users->UserInfo();
-            if(!$auth->hasIdentity())
+            if(!$auth->hasIdentity() || !$user_info['user_type'])
             { 
-                if($running_mode=='production' && $_SERVER["HTTPS"]<>'on'){
-                    header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login/logout?url='.$_SERVER["REQUEST_URI"]);
-                    exit();
-                }else{
-                    $this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
-                }
+                $this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
             }elseif(1 != $user_info['user_type']){
                 $this->_redirect('/merchant');
             }
@@ -41,7 +34,12 @@ class AdminController extends Zend_Controller_Action
             $top_menu = $menu->MenuForAdmin();
             $this->view->top_menu = $menu -> FormatMenu($top_menu, $this->getRequest()->getActionName());
     }
-	
+    
+    /**
+     * Index of Admin, Dashboard
+     * Display  Product Info Table Refresh Time, Pending Order Refresh Time, Category Table Refresh Time, Merchant Feed Refresh Time
+     * Dispaly 10 Recent Orders And Pending Orders
+     */
     function indexAction()
     {
         $this->view->title = "Dashboard";
@@ -83,31 +81,26 @@ class AdminController extends Zend_Controller_Action
         $this->view->product_categories_table_refresh_time    =   $product_categories_table_refresh_time;
         $this->view->merchant_feed_refresh_time         =   $merchant_feed_refresh_time;
         
-        /*Get Pending Order Info*/
+        /**
+         * @var $getorders_model Databases_Joins_GetOrders
+         * @todo Get Pending Order Info
+         */
         $getorders_model = new Databases_Joins_GetOrders();
         $getorders_model->item_status   =   0;
         $this->view->list = $getorders_model->PushList();
         
-        /*Get recent 10 orders*/
+        /**
+         * @todo Get recent 10 orders
+         */
         $getorders_model->item_status   =   3;
         $getorders_model->limit =   10;
         $this->view->recent_orders_list =   $getorders_model->PushList();
     }
-    
-    function adminRefreshPendingOrdersAction()
-    {
-        $operate_orders_model   =   new Databases_Joins_OperateOrders();
-        $result = $operate_orders_model->PlaceOrder();
-
-        $getorders_model = new Databases_Joins_GetOrders();
-		$getorders_model->item_status  =   0;
-        /*Get Pending Order Info*/
-        $result['recent_orders_list'] = $getorders_model->PushList();
-
-        echo Zend_Json::encode($result);
-        die();
-    }
-    
+       
+    /**
+     * Merchant List
+     * Read merchant data from database
+     */
     function merchantsAction()
     {
         $this->view->title = "Merchants List";
@@ -121,6 +114,19 @@ class AdminController extends Zend_Controller_Action
         $this->view->list = $data;
     }
     
+    /**
+     * Add Merchant
+     * if post
+     *  get form data
+     *      if isValid
+     *          getValues
+     *          verify data's Correctness
+     *          EditUser
+     *      else
+     *          data must required
+     *      end if
+     * end if
+     */
     function merchantAddAction()
     {
         $this->view->title = "Add Merchant";
@@ -368,6 +374,22 @@ class AdminController extends Zend_Controller_Action
         }
     }
 
+    /**
+     * Edit Merchant
+     * if post
+     *  get form data
+     *      if isValid
+     *          getValues
+     *          verify data's Correctness
+     *          EditUser
+     *      else
+     *          data must required
+     *      end if
+     * else
+     *  GetUserInfo
+     * end if
+     * 
+     */
     function merchantEditAction()
     {
         $this->view->title = "Edit Merchant";
@@ -620,6 +642,12 @@ class AdminController extends Zend_Controller_Action
         }
     }
     
+    /**
+     * Admin View: Order Report
+     * if get params
+     * get params
+     * PushList
+     */
     function adminOrderReportAction()
     {
         $this->view->title = "Admin View: Order Report";
@@ -655,6 +683,13 @@ class AdminController extends Zend_Controller_Action
         $this->view->user_id = $params['user_id'];
     }
     
+    /**
+     * Admin View: Financial Report
+     * if get params
+     * get params
+     * end if
+     * PushList
+     */
     function adminFinancialReportAction()
     {
         $this->view->title = "Admin View: Financial Report";
@@ -694,6 +729,9 @@ class AdminController extends Zend_Controller_Action
         $this->view->financial_action_type = $financial_action_type;
     }
     
+    /**
+     * Help Management
+     */
     function helpMgtAction()
     {
         $this->view->title = "Help Management";
@@ -708,6 +746,9 @@ class AdminController extends Zend_Controller_Action
         $this->view->category_array = $get_category->GetCategory();
     }
     
+    /**
+     * Add Topic
+     */
     function helpAddAction()
     {
         $this->view->title = "Add Topic";
@@ -742,6 +783,9 @@ class AdminController extends Zend_Controller_Action
         }
     }
     
+    /**
+     * Edit Topic
+     */
     function helpEditAction()
     {
         $this->view->title = "Edit Topic";
@@ -801,6 +845,9 @@ class AdminController extends Zend_Controller_Action
         }
     }
     
+    /**
+     * Update Help Status
+     */
     function updateHelpStatusAction()
     {
         $params = $this->_request->getParams();
@@ -815,6 +862,9 @@ class AdminController extends Zend_Controller_Action
         }
     }
     
+    /**
+     * Help Preview
+     */
     function helpPreviewAction()
     {
         $params = $this->_request->getParams();
@@ -829,6 +879,9 @@ class AdminController extends Zend_Controller_Action
         $this->view->help_info = $help_info;
     }
     
+    /**
+     * Merchant Recharge - Adjust Balance
+     */
     function merchantRechargeAction()
     {
         $params = $this->_request->getParams();
@@ -841,6 +894,12 @@ class AdminController extends Zend_Controller_Action
         $this->view->title = "Adjust balance for merchant";
     }
     
+    /**
+     * Merchant Recharge Preview
+     * get params
+     * verify params
+     * update merchant balance
+     */
     function merchantRechargePreviewAction()
     {
         $params = $this->_request->getParams();
@@ -978,6 +1037,10 @@ class AdminController extends Zend_Controller_Action
                 $logs_financial->action_affect = 1; //plus
                 $logs_financial->action_value = $data['amount'];
                 $logs_financial->trans_id = $data['transaction_ref'];
+                /**
+                 * @var $logs_financial Databases_Tables_LogsFinancial
+                 * @todo AddLog and recharge
+                 */
                 $logs_financial->AddLog();
             }
         }
@@ -985,6 +1048,11 @@ class AdminController extends Zend_Controller_Action
         $this->_redirect("/admin/bpay-import/result/1");
     }
     
+    /**
+     * Merchants List Feed Generation
+     * get params 
+     * verify params
+     */
     function merchantFeedGenerationAction()
     {
         $this->view->title = "Feed Generation";
@@ -998,7 +1066,7 @@ class AdminController extends Zend_Controller_Action
             $this->view->user_info = $user_model->GetUserInfo($params['user_id']);
             
             $users_feed = new Databases_Tables_UsersFeed();
-            $this->view->users_feed = $users_feed->GetFeedInfo($params['user_id']);
+            $this->view->users_feed =  $users_feed->GetFeedInfo($params['user_id']);
             
             $feed_dictionary = new Databases_Tables_FeedDictionary();
             $dump_feed_dictionary = $feed_dictionary->DumpAll(1);
@@ -1040,6 +1108,12 @@ class AdminController extends Zend_Controller_Action
         }
     }
     
+    /**
+     * Merchant Feed Generation Confirm
+     * Get post data 
+     * UpdateFeed
+     * _redirect
+     */
     function merchantFeedGenerationConfirmAction()
     {
         $this->view->title = "Feed Generation Confirmation";
@@ -1065,6 +1139,18 @@ class AdminController extends Zend_Controller_Action
         $users_feed_model->sku_included = $params['sku_included'];
         $users_feed_model->sku_excluded = $params['sku_excluded'];
         $users_feed_model->stock = $params['stock'];
+        $sc_class_array         =   $params['sc_class'];
+        $supplier_type_array    =   $params['supplier_type'];
+        if($sc_class_array){
+            $users_feed_model->sc_class =   implode(',', $sc_class_array);
+        }else{
+            $users_feed_model->sc_class =   '';
+        }
+        if($supplier_type_array){
+            $users_feed_model->supplier_type    =   implode(',', $supplier_type_array);
+        }else{
+            $users_feed_model->supplier_type    =   '';
+        }
         $users_feed_model->cost_protection = $params['cost_protection'];
         $users_feed_model->feed_column_definition = array(
             "ckd" => $params['ckd'],
@@ -1088,6 +1174,14 @@ class AdminController extends Zend_Controller_Action
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Admin Import Order"));
     }
     
+    /**
+     * Import Order Preview
+     * get csv file data
+     * start loop 
+     * get order info
+     * PlaceOrderCheck
+     * finish loop
+     */
     function adminImportOrderPreviewAction()
     {
         
@@ -1169,6 +1263,11 @@ class AdminController extends Zend_Controller_Action
                                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
                                 $quantity_array[$da_val[11]]    +=   $da_val[13];
                                 $getorders_model->quantity_array    =   $quantity_array;
+                                
+                                /**
+                                 * @var $getorders_model Databases_Joins_GetOrders
+                                 * @todo PlaceOrderCheck
+                                 */
                                 $check_result = $getorders_model->PlaceOrderCheck();
 
                                 $data_array[$da_key]['result'] = $check_result[1];
@@ -1177,6 +1276,11 @@ class AdminController extends Zend_Controller_Action
                                 $data_array[$da_key]['instant_balance'] = (float)$check_result['instant_balance'];
                                 $data_array[$da_key]['credit'] = $check_result['credit'];
                                 $data_array[$da_key]['user_id'] = $check_result['user_id'];
+                                
+                                /**
+                                 * @var $product_filter_model Databases_Joins_ProductFilter
+                                 * @todo Get Product Info
+                                 */
                                 $product_info   =   $product_filter_model->getProductInfo($da_val[11]);
                                 $data_array[$da_key]['product_name']    =   $product_info['product_name'];
                                 $data_array[$da_key]['imageURL0']       =   $product_info['imageURL0'];
@@ -1197,6 +1301,15 @@ class AdminController extends Zend_Controller_Action
         }
     }
     
+    /**
+     * Improt Order Confirm 
+     * Get Orders Data To PlaceOrder and SetOrderStatus before Import Order Success
+     * start loop
+     * validation
+     * insert into orders
+     * finish loop
+     * operate_orders_model->placeorder
+     */
     function adminImportOrderConfirmAction()
     {
         /**
@@ -1211,12 +1324,8 @@ class AdminController extends Zend_Controller_Action
         $params = $this->_request->getParams();
         //Algorithms_Extensions_Plugin::FormatArray($params);die;
         $getorders_model = new Databases_Joins_GetOrders();
-        $logs_financial = new Databases_Tables_LogsFinancial();
         $plugin_model = new Algorithms_Extensions_Plugin();
-        $order_service_model    =   new Algorithms_Core_OrderService();
         $product_filter_model   =   new Databases_Joins_ProductFilter();
-        $user_info_model    =   new Databases_Joins_GetUserInfo();
-        $crazySalesOrderItemTypeArray   =   array();
         $ip = $plugin_model->GetIp();
         $notice = "S1"; //success
         
@@ -1242,7 +1351,11 @@ class AdminController extends Zend_Controller_Action
                 $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
                 $getorders_model->pick_up = $params['pick_up'][$loop_key];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
-
+                
+                /**
+                 * @var $getorders_model Databases_Joins_GetOrders
+                 * @todo Check Order 
+                 */
                 $check_result = $getorders_model->PlaceOrderCheck();
 
                 if("Y" == $check_result[1]) //passed the validation
@@ -1289,6 +1402,10 @@ class AdminController extends Zend_Controller_Action
                     $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
                     $getorders_model->ship_cost             =   round($check_result['shipping_cost'],2);
                     $getorders_model->payment_type_id       =   9;
+                    
+                    /**
+                     * @todo PlaceOrder
+                     */
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                     
                     //update merchant ref pool
@@ -1299,185 +1416,16 @@ class AdminController extends Zend_Controller_Action
             }
             
             $purchase_order_ids =   implode(',',$merchant_ref_pool);
-            $purchase_order_model   =   new Databases_Tables_PurchaseOrder();
-            $logs_orders_model      =   new Databases_Tables_LogsOrders();
-            $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
-            $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
-            $order_core_model       =   new Algorithms_Core_Order();
-            $crazy_sales_order_status_array =   array();
-            $crazy_sales_order_status_array1 =   array();
-            
-            if($purchase_orders)
-            {
-                foreach ($purchase_orders as $purchase_order)
-                {
-                    $crazySalesOrderType        =   new CrazySalesOrderType();
-                    $moeney_type                =   new MoneyType();
-                    $order_discount             =   new MoneyType();
-                    $order_amount_money_type    =   new MoneyType();
-                    
-                    $crazySalesOrderType->PaymentTypeID          =   $purchase_order['payment_type_id']; 
-                    $user_info  =   $user_info_model->GetUserInfo($purchase_order['user_id']);
-                    $crazySalesOrderType->RetailerAccountEmail   =   $user_info['email'];
-                    $crazySalesOrderType->ShipFirstName          =   $purchase_order['shipping_first_name'];
-                    $crazySalesOrderType->ShipAddress_1          =   $purchase_order['shipping_address_1'];
-                    $crazySalesOrderType->ShipAddress_2          =   $purchase_order['shipping_address_2'];
-                    $crazySalesOrderType->ShipCity               =   $purchase_order['shipping_suburb'];
-                    $crazySalesOrderType->ShipState              =   $purchase_order['shipping_state'];
-                    $crazySalesOrderType->ShipZipCode            =   $purchase_order['shipping_postcode'];
-                    $crazySalesOrderType->ShipCountryCode        =   $purchase_order['shipping_country'];
-                    $crazySalesOrderType->ShipPhone              =   $purchase_order['shipping_phone'];
-                    $crazySalesOrderType->SiteID                 =   6;
-
-
-                    $order_amount_money_type->Value    =   round($purchase_order['order_amount'],2);                                  
-                    $order_discount->Value  =   round($purchase_order['discount_amount'],2);
-                    if($crazySalesOrderType)
-                    {
-                        //$crazySalesOrderType->OrderDiscount =   $order_discount;
-                        $crazySalesOrderType->PointsRate    =   0.00;
-                        $crazySalesOrderType->OrderAmount            =   $order_amount_money_type;
-                        $moeney_type->Value =   round($purchase_order['shipping_cost'],2);
-                        $crazySalesOrderType->ShippingCost           =   $moeney_type;
-                        $crazySalesOrderType->BillingAddress_1       =   $user_info['address'];
-                        $crazySalesOrderType->BillingZipCode         =   $user_info['post_code'];
-                        $crazySalesOrderType->BillingState           =   $user_info['state'];
-                        $crazySalesOrderType->BillingCity            =   $user_info['suburb'];
-                        $crazySalesOrderType->BillingCompany         =   $user_info['company'];      
-                    }
-                    if($purchase_order['pickup']==1)
-                    {
-                        $crazySalesOrderType->ShipMethod    =   'PickUp';
-                    }else{
-                        $crazySalesOrderType->ShipMethod    =   'Shipping';
-                    }
-                    $logs_orders_model->purchase_order_id   =   $purchase_order['purchase_order_id'];
-                    $logs_orders    =   $logs_orders_model->GetLogsOrderList();
-                    if($logs_orders)
-                    {
-                        foreach ($logs_orders as $logs_order)
-                        {
-                            $logs_order_ids             =   array();
-                            $logs_order_ids[]           =   $logs_order['logs_orders_id'];
-                            $crazySalesOrderItemType    =   new CrazySalesOrderItemType();
-                            $expected_item_cost =   new MoneyType();
-                            $final_item_cost    =   new MoneyType();
-                            $final_ship_cost    =   new MoneyType();
-                            $ship_cost          =   new MoneyType();
-                            $quantityType       =   new QuantityType();
-                            $expected_item_cost->Value   =   round($logs_order['expected_item_cost'],2);
-                            $crazySalesOrderItemType->ExpectedItemCost   =   $expected_item_cost;
-                            $final_item_cost->Value   =   round($logs_order['final_item_cost'],2);
-                            $crazySalesOrderItemType->FinalItemCost      =   $final_item_cost;
-                            $final_ship_cost->Value   =   round($logs_order['final_ship_cost'],2);
-                            $crazySalesOrderItemType->FinalShipCost      =   $final_ship_cost;
-                            $ship_cost->Value   =    round($logs_order['ship_cost'],2);
-                            $crazySalesOrderItemType->ShipCost           =   $ship_cost;
-
-                            $quantityType->Value    =   $logs_order['quantity'];
-                            $crazySalesOrderItemType->Quantity  =   $quantityType;
-                            $crazySalesOrderItemType->ItemSku   =   $logs_order['supplier_sku'];
-                            $order_service_model->crazySalesOrderType  =   $crazySalesOrderType;                    
-                            $crazySalesOrderItemTypeArray[$logs_order['merchant_ref']][]   =   $crazySalesOrderItemType;
-                        }
-                    }
-                    $order_service_model->crazySalesOrderItemType   =   $crazySalesOrderItemTypeArray[$logs_order['merchant_ref']];
-                    $response_data   =   $order_service_model->WebServicePlaceOrder();
-                    
-                    if($response_data['order_number']) 
-                    {
-                        foreach ($logs_orders as $logs_order)
-                        {
-                            $product_filter_model->updateQuantityAvailable($logs_order['supplier_sku'], $logs_order['quantity']);
-                        }
-                        $getorders_model->main_order_id =   $response_data['order_number'];
-                        $getorders_model->item_status   =   0;
-                        $getorders_model->api_response  =   'Pending';
-
-                        //Update Financial Info
-                        $logs_financial->user_id = $purchase_order['user_id'];
-                        $logs_financial->action_type = 1; //place order
-                        $logs_financial->action_affect = 2; //deduct
-                        $logs_financial->action_value = $purchase_order['order_amount'];
-                        // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
-                        //$logs_financial->AddLog();
-                        
-                        $crazySalesOrderStatusType  =   new CrazySalesOrderStatusType();
-                        $crazySalesOrderStatusType->OrderNumber     =   $response_data['order_number'];
-                        $crazySalesOrderStatusType->OrderAmount     =   $purchase_order['order_amount'];
-                        $crazySalesOrderStatusType->PurchaseOrderId =   $purchase_order['purchase_order_id'];
-                        $crazySalesOrderStatusType->PurchaseOrderUserId =   $purchase_order['user_id'];
-                        
-                        $crazySalesOrderStatusType1 =   new CrazySalesOrderStatusType1();
-                        $crazySalesOrderStatusType1->OrderNumber     =   $response_data['order_number'];
-                        $crazySalesOrderStatusType1->StatusID        =   3;
-                        $crazy_sales_order_status_array1[]           =   $crazySalesOrderStatusType1;
-                        
-                        $crazy_sales_order_status_array[$response_data['order_number']]   =   $crazySalesOrderStatusType;
-
-                    }elseif($response_data['MessageType']['Description'])
-                    {
-                        $getorders_model->item_status   =   2;
-                        $getorders_model->api_response  =   $response_data['MessageType']['Description'];
-                    }
-                    $getorders_model->logs_order_ids    =  $logs_order_ids;
-                    $getorders_model->purchase_order_id   =   $purchase_order['purchase_order_id'];
-                    $getorders_model->UpdateOrder();
-                }
-                
-                                
-                $order_service_model->crazySalesOrderStatusType =   $crazy_sales_order_status_array1;
-                $result_message =   $order_service_model->WebServiceSetOrderStatus();
-                if($result_message['MessageType'])
-                {
-                    if($result_message['MessageType']['Description']){
-                        $message_main_order_id = $order_core_model->ValueAdjustmentReader($result_message['MessageType']['Description']);
-                        $purchase_order_model->main_db_order_id =   $message_main_order_id;
-                        $purchase_order_info                =   $purchase_order_model->GetPurchaseOrderInMainOrderId();
-                        $logs_orders_model->purchase_order_id   =   $purchase_order_info['purchase_order_id'];
-                        $logs_orders_model->api_response    =   $result_message['MessageType']['Description'];
-                        $logs_orders_model->item_status     =   2;
-                        $logs_orders_model->UpdateLogsOrderStatus();
-                        unset($crazy_sales_order_status_array[$message_main_order_id]);
-                    }else{
-                        foreach ($result_message['MessageType'] as $message_type)
-                        {
-                            $message_main_order_id = $order_core_model->ValueAdjustmentReader($message_type['Description']);
-                            $purchase_order_model->main_db_order_id =   $message_main_order_id;
-                            $purchase_order_info                    =   $purchase_order_model->GetPurchaseOrderInMainOrderId();
-                            $logs_orders_model->purchase_order_id   =   $purchase_order_info['purchase_order_id'];
-                            $logs_orders_model->api_response    =   $message_type['Description'];
-                            $logs_orders_model->item_status     =   2;
-                            $logs_orders_model->UpdateLogsOrderStatus();
-                            unset($crazy_sales_order_status_array[$message_main_order_id]);
-                        }
-                    }
-                }
-                if(!empty($crazy_sales_order_status_array))
-                {
-                    foreach ($crazy_sales_order_status_array as $crazy_sales_order)
-                    {
-                        $purchase_order_model->main_db_order_id =   $crazy_sales_order->OrderNumber;
-                        $logs_orders_model->purchase_order_id   =   $crazy_sales_order->PurchaseOrderId;
-                        $logs_orders_model->api_response    =   '';
-                        $logs_orders_model->item_status     =   1;
-                        $logs_orders_model->UpdateLogsOrderStatus();
-                        $logs_financial->user_id = $crazy_sales_order->PurchaseOrderUserId;
-                        $logs_financial->action_type = 1; //place order
-                        $logs_financial->action_affect = 2; //deduct
-                        $logs_financial->action_value = $crazy_sales_order->order_amount;
-                        // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
-                        $logs_financial->AddLog();
-                    }
-                }
-            }            
+            $operate_orders_model   =   new Databases_Joins_OperateOrders();
+            $operate_orders_model->purchase_order_ids   =   $purchase_order_ids;
+            $result = $operate_orders_model->PlaceOrder();
         }else{
             $notice = "E1";
         }
         
         $this->_redirect("/admin/admin-import-order/notice/".$notice);
     }
-
+    /*
     function productInfoListAction()
     {
         
@@ -1624,7 +1572,12 @@ class AdminController extends Zend_Controller_Action
             }
         }
     }
-    
+     * 
+     */
+    /**
+     * Order View
+     * Get Order Detail Info Include Order Date, Order Number, Order Status, Order Subtotal, Order Amount, Order Items, Order Shipping Information
+     */
     function adminOrderViewAction()
     {
         $this->view->title      =   "Order View";

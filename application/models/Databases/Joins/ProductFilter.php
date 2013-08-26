@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Resource model for product handling
+ * @category    Databases
+ * @package     Databases_Joins
+ */
 class Databases_Joins_ProductFilter
 {
     var $xml_array;
@@ -85,11 +89,25 @@ class Databases_Joins_ProductFilter
     var $dimension;
     var $description;
     var $product_code_type;
+    var $all_category_data;
     
     function __construct(){
         $this->db = Zend_Registry::get("db");
+        $category_model     =   new Databases_Tables_ProductCategories();
+        $this->all_category_data  =   $category_model->getAllCategoryArray();  
     }
     
+    /**
+     * Get product data with feed_info
+     * get product data
+     * start loop
+     * OfferPriceCalculation
+     * finish loop
+     * return array
+     * @param array $feed_info_array
+     * @param int $user_id
+     * @return array
+     */
     function Push($feed_info_array, $user_id)
     {
         $get_user_info = new Databases_Joins_GetUserInfo();
@@ -109,6 +127,8 @@ class Databases_Joins_ProductFilter
             $sku_included = $feed_info_array['users_feed']['sku_included'];
             $sku_excluded = $feed_info_array['users_feed']['sku_excluded'];
             $stock = $feed_info_array['users_feed']['stock'];
+            $sc_class   =   $feed_info_array['users_feed']['sc_class'];
+            $supplier_type  =   $feed_info_array['users_feed']['supplier_type'];
             $cost_protection = $feed_info_array['users_feed']['cost_protection'];
             
             if($feed_category)
@@ -149,6 +169,18 @@ class Databases_Joins_ProductFilter
                 $select->where("supplier_sku NOT IN (?)", $sku_excluded_array);
             }
             
+            if($sc_class)
+            {
+                $sc_class_array =   explode(",", $sc_class);
+                $select->where("sc_class IN (?)", $sc_class_array);
+            }
+            
+            if($supplier_type)
+            {
+                $supplier_type_array    =   explode(",", $supplier_type);
+                $select->where("country_of_origin IN (?)", $supplier_type_array);
+            }
+            
             switch ($stock)
             {
                 case 2: //in stock
@@ -177,9 +209,9 @@ class Databases_Joins_ProductFilter
                     if($d_val['category_id']){
                         $category_array = $this->getProductCategoryInfo($d_val['category_id']);
 
-                        $data[$d_key]['main_category']  =   @$product_category_mode->getCategoryInfo($category_array[0]);
-                        $data[$d_key]['sub_category']   =   @$product_category_mode->getCategoryInfo($category_array[1]);
-                        $data[$d_key]['bottom_category']=   @$product_category_mode->getCategoryInfo($category_array[2]);
+                        $data[$d_key]['main_category']  =   @$category_array[0];
+                        $data[$d_key]['sub_category']   =   @$category_array[1];
+                        $data[$d_key]['bottom_category']=   @$category_array[2];
                     }
                     $data[$d_key]['original_supplier_price'] = $d_val['supplier_price']; //keep original price
                     $data[$d_key]['supplier_price'] = $cal_result[1]; //update price
@@ -202,6 +234,11 @@ class Databases_Joins_ProductFilter
         return $data;
     }
     
+    /**
+     * Get User Feed Definition Info 
+     * @param int $users_feed_id
+     * @return array
+     */
     function GetFeedDefinitionInfo($users_feed_id)
     {
         $rows = $this->db->select();
@@ -215,6 +252,15 @@ class Databases_Joins_ProductFilter
     }
     
     // Very sensitive function, don't change anything if you are not 100% sure.
+    /**
+     * calculate supplier price
+     * 
+     * @param float $original_offer_price
+     * @param float $original_cost_price
+     * @param float $merchant_discount
+     * @param float $cost_markup
+     * @return int
+     */
     function OfferPriceCalculation($original_offer_price, $original_cost_price, $merchant_discount, $cost_markup) //discount and markup are percentages and < 1
     {
         $offer_price_with_discount = $original_offer_price * $merchant_discount;
@@ -250,6 +296,16 @@ class Databases_Joins_ProductFilter
         return number_format($val, 2);
     }
     
+    /**
+     * Get product price info
+     * get merchant discount
+     * get product info
+     * calculate supplier price
+     * return result array
+     * @param string $sku
+     * @param int $user_id
+     * @return array
+     */
     function GetSkuPrices($sku, $user_id)
     {
         $result = array();
@@ -395,6 +451,10 @@ class Databases_Joins_ProductFilter
         $this->db->query('truncate table product_info_repeat');
     }
     
+    /**
+     * Add new product 
+     * @return array
+     */
     function AddProduct()
     {
         if($this->data_source == '1'){
@@ -509,6 +569,17 @@ class Databases_Joins_ProductFilter
         }
     }
     
+    /**
+     * Get Estimated ShippingCost
+     * get postage_api_url
+     * get the html string from postage_api_url
+     * string replace
+     * return float
+     * @param int $product_id
+     * @param string $zip
+     * @param int $qty
+     * @return float
+     */
     function getEstimatedShippingCost($product_id,$zip,$qty){
         $params_model   =   new Databases_Tables_Params();
         $param_postage_api_url    =   $params_model->GetVal("postage_api_url");
@@ -522,7 +593,17 @@ class Databases_Joins_ProductFilter
             return 0;
         }
     }
-            
+    
+    /**
+     * Update Estimated ShippingCost
+     * get postage_api_url
+     * get the html string from postage_api_url
+     * string replace
+     * Update Estimated ShippingCost
+     * @param string $postage_api_url
+     * @param int $product_id
+     * @return int
+     */
     function updateEstimatedShippingCost($postage_api_url,$product_id)
     {
         $params_model   =   new Databases_Tables_Params();
@@ -542,6 +623,15 @@ class Databases_Joins_ProductFilter
         }
     }
     
+    /**
+     * Get Product Info by SKU
+     * get product table params
+     * get product sku
+     * select product info by sku
+     * return result array
+     * @param string $sku
+     * @return array
+     */
     function getProductInfo($sku)
     {
         $result =   array();
@@ -566,6 +656,14 @@ class Databases_Joins_ProductFilter
         return $result;
     }
     
+    /**
+     * Update Quantity Available
+     * get product table params
+     * get product sku
+     * update product Quantity by sku
+     * @param string $sku
+     * @param int $quantity_available
+     */
     function updateQuantityAvailable($sku,$quantity_available)
     {
         $params_model = new Databases_Tables_Params();
@@ -585,20 +683,22 @@ class Databases_Joins_ProductFilter
         }
     }
     
+    /**
+     * Get Product Category Info IN Recursion
+     * @param int $category_id
+     * @return array
+     */
     function getProductCategoryInfo($category_id){
         $categorys = array();
-        
         if($category_id)
         {
-            $category_model =   new Databases_Tables_ProductCategories();
-            $parent_category_list   =   $category_model->GetParentIdArray($category_id);
-            if($parent_category_list && $parent_category_list[0] !== '1')
+            $parent_category_list   =   $this->all_category_data[$category_id];
+            if($parent_category_list && $parent_category_list['parent_id'] !== '1')
             {
-                $categorys  =   $this->getProductCategoryInfo($parent_category_list[0]);
+                $categorys  =   $this->getProductCategoryInfo($parent_category_list['parent_id']);
             }
-            $categorys[]   =   $category_id;
+            $categorys[]   =   $parent_category_list['category_name'];
         }
-
         return $categorys;
     }
 }

@@ -186,6 +186,23 @@ jQuery(function($){
 				<td class="category">SKUs excluded</td>
 				<td colspan="3"><textarea name="sku_excluded" id="sku_excluded" cols="100" rows="3"><?=$this->users_feed['sku_excluded']?></textarea></td>
 			</tr>
+                        <tr class="row-2">
+				<td class="category">Shipping Courier</td>
+                                <td colspan="3">
+                                    <input type="checkbox" name="sc_class[]" id="shipping_courier" value="3" <?php if(3==$this->users_feed['sc_class_array']['3']):?>checked="checked"<?php endif;?> /><label>eParcel</label>
+                                    <input type="checkbox" name="sc_class[]" id="shipping_courier" value="5" <?php if(5==$this->users_feed['sc_class_array']['5']):?>checked="checked"<?php endif;?> /><label>Regular Mail</label>
+                                    <input type="checkbox" name="sc_class[]" id="shipping_courier" value="7" <?php if(7==$this->users_feed['sc_class_array']['7']):?>checked="checked"<?php endif;?> /><label>Toll IPEC</label>
+                                    <input type="checkbox" name="sc_class[]" id="shipping_courier" value="1" <?php if(1==$this->users_feed['sc_class_array']['1']):?>checked="checked"<?php endif;?> /><label>TIG Big</label> 
+                                </td>
+			</tr>
+			<tr class="row-1">
+				<td class="category">Supplier Type</td>
+				<td colspan="3">
+                                    <input type="checkbox" name="supplier_type[]" id="supplier_type" value="AU" <?php if('AU'==$this->users_feed['supplier_type_array']['AU']):?>checked="checked"<?php endif;?> /><label>AU</label>
+                                    <input type="checkbox" name="supplier_type[]" id="supplier_type" value="CN" <?php if('CN'==$this->users_feed['supplier_type_array']['CN']):?>checked="checked"<?php endif;?> /><label>CN</label>
+                                    <input type="checkbox" name="supplier_type[]" id="supplier_type" value="HK" <?php if('HK'==$this->users_feed['supplier_type_array']['HK']):?>checked="checked"<?php endif;?> /><label>HK</label>
+                                </td>
+			</tr>
 			<tr class="row-2">
 				<td class="category">Stock</td>
                                 <td colspan="3">

@@ -1,11 +1,20 @@
 <?php
-
+/**
+ * Resource model for Get User Info
+ * @category    Databases
+ * @package     Databases_Joins
+ */
 class Databases_Joins_GetUserInfo
 {
     function __construct(){
         $this->db = Zend_Registry::get("db");
     }
     
+    /**
+     * Get User List in Active 
+     * @param int $user_type
+     * @return array
+     */
     function GetUserList($user_type=2)
     {
         $select = $this->db->select();
@@ -19,6 +28,11 @@ class Databases_Joins_GetUserInfo
         return $data;
     }
     
+    /**
+     * Ger user info with user_id
+     * @param int $user_id
+     * @return array
+     */
     function GetUserInfo($user_id)
     {
         $select = $this->db->select();
@@ -48,6 +62,11 @@ class Databases_Joins_GetUserInfo
         return $ref_array;
     }
     
+    /**
+     * Get user id with bpay_ref
+     * @param string $bpay_ref
+     * @return array
+     */
     function GetUserId($bpay_ref)
     {
         $select = $this->db->select();

@@ -13,18 +13,11 @@ class AjaxController extends Zend_Controller_Action
 	
     function preDispatch()
     {  
-            $auth = Zend_Auth::getInstance();
-            $params_model    =   new Databases_Tables_Params();
-            $running_mode   =   $params_model->GetVal('running_mode');
-            if(!$auth->hasIdentity())
-            { 
-                if($running_mode=='production' && $_SERVER["HTTPS"]<>'on'){
-                    header('Location: https://' . $_SERVER['HTTP_HOST'] . '/login/logout?url='.$_SERVER["REQUEST_URI"]);
-                    exit();
-                }else{
-                    $this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
-                }
-            }
+        $auth = Zend_Auth::getInstance();
+        if(!$auth->hasIdentity())
+        {
+            $this->_redirect('/login/logout?url='.$_SERVER["REQUEST_URI"]);
+        }
     }
 	
     function indexAction()
@@ -88,6 +81,48 @@ class AjaxController extends Zend_Controller_Action
         }
         
         die;
+    }
+    
+    /**
+     * Admin Refresh Pending Orders
+     */
+    function adminRefreshPendingOrdersAction()
+    {
+        /**
+         * @var $operate_orders_model class Databases_Joins_OperateOrders
+         * @todo PlaceOrder and SetOrderStatus
+         */
+        $operate_orders_model   =   new Databases_Joins_OperateOrders();
+        $result = $operate_orders_model->PlaceOrder();
+
+        $getorders_model = new Databases_Joins_GetOrders();
+		$getorders_model->item_status  =   0;
+        /*Get Pending Order Info*/
+        $result['recent_orders_list'] = $getorders_model->PushList();
+
+        echo Zend_Json::encode($result);
+        die();
+    }
+    
+    /**
+     * Refresh Pending Orders
+     * place pending order
+     * get order pending order list
+     * 
+     */
+    function refreshPendingOrdersAction()
+    {
+        $operate_orders_model   =   new Databases_Joins_OperateOrders();
+        $result = $operate_orders_model->PlaceOrder();
+
+        $getorders_model = new Databases_Joins_GetOrders();
+	$getorders_model->item_status  =   0;
+        $getorders_model->user_id      =    $this->params['user_id'];
+        /*Get Pending Order Info*/
+        $result['recent_orders_list'] = $getorders_model->PushList();
+
+        echo Zend_Json::encode($result);
+        die();
     }
 }
 

@@ -4,6 +4,14 @@ class Algorithms_Core_Feed
 {
     var $user_id_array; //array
     
+    /**
+     * start loop
+     * collect merchant feed info
+     * get product list
+     * string replace
+     * export csv file
+     * finish loop
+     */
     function Publish()
     {
         if(count($this->user_id_array))
@@ -130,6 +138,14 @@ class Algorithms_Core_Feed
         
     }
     
+    /**
+     * collect merchant feed info
+     * get merchant feed info
+     * get merchant feed definition info
+     * return merchant feed definition info
+     * @param int $user_id
+     * @return array
+     */
     function CollectFeedInfo($user_id)
     {
         $users_feed_model = new Databases_Tables_UsersFeed();
@@ -146,6 +162,23 @@ class Algorithms_Core_Feed
                             );
     }
     
+    /**
+     * String Replacement
+     * start loop 
+     * get feed_column_value
+     * finish loop
+     * get value adjustment array
+     * start loop
+     * substr conditions
+     * finish loop
+     * return feed column value
+     * 
+     * @param array $product_row
+     * @param string $feed_column_value
+     * @param array $array_for_replacement
+     * @param string $column_value_adjustment
+     * @return string
+     */
     function StringReplacement($product_row, $feed_column_value, $array_for_replacement, $column_value_adjustment)
     {
         // Format with the value in database
@@ -210,6 +243,16 @@ class Algorithms_Core_Feed
         return $feed_column_value;
     }
     
+    /**
+     * value adjustment reader
+     * start loop
+     * get start string and stop string
+     * substr
+     * finish loop
+     * return result_array
+     * @param string $column_value_adjustment
+     * @return array
+     */
     function ValueAdjustmentReader($column_value_adjustment)
     {
         $string = trim($column_value_adjustment);

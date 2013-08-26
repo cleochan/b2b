@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Resource model for Order handling
+ * @category    Databases
+ * @package     Databases_Joins
+ */
 class Databases_Joins_GetOrders
 {
     var $start_date;
@@ -75,6 +79,15 @@ class Databases_Joins_GetOrders
     	$this->db = Zend_Registry::get("db");
     }
     
+    /**
+     * Pagination of orders
+     * get params 
+     * fetch row
+     * get total page
+     * get page html
+     * return html string
+     * @return string
+     */
     function Pagination()
     {
         //Get amount page qty
@@ -142,6 +155,13 @@ class Databases_Joins_GetOrders
         return $html;
     }
     
+    /**
+     * Get Order list
+     * get params
+     * fetchAll
+     * return result array
+     * @return array
+     */
     function PushList()
     {
         //Get amount page qty
@@ -196,6 +216,16 @@ class Databases_Joins_GetOrders
         return $result;
     }
     
+    /**
+     * Check order data
+     * check order's params
+     * if pickup check shipping state
+     * get merchant info
+     * get sku prices
+     * calculate the order amount, shipping cost, discount amount, instant balance
+     * return result
+     * @return array
+     */
     function PlaceOrderCheck()
     {
         $error = 0;
@@ -394,6 +424,14 @@ class Databases_Joins_GetOrders
         return $result;
     }
     
+    /**
+     * Place Order and add logs of orders
+     * if new order insert into orders
+     * else update orders
+     * insert into logs order
+     * return result array
+     * @return array
+     */
     function PlaceOrder()
     {
         $merchant_ref_pool = $this->merchant_ref_pool;
@@ -554,7 +592,10 @@ class Databases_Joins_GetOrders
         return $result;
     }
     
-    
+    /**
+     * Get Pending Order list
+     * @return array
+     */
     function getPendinglist()
     {
         $select = $this->db->select();
@@ -577,6 +618,10 @@ class Databases_Joins_GetOrders
         return $result;
     }
     
+    /**
+     * Update the status of Pending Orders
+     * @return string
+     */
     function updatePendingOrder()
     {
         $merchant_ref_pool = $this->merchant_ref_pool;
@@ -610,6 +655,9 @@ class Databases_Joins_GetOrders
         return  $tip;
     }
     
+    /**
+     * Update Order main_order_id , item_status , api_response
+     */
     function UpdateOrder()
     {
         $purchase_order_model = new Databases_Tables_PurchaseOrder();

@@ -1,9 +1,38 @@
 <?php
 class Databases_Joins_OperateOrders {
+    
+    /**
+     * Purchase Order Ids Need To Select
+     * @var sting  
+     */
     var $purchase_order_ids;
+    
+    /**
+     * PlaceOrder api Try Times
+     * @var int
+     */
     var $order_api_trying_times;
+    
+    /**
+     * User Id
+     * @var int 
+     */
     var $user_id;
     
+    /**
+     * Selct Purchase Orders To Place Order and Set Orders Status with WebService
+     * get purchase orders
+     * start loop1
+     * get CrazySalesOrderType
+     *  start loop2
+     *      get CrazySalesOrderItemType
+     *  finish loop2
+     *  WebServicePlaceOrder
+     * finish loop1
+     * WebServiceSetOrderStatus
+     * update financial table
+     * @return array 
+     */
     function PlaceOrder()
     {
         $purchase_order_model   =   new Databases_Tables_PurchaseOrder();

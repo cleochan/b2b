@@ -1,25 +1,42 @@
 <?php
 
 /**
- * 
+ * Interact with WebService of CrazySales To Get Product Data from CrazySales
  * @author Tim Wu <TimWu@crazysales.com.au>
  */
 class Algorithms_Core_ProductService extends SoapClient{
     
+    /**
+     * PaginationType
+     * @var array
+     */
     var $PaginationType =   array(
         'EntriesPerPage'    =>  '',
         'PageNumber'        =>  '',
     );
     
+    /**
+     * PaginationRequest
+     * @var array
+     */
     var $PaginationRequest  =   array(
         'DetailsLevel'      =>  '',
         'Pagination'        =>  '',
     );
    
+    /**
+     * GetProductsRequest
+     * @var array
+     */
     var $GetProductsRequest =   array(
         'CategoryIDs'       =>  '',
         'Pagination'        =>  '',
     );
+    
+    /**
+     * ProductDetailsLevelType
+     * @var array
+     */
     var $ProductDetailsLevelType    =   array(
         'AdditionalFlag'    =>  '',
         'OptionFlag'        =>  '',
@@ -32,11 +49,24 @@ class Algorithms_Core_ProductService extends SoapClient{
         'WarehouseFlag'     =>  '',
     );
     
+    /**
+     * Entries Per Page
+     * @var int
+     */
     var $EntriesPerPage;
+    
+    /**
+     * Current Pages
+     * @var int 
+     */
     var $PageNumber;
     
     private static $classmap = array();
     
+    /**
+     * __construct()
+     * @param array $options
+     */
     function __construct($options = array()) {
         $params_model   =   new Databases_Tables_Params();
         $web_service_url    =   $params_model->GetVal('web_service_url');
@@ -56,6 +86,11 @@ class Algorithms_Core_ProductService extends SoapClient{
         parent::__construct($wsdl, $options);
     }
     
+    /**
+     * Change Oject To Array
+     * @param array $array
+     * @return array $array;
+     */
     function object_array($array){
         if(is_object($array))
         {
@@ -70,6 +105,16 @@ class Algorithms_Core_ProductService extends SoapClient{
         return $array;
     }
     
+    /**
+     * Get Products from CrazySales
+     * 
+     * All of the flag in ProductDetailsLevelType are true to get all the data of product
+     * EntriesPerPage and PageNumber must to give in the controller
+     * 
+     * @param int $EntriesPerPage Entries Per Page
+     * @param int $PageNumber Current Pages
+     * @return array $result
+     */
     function WebServicesGetProducts()
     {
         set_time_limit(3600);
@@ -97,6 +142,11 @@ class Algorithms_Core_ProductService extends SoapClient{
     }
     
     
+    /**
+     * if the Response from WSDL have error codes, Correct the error codes 
+     * @param string $data
+     * @return stdClass
+     */
 	function parseRawData($data)
 	{
 		// preparing object similar like created with XML SoapClient
@@ -544,7 +594,14 @@ class Algorithms_Core_ProductService extends SoapClient{
 		return $rawObject;
 	}
 
-
+        /**
+         * find error codes in every tag
+         * @param sting $string
+         * @param sting $tag
+         * @param sting $with_attributes
+         * @param sting $return_default
+         * @return sting
+         */
 	function findValueBetweenTags($string, $tag, $with_attributes = false, $return_default = false)
 	{
 		$needle = "<".$tag.(($with_attributes === false) ? ">" : " ");

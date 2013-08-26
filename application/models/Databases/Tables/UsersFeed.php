@@ -13,14 +13,28 @@ class Databases_Tables_UsersFeed extends Zend_Db_Table
     var $sku_included;
     var $sku_excluded;
     var $stock;
+    var $sc_class;
+    var $supplier_type;
     var $cost_protection;
     var $feed_column_definition; //array
     
     function GetFeedInfo($user_id)
     {
         $row = $this->fetchRow("user_id='".$user_id."'");
-        
-        return $row;
+        $result =   $row->toArray();
+        if($result['sc_class']){
+            $sc_class_array =   explode(',', $result['sc_class']);
+            foreach( $sc_class_array as $sc_class){
+                $result['sc_class_array'][$sc_class]   =   $sc_class;
+            }
+        }
+        if($result['supplier_type']){
+            $supplier_type_array    =   explode(',', $result['supplier_type']);
+            foreach ($supplier_type_array as $supplier_type){
+                $result['supplier_type_array'][$supplier_type] =   $supplier_type;
+            }
+        }
+        return $result;
     }
     
     function UpdateFeed()
@@ -40,32 +54,36 @@ class Databases_Tables_UsersFeed extends Zend_Db_Table
         
         if($row->user_id) //update
         {
-            $row->feed_name = $this->feed_name;
-            $row->feed_extension = $this->feed_extension;
-            $row->feed_delimeter = $this->feed_delimeter;
-            $row->special_delimeter = $this->special_delimeter;
-            $row->feed_qualifier = $this->feed_qualifier;
-            $row->feed_category = $category_string;
-            $row->sku_included = $this->sku_included;
-            $row->sku_excluded = $this->sku_excluded;
-            $row->stock = $this->stock;
-            $row->cost_protection = $this->cost_protection;
+            $row->feed_name         =   $this->feed_name;
+            $row->feed_extension    =   $this->feed_extension;
+            $row->feed_delimeter    =   $this->feed_delimeter;
+            $row->special_delimeter =   $this->special_delimeter;
+            $row->feed_qualifier    =   $this->feed_qualifier;
+            $row->feed_category     =   $category_string;
+            $row->sku_included      =   $this->sku_included;
+            $row->sku_excluded      =   $this->sku_excluded;
+            $row->sc_class          =   $this->sc_class;
+            $row->supplier_type     =   $this->supplier_type;
+            $row->stock             =   $this->stock;
+            $row->cost_protection   =   $this->cost_protection;
             $row->save();
             
             $users_feed_id = $row->users_feed_id;
         }else{ //insert
             $data = array(
-                "user_id" => $this->user_id,
-                "feed_name" => $this->feed_name,
-                "feed_extension" => $this->feed_extension,
-                "feed_delimeter" => $this->feed_delimeter,
-                "special_delimeter" => $this->special_delimeter,
-                "feed_qualifier" => $this->feed_qualifier,
-                "feed_category" => $category_string,
-                "sku_included" => $this->sku_included,
-                "sku_excluded" => $this->sku_excluded,
-                "stock" => $this->stock,
-                "cost_protection" => $this->cost_protection
+                "user_id"           =>  $this->user_id,
+                "feed_name"         =>  $this->feed_name,
+                "feed_extension"    =>  $this->feed_extension,
+                "feed_delimeter"    =>  $this->feed_delimeter,
+                "special_delimeter" =>  $this->special_delimeter,
+                "feed_qualifier"    =>  $this->feed_qualifier,
+                "feed_category"     =>  $category_string,
+                "sku_included"      =>  $this->sku_included,
+                "sku_excluded"      =>  $this->sku_excluded,
+                "sc_class"          =>  $this->sc_class,
+                "supplier_type"     =>  $this->supplier_type,
+                "stock"             =>  $this->stock,
+                "cost_protection"   =>  $this->cost_protection
             );
             
             $users_feed_id = $this->insert($data);
