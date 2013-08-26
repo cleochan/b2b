@@ -95,9 +95,11 @@ jQuery(function($){
             }
         });
   });
-  <?php if(!$this->users_feed):?>
-  $(".supplier_type").attr("checked","checked");
+  <?php if(!$this->users_feed['sc_class_array']):?>
   $(".shipping_courier").attr("checked","checked");
+  <?php endif;?>
+  <?php if(!$this->users_feed['supplier_type_array']):?>
+  $(".supplier_type").attr("checked","checked");
   <?php endif;?>
 });
 </script>
