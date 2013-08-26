@@ -20,18 +20,21 @@ class Databases_Tables_UsersFeed extends Zend_Db_Table
     
     function GetFeedInfo($user_id)
     {
+        $result =   array();
         $row = $this->fetchRow("user_id='".$user_id."'");
-        $result =   $row->toArray();
-        if($result['sc_class']){
-            $sc_class_array =   explode(',', $result['sc_class']);
-            foreach( $sc_class_array as $sc_class){
-                $result['sc_class_array'][$sc_class]   =   $sc_class;
+        if($row){
+            $result =   $row->toArray();
+            if($result['sc_class']){
+                $sc_class_array =   explode(',', $result['sc_class']);
+                foreach( $sc_class_array as $sc_class){
+                    $result['sc_class_array'][$sc_class]   =   $sc_class;
+                }
             }
-        }
-        if($result['supplier_type']){
-            $supplier_type_array    =   explode(',', $result['supplier_type']);
-            foreach ($supplier_type_array as $supplier_type){
-                $result['supplier_type_array'][$supplier_type] =   $supplier_type;
+            if($result['supplier_type']){
+                $supplier_type_array    =   explode(',', $result['supplier_type']);
+                foreach ($supplier_type_array as $supplier_type){
+                    $result['supplier_type_array'][$supplier_type] =   $supplier_type;
+                }
             }
         }
         return $result;
