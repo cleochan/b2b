@@ -178,7 +178,7 @@ class Databases_Joins_ProductFilter
             if($supplier_type)
             {
                 $supplier_type_array    =   explode(",", $supplier_type);
-                $select->where("supplier_type IN (?)", $supplier_type_array);
+                $select->where("country_of_origin IN (?)", $supplier_type_array);
             }
             
             switch ($stock)
