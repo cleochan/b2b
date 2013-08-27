@@ -1118,6 +1118,7 @@ class AdminController extends Zend_Controller_Action
     {
         $this->view->title = "Feed Generation Confirmation";
         $params = $this->_request->getParams();
+        Algorithms_Extensions_Plugin::FormatArray($params);die;
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Merchants List", "Feed Generation|".$params['user_id']));
         
