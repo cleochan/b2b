@@ -1140,13 +1140,15 @@ class AdminController extends Zend_Controller_Action
         $users_feed_model->sku_excluded = $params['sku_excluded'];
         $users_feed_model->stock = $params['stock'];
         $sc_class_array         =   $params['sc_class'];
+        $sc_class_all           =   $params['sc_class_all'];
+        $supplier_type_all      =   $params['supplier_type_all'];
         $supplier_type_array    =   $params['supplier_type'];
-        if($sc_class_array){
+        if($sc_class_array && $sc_class_all != '1'){
             $users_feed_model->sc_class =   implode(',', $sc_class_array);
         }else{
             $users_feed_model->sc_class =   '';
         }
-        if($supplier_type_array){
+        if($supplier_type_array && $supplier_type_all != '1'){
             $users_feed_model->supplier_type    =   implode(',', $supplier_type_array);
         }else{
             $users_feed_model->supplier_type    =   '';
