@@ -198,18 +198,21 @@ jQuery(function($){
                         <tr class="row-2">
 				<td class="category">Shipping Courier</td>
                                 <td colspan="3">
-                                    <input type="checkbox" name="sc_class[]" class="shipping_courier" value="3" <?php if(3==$this->users_feed['sc_class_array']['3']):?>checked="checked"<?php endif;?> /><label>eParcel</label>
-                                    <input type="checkbox" name="sc_class[]" class="shipping_courier" value="5" <?php if(5==$this->users_feed['sc_class_array']['5']):?>checked="checked"<?php endif;?> /><label>Regular Mail</label>
-                                    <input type="checkbox" name="sc_class[]" class="shipping_courier" value="7" <?php if(7==$this->users_feed['sc_class_array']['7']):?>checked="checked"<?php endif;?> /><label>Toll IPEC</label>
-                                    <input type="checkbox" name="sc_class[]" class="shipping_courier" value="1" <?php if(1==$this->users_feed['sc_class_array']['1']):?>checked="checked"<?php endif;?> /><label>TIG Big</label> 
+                                    <?php if($this->shipping_courier_list):?>
+                                    <?php foreach ($this->shipping_courier_list as $key => $shipping_courier):?>
+                                    <input type="checkbox" name="sc_class[]" class="shipping_courier" value="<?php echo $key;?>" <?php if($key==$this->users_feed['sc_class_array'][$key]):?>checked="checked"<?php endif;?> /><label><?php echo $shipping_courier;?></label>
+                                    <?php endforeach;?>
+                                    <?php endif;?>
                                 </td>
 			</tr>
 			<tr class="row-1">
 				<td class="category">Supplier Type</td>
 				<td colspan="3">
-                                    <input type="checkbox" name="supplier_type[]" class="supplier_type" value="AU" <?php if('AU'==$this->users_feed['supplier_type_array']['AU']):?>checked="checked"<?php endif;?> /><label>AU</label>
-                                    <input type="checkbox" name="supplier_type[]" class="supplier_type" value="CN" <?php if('CN'==$this->users_feed['supplier_type_array']['CN']):?>checked="checked"<?php endif;?> /><label>CN</label>
-                                    <input type="checkbox" name="supplier_type[]" class="supplier_type" value="HK" <?php if('HK'==$this->users_feed['supplier_type_array']['HK']):?>checked="checked"<?php endif;?> /><label>HK</label>
+                                    <?php if($this->suppliert_type_list):?>
+                                    <?php foreach ($this->suppliert_type_list as $suppler_type):?>
+                                    <input type="checkbox" name="supplier_type[]" class="supplier_type" value="<?php echo $suppler_type?>" <?php if($suppler_type==$this->users_feed['supplier_type_array'][$suppler_type]):?>checked="checked"<?php endif;?> /><label><?php echo $suppler_type?></label>
+                                    <?php endforeach;?>
+                                    <?php endif;?>
                                 </td>
 			</tr>
 			<tr class="row-2">

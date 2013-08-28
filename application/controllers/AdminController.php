@@ -1071,6 +1071,12 @@ class AdminController extends Zend_Controller_Action
             $feed_dictionary = new Databases_Tables_FeedDictionary();
             $dump_feed_dictionary = $feed_dictionary->DumpAll(1);
             
+            $shipping_courier_model             =   new Databases_Tables_ShippingCourier();
+            $this->view->shipping_courier_list  =   $shipping_courier_model->GetShippingCouriers();
+            
+            $supplier_type_model                =   new Databases_Tables_SupplierType();
+            $this->view->suppliert_type_list    =   $supplier_type_model->GetSupplierType();
+            
             $user_feed_definition = new Databases_Tables_UsersFeedDefinition();
             $this->view->get_column_info = $user_feed_definition->ElementsForList($dump_feed_dictionary, $this->view->users_feed['users_feed_id']);
              
@@ -1139,16 +1145,21 @@ class AdminController extends Zend_Controller_Action
         $users_feed_model->sku_included = $params['sku_included'];
         $users_feed_model->sku_excluded = $params['sku_excluded'];
         $users_feed_model->stock = $params['stock'];
-        $sc_class_array               =   $params['sc_class'];
-        $supplier_type_array          =   $params['supplier_type'];
-        $sc_class         =   implode(',', $sc_class_array);
-        $supplier_type    =   implode(',', $supplier_type_array);
-        if(count($sc_class_array)==4){
+        $sc_class_array             =   $params['sc_class'];
+        $supplier_type_array        =   $params['supplier_type'];
+        $sc_class                   =   implode(',', $sc_class_array);
+        $supplier_type              =   implode(',', $supplier_type_array);
+        $shipping_courier_model     =   new Databases_Tables_ShippingCourier();
+        $shipping_courier_list      =   $shipping_courier_model->GetShippingCouriers();
+
+        $supplier_type_model        =   new Databases_Tables_SupplierType();
+        $suppliert_type_list        =   $supplier_type_model->GetSupplierType();
+        if(count($sc_class_array)==count($shipping_courier_list)){
             $users_feed_model->sc_class =   '';
         }else{
             $users_feed_model->sc_class =   $sc_class;
         }
-        if(count($supplier_type_array)==3){
+        if(count($supplier_type_array)==count($suppliert_type_list)){
             $users_feed_model->supplier_type    =   '';
         }else{
             $users_feed_model->supplier_type    =   $supplier_type;

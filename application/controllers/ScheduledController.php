@@ -241,16 +241,20 @@ class ScheduledController extends Zend_Controller_Action
         @fwrite($f, "initialize wdsl start ....\n");
         $product_webservice_model   =   new Algorithms_Core_ProductService();
         @fwrite($f, 'initialize wdsl succeed :'.date("Y-m-d H:i:s")."\n");
-        $productFilter_model    =   new Databases_Joins_ProductFilter();
-        $data_source            =   $params_model->GetVal("product_info_table");
-        $entries_perpage        =   $params_model->GetVal("product_request_qty_per_page");
-        $param_postage_api_url    =   $params_model->GetVal('postage_api_url');
+        $productFilter_model        =   new Databases_Joins_ProductFilter();
+        $data_source                =   $params_model->GetVal("product_info_table");
+        $entries_perpage            =   $params_model->GetVal("product_request_qty_per_page");
+        $param_postage_api_url      =   $params_model->GetVal('postage_api_url');
+        $shipping_courier_model     =   new Databases_Tables_ShippingCourier();
+        $supplier_type_model        =   new Databases_Tables_SupplierType();
+        $shipping_courier_array     =   array();
+        $supplier_type_array        =   array();
         
         $productFilter_model->data_source   =   $data_source;
         $TotalNumberOfEntries   =   '';
         $TotalNumberOfPages     =   '';
-        $logs_contents         =   ' ';
-        $page_now   =   1;
+        $logs_contents          =   ' ';
+        $page_now   =   80;
         $paginationType =   array(
             'EntriesPerPage'   =>   $entries_perpage,
             'PageNumber'       =>   $page_now,
@@ -263,6 +267,7 @@ class ScheduledController extends Zend_Controller_Action
             'repeat_count'  =>  0,
         );
         $has=1;
+       
             do
             {
                 set_time_limit(3600);
@@ -289,7 +294,7 @@ class ScheduledController extends Zend_Controller_Action
 
                 }
                 $product_list_data      =   $reponse_data['GetProductsResult']['Products']['CrazySalesProductType'];
-                
+
                 foreach ($product_list_data as $product_data){
                     $productFilter_model->normal_count  =   $count['normal_count'];
                     $productFilter_model->repeat_count  =   $count['repeat_count'];
@@ -375,6 +380,10 @@ class ScheduledController extends Zend_Controller_Action
                     if($product_data['Category']['CategoryName'] && $product_data['Category']['CategoryID']){
                         $count  =    $productFilter_model->AddProduct();
                     }
+
+                    $shipping_courier_array[$product_data['ShippingCourier']['ClassID']]['sc_class']           =   $product_data['ShippingCourier']['ClassID'];
+                    $shipping_courier_array[$product_data['ShippingCourier']['ClassID']]['shipping_courier']   =   $product_data['ShippingCourier']['Name'];
+                    $supplier_type_array[$product_data['CountryOfOrigin']]['supplier_type'] =   $product_data['CountryOfOrigin'];
                 }
                 $logs_contents  =   ' page:'.$page_now.'/'.$TotalNumberOfPages .'  succeed!  Date:'.date('Y-m-d H:i:s') ."\n";
                 @fwrite($f, $logs_contents);
@@ -407,6 +416,18 @@ class ScheduledController extends Zend_Controller_Action
                 }
                 @fwrite($f, 'Update Estimated Shipping Cost End : '.date("Y-m-d H:i:s")."\n");
             }
+            if($shipping_courier_array){
+                @fwrite($f, 'Update Shipping Courier Data Start : '.date("Y-m-d H:i:s")."\n");
+                $shipping_courier_model->shipping_courier_array =   $shipping_courier_array;
+                $shipping_courier_model->AddShippingCourier();
+            }
+            
+            if($supplier_type_array){
+                @fwrite($f, 'Update Supplier Type Data Start : '.date("Y-m-d H:i:s")."\n");
+                $supplier_type_model->supplier_type_array       =   $supplier_type_array;
+                $supplier_type_model->AddSupplierAType();
+            }
+            
             @fwrite($f, $logs_postage);
             @fwrite($f, "Refresh Products Completed.\n");
             @fclose($f);
