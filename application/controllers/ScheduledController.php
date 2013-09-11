@@ -379,6 +379,9 @@ class ScheduledController extends Zend_Controller_Action
                     $productFilter_model->product_code_type         =   $product_data['ProductCodeType'];
                     if($product_data['Category']['CategoryName'] && $product_data['Category']['CategoryID']){
                         $count  =    $productFilter_model->AddProduct();
+                    }else{
+                        $logs_contents  = " >>Insert Product Error SKU: ".$product_data['SupplierSku']." CategoryName: ".$product_data['Category']['CategoryName']." CategoryID: ".$product_data['Category']['CategoryID']."\n";
+                        @fwrite($f, $logs_contents);
                     }
 
                     $shipping_courier_array[$product_data['ShippingCourier']['ClassID']]['sc_class']           =   $product_data['ShippingCourier']['ClassID'];
