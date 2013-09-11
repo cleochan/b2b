@@ -254,7 +254,7 @@ class ScheduledController extends Zend_Controller_Action
         $TotalNumberOfEntries   =   '';
         $TotalNumberOfPages     =   '';
         $logs_contents          =   ' ';
-        $page_now   =   80;
+        $page_now   =   1;
         $paginationType =   array(
             'EntriesPerPage'   =>   $entries_perpage,
             'PageNumber'       =>   $page_now,
