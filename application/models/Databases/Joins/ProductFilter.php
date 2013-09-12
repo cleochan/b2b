@@ -701,4 +701,16 @@ class Databases_Joins_ProductFilter
         }
         return $categorys;
     }
+    /**
+     * Get the name of image
+     * @param string $url image path
+     * @return string image name
+     */
+    public function getImageName($url){
+        if(is_string($url) &&  strlen($url)>0){
+            $img = substr($url,strrpos($url, '/')+1);
+            return substr($img,0,strrpos($img, '.')); 
+        }
+        return '';
+    }
 }
