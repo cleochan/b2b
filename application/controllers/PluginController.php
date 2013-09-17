@@ -1124,26 +1124,30 @@ if($result)
             $data_all   =   $data->fetchAll();
             $new    =   $this->getCategory($data_all[0],1);
         }
+        echo $new;
+        /*
         $file_name  =   "b2b_category.xls";
         $f          =   fopen("logs/".$file_name);
         @fwrite($f,$new);
         @fclose($f);
+         * 
+         */
         die;
     }
     
     function getCategory($catrgory_array,$i){
         switch ($i){
             case 1 :
-                $tab    =   "\t";
+                $tab    =   ",";
                 break;
             case 2 :
-                $tab    =   "\t\t";
+                $tab    =   ",,";
                 break;
             case 3 :
-                $tab    =   "\t\t\t";
+                $tab    =   ",,,";
                 break;
             case 4 :
-                $tab    =   "\t\t\t\t";
+                $tab    =   ",,,,";
                 break;
             default :
                 $tab    =   "\t";
@@ -1153,7 +1157,7 @@ if($result)
         $i++;
         foreach ($this->product_categories as $key => $catrgory){
             if($catrgory['parent_id'] == $catrgory_array['category_id']){
-                $new_category_array .=  $catrgory['category_id'].$tab.$catrgory['category_name']."\r\n";
+                $new_category_array .=  $catrgory['category_id'].$tab.'"'.$catrgory['category_name'].'"'."\r\n";
                 unset($this->product_categories[$key]);
                 $new_category_array .=  $this->getCategory($catrgory,$i);
             }
