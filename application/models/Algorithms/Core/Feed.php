@@ -3,7 +3,7 @@
 class Algorithms_Core_Feed
 {
     var $user_id_array; //array
-    
+    var $txt_file_array;//array
     /**
      * start loop
      * collect merchant feed info
@@ -23,7 +23,7 @@ class Algorithms_Core_Feed
                 $collect_feed_info = $this->CollectFeedInfo($user_id);
                 
                 $product_list = $product_filter_model->Push($collect_feed_info, $user_id);
-                
+                $all_product_array  =   array();
                 if(!empty($collect_feed_info['users_feed_definition']) && !empty($product_list))
                 {
                     //Initial String
@@ -78,6 +78,13 @@ class Algorithms_Core_Feed
 
                         foreach($product_list as $pl)
                         {
+                            $all_product_array['product_image'][]['imageURL0']    =   $pl['imageURL0'];
+                            $all_product_array['product_image'][]['imageURL1']    =   $pl['imageURL1'];
+                            $all_product_array['product_image'][]['imageURL2']    =   $pl['imageURL2'];
+                            $all_product_array['product_image'][]['imageURL3']    =   $pl['imageURL3'];
+                            $all_product_array['product_image'][]['imageURL4']    =   $pl['imageURL4'];
+                            $all_product_array['product_image'][]['imageURL5']    =   $pl['imageURL5'];
+                            $all_product_array['product_description'][$pl['supplier_sku']] =   $pl['supplier_sku'].'-TP.txt';
                             $contents_tmp_array = array();
 
                             foreach($collect_feed_info['users_feed_definition'] as $users_feed_definition)
@@ -107,6 +114,14 @@ class Algorithms_Core_Feed
                         
                          foreach($product_list as $pl)
                         {
+                            $all_product_array['product_image'][]['imageURL0']    =   $pl['imageURL0'];
+                            $all_product_array['product_image'][]['imageURL1']    =   $pl['imageURL1'];
+                            $all_product_array['product_image'][]['imageURL2']    =   $pl['imageURL2'];
+                            $all_product_array['product_image'][]['imageURL3']    =   $pl['imageURL3'];
+                            $all_product_array['product_image'][]['imageURL4']    =   $pl['imageURL4'];
+                            $all_product_array['product_image'][]['imageURL5']    =   $pl['imageURL5'];
+                            $all_product_array['product_description'][$pl['supplier_sku']] =   $pl['supplier_sku'].'-TP.txt';
+                            
                             foreach($collect_feed_info['users_feed_definition'] as $users_feed_definition)
                             {
                                 $contents_tmp_array[($api_model->XmlKeyFilter($users_feed_definition['column_alias']))] = $api_model->XmlValueFilter($this->StringReplacement($pl, $users_feed_definition['column_value'], $array_for_replacement, $users_feed_definition['column_value_adjustment']));
@@ -127,7 +142,18 @@ class Algorithms_Core_Feed
                     $export_model->contents = $contents;
                     //Create Feed
                     $result = $export_model->Push();
-                    
+                    if($user_id == 8 ){
+                        if($collect_feed_info['users_feed']['feed_product_type'] == '2'){
+                            $new_product_array    =   $product_filter_model->getNewProductInfo();
+                            if($new_product_array){
+                                $product_array  =   $new_product_array;
+                            }
+                        }elseif($collect_feed_info['users_feed']['feed_product_type'] == '1'){
+                            $product_array      =   $all_product_array;
+                        }
+                        $this->uploadFtpFile($product_array['product_image'], 'image');
+                        $this->uploadFtpFile($product_array['product_description'], 'txt');
+                    }
                 }
             }
         }else{
@@ -190,13 +216,13 @@ class Algorithms_Core_Feed
         
         // Format if there is value adjustment
         $value_adjustment_array = $this->ValueAdjustmentReader($column_value_adjustment);
+        $product_filter_model   =   new Databases_Joins_ProductFilter();
         //print_r($value_adjustment_array);
         if(!empty($value_adjustment_array))
         {
             foreach($value_adjustment_array as $adj)
             {
                 $cond = explode("|", $adj);
-                
                 if(">" === substr($cond[0], 0, 1))
                 {
                     if($feed_column_value > substr($cond[0], 1))
@@ -227,6 +253,21 @@ class Algorithms_Core_Feed
                 }elseif("ROUND" == $cond[0])
                 {
                     $feed_column_value = round($feed_column_value);
+                }elseif ("FILE" == $cond[0])
+                {
+                    $feed_column_value  =   $this->filterHtmlTags($feed_column_value,$product_row['supplier_sku'].'-TP');
+                }elseif("REL" == $cond[0])
+                {
+                    $feed_column_value  =   implode(' | ',array_filter(explode(' | ', $feed_column_value)));
+                }elseif('FILENAME' == $cond[0])
+                {
+                    $feed_column_value  =   $product_filter_model->getFileName($feed_column_value);
+                }elseif('SUBSTR' == $cond[0])
+                {
+                    if(strlen($feed_column_value) > $cond[1])
+                    {
+                        $feed_column_value  =   substr($feed_column_value, 0, $cond[1]);
+                    }
                 }else{
                     if($feed_column_value === $cond[0])
                     {
@@ -282,5 +323,112 @@ class Algorithms_Core_Feed
         }
         
         return $result;
+    }
+    
+    /**
+     * @param string $html
+     * @return string
+     */
+    function filterHtmlTags($html,$file_name,$user_id){
+        $system_params_model    =   new Databases_Tables_Params();
+        $logs_path                  =   $system_params_model->GetVal('merchant_feed_txt_path');
+        $encode =   'UTF-8';
+        preg_match("/WARRANTY:([\s\S]*)/i",$html,$warranties);
+        $html   =   preg_replace("/WARRANTY:([\s\S]*)/i", "", $html);
+        $warranty       =   $warranties[0];
+        preg_match("/SPECIFICATIONS:<table.*?>[\s\S]*?<\/table>/i",$html,$matches);
+        $html   =   preg_replace("/SPECIFICATIONS:([\s\S]*)/i", "", $html);
+        $specifications =   $matches[0];
+        $specifications =   preg_replace("/<tr>/i", "\t *", $specifications);
+        $specifications =   preg_replace("/<\/?tr>/i", "\r\n", $specifications);
+        $specifications =   preg_replace("/<br \s*\/?\/>/i", "\r\n\t\t", $specifications);
+        $specifications =   preg_replace("/<\/?li>/i", "\r\n\t\t", $specifications); 
+        $specifications =   preg_replace("/<\/?p>/i", "\r\n\t\t", $specifications);  
+        $html   .=  $specifications.$warranty;
+        $html   =   preg_replace("/<br \s*\/?\/>/i", "\r\n", $html);  
+        $html   =   preg_replace("/<\/?p>/i", "\r\n", $html);  
+        $html   =   preg_replace("/<\/?div>/i", "\r\n", $html);
+        $html   =   preg_replace("/<\/?td>/i", " ", $html); 
+        $html   =   preg_replace("/<tr>/i", "\t *", $html);
+        $html   =   preg_replace("/<\/?tr>/i", "\r\n", $html);
+        $html   =   preg_replace("/<br \s*\/?\/>/i", "\r\n\t\t\t", $html);
+        $html   =   preg_replace("/FEATURES:/", "\r\nFEATURES:\r\n\r\n", $html);
+        $html   =   preg_replace("/SPECIFICATIONS:/", "\r\nSPECIFICATIONS:\r\n\r\n", $html);
+        $html   =   preg_replace("/WARRANTY:/", "\r\nWARRANTY:\r\n", $html);
+        $html   =   preg_replace("/<\/?blockquote>/i", "\n", $html);
+        $html   =   preg_replace("/<li>/i", "\t * ", $html);
+        $html   =   preg_replace("/<\/?li>/i", "\r\n", $html);
+        $html   =   preg_replace("/\&nbsp\;/i", " ", $html);  
+        $html   =   preg_replace("/\&nbsp/i", " ", $html);  
+        $html   =   preg_replace("/\&amp\;/i", "&", $html);  
+        $html   =   preg_replace("/\&amp/i", "&", $html);    
+        $html   =   preg_replace("/\&lt\;/i", "<", $html);  
+        $html   =   preg_replace("/\&lt/i", "<", $html);  
+        $html   =   preg_replace("/\&ldquo\;/i", '"', $html);  
+        $html   =   preg_replace("/\&ldquo/i", '"', $html);  
+        $html   =   preg_replace("/\&lsquo\;/i", "'", $html);  
+        $html   =   preg_replace("/\&lsquo/i", "'", $html);  
+        $html   =   preg_replace("/\&rsquo\;/i", "'", $html);  
+        $html   =   preg_replace("/\&rsquo/i", "'", $html);  
+        $html   =   preg_replace("/\&gt\;/i", ">", $html);   
+        $html   =   preg_replace("/\&gt/i", ">", $html);   
+        $html   =   preg_replace("/\&rdquo\;/i", '"', $html);   
+        $html   =   preg_replace("/\&rdquo/i", '"', $html);
+        $html   =   preg_replace("/\*\s\s\s\s/i", "*", $html);
+        $html   =   strip_tags($html);  
+        $html   =   html_entity_decode($html, ENT_QUOTES, $encode);  
+        $html   =   preg_replace("/\&\#.*?\;/i", "", $html);
+        preg_match("/([\s\S]*)Warranty/",$html,$matches);
+        $file_name  =   $file_name.".txt";
+        $f          =   fopen($logs_path."/".$file_name, "w+");
+        if($matches[0]){
+            @fwrite($f,$matches[0]);
+        }else{
+            @fwrite($f,$html);
+        }
+        @fclose($f);
+        return $file_name;
+        
+    }
+    
+    /**
+     * Uplaod images to merchant's FTP server
+     * @param array $images_array
+     */
+    function uploadFtpFile($file_array = array(), $type = null){
+        if($file_array){
+            $product_filter_model   =   new Databases_Joins_ProductFilter();
+            $merchant_ftp_array     =   array(
+                'ftp_host'      =>  'interface.dealsdirect.com.au',
+                'ftp_port'      =>  '21',
+                'ftp_user'      =>  'tp_crazysales',
+                'ftp_pass'      =>  '3Ws5maLm',
+                'image_path'    =>  'Outgoing/inventory/images',
+                'txt_path'      =>  'Outgoing/inventory/descriptions',
+            );
+            $ftp    =   new Algorithms_Core_Ftp($merchant_ftp_array['ftp_host'], $merchant_ftp_array['ftp_port'], $merchant_ftp_array['ftp_user'], $merchant_ftp_array['ftp_pass']);
+            switch ($type){
+                case 'image':
+                    foreach ($file_array as $files){
+                        foreach ($files as $file){
+                            if($file){
+                                $file_name         =   $product_filter_model->getFileName($file);
+                                $ftp_server_path    =   $merchant_ftp_array['image_path'].$file_name;
+                                $ftp->up_file($ftp_server_path, $file);
+                            }
+                        }
+                    }
+                    break;
+                case 'txt':
+                    foreach ($file_array as $file){
+                        if($file){
+                            $ftp_server_path    =   $merchant_ftp_array['txt_path'].$file;
+                            $ftp->up_file($ftp_server_path, 'logs/orderslogs/'.$file);
+                        }
+                    }
+                    break;
+            }
+            
+        }
     }
 }

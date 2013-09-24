@@ -23,7 +23,9 @@
 			},
 			data: {
 				simpleData: {
-					enable: true
+					enable: true,
+                                        idKey:"id",
+                                        pIdKey:"pId",
 				}
 			},
                         callback: {
@@ -215,7 +217,14 @@ jQuery(function($){
                                     <?php endif;?>
                                 </td>
 			</tr>
-			<tr class="row-2">
+                        <tr class="row-2">
+				<td class="category">Feed Product Type</td>
+                                <td colspan="3">
+                                    <input type="radio" name="feed_product_type" id="stock" value="1" <?php if(1==$this->users_feed['feed_product_type'] || $this->users_feed['users_feed_id']):?>checked="checked"<?php endif;?> />All&nbsp;&nbsp;
+                                    <input type="radio" name="feed_product_type" id="stock" value="2" <?php if(2==$this->users_feed['feed_product_type']):?>checked="checked"<?php endif;?> />NEW&nbsp;&nbsp;
+                                </td>
+			</tr>
+			<tr class="row-1">
 				<td class="category">Stock</td>
                                 <td colspan="3">
                                     <input type="radio" name="stock" id="stock" value="1" <?php if(1==$this->users_feed['stock'] || !$this->users_feed['users_feed_id']):?>checked="checked"<?php endif;?> />All&nbsp;&nbsp;
@@ -223,7 +232,7 @@ jQuery(function($){
                                     <input type="radio" name="stock" id="stock" value="3" <?php if(3==$this->users_feed['stock']):?>checked="checked"<?php endif;?> />Out of Stock
                                 </td>
 			</tr>
-			<tr class="row-1">
+			<tr class="row-2">
 				<td class="category">Discount Protection</td>
                                 <td colspan="3">
                                     <input type="radio" name="cost_protection" id="cost_protection" value="1" <?php if(1==$this->users_feed['cost_protection']):?>checked="checked"<?php endif;?> />ON

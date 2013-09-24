@@ -1164,7 +1164,8 @@ class AdminController extends Zend_Controller_Action
         }else{
             $users_feed_model->supplier_type    =   $supplier_type;
         }
-        $users_feed_model->cost_protection = $params['cost_protection'];
+        $users_feed_model->cost_protection  =   $params['cost_protection'];
+        $users_feed_model->feed_product_type     =   $params['feed_product_type'];
         $users_feed_model->feed_column_definition = array(
             "ckd" => $params['ckd'],
             "column_alias" => $params['column_alias'],
@@ -1258,7 +1259,10 @@ class AdminController extends Zend_Controller_Action
                                 $data_array[$da_key]['result'] = "N";
                                 $data_array[$da_key]['reason'] = "Column Amount Error.";
                             }else{ //check contents
-							
+				if(substr($da_val[11], -3) == '-TP'){
+                                    $da_val[11]    =   substr($da_val[11], 0, -3);
+                                }
+                                
                                 $getorders_model->shipping_first_name = $da_val[1];
                                 $getorders_model->shipping_last_name = $da_val[2];
                                 $getorders_model->shipping_company = $da_val[3];
@@ -1289,6 +1293,7 @@ class AdminController extends Zend_Controller_Action
                                 $data_array[$da_key]['instant_balance'] = (float)$check_result['instant_balance'];
                                 $data_array[$da_key]['credit'] = $check_result['credit'];
                                 $data_array[$da_key]['user_id'] = $check_result['user_id'];
+                                $data_array[$da_key][11]    =   $da_val[11];
                                 
                                 /**
                                  * @var $product_filter_model Databases_Joins_ProductFilter

@@ -17,6 +17,7 @@ class Databases_Tables_UsersFeed extends Zend_Db_Table
     var $supplier_type;
     var $cost_protection;
     var $feed_column_definition; //array
+    var $feed_product_type;
     
     function GetFeedInfo($user_id)
     {
@@ -69,6 +70,7 @@ class Databases_Tables_UsersFeed extends Zend_Db_Table
             $row->supplier_type     =   $this->supplier_type;
             $row->stock             =   $this->stock;
             $row->cost_protection   =   $this->cost_protection;
+            $row->feed_product_type      =   $this->feed_product_type;
             $row->save();
             
             $users_feed_id = $row->users_feed_id;
@@ -86,7 +88,8 @@ class Databases_Tables_UsersFeed extends Zend_Db_Table
                 "sc_class"          =>  $this->sc_class,
                 "supplier_type"     =>  $this->supplier_type,
                 "stock"             =>  $this->stock,
-                "cost_protection"   =>  $this->cost_protection
+                "cost_protection"   =>  $this->cost_protection,
+                "feed_product_type" =>  $this->feed_product_type,
             );
             
             $users_feed_id = $this->insert($data);

@@ -90,10 +90,13 @@ class Databases_Joins_ProductFilter
     var $description;
     var $product_code_type;
     var $all_category_data;
+    var $dd_all_category_data;
     
     function __construct(){
         $this->db = Zend_Registry::get("db");
         $category_model     =   new Databases_Tables_ProductCategories();
+        $dd_category_model  =   new Databases_Tables_DdCategories();
+        $this->dd_all_category_data =   $dd_category_model->getAllCategoryArray();
         $this->all_category_data  =   $category_model->getAllCategoryArray();  
     }
     
@@ -156,6 +159,12 @@ class Databases_Joins_ProductFilter
 
             $select = $this->db->select();
             $select->from($source_table, "*");
+            /*for dealsdirect feed*/
+            if($user_id == 8)
+            {
+                $select->join('b2b_dd_category', 'b2b_dd_category.category_id = '.$source_table.'.category_id', 'dd_category_id');
+            }
+            
             if(!empty($category_array))
             {
                 $select->where("category_id IN (?)", $category_array);
@@ -194,6 +203,7 @@ class Databases_Joins_ProductFilter
                     break;
             }
             $select->where("product_code_type <> 'PART' or product_code_type is null");
+            $select->where("supplier_sku not REGEXP '([\s\S]*)(\/)([\s\S]*)'");
             $select->order("category ASC");
             $select->order("brand ASC");
             
@@ -207,7 +217,11 @@ class Databases_Joins_ProductFilter
                     $cal_result = $this->OfferPriceCalculation($d_val['supplier_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
                     
                     if($d_val['category_id']){
-                        $category_array = $this->getProductCategoryInfo($d_val['category_id']);
+                        if($user_id == 8){
+                            $category_array = $this->getDDProductCategoryInfo($d_val['dd_category_id']);
+                        }else{
+                            $category_array = $this->getProductCategoryInfo($d_val['category_id']);
+                        }
 
                         $data[$d_key]['main_category']  =   @$category_array[0];
                         $data[$d_key]['sub_category']   =   @$category_array[1];
@@ -701,16 +715,63 @@ class Databases_Joins_ProductFilter
         }
         return $categorys;
     }
+    
+    function getDDProductCategoryInfo($category_id){
+        $categorys = array();
+        if($category_id)
+        {
+            $parent_category_list   =   $this->dd_all_category_data[$category_id];
+            if($parent_category_list && $parent_category_list['parent_id'] !== '0')
+            {
+                $categorys  =   $this->getDDProductCategoryInfo($parent_category_list['parent_id']);
+            }
+            $categorys[]   =   $parent_category_list['category_name'];
+        }
+        return $categorys;
+    }
     /**
      * Get the name of image
      * @param string $url image path
      * @return string image name
      */
-    public function getImageName($url){
+    public function getFileName($url){
         if(is_string($url) &&  strlen($url)>0){
-            $img = substr($url,strrpos($url, '/')+1);
-            return substr($img,0,strrpos($img, '.')); 
+            return substr($url,strrpos($url, '/')+1);
         }
         return '';
+    }
+    /**
+     * Get New Product Image data between product_info_table
+     */
+    function getNewProductInfo(){
+        $result =   array();
+        $params_model = new Databases_Tables_Params();
+        $data_source = $params_model->GetVal("product_info_table");
+        
+        if($data_source == '1'){
+            $old_data_source    =   '2';
+        }else{
+            $old_data_source    =   '1';
+        }
+        $source_table = "product_info_".$data_source;
+        $old_source_table = "product_info_".$old_data_source;
+        $sql    =   'select * from '. $source_table. ' where not exists (select * from '. $old_source_table. ' where '. $source_table. '.product_id = '. $old_source_table. '.product_id and supplier_sku NOT REGEXP '. "'([\s\S]*)(\/)([\s\S]*)'".' ) and supplier_sku NOT REGEXP '."'([\s\S]*)(\/)([\s\S]*)'";
+        $sql    =   "select * from product_info_1  where supplier_sku NOT REGEXP '([\s\S]*)(\/)([\s\S]*)' limit 2 ";
+        $data   =   $this->db->query($sql);
+        if($data){
+            $data_all   =   $data->fetchAll();
+            if ($data_all){
+                foreach ($data_all as $key => $data){
+                    $result['product_image'][$key]['imageURL0'] =   $data['imageURL0'];
+                    $result['product_image'][$key]['imageURL1'] =   $data['imageURL1'];
+                    $result['product_image'][$key]['imageURL2'] =   $data['imageURL2'];
+                    $result['product_image'][$key]['imageURL3'] =   $data['imageURL3'];
+                    $result['product_image'][$key]['imageURL4'] =   $data['imageURL4'];
+                    $result['product_image'][$key]['imageURL5'] =   $data['imageURL5'];
+                    $result['product_description'][$data['supplier_sku']] =   $data['supplier_sku'].'-TP.txt';
+                }
+            }
+        }
+        return $result;
     }
 }

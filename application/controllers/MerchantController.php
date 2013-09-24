@@ -380,6 +380,9 @@ class MerchantController extends Zend_Controller_Action
             
              foreach($data_array as $da_key => $da_val)
             {
+                if(substr($da_val['supplier_sku'], -3) == '-TP'){
+                   $da_val['supplier_sku']    =   substr($da_val['supplier_sku'], 0, -3);
+                }
                 $getorders_model->shipping_first_name = $da_val['shipping_first_name'];
                 $getorders_model->shipping_last_name = $da_val['shipping_last_name'];
                 $getorders_model->shipping_company = $da_val['shipping_company'];
@@ -410,6 +413,7 @@ class MerchantController extends Zend_Controller_Action
                 $product_info   =   $product_filter_model->getProductInfo($da_val['supplier_sku']);
                 $data_array[$da_key]['product_name']    =   $product_info['product_name'];
                 $data_array[$da_key]['imageURL0']       =   $product_info['imageURL0'];
+                $data_array[$da_key]['supplier_sku']    =   $product_info['supplier_sku'];
                 //update instant balance
                 if ($check_result[2]=="Out of balance"):
                     $this->view->ifpay=1;
@@ -699,7 +703,9 @@ class MerchantController extends Zend_Controller_Action
              foreach($data_array as $da_key => $da_val)
             {
                 $count_column = count($da_val);
-
+                if(substr($da_val[11], -3) == '-TP'){
+                    $da_val[11]    =   substr($da_val[11], 0, -3);
+                }
                 $getorders_model->shipping_first_name = $da_val[1];
                 $getorders_model->shipping_last_name = $da_val[2];
                 $getorders_model->shipping_company = $da_val[3];
@@ -734,6 +740,7 @@ class MerchantController extends Zend_Controller_Action
                 $product_info   =   $product_filter_model->getProductInfo($da_val[11]);
                 $data_array[$da_key]['product_name']    =   $product_info['product_name']; 
                 $data_array[$da_key]['imageURL0']       =   $product_info['imageURL0'];
+                $data_array[$da_key][11]                =   $da_val[11];
                 //update instant balance
                 if ($check_result[2]=="Out of balance"):
                     $this->view->ifpay=1;
@@ -778,6 +785,9 @@ class MerchantController extends Zend_Controller_Action
                                     $data_array[$da_key]['result'] = "N";
                                     $data_array[$da_key]['reason'] = "Column Amount Error.";
                                 }else{ //check contents
+                                    if(substr($da_val[11], -3) == '-TP'){
+                                        $da_val[11]    =   substr($da_val[11], 0, -3);
+                                    }
                                     $getorders_model->shipping_first_name = $da_val[1];
                                     $getorders_model->shipping_last_name = $da_val[2];
                                     $getorders_model->shipping_company = $da_val[3];
@@ -811,6 +821,7 @@ class MerchantController extends Zend_Controller_Action
                                     $product_info   =   $product_filter_model->getProductInfo($da_val[11]);
                                     $data_array[$da_key]['product_name']    =   $product_info['product_name']; 
                                     $data_array[$da_key]['imageURL0']       =   $product_info['imageURL0'];
+                                    $data_array[$da_key][11]                =   $da_val[11];
                                     //update instant balance
                                     //print_r($check_result);
                                     
