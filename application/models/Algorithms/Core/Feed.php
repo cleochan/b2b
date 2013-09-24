@@ -403,8 +403,8 @@ class Algorithms_Core_Feed
                 'ftp_port'      =>  '21',
                 'ftp_user'      =>  'tp_crazysales',
                 'ftp_pass'      =>  '3Ws5maLm',
-                'image_path'    =>  'Outgoing/inventory/images',
-                'txt_path'      =>  'Outgoing/inventory/descriptions',
+                'image_path'    =>  'outgoing/inventory/images/',
+                'txt_path'      =>  'outgoing/inventory/descriptions/',
             );
             $ftp    =   new Algorithms_Core_Ftp($merchant_ftp_array['ftp_host'], $merchant_ftp_array['ftp_port'], $merchant_ftp_array['ftp_user'], $merchant_ftp_array['ftp_pass']);
             switch ($type){
