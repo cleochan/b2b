@@ -163,6 +163,9 @@ class Databases_Joins_ProductFilter
             if($user_id == 8)
             {
                 $select->join('b2b_dd_category', 'b2b_dd_category.category_id = '.$source_table.'.category_id', 'dd_category_id');
+                $select->where("length > ?", 0);
+                $select->where("height > ?", 0);
+                $select->where("depth > ?", 0);
             }
             
             if(!empty($category_array))
@@ -206,7 +209,7 @@ class Databases_Joins_ProductFilter
             $select->where("supplier_sku not REGEXP '([\s\S]*)(\/)([\s\S]*)'");
             $select->order("category ASC");
             $select->order("brand ASC");
-            
+            print_r($select);exit;
             $data = $this->db->fetchAll($select);
             
             //update for discount/cost protection
@@ -756,7 +759,6 @@ class Databases_Joins_ProductFilter
         $source_table = "product_info_".$data_source;
         $old_source_table = "product_info_".$old_data_source;
         $sql    =   'select * from '. $source_table. ' where not exists (select * from '. $old_source_table. ' where '. $source_table. '.product_id = '. $old_source_table. '.product_id and supplier_sku NOT REGEXP '. "'([\s\S]*)(\/)([\s\S]*)'".' ) and supplier_sku NOT REGEXP '."'([\s\S]*)(\/)([\s\S]*)'";
-        $sql    =   "select * from product_info_1  where supplier_sku NOT REGEXP '([\s\S]*)(\/)([\s\S]*)' limit 2 ";
         $data   =   $this->db->query($sql);
         if($data){
             $data_all   =   $data->fetchAll();

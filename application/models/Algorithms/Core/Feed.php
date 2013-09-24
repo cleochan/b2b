@@ -423,7 +423,7 @@ class Algorithms_Core_Feed
                     foreach ($file_array as $file){
                         if($file){
                             $ftp_server_path    =   $merchant_ftp_array['txt_path'].$file;
-                            $ftp->up_file($ftp_server_path, 'logs/orderslogs/'.$file);
+                            $ftp->up_file($ftp_server_path, 'feed_txt/'.$file);
                         }
                     }
                     break;
