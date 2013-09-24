@@ -209,7 +209,7 @@ class Databases_Joins_ProductFilter
             $select->where("supplier_sku not REGEXP '([\s\S]*)(\/)([\s\S]*)'");
             $select->order("category ASC");
             $select->order("brand ASC");
-            print_r($select);exit;
+            
             $data = $this->db->fetchAll($select);
             
             //update for discount/cost protection
