@@ -758,7 +758,8 @@ class Databases_Joins_ProductFilter
         }
         $source_table = "product_info_".$data_source;
         $old_source_table = "product_info_".$old_data_source;
-        $sql    =   'select * from '. $source_table. ' where not exists (select * from '. $old_source_table. ' where '. $source_table. '.product_id = '. $old_source_table. '.product_id and supplier_sku NOT REGEXP '. "'([\s\S]*)(\/)([\s\S]*)'".' ) and supplier_sku NOT REGEXP '."'([\s\S]*)(\/)([\s\S]*)'";
+        $sql    =   'select * from '. $source_table. ' where not exists (select * from '. $old_source_table. ' where '. $source_table. '.product_id = '. $old_source_table. '.product_id and supplier_sku NOT REGEXP '. "'([\s\S]*)(\/)([\s\S]*)'".' ) and supplier_sku NOT REGEXP '."'([\s\S]*)(\/)([\s\S]*)'".' and (product_code_type <> '."'PART'".' or product_code_type is null) and quantity_available > 0 and country_of_origin IN ("CN")';
+        exit($sql);
         $data   =   $this->db->query($sql);
         if($data){
             $data_all   =   $data->fetchAll();

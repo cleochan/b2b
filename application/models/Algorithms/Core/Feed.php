@@ -142,7 +142,7 @@ class Algorithms_Core_Feed
                     $export_model->contents = $contents;
                     //Create Feed
                     $result = $export_model->Push();
-                    if($user_id == 8 ){
+                    if($user_id == 2 ){
                         if($collect_feed_info['users_feed']['feed_product_type'] == '2'){
                             $new_product_array    =   $product_filter_model->getNewProductInfo();
                             if($new_product_array){
@@ -151,8 +151,18 @@ class Algorithms_Core_Feed
                         }elseif($collect_feed_info['users_feed']['feed_product_type'] == '1'){
                             $product_array      =   $all_product_array;
                         }
+                        $txtlogs    =   '';
+                        foreach($product_array['product_description'] as $product){
+                            $txtlogs    .=   $product."\r\n";
+                        }
+                        $file_name  =   'feedslogs-'.date("YmdHis").".txt";
+                        $f          =   fopen("logs/feedslogs/".$file_name, "w+");
+                        @fwrite($f, 'Upload DataFeed Files Begin at:'.date("Y-m-d H:i:s")."\n");
+                        @fwrite($f,$txtlogs);
+                        @fclose($f);
                         $this->uploadFtpFile($product_array['product_image'], 'image');
                         $this->uploadFtpFile($product_array['product_description'], 'txt');
+                        $this->uploadFtpFile(array($result), 'csv');
                     }
                 }
             }
@@ -405,6 +415,7 @@ class Algorithms_Core_Feed
                 'ftp_pass'      =>  '3Ws5maLm',
                 'image_path'    =>  'outgoing/inventory/images/',
                 'txt_path'      =>  'outgoing/inventory/descriptions/',
+                'csv_path'      =>  'outgoing/inventory/datafeed/processing/',
             );
             $ftp    =   new Algorithms_Core_Ftp($merchant_ftp_array['ftp_host'], $merchant_ftp_array['ftp_port'], $merchant_ftp_array['ftp_user'], $merchant_ftp_array['ftp_pass']);
             switch ($type){
@@ -424,6 +435,14 @@ class Algorithms_Core_Feed
                         if($file){
                             $ftp_server_path    =   $merchant_ftp_array['txt_path'].$file;
                             $ftp->up_file($ftp_server_path, 'feed_txt/'.$file);
+                        }
+                    }
+                    break;
+                case 'csv':
+                    foreach ($file_array as $file){
+                        if($file){
+                            $ftp_server_path    =   $merchant_ftp_array['csv_path'].'crazysales_datafeed.csv';
+                            $ftp->up_file($ftp_server_path, 'feeds/'.$file);
                         }
                     }
                     break;
