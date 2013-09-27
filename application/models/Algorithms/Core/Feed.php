@@ -21,7 +21,6 @@ class Algorithms_Core_Feed
             foreach($this->user_id_array as $user_id)
             {
                 $collect_feed_info = $this->CollectFeedInfo($user_id);
-                
                 $product_list = $product_filter_model->Push($collect_feed_info, $user_id);
                 $all_product_array  =   array();
                 if(!empty($collect_feed_info['users_feed_definition']) && !empty($product_list))
@@ -142,7 +141,7 @@ class Algorithms_Core_Feed
                     $export_model->contents = $contents;
                     //Create Feed
                     $result = $export_model->Push();
-                    if($user_id == 8 ){
+                    if($user_id == 2 ){
                         if($collect_feed_info['users_feed']['feed_product_type'] == '2'){
                             $new_product_array    =   $product_filter_model->getNewProductInfo();
                             if($new_product_array){
@@ -163,9 +162,9 @@ class Algorithms_Core_Feed
                         @fwrite($f, 'Upload Description Files Begin at:'.date("Y-m-d H:i:s")."\n");
                         @fwrite($f,$txtlogs);
                         $this->uploadFtpFile($product_array['product_description'], 'txt');
-                        @fwrite($f, 'Upload CSV Files Begin at:'.date("Y-m-d H:i:s")."\n");
+                        @fwrite($f, 'Upload CSV Files '.$export_model->file_name. ' Begin at:'.date("Y-m-d H:i:s")."\n");
                         @fwrite($f,$txtlogs);
-                        $this->uploadFtpFile(array($result), 'csv', $f);
+                        $this->uploadFtpFile(array($export_model->file_name), 'csv', $f);
                         @fwrite($f, 'Upload Files Finished at:'.date("Y-m-d H:i:s")."\n");
                         @fwrite($f,$txtlogs);
                         @fclose($f);
@@ -415,13 +414,13 @@ class Algorithms_Core_Feed
         if($file_array){
             $product_filter_model   =   new Databases_Joins_ProductFilter();
             $merchant_ftp_array     =   array(
-                'ftp_host'      =>  'interface.dealsdirect.com.au',
+                'ftp_host'      =>  '5.152.218.218',//'interface.dealsdirect.com.au',
                 'ftp_port'      =>  '21',
-                'ftp_user'      =>  'tp_crazysales',
-                'ftp_pass'      =>  '3Ws5maLm',
+                'ftp_user'      =>  'TimWu',//'tp_crazysales',
+                'ftp_pass'      =>  'wuhaijieYONG1987',//'3Ws5maLm',
                 'image_path'    =>  'outgoing/inventory/images/',
                 'txt_path'      =>  'outgoing/inventory/descriptions/',
-                'csv_path'      =>  'outgoing/inventory/datafeed/processing/',
+                'csv_path'      =>  'test/',//'outgoing/inventory/datafeed/processing/',
             );
             $ftp    =   new Algorithms_Core_Ftp($merchant_ftp_array['ftp_host'], $merchant_ftp_array['ftp_port'], $merchant_ftp_array['ftp_user'], $merchant_ftp_array['ftp_pass']);
             switch ($type){
