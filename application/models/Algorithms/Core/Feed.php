@@ -89,6 +89,7 @@ class Algorithms_Core_Feed
                             $all_product_array['product_description'][$pl['supplier_sku']] =   $pl['supplier_sku'].'-TP.txt';
                             $contents_tmp_array = array();
                             
+                            @fwrite($f1, 'Replace Product SKU:'.$pl['supplier_sku'].' at:'.date("Y-m-d H:i:s")."\r\n");
                             foreach($collect_feed_info['users_feed_definition'] as $users_feed_definition)
                             {
                                 $string_replacement_result = $this->StringReplacement($pl, $users_feed_definition['column_value'], $array_for_replacement, $users_feed_definition['column_value_adjustment']);
@@ -278,15 +279,19 @@ class Algorithms_Core_Feed
                     $feed_column_value = round($feed_column_value);
                 }elseif ("FILE" == $cond[0])
                 {
+                    echo 1;exit;
                     $feed_column_value  =   $this->filterHtmlTags($feed_column_value,$product_row['supplier_sku'].'-TP');
                 }elseif("REL" == $cond[0])
                 {
+                    echo 2;exit;
                     $feed_column_value  =   implode(' | ',array_filter(explode(' | ', $feed_column_value)));
                 }elseif('FILENAME' == $cond[0])
                 {
+                    echo 3;exit;
                     $feed_column_value  =   $product_filter_model->getFileName($feed_column_value);
                 }elseif('SUBSTR' == $cond[0])
                 {
+                    echo 4;exit;
                     if(strlen($feed_column_value) > $cond[1])
                     {
                         $feed_column_value  =   substr($feed_column_value, 0, $cond[1]);
@@ -303,7 +308,7 @@ class Algorithms_Core_Feed
         $feed_column_value = str_replace("\n", "", $feed_column_value);
         $feed_column_value = str_replace("\r", "", $feed_column_value);
         $feed_column_value = str_replace("\r\n", "", $feed_column_value);
-        
+
         return $feed_column_value;
     }
     
