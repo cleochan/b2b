@@ -17,11 +17,14 @@ class Algorithms_Core_Feed
         if(count($this->user_id_array))
         {
             $product_filter_model = new Databases_Joins_ProductFilter();
-            
             foreach($this->user_id_array as $user_id)
             {
+                $f1  =   fopen("logs/feedslogs/refresh-log".$user_id .".txt", "w+");
+                @fwrite($f1, 'Start $user_id:'.$user_id.' Begin at:'.date("Y-m-d H:i:s")."\r\n");
                 $collect_feed_info = $this->CollectFeedInfo($user_id);
+                @fwrite($f1, 'Start Push Product datas Begin at:'.date("Y-m-d H:i:s")."\r\n");
                 $product_list = $product_filter_model->Push($collect_feed_info, $user_id);
+                @fwrite($f1, 'Start Push Product datas End at:'.date("Y-m-d H:i:s")."\r\n");
                 $all_product_array  =   array();
                 if(!empty($collect_feed_info['users_feed_definition']) && !empty($product_list))
                 {
@@ -74,7 +77,7 @@ class Algorithms_Core_Feed
 
                         $contents .= implode($delimeter, $contents_tmp_array)."\r\n";
                         //==== Make Title Finished ====//
-
+                        @fwrite($f1, 'Start Replace Product datas Begin at:'.date("Y-m-d H:i:s")."\r\n");
                         foreach($product_list as $pl)
                         {
                             $all_product_array['product_image'][]['imageURL0']    =   $pl['imageURL0'];
@@ -85,7 +88,7 @@ class Algorithms_Core_Feed
                             $all_product_array['product_image'][]['imageURL5']    =   $pl['imageURL5'];
                             $all_product_array['product_description'][$pl['supplier_sku']] =   $pl['supplier_sku'].'-TP.txt';
                             $contents_tmp_array = array();
-
+                            
                             foreach($collect_feed_info['users_feed_definition'] as $users_feed_definition)
                             {
                                 $string_replacement_result = $this->StringReplacement($pl, $users_feed_definition['column_value'], $array_for_replacement, $users_feed_definition['column_value_adjustment']);
@@ -103,6 +106,7 @@ class Algorithms_Core_Feed
 
                             $contents .= implode($delimeter, $contents_tmp_array)."\r\n";
                         }
+                        @fwrite($f1, 'Start Replace Product datas End at:'.date("Y-m-d H:i:s")."\r\n");
                     }elseif(3 == $collect_feed_info['users_feed']['feed_extension']) //xml
                     {
                         $api_model = new Algorithms_Core_Api();
@@ -140,6 +144,7 @@ class Algorithms_Core_Feed
                     $export_model->file_name = $plugin_model->GetFeedPath($collect_feed_info['users_feed']['feed_name'], $collect_feed_info['users_feed']['feed_extension'], 1);
                     $export_model->contents = $contents;
                     //Create Feed
+                    @fwrite($f1, 'Create File End at:'.date("Y-m-d H:i:s")."\r\n");
                     $result = $export_model->Push();
                     if($user_id == 8 ){
                         if($collect_feed_info['users_feed']['feed_product_type'] == '2'){
@@ -168,6 +173,9 @@ class Algorithms_Core_Feed
                         @fwrite($f, 'Upload Files Finished at:'.date("Y-m-d H:i:s")."\n");
                         @fwrite($f,$txtlogs);
                         @fclose($f);
+                        
+                        @fwrite($f1, 'Upload File End at:'.date("Y-m-d H:i:s")."\r\n");
+                        @fclose($f1);
                     }
                 }
             }
