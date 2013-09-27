@@ -279,19 +279,27 @@ class Algorithms_Core_Feed
                     $feed_column_value = round($feed_column_value);
                 }elseif ("FILE" == $cond[0])
                 {
-                    echo 1;exit;
+                    $f1  =   fopen("logs/feedslogs/refresh-log3.txt", "w+");
+                    @fwrite($f1, 'Stop at: A '.date("Y-m-d H:i:s")."\r\n");
+                    exit;
                     $feed_column_value  =   $this->filterHtmlTags($feed_column_value,$product_row['supplier_sku'].'-TP');
                 }elseif("REL" == $cond[0])
                 {
-                    echo 2;exit;
+                    $f1  =   fopen("logs/feedslogs/refresh-log3.txt", "w+");
+                    @fwrite($f1, 'Stop at: B '.date("Y-m-d H:i:s")."\r\n");
+                    exit;
                     $feed_column_value  =   implode(' | ',array_filter(explode(' | ', $feed_column_value)));
                 }elseif('FILENAME' == $cond[0])
                 {
-                    echo 3;exit;
+                    $f1  =   fopen("logs/feedslogs/refresh-log3.txt", "w+");
+                    @fwrite($f1, 'Stop at: C '.date("Y-m-d H:i:s")."\r\n");
+                    exit;
                     $feed_column_value  =   $product_filter_model->getFileName($feed_column_value);
                 }elseif('SUBSTR' == $cond[0])
                 {
-                    echo 4;exit;
+                    $f1  =   fopen("logs/feedslogs/refresh-log3.txt", "w+");
+                    @fwrite($f1, 'Stop at: D '.date("Y-m-d H:i:s")."\r\n");
+                    exit;
                     if(strlen($feed_column_value) > $cond[1])
                     {
                         $feed_column_value  =   substr($feed_column_value, 0, $cond[1]);
