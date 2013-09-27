@@ -21,7 +21,7 @@ class Databases_Joins_GetUserInfo
         $select->from("users as u", array("user_id", "email", "user_status"));
         $select->joinLeft("users_extension as e", "u.user_id=e.user_id", array("company", "contact_name", "contact_phone", "join_date", "balance", "credit", "discount", "bpay_ref","flat_rate_shipping"));
         $select->where("user_type = ?", $user_type);
-        $select->where("user_id = ?", 3);
+        $select->where("e.user_id = ?", 3);
         $select->order(array("user_status DESC", "join_date DESC"));
         
         $data = $this->db->fetchAll($select);
