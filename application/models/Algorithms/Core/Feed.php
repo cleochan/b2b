@@ -80,13 +80,15 @@ class Algorithms_Core_Feed
                         @fwrite($f1, 'Start Replace Product datas Begin at:'.date("Y-m-d H:i:s")."\r\n");
                         foreach($product_list as $pl)
                         {
-                            $all_product_array['product_image'][]['imageURL0']    =   $pl['imageURL0'];
-                            $all_product_array['product_image'][]['imageURL1']    =   $pl['imageURL1'];
-                            $all_product_array['product_image'][]['imageURL2']    =   $pl['imageURL2'];
-                            $all_product_array['product_image'][]['imageURL3']    =   $pl['imageURL3'];
-                            $all_product_array['product_image'][]['imageURL4']    =   $pl['imageURL4'];
-                            $all_product_array['product_image'][]['imageURL5']    =   $pl['imageURL5'];
-                            $all_product_array['product_description'][$pl['supplier_sku']] =   $pl['supplier_sku'].'-TP.txt';
+                            if($user_id == 8){
+                                $all_product_array['product_image'][]['imageURL0']    =   $pl['imageURL0'];
+                                $all_product_array['product_image'][]['imageURL1']    =   $pl['imageURL1'];
+                                $all_product_array['product_image'][]['imageURL2']    =   $pl['imageURL2'];
+                                $all_product_array['product_image'][]['imageURL3']    =   $pl['imageURL3'];
+                                $all_product_array['product_image'][]['imageURL4']    =   $pl['imageURL4'];
+                                $all_product_array['product_image'][]['imageURL5']    =   $pl['imageURL5'];
+                                $all_product_array['product_description'][$pl['supplier_sku']] =   $pl['supplier_sku'].'-TP.txt';
+                            }
                             $contents_tmp_array = array();
                             
                             @fwrite($f1, 'Replace Product SKU:'.$pl['supplier_sku'].' at:'.date("Y-m-d H:i:s")."\r\n");
@@ -118,14 +120,15 @@ class Algorithms_Core_Feed
                         
                          foreach($product_list as $pl)
                         {
-                            $all_product_array['product_image'][]['imageURL0']    =   $pl['imageURL0'];
-                            $all_product_array['product_image'][]['imageURL1']    =   $pl['imageURL1'];
-                            $all_product_array['product_image'][]['imageURL2']    =   $pl['imageURL2'];
-                            $all_product_array['product_image'][]['imageURL3']    =   $pl['imageURL3'];
-                            $all_product_array['product_image'][]['imageURL4']    =   $pl['imageURL4'];
-                            $all_product_array['product_image'][]['imageURL5']    =   $pl['imageURL5'];
-                            $all_product_array['product_description'][$pl['supplier_sku']] =   $pl['supplier_sku'].'-TP.txt';
-                            
+                             if($user_id == 8){
+                                $all_product_array['product_image'][]['imageURL0']    =   $pl['imageURL0'];
+                                $all_product_array['product_image'][]['imageURL1']    =   $pl['imageURL1'];
+                                $all_product_array['product_image'][]['imageURL2']    =   $pl['imageURL2'];
+                                $all_product_array['product_image'][]['imageURL3']    =   $pl['imageURL3'];
+                                $all_product_array['product_image'][]['imageURL4']    =   $pl['imageURL4'];
+                                $all_product_array['product_image'][]['imageURL5']    =   $pl['imageURL5'];
+                                $all_product_array['product_description'][$pl['supplier_sku']] =   $pl['supplier_sku'].'-TP.txt';
+                             }
                             foreach($collect_feed_info['users_feed_definition'] as $users_feed_definition)
                             {
                                 $contents_tmp_array[($api_model->XmlKeyFilter($users_feed_definition['column_alias']))] = $api_model->XmlValueFilter($this->StringReplacement($pl, $users_feed_definition['column_value'], $array_for_replacement, $users_feed_definition['column_value_adjustment']));
@@ -279,27 +282,15 @@ class Algorithms_Core_Feed
                     $feed_column_value = round($feed_column_value);
                 }elseif ("FILE" == $cond[0])
                 {
-                    $f1  =   fopen("logs/feedslogs/refresh-log3.txt", "w+");
-                    @fwrite($f1, 'Stop at: A '.date("Y-m-d H:i:s")."\r\n");
-                    exit;
                     $feed_column_value  =   $this->filterHtmlTags($feed_column_value,$product_row['supplier_sku'].'-TP');
                 }elseif("REL" == $cond[0])
                 {
-                    $f1  =   fopen("logs/feedslogs/refresh-log3.txt", "w+");
-                    @fwrite($f1, 'Stop at: B '.date("Y-m-d H:i:s")."\r\n");
-                    exit;
                     $feed_column_value  =   implode(' | ',array_filter(explode(' | ', $feed_column_value)));
                 }elseif('FILENAME' == $cond[0])
                 {
-                    $f1  =   fopen("logs/feedslogs/refresh-log3.txt", "w+");
-                    @fwrite($f1, 'Stop at: C '.date("Y-m-d H:i:s")."\r\n");
-                    exit;
                     $feed_column_value  =   $product_filter_model->getFileName($feed_column_value);
                 }elseif('SUBSTR' == $cond[0])
                 {
-                    $f1  =   fopen("logs/feedslogs/refresh-log3.txt", "w+");
-                    @fwrite($f1, 'Stop at: D '.date("Y-m-d H:i:s")."\r\n");
-                    exit;
                     if(strlen($feed_column_value) > $cond[1])
                     {
                         $feed_column_value  =   substr($feed_column_value, 0, $cond[1]);
