@@ -165,7 +165,7 @@ class Algorithms_Core_Feed
                         $this->uploadFtpFile($product_array['product_description'], 'txt');
                         @fwrite($f, 'Upload CSV Files Begin at:'.date("Y-m-d H:i:s")."\n");
                         @fwrite($f,$txtlogs);
-                        $this->uploadFtpFile(array($result), 'csv');
+                        $this->uploadFtpFile(array($result), 'csv', $f);
                         @fwrite($f, 'Upload Files Finished at:'.date("Y-m-d H:i:s")."\n");
                         @fwrite($f,$txtlogs);
                         @fclose($f);
@@ -411,7 +411,7 @@ class Algorithms_Core_Feed
      * Uplaod images to merchant's FTP server
      * @param array $images_array
      */
-    function uploadFtpFile($file_array = array(), $type = null){
+    function uploadFtpFile($file_array = array(), $type = null, $file   =   null){
         if($file_array){
             $product_filter_model   =   new Databases_Joins_ProductFilter();
             $merchant_ftp_array     =   array(
@@ -435,6 +435,7 @@ class Algorithms_Core_Feed
                             }
                         }
                     }
+                    $ftp->close();
                     break;
                 case 'txt':
                     foreach ($file_array as $file){
@@ -443,14 +444,19 @@ class Algorithms_Core_Feed
                             $ftp->up_file($ftp_server_path, 'feed_txt/'.$file);
                         }
                     }
+                    $ftp->close();
                     break;
                 case 'csv':
                     foreach ($file_array as $file){
                         if($file){
                             $ftp_server_path    =   $merchant_ftp_array['csv_path'].'crazysales_datafeed.csv';
-                            $ftp->up_file($ftp_server_path, 'feeds/'.$file);
+                            $log    =   $ftp->up_file($ftp_server_path, 'feeds/'.$file);
+                            if($log){
+                                @fwrite($file, $log);
+                            }
                         }
                     }
+                    $ftp->close();
                     break;
             }
             
