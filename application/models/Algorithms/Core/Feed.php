@@ -157,12 +157,18 @@ class Algorithms_Core_Feed
                         }
                         $file_name  =   'feedslogs-'.date("YmdHis").".txt";
                         $f          =   fopen("logs/feedslogs/".$file_name, "w+");
-                        @fwrite($f, 'Upload DataFeed Files Begin at:'.date("Y-m-d H:i:s")."\n");
+                        @fwrite($f, 'Upload Image Files Begin at:'.date("Y-m-d H:i:s")."\n");
+                        @fwrite($f,$txtlogs);
+                        $this->uploadFtpFile($product_array['product_image'], 'image');
+                        @fwrite($f, 'Upload Description Files Begin at:'.date("Y-m-d H:i:s")."\n");
+                        @fwrite($f,$txtlogs);
+                        $this->uploadFtpFile($product_array['product_description'], 'txt');
+                        @fwrite($f, 'Upload CSV Files Begin at:'.date("Y-m-d H:i:s")."\n");
+                        @fwrite($f,$txtlogs);
+                        $this->uploadFtpFile(array($result), 'csv');
+                        @fwrite($f, 'Upload Files Finished at:'.date("Y-m-d H:i:s")."\n");
                         @fwrite($f,$txtlogs);
                         @fclose($f);
-                        $this->uploadFtpFile($product_array['product_image'], 'image');
-                        $this->uploadFtpFile($product_array['product_description'], 'txt');
-                        $this->uploadFtpFile(array($result), 'csv');
                     }
                 }
             }
