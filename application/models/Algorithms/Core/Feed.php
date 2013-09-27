@@ -451,6 +451,7 @@ class Algorithms_Core_Feed
                         if($file){
                             $ftp_server_path    =   $merchant_ftp_array['csv_path'].'crazysales_datafeed.csv';
                             $log    =   $ftp->up_file($ftp_server_path, 'feeds/'.$file);
+                            $log    .=  "\n".$file;
                             if($log){
                                 @fwrite($file, $log);
                             }
