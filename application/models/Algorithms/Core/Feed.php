@@ -19,12 +19,9 @@ class Algorithms_Core_Feed
             $product_filter_model = new Databases_Joins_ProductFilter();
             foreach($this->user_id_array as $user_id)
             {
-                $f1  =   fopen("logs/feedslogs/refresh-log".$user_id .".txt", "w+");
-                @fwrite($f1, 'Start $user_id:'.$user_id.' Begin at:'.date("Y-m-d H:i:s")."\r\n");
                 $collect_feed_info = $this->CollectFeedInfo($user_id);
-                @fwrite($f1, 'Start Push Product datas Begin at:'.date("Y-m-d H:i:s")."\r\n");
                 $product_list = $product_filter_model->Push($collect_feed_info, $user_id);
-                @fwrite($f1, 'Start Push Product datas End at:'.date("Y-m-d H:i:s")."\r\n");
+                
                 $all_product_array  =   array();
                 if(!empty($collect_feed_info['users_feed_definition']) && !empty($product_list))
                 {
@@ -91,7 +88,6 @@ class Algorithms_Core_Feed
                             }
                             $contents_tmp_array = array();
                             
-                            @fwrite($f1, 'Replace Product SKU:'.$pl['supplier_sku'].' at:'.date("Y-m-d H:i:s")."\r\n");
                             foreach($collect_feed_info['users_feed_definition'] as $users_feed_definition)
                             {
                                 $string_replacement_result = $this->StringReplacement($pl, $users_feed_definition['column_value'], $array_for_replacement, $users_feed_definition['column_value_adjustment']);
@@ -109,7 +105,7 @@ class Algorithms_Core_Feed
 
                             $contents .= implode($delimeter, $contents_tmp_array)."\r\n";
                         }
-                        @fwrite($f1, 'Start Replace Product datas End at:'.date("Y-m-d H:i:s")."\r\n");
+                        
                     }elseif(3 == $collect_feed_info['users_feed']['feed_extension']) //xml
                     {
                         $api_model = new Algorithms_Core_Api();
@@ -148,7 +144,7 @@ class Algorithms_Core_Feed
                     $export_model->file_name = $plugin_model->GetFeedPath($collect_feed_info['users_feed']['feed_name'], $collect_feed_info['users_feed']['feed_extension'], 1);
                     $export_model->contents = $contents;
                     //Create Feed
-                    @fwrite($f1, 'Create File End at:'.date("Y-m-d H:i:s")."\r\n");
+                    
                     $result = $export_model->Push();
                     if($user_id == 8 ){
                         if($collect_feed_info['users_feed']['feed_product_type'] == '2'){
@@ -159,27 +155,9 @@ class Algorithms_Core_Feed
                         }elseif($collect_feed_info['users_feed']['feed_product_type'] == '1'){
                             $product_array      =   $all_product_array;
                         }
-                        $txtlogs    =   '';
-                        foreach($product_array['product_description'] as $product){
-                            $txtlogs    .=   $product."\r\n";
-                        }
-                        $file_name  =   'feedslogs-'.date("YmdHis").".txt";
-                        $f          =   fopen("logs/feedslogs/".$file_name, "w+");
-                        @fwrite($f, 'Upload Image Files Begin at:'.date("Y-m-d H:i:s")."\n");
-                        @fwrite($f,$txtlogs);
                         $this->uploadFtpFile($product_array['product_image'], 'image');
-                        @fwrite($f, 'Upload Description Files Begin at:'.date("Y-m-d H:i:s")."\n");
-                        @fwrite($f,$txtlogs);
                         $this->uploadFtpFile($product_array['product_description'], 'txt');
-                        @fwrite($f, 'Upload CSV Files '.$export_model->file_name. ' Begin at:'.date("Y-m-d H:i:s")."\n");
-                        @fwrite($f,$txtlogs);
-                        $this->uploadFtpFile(array($export_model->file_name), 'csv', $f);
-                        @fwrite($f, 'Upload Files Finished at:'.date("Y-m-d H:i:s")."\n");
-                        @fwrite($f,$txtlogs);
-                        @fclose($f);
-                        
-                        @fwrite($f1, 'Upload File End at:'.date("Y-m-d H:i:s")."\r\n");
-                        @fclose($f1);
+                        $this->uploadFtpFile(array($export_model->file_name), 'csv');
                     }
                 }
             }
@@ -422,7 +400,7 @@ class Algorithms_Core_Feed
      * Uplaod images to merchant's FTP server
      * @param array $images_array
      */
-    function uploadFtpFile($file_array = array(), $type = null, $file   =   null){
+    function uploadFtpFile($file_array = array(), $type = null){
         if($file_array){
             $product_filter_model   =   new Databases_Joins_ProductFilter();
             $merchant_ftp_array     =   array(
@@ -462,10 +440,6 @@ class Algorithms_Core_Feed
                         if($file){
                             $ftp_server_path    =   $merchant_ftp_array['csv_path'].'crazysales_datafeed.csv';
                             $log    =   $ftp->up_file($ftp_server_path, 'feeds/'.$file);
-                            $log    .=  "\n".$file;
-                            if($log){
-                                @fwrite($file, $log);
-                            }
                         }
                     }
                     $ftp->close();
