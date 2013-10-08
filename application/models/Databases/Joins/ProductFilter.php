@@ -163,6 +163,7 @@ class Databases_Joins_ProductFilter
             if($user_id == 8)
             {
                 $select->join('b2b_dd_category', 'b2b_dd_category.category_id = '.$source_table.'.category_id', 'dd_category_id');
+                $select->where('quantity_available >= ?',12);
                 $select->where("length > ?", 0);
                 $select->where("height > ?", 0);
                 $select->where("depth > ?", 0);
