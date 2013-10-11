@@ -682,5 +682,140 @@ class ScheduledController extends Zend_Controller_Action
         $params_model->UpdateVal('merchant_feed_refresh_time',date('Y-m-d H:i:s'));
         die('Refresh Feeds Complete.');
     }
-      
+    /**
+     * Process Order Of Dealsdirect
+     */
+    function processDdOrdersAction()
+    {
+        $params_model           =   new Databases_Tables_Params();
+        $logs_path              =   $params_model->GetVal('logs_path');
+        $f_logs_feeds  =   @fopen($logs_path."feedslogs/processddorders".date('YmdHis').".txt", "w+");
+        @fwrite($f_logs_feeds, 'Process DD Orders Begin at:'.date("Y-m-d H:i:s")."\r\n");
+        $merchant_ftp_array     =   array(
+            'ftp_host'      =>  'interface.dealsdirect.com.au',
+            'ftp_port'      =>  '21',
+            'ftp_user'      =>  'tp_crazysales',
+            'ftp_pass'      =>  '3Ws5maLm',
+            'order_path'    =>  'incoming/orders/',
+        );
+        $new_order_file_name    =   '';
+        $local_order_path       =   'DD_orders/';
+        $ftp                    =   new Algorithms_Core_Ftp($merchant_ftp_array['ftp_host'], $merchant_ftp_array['ftp_port'], $merchant_ftp_array['ftp_user'], $merchant_ftp_array['ftp_pass']);
+        @fwrite($f_logs_feeds, 'Download CSV file at:'.date("Y-m-d H:i:s")."\r\n");
+        $new_order_file_name    =   $ftp->getNewestFile($merchant_ftp_array['order_path']);
+        $local_order_path       .=  $new_order_file_name;
+        $download_order_path    =   $merchant_ftp_array['order_path'].$new_order_file_name;
+        $down_result            =   $ftp->copy_file($download_order_path, $local_order_path);
+        if($down_result){
+            $product_filter_model   =   new Databases_Joins_ProductFilter();
+            $getorders_model        =   new Databases_Joins_GetOrders();
+            $group_instance_balance_array = array();
+            $data_array = array();
+            $merchant_ref_pool = array();
+            @fwrite($f_logs_feeds, 'Process Orders Begin at:'.date("Y-m-d H:i:s")."\r\n");
+            if (($handle = fopen($local_order_path, "r")) !== FALSE) {
+                while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
+                    $data_array[] = $data;
+                }
+                fclose($handle);
+                if(!empty($data_array))
+                {
+                    unset($data_array[0]);
+                    foreach($data_array as $da_key => $da_val)
+                    {
+                        $supplier_sku    =   substr($da_val[9], 0, -3);
+                        @fwrite($f_logs_feeds, 'Process Orders:'.$da_val[0].' Begin at:'.date("Y-m-d H:i:s")."\r\n");
+                        //Validation
+                        $full_name_array    = explode(' ', trim($da_val[1]));
+                        $getorders_model->shipping_first_name   =   $full_name_array[0];
+                        $getorders_model->shipping_last_name    =   $full_name_array[1];
+                        $getorders_model->shipping_company      =   trim($da_val[18]);
+                        $getorders_model->merchant_company      =   'Test Company';//'Dealsdirect';//$da_val[2];
+                        $getorders_model->shipping_address_1    =   trim($da_val[3]).' '. trim($da_val[4]);
+                        $getorders_model->shipping_suburb       =   trim($da_val[5]);
+                        $getorders_model->shipping_state        =   trim($da_val[6]);
+                        $getorders_model->shipping_postcode     =   trim($da_val[7]);
+                        $getorders_model->shipping_country      =   'Australia';
+                        $getorders_model->shipping_phone        =   trim($da_val[8]);
+                        $getorders_model->supplier_sku          =   $supplier_sku;
+                        $getorders_model->quantity              =   trim($da_val[11]);
+                        $getorders_model->operator_id           =   '1';
+                        $getorders_model->pick_up               =   'N';
+                        $getorders_model->group_instance_balance_array = $group_instance_balance_array;
+
+                        /**
+                         * @var $getorders_model Databases_Joins_GetOrders
+                         * @todo Check Order 
+                         */
+                        $check_result = $getorders_model->PlaceOrderCheck();
+                        if("Y" == $check_result[1]) //passed the validation
+                        {
+                            $order_amount = $check_result['order_amount'];
+                            $instant_balance = $check_result['instant_balance'];
+                            $user_id = $check_result['user_id'];
+
+                            //update instant balance
+                            $group_instance_balance_array[$user_id] = $instant_balance;
+                            //Insert Into Orders
+                            $getorders_model->merchant_ref          =   $da_val[0];
+                            $getorders_model->order_amount          =   $order_amount;
+                            $getorders_model->user_id = $user_id;
+                            $getorders_model->ip = $ip;
+                            $getorders_model->shipping_first_name   =   $full_name_array[0];
+                            $getorders_model->shipping_last_name    =   $full_name_array[1];
+                            $getorders_model->shipping_company      =   trim($da_val[18]);
+                            $getorders_model->shipping_address_1    =   trim($da_val[3]).' '. trim($da_val[4]);
+                            $getorders_model->shipping_address_2    =   '';
+                            $getorders_model->shipping_suburb       =   trim($da_val[5]);
+                            $getorders_model->shipping_state        =   trim($da_val[6]);
+                            $getorders_model->shipping_postcode     =   trim($da_val[7]);
+                            $getorders_model->shipping_country      =   '';
+                            $getorders_model->shipping_phone        =   trim($da_val[8]);
+                            $getorders_model->shipping_fax          =   '';
+                            $getorders_model->supplier_sku          =   $supplier_sku;
+                            $getorders_model->merchant_sku          =   trim($da_val[9]);
+                            $getorders_model->quantity              =   trim($da_val[11]);
+                            $getorders_model->shipping_method       =   '';
+                            $getorders_model->shipping_instruction  =   '';
+                            $getorders_model->serial_no             =   '';
+                            $getorders_model->comments              =   '';
+                            $getorders_model->pick_up               =   'N';
+                            $getorders_model->merchant_ref_pool     =   $merchant_ref_pool;
+                            $getorders_model->discount_amount       =   round($check_result['discount_amount'],2);
+                            $getorders_model->shipping_cost         =   round($check_result['shipping_cost'],2);
+
+                            $sku_prices_info    =   $product_filter_model->GetSkuPrices($supplier_sku, $user_id);
+
+                            $getorders_model->expected_item_cost    =   round($sku_prices_info['supplier_price'],2);
+                            $getorders_model->final_item_cost       =   round($sku_prices_info['supplier_price'],2);
+                            $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
+                            $getorders_model->ship_cost             =   round($check_result['shipping_cost'],2);
+                            $getorders_model->payment_type_id       =   9;
+
+                            /**
+                             * @todo PlaceOrder
+                             */
+                            $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
+
+                            //update merchant ref pool
+                            $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
+                        }else{
+                            @fwrite($f_logs_feeds, $check_result[2].' at:'.date("Y-m-d H:i:s")."\r\n");
+                        }
+                    }
+                }
+                $purchase_order_ids =   implode(',',$merchant_ref_pool);
+                $operate_orders_model   =   new Databases_Joins_OperateOrders();
+                $operate_orders_model->purchase_order_ids   =   $purchase_order_ids;
+                $result = $operate_orders_model->PlaceOrder();
+            }
+            
+        }else{
+            @fwrite($f_logs_feeds, "Download $new_order_file_name Faild at: ".date("Y-m-d H:i:s")."\r\n");
+        }
+        @fwrite($f_logs_feeds, "Process Orders Complete at: ".date("Y-m-d H:i:s")."\r\n");
+        @fclose($f_logs_feeds);
+        die('Process Orders Complete.');
+        
+    }
 }

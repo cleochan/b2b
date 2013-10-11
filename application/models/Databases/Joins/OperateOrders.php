@@ -74,8 +74,10 @@ class Databases_Joins_OperateOrders {
                 $order_discount             =   new MoneyType();
                 $order_amount_money_type    =   new MoneyType();
 
+                $user_info  =   $user_info_model->GetUserInfo($purchase_order['user_id']);
+                
                 $crazySalesOrderType->PaymentTypeID          =   $purchase_order['payment_type_id']; 
-                $crazySalesOrderType->RetailerAccountEmail   =   $_SESSION["Zend_Auth"]["storage"]->email;
+                $crazySalesOrderType->RetailerAccountEmail   =   $user_info['email'];
                 $crazySalesOrderType->ShipFirstName          =   $purchase_order['shipping_first_name'];
                 $crazySalesOrderType->ShipAddress_1          =   $purchase_order['shipping_address_1'];
                 $crazySalesOrderType->ShipAddress_2          =   $purchase_order['shipping_address_2'];
@@ -85,8 +87,7 @@ class Databases_Joins_OperateOrders {
                 $crazySalesOrderType->ShipCountryCode        =   $purchase_order['shipping_country'];
                 $crazySalesOrderType->ShipPhone              =   $purchase_order['shipping_phone'];
                 $crazySalesOrderType->SiteID                 =   6;
-
-                $user_info  =   $user_info_model->GetUserInfo($purchase_order['user_id']);
+                
                 $order_amount_money_type->Value    =   round($purchase_order['order_amount'],2);                                  
                 $order_discount->Value  =   round($purchase_order['discount_amount'],2);
                 if($crazySalesOrderType)

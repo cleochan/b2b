@@ -34,7 +34,36 @@ class Algorithms_Core_Ftp {
         if(!$this->off) {
             return "File upload failed, please check the permissions and the path is correct.";  
         }
-    }  
+    }
+    /** 
+    * 方法：复制文件 
+    * 说明：由于FTP无复制命令,本方法变通操作为：下载后再上传到新的路径 
+    * @downpath -- 目标路径
+    * @path    -- 原路径 
+    */  
+    function copy_file($downpath, $path)
+    {
+        $this->off  =   ftp_get($this->conn_id, $path, $downpath, FTP_BINARY);   // Download
+        if(!$this->off){
+            return FALSE;
+        }else{
+            return TRUE;
+        }
+    }
+    
+    function getNewestFile($path){
+        $filelist   =   @ftp_rawlist($this->conn_id, $path);
+        if($filelist){
+            preg_match("/crazysales_picking([\s\S]*)/",end($filelist),$matches);
+            if($matches){
+                return $matches[0];
+            }else{
+                return FALSE;
+            }
+        }else{
+            return  FALSE;
+        }
+    }
 }
 
 ?>
