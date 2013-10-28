@@ -163,6 +163,9 @@ class Databases_Joins_ProductFilter
             if($user_id == 8)
             {
                 $select->join('b2b_dd_category', 'b2b_dd_category.category_id = '.$source_table.'.category_id', 'dd_category_id');
+                $select->where("supplier_sku not REGEXP '([\s\S]*)(\/)([\s\S]*)'");
+                $select->where("supplier_sku not REGEXP '([\s\S]*)[\+]([\s\S]*)'");
+                $select->where("char_length(product_name) <= 55 ");
                 $select->where('quantity_available >= ?',12);
                 $select->where("length > ?", 0);
                 $select->where("height > ?", 0);
@@ -207,12 +210,11 @@ class Databases_Joins_ProductFilter
                     break;
             }
             $select->where("product_code_type <> 'PART' or product_code_type is null");
-            $select->where("supplier_sku not REGEXP '([\s\S]*)(\/)([\s\S]*)'");
             $select->order("category ASC");
             $select->order("brand ASC");
             
             $data = $this->db->fetchAll($select);
-            
+
             //update for discount/cost protection
             if(!empty($data))
             {
@@ -759,7 +761,7 @@ class Databases_Joins_ProductFilter
         }
         $source_table = "product_info_".$data_source;
         $old_source_table = "product_info_".$old_data_source;
-        $sql    =   'select * from '. $source_table. ' where not exists (select * from '. $old_source_table. ' where '. $source_table. '.product_id = '. $old_source_table. '.product_id and supplier_sku NOT REGEXP '. "'([\s\S]*)(\/)([\s\S]*)'".' ) and supplier_sku NOT REGEXP '."'([\s\S]*)(\/)([\s\S]*)'".' and (product_code_type <> '."'PART'".' or product_code_type is null) and quantity_available > 0 and country_of_origin IN ("CN")';
+        $sql    =   'select * from '. $source_table. ' where not exists (select * from '. $old_source_table. ' where '. $source_table. '.product_id = '. $old_source_table. '.product_id and supplier_sku NOT REGEXP '. "'([\s\S]*)(\/)([\s\S]*)'".' ) and supplier_sku NOT REGEXP '."'([\s\S]*)(\/)([\s\S]*)'".' and (product_code_type <> '."'PART'".' or product_code_type is null) and quantity_available > 0 and country_of_origin IN ("CN") AND supplier_sku not REGEXP '."'([\s\S]*)[\+]([\s\S]*)'".' AND char_length(product_name) <= 55';
         $data   =   $this->db->query($sql);
         if($data){
             $data_all   =   $data->fetchAll();

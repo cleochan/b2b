@@ -339,8 +339,8 @@ class Algorithms_Core_Feed
         $logs_path                  =   $system_params_model->GetVal('merchant_feed_txt_path');
         $encode =   'UTF-8';
         preg_match("/WARRANTY:([\s\S]*)/i",$html,$warranties);
-        $html   =   preg_replace("/WARRANTY:([\s\S]*)/i", "", $html);
-        $warranty       =   $warranties[0];
+        //$html   =   preg_replace("/WARRANTY:([\s\S]*)/i", "", $html);
+        //$warranty       =   $warranties[0];
         preg_match("/SPECIFICATIONS:<table.*?>[\s\S]*?<\/table>/i",$html,$matches);
         $html   =   preg_replace("/SPECIFICATIONS:([\s\S]*)/i", "", $html);
         $specifications =   $matches[0];
@@ -349,7 +349,8 @@ class Algorithms_Core_Feed
         $specifications =   preg_replace("/<br \s*\/?\/>/i", "\r\n\t\t", $specifications);
         $specifications =   preg_replace("/<\/?li>/i", "\r\n\t\t", $specifications); 
         $specifications =   preg_replace("/<\/?p>/i", "\r\n\t\t", $specifications);  
-        $html   .=  $specifications.$warranty;
+        //$html   .=  $specifications.$warranty;
+        $html   .=  $specifications;
         $html   =   preg_replace("/<br \s*\/?\/>/i", "\r\n", $html);  
         $html   =   preg_replace("/<\/?p>/i", "\r\n", $html);  
         $html   =   preg_replace("/<\/?div>/i", "\r\n", $html);
@@ -359,7 +360,7 @@ class Algorithms_Core_Feed
         $html   =   preg_replace("/<br \s*\/?\/>/i", "\r\n\t\t\t", $html);
         $html   =   preg_replace("/FEATURES:/", "\r\nFEATURES:\r\n\r\n", $html);
         $html   =   preg_replace("/SPECIFICATIONS:/", "\r\nSPECIFICATIONS:\r\n\r\n", $html);
-        $html   =   preg_replace("/WARRANTY:/", "\r\nWARRANTY:\r\n", $html);
+        //$html   =   preg_replace("/WARRANTY:/", "\r\nWARRANTY:\r\n", $html);
         $html   =   preg_replace("/<\/?blockquote>/i", "\n", $html);
         $html   =   preg_replace("/<li>/i", "\t * ", $html);
         $html   =   preg_replace("/<\/?li>/i", "\r\n", $html);
