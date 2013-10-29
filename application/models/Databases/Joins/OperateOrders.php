@@ -136,7 +136,8 @@ class Databases_Joins_OperateOrders {
                         $quantityType->Value    =   $logs_order['quantity'];
                         $crazySalesOrderItemType->Quantity  =   $quantityType;
                         $crazySalesOrderItemType->ItemSku   =   $logs_order['supplier_sku'];
-                        $order_service_model->crazySalesOrderType  =   $crazySalesOrderType;                    
+                        $crazySalesOrderItemType->ShipCarrier      =   $logs_order['shipping_courier'];
+                        $order_service_model->crazySalesOrderType  =   $crazySalesOrderType;      
                         $crazySalesOrderItemTypeArray[$logs_order['merchant_ref']][]   =   $crazySalesOrderItemType;
                     }
                 }

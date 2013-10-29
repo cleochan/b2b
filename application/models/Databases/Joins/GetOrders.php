@@ -75,6 +75,9 @@ class Databases_Joins_GetOrders
     
     var $limit;
     
+    var $shipping_courier;
+    var $params_array =   array();
+    
     function __construct(){
     	$this->db = Zend_Registry::get("db");
     }
@@ -379,6 +382,11 @@ class Databases_Joins_GetOrders
                         $order_amount = ( $prices['supplier_price'] + $prices['estimated_shipping_cost'] ) * trim($this->quantity);
                         $shipping_cost  =   $prices['estimated_shipping_cost'] * trim($this->quantity);
                         $ship_cost  =   $shipping_cost;
+                    }elseif($this->params_array['free_shipping']===1){   //free shipping
+                        $estimated_shipping_cost    =   0;
+                        $order_amount = ( $prices['supplier_price'] * trim($this->quantity) ) + $estimated_shipping_cost;
+                        $shipping_cost  =   $estimated_shipping_cost;
+                        $ship_cost  =   $estimated_shipping_cost;
                     }else{
                         $estimated_shipping_cost    =   $product_filter_model->getEstimatedShippingCost($prices['product_id'], $this->shipping_postcode, trim($this->quantity) );
                         $order_amount = ( $prices['supplier_price'] * trim($this->quantity) ) + $estimated_shipping_cost;
@@ -489,6 +497,7 @@ class Databases_Joins_GetOrders
             "final_ship_cost" => $this->final_ship_cost,
             "ship_cost" => $this->ship_cost, 
             "api_response"  =>  $this->api_response,    // add by Tim Wu 2013-5-2
+            "shipping_courier"  =>$this->shipping_courier,
         );
         
         //add by Tim Wu 2013-4-24 if item_status is not NULL

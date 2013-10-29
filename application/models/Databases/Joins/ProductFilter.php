@@ -342,7 +342,7 @@ class Databases_Joins_ProductFilter
         if($data_source && $sku) // 1 or 2
         {
             $product_select = $this->db->select();
-            $product_select->from("product_info_".$data_source, array("product_id","product_name","supplier_sku", "street_price","supplier_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","sc_class"));
+            $product_select->from("product_info_".$data_source, array("product_id","product_name","supplier_sku", "street_price","supplier_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","sc_class", "shipping_courier", "length", "height", "depth", "weight"));
             $product_select->where("supplier_sku = ?", $sku);
             $product = $this->db->fetchRow($product_select);
             if($product['supplier_sku'])
@@ -351,9 +351,20 @@ class Databases_Joins_ProductFilter
                 
                 $result['supplier_price'] = $offer_price_cal[1];
                 $result['estimated_shipping_cost'] = $product['estimated_shipping_cost'];
-                $result['estimated_handling_fee'] = $product['estimated_handling_fee'];
+                $result['estimated_handling_fee'] = $product['estimated_handling_fee0'];
                 $result['quantity_available'] = $product['quantity_available'];
-                $result['sc_class'] = $product['sc_class'];
+                if($user_id == 8){
+                    if($product['length'] >= 105 || $product['height'] >= 105 || $product['depth'] >= 105 || $product['length'] >= 32){
+                        $result['sc_class'] =   23;
+                        $result['shipping_courier'] =   'Alliex - DealsDirect';
+                    }else{
+                        $result['sc_class'] =   22;
+                        $result['shipping_courier'] =   'eParcel - DealsDirect';
+                    }
+                }else{
+                    $result['sc_class']         = $product['sc_class'];
+                    $result['shipping_courier'] =   $product['shipping_courier'];
+                }
                 $result['product_id']    = $product['product_id'];
                 $result['product_name']    = $product['product_name'];
             }

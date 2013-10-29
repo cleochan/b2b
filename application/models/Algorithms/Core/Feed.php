@@ -273,6 +273,13 @@ class Algorithms_Core_Feed
                     {
                         $feed_column_value  =   substr($feed_column_value, 0, $cond[1]);
                     }
+                }elseif ('EXPRESS'== $cond[0]) {
+                    $express_info_array = explode('|', $feed_column_value);
+                    if($express_info_array[0]>=105 || $express_info_array[1]>=105 || $express_info_array[2]>=105 || $express_info_array[3]>=32){
+                        $feed_column_value  =   3;
+                    }  else {
+                        $feed_column_value  =   1;
+                    }
                 }else{
                     if($feed_column_value === $cond[0])
                     {

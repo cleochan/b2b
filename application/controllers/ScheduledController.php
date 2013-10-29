@@ -120,7 +120,8 @@ class ScheduledController extends Zend_Controller_Action
                         $final_ship_cost->Value   =   round($logs_order['final_ship_cost'],2);
                         $crazySalesOrderItemType->FinalShipCost      =   $final_ship_cost;
                         $ship_cost->Value   =    round($logs_order['ship_cost'],2);
-                        $crazySalesOrderItemType->ShipCost           =   $ship_cost;
+                        $crazySalesOrderItemType->ShipCarrier      =   $logs_order['shipping_courier'];
+                        $crazySalesOrderItemType->ShipCost         =   $ship_cost;
 
                         $quantityType->Value    =   $logs_order['quantity'];
                         $crazySalesOrderItemType->Quantity  =   $quantityType;
@@ -703,12 +704,16 @@ class ScheduledController extends Zend_Controller_Action
         $local_order_path       =   'DD_orders/';
         $ftp                    =   new Algorithms_Core_Ftp($merchant_ftp_array['ftp_host'], $merchant_ftp_array['ftp_port'], $merchant_ftp_array['ftp_user'], $merchant_ftp_array['ftp_pass']);
         @fwrite($f_logs_feeds, 'Download CSV file at:'.date("Y-m-d H:i:s")."\r\n");
-        $new_order_file_name    =   $ftp->getNewestFile($merchant_ftp_array['order_path']);
+        /*$new_order_file_name    =   $ftp->getNewestFile($merchant_ftp_array['order_path']);
         $local_order_path       .=  $new_order_file_name;
         $download_order_path    =   $merchant_ftp_array['order_path'].$new_order_file_name;
         $down_result            =   $ftp->copy_file($download_order_path, $local_order_path);
-        //$local_order_path       =   'DD_orders/crazysales_picking_20131007-111752.csv';
+         * 
+         */
+        
+        $local_order_path       =   'DD_orders/crazysales_picking_20131007-111752.csv';
         $down_result            =   TRUE;
+        
         if($down_result){
             $product_filter_model   =   new Databases_Joins_ProductFilter();
             $getorders_model        =   new Databases_Joins_GetOrders();
@@ -745,7 +750,10 @@ class ScheduledController extends Zend_Controller_Action
                         $getorders_model->operator_id           =   '1';
                         $getorders_model->pick_up               =   'N';
                         $getorders_model->group_instance_balance_array = $group_instance_balance_array;
-
+                        $params_array   =   array(
+                            'free_shipping' => 1
+                        );
+                        $getorders_model->params_array          =   $params_array;
                         /**
                          * @var $getorders_model Databases_Joins_GetOrders
                          * @todo Check Order 
@@ -795,6 +803,7 @@ class ScheduledController extends Zend_Controller_Action
                             $getorders_model->ship_cost             =   round($check_result['shipping_cost'],2);
                             $getorders_model->payment_type_id       =   9;
                             $getorders_model->item_amount           =   round($sku_prices_info['supplier_price'],2) + round($check_result['shipping_cost'],2);
+                            $getorders_model->shipping_courier      =   trim($sku_prices_info['shipping_courier']);
                             /**
                              * @todo PlaceOrder
                              */
