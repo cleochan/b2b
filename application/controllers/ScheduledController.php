@@ -704,16 +704,14 @@ class ScheduledController extends Zend_Controller_Action
         $local_order_path       =   'DD_orders/';
         $ftp                    =   new Algorithms_Core_Ftp($merchant_ftp_array['ftp_host'], $merchant_ftp_array['ftp_port'], $merchant_ftp_array['ftp_user'], $merchant_ftp_array['ftp_pass']);
         @fwrite($f_logs_feeds, 'Download CSV file at:'.date("Y-m-d H:i:s")."\r\n");
-        /*$new_order_file_name    =   $ftp->getNewestFile($merchant_ftp_array['order_path']);
+        $new_order_file_name    =   $ftp->getNewestFile($merchant_ftp_array['order_path']);
         $local_order_path       .=  $new_order_file_name;
         $download_order_path    =   $merchant_ftp_array['order_path'].$new_order_file_name;
         $down_result            =   $ftp->copy_file($download_order_path, $local_order_path);
-         * 
-         */
-        
+        /*
         $local_order_path       =   'DD_orders/crazysales_picking_20131007-111752.csv';
         $down_result            =   TRUE;
-        
+        **/
         if($down_result){
             $product_filter_model   =   new Databases_Joins_ProductFilter();
             $getorders_model        =   new Databases_Joins_GetOrders();
