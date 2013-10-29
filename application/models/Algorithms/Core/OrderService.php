@@ -41,6 +41,10 @@ class Algorithms_Core_OrderService extends SoapClient{
      */
     var $crazySalesOrderStatusType;
     
+    var $OrderIDs;
+    
+    var $OrderStatus;
+    
     private static $classmap = array();
     
     /**
@@ -61,7 +65,8 @@ class Algorithms_Core_OrderService extends SoapClient{
             'soap_version'=>SOAP_1_1, 
             'exceptions'=>true, 
             'trace'=>1, 
-            'cache_wsdl'=>WSDL_CACHE_NONE 
+            'cache_wsdl'=>WSDL_CACHE_NONE,
+            "features" => SOAP_SINGLE_ELEMENT_ARRAYS,
          );
         parent::__construct($wsdl, $options);
     }
@@ -95,7 +100,7 @@ class Algorithms_Core_OrderService extends SoapClient{
         $response   =   $this->PlaceOrder(array('request' => $req));
         $response   =   $this->object_array($response);
         $orders_info    =   $response['PlaceOrderResult']['Orders'];
-        $order_number   =   $orders_info['CrazySalesOrderType']['OrderNumber'];
+        $order_number   =   $orders_info['CrazySalesOrderType'][0]['OrderNumber'];
         $message_info   =   $response['PlaceOrderResult']['Messages'];
         $result['order_number'] =   $order_number;
         $result['MessageType']  =   $message_info['MessageType'];
@@ -125,6 +130,37 @@ class Algorithms_Core_OrderService extends SoapClient{
         {
             $result['MessageType']  =   array();
         }
+        return $result;
+    }
+    
+    /**
+     * Get Orders Inform from Crazysales with Webservice
+     * @param OrderIDs array
+     * @return  array $result
+     */
+    function WebServiceGetOrderInfo(){
+        $resulr     =   array();
+        $getOrderInfoRequest    =   new GetOrderInfoRequest();
+        $getOrderInfoRequest->OrderIDs  =   $this->OrderIDs;
+        $result     =   array();
+        $response   =   $this->GetOrder(array('request'=>$getOrderInfoRequest));
+        $response   =   $this->object_array($response);
+        $message_info   =   $response['GetOrderResult']['Messages'];
+        $result['MessageType']  =   $message_info['MessageType']?$message_info['MessageType']:'';
+        $result['Orders']       =   $response['GetOrderResult']['Orders'];
+        return $result;
+    }
+    
+    function WebServiceGetOrderStatus(){
+        $result     =   array();
+        $getOrderStatusRequest  =   new GetOrderStatusRequest();
+        $getOrderStatusRequest->OrderIDs =   $this->OrderIDs;
+        $result     =   array();
+        $response   =   $this->GetOrderStatus(array('request'=>$getOrderStatusRequest));
+        $response   =   $this->object_array($response);
+        $message_info           =   $response['GetOrderStatusResult']['Messages'];
+        $result['MessageType']  =   $message_info['MessageType']?$message_info['MessageType']:'';
+        $result['OrderStatus']  =   $response['GetOrderStatusResult']['OrderStatus'];
         return $result;
     }
 }

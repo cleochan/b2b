@@ -171,6 +171,11 @@ class Databases_Joins_OperateOrders {
                     $crazySalesOrderStatusType1->StatusID        =   3;
                     $crazy_sales_order_status_array1[]           =   $crazySalesOrderStatusType1;
                     
+                    $result['orders'][$purchase_order['purchase_order_id']] =   array(
+                        'purchase_order_id' =>  $purchase_order['purchase_order_id'],
+                        'main_order_id'     =>  $response_data['order_number'],
+                    );
+                    
                     $crazy_sales_order_status_array[$response_data['order_number']] =   $crazySalesOrderStatusType;
                 }elseif($response_data['MessageType']['Description'])
                 {

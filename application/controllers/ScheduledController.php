@@ -688,6 +688,7 @@ class ScheduledController extends Zend_Controller_Action
     function processDdOrdersAction()
     {
         $params_model           =   new Databases_Tables_Params();
+        $dd_orders_model        =   new Databases_Tables_DdOrders();
         $logs_path              =   $params_model->GetVal('logs_path');
         $f_logs_feeds  =   @fopen($logs_path."feedslogs/processddorders".date('YmdHis').".txt", "w+");
         @fwrite($f_logs_feeds, 'Process DD Orders Begin at:'.date("Y-m-d H:i:s")."\r\n");
@@ -706,6 +707,8 @@ class ScheduledController extends Zend_Controller_Action
         $local_order_path       .=  $new_order_file_name;
         $download_order_path    =   $merchant_ftp_array['order_path'].$new_order_file_name;
         $down_result            =   $ftp->copy_file($download_order_path, $local_order_path);
+        //$local_order_path       =   'DD_orders/crazysales_picking_20131007-111752.csv';
+        $down_result            =   TRUE;
         if($down_result){
             $product_filter_model   =   new Databases_Joins_ProductFilter();
             $getorders_model        =   new Databases_Joins_GetOrders();
@@ -723,7 +726,7 @@ class ScheduledController extends Zend_Controller_Action
                     unset($data_array[0]);
                     foreach($data_array as $da_key => $da_val)
                     {
-                        $supplier_sku    =   substr($da_val[9], 0, -3);
+                        $supplier_sku    =   substr(trim($da_val[9]), 0, -3);
                         @fwrite($f_logs_feeds, 'Process Orders:'.$da_val[0].' Begin at:'.date("Y-m-d H:i:s")."\r\n");
                         //Validation
                         $full_name_array    = explode(' ', trim($da_val[1]));
@@ -785,18 +788,40 @@ class ScheduledController extends Zend_Controller_Action
                             $getorders_model->shipping_cost         =   round($check_result['shipping_cost'],2);
 
                             $sku_prices_info    =   $product_filter_model->GetSkuPrices($supplier_sku, $user_id);
-
+                            
                             $getorders_model->expected_item_cost    =   round($sku_prices_info['supplier_price'],2);
                             $getorders_model->final_item_cost       =   round($sku_prices_info['supplier_price'],2);
                             $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
                             $getorders_model->ship_cost             =   round($check_result['shipping_cost'],2);
                             $getorders_model->payment_type_id       =   9;
-
+                            $getorders_model->item_amount           =   round($sku_prices_info['supplier_price'],2) + round($check_result['shipping_cost'],2);
                             /**
                              * @todo PlaceOrder
                              */
                             $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
-
+                            
+                            /**
+                             * @todo Add DD order
+                             */
+                            
+                            $dd_orders_model->b2b_order_id      =   $place_order_return['purchase_order_id'];
+                            $dd_orders_model->o_num             =   sprintf('%1.0f', $da_val[0]);
+                            $dd_orders_model->buyer_full_name   =   trim($da_val[1]);
+                            $dd_orders_model->company           =   trim($da_val[2]);
+                            $dd_orders_model->address_line_1    =   trim($da_val[3]);
+                            $dd_orders_model->address_line_2    =   trim($da_val[4]);
+                            $dd_orders_model->suburb            =   trim($da_val[5]);
+                            $dd_orders_model->state             =   trim($da_val[6]);
+                            $dd_orders_model->post_code         =   trim($da_val[7]);
+                            $dd_orders_model->phone_num         =   trim($da_val[8]);
+                            $dd_orders_model->product_code      =   trim($da_val[9]);
+                            $dd_orders_model->product_title     =   trim($da_val[10]);
+                            $dd_orders_model->qty               =   trim($da_val[11]);
+                            $dd_orders_model->cart_id           =   trim($da_val[12]);
+                            $dd_orders_model->ref_num           =   trim($da_val[13]);
+                            $dd_orders_model->cost              =   trim($da_val[14]);
+                            $dd_orders_model->freight           =   trim($da_val[15]);
+                            $dd_orders_model->addDdOrder();
                             //update merchant ref pool
                             $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
                         }else{
@@ -808,6 +833,13 @@ class ScheduledController extends Zend_Controller_Action
                 $operate_orders_model   =   new Databases_Joins_OperateOrders();
                 $operate_orders_model->purchase_order_ids   =   $purchase_order_ids;
                 $result = $operate_orders_model->PlaceOrder();
+                if($result['orders']){
+                    foreach ($result['orders'] as $key => $order){
+                        $dd_orders_model->b2b_order_id  =   $order['purchase_order_id'];
+                        $dd_orders_model->cc_order_id   =   $order['main_order_id'];
+                        $dd_orders_model->updateDdOrderCcOrderID();
+                    }
+                }
             }
             
         }else{
@@ -817,5 +849,125 @@ class ScheduledController extends Zend_Controller_Action
         @fclose($f_logs_feeds);
         die('Process Orders Complete.');
         
+    }
+    
+    function updateOrdersAction()
+    {
+        $user_ids  =   array('2');
+        $time_now   = time();
+        $time_24_before =   $time_now   -   86400;
+        $start_time     =   date('Y-m-d', $time_24_before);
+        $orders_model   =   new Databases_Joins_GetOrders();
+        $dd_order_model =   new Databases_Tables_DdOrders();
+        $params_model   =   new Databases_Tables_Params();
+        $orders_webservice_model    =   new Algorithms_Core_OrderService();
+        $feed_model                 =   new Algorithms_Core_Feed();
+        //$orders_model->start_date   =   $start_time;
+        $orders_model->limit        =   2;
+        $orders_model->item_status  =   2;
+        $logs_path     =   $params_model->GetVal('logs_path');
+        $f_logs_feeds  =   @fopen($logs_path."feedslogs/updateddorders".date('YmdHis').".txt", "w+");
+        @fwrite($f_logs_feeds, 'Update DD Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
+        $dd_order_new_filename  =   'crazysales_shipping_'.date('Ymd-His').'.csv';
+        $dd_order_new_path  =   'DD_orders_new/';
+        $f_dd_order_new =   @fopen($dd_order_new_path.$dd_order_new_filename,'w');
+        $titile_array   =   array(' oNum', ' Buyer_Full_Name', ' Company', ' Address_Line_1', ' Address_Line_2', ' Suburb', ' State', ' Post_Code', ' Phone_Num', ' Product_Code', ' Product_Title', ' Qty', ' Cart_ID', ' Ref_Num', ' Cost', ' Freight', ' Tracking_Number', ' Shipping_Date', ' Courier');
+        @fputcsv($f_dd_order_new, $titile_array);
+        if($user_ids && is_array($user_ids)){
+            foreach($user_ids as $user_id){
+                $orders_model->user_id  =   $user_id;
+                $user_orders    =   $orders_model->PushList();
+                if($user_orders && is_array($user_orders)){
+                    foreach ($user_orders as $order){
+                        $order_ids[$order['purchase_order_id']]  =   $order['main_db_order_id'];
+                    }
+                    $OrderStatus    =   $order_ids;
+                    if($order_ids && is_array($order_ids)){
+                        $orders_webservice_model->OrderIDs      =   $order_ids;
+                        $orders_webservice_model->OrderStatus   =   $OrderStatus;
+                        $orders_status_result_array    =   $orders_webservice_model->WebServiceGetOrderStatus();
+                        $orders_info_result_array      =   $orders_webservice_model->WebServiceGetOrderInfo();
+                        if($orders_status_result_array['MessageType']){
+                            foreach ($orders_status_result_array['MessageType'] as $message_type){
+                                @fwrite($f_logs_feeds, $message_type['Description'].$message_type['Created']."\r\n");
+                            }
+                        }
+                        if($orders_status_result_array['OrderStatus']['CrazySalesOrderStatusType']){
+                            foreach ($orders_status_result_array['OrderStatus']['CrazySalesOrderStatusType'] as $order_status_info){
+                                if($order_status_info['StatusID']==3 && $order_status_info['Status']=='Processing'){
+                                    $orders_sent_array[$order_status_info['OrderNumber']]   =   $order_status_info['OrderNumber'];
+                                }
+                            }
+                        }
+                        $update_success_data    =   array();
+                        @fwrite($f_logs_feeds, "Update Order data at: ".date("Y-m-d H:i:s")."\r\n");
+                        if($orders_info_result_array['Orders']['CrazySalesOrderType']){
+                            foreach ($orders_info_result_array['Orders']['CrazySalesOrderType'] as $orders_info){
+                                if(in_array($orders_info['OrderNumber'], $orders_sent_array)){
+                                    if($orders_info['OrderItems']['CrazySalesOrderItemType']){
+                                        foreach ($orders_info['OrderItems']['CrazySalesOrderItemType'] as $order_item){
+                                            $dd_order_model->cc_order_id        =   $order_item['OrderNumber'];
+                                            $dd_order_model->product_code       =   $order_item['ItemSku'].'-TP';
+                                            $dd_order_model->tracking_number    =   $order_item['TrackingNumber'];
+                                            $dd_order_model->shipping_date      =   $order_item['ShipDate']['Value'];
+                                            $dd_order_model->courier            =   $order_item['ShipCarrier'];
+                                            $update_result   =   $dd_order_model->updateDdorder();
+                                            if($update_result){
+                                                $update_success_data[$order_item['OrderNumber']]['product_code']    =   $order_item['ItemSku'].'-TP';
+                                                @fwrite($f_logs_feeds, $update_result."\r\n");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        //get the data of update success and create a new csv file and upload
+                        if($update_success_data){
+                            @fwrite($f_logs_feeds, "Create csv file and upload at: ".date("Y-m-d H:i:s")."\r\n");
+                            foreach ($update_success_data as $order_number => $order_data){
+                                $dd_order_model->cc_order_id   =   $order_number;
+                                $dd_order_model->product_code   =   $order_data['product_code'];
+                                $result =   $dd_order_model->getDdOrderInfo();
+                                if($result){
+                                    $order_upload_data  =   array(
+                                        'oNum'              =>  $result['o_num'],
+                                        'Buyer_Full_Name'   =>  $result['buyer_full_name'],
+                                        'Company'           =>  $result['company'],
+                                        'Address_Line_1'    =>  $result['address_line_1'],
+                                        'Address_Line_2'    =>  $result['address_line_2'],
+                                        'Suburb'            =>  $result['suburb'],
+                                        'State'             =>  $result['state'],
+                                        'Post_Code'         =>  $result['post_code'],
+                                        'Phone_Num'         =>  $result['phone_num'],
+                                        'Product_Code'      =>  $result['product_code'],
+                                        'Product_Title'     =>  $result['product_title'],
+                                        'Qty'               =>  $result['qty'],
+                                        'Cart_ID'           =>  $result['cart_id'],
+                                        'Ref_Num'           =>  $result['ref_num'],
+                                        'Cost'              =>  $result['cost'],
+                                        'Freight'           =>  $result['freight'],
+                                        'Tracking_Number'   =>  $result['tracking_number'],
+                                        'Shipping_Date'     =>  $result['shipping_date'],
+                                        'Courier'           =>  $result['courier'],
+                                    );
+                                    @fputcsv($f_dd_order_new, $order_upload_data);
+                                    
+                                }
+                            }
+                            $feed_model->uploadFtpFile(array($dd_order_new_filename), 'shipping');
+                        }else{
+                            @fwrite($f_logs_feeds, "No csv file upload at: ".date("Y-m-d H:i:s")."\r\n");
+                        }
+                    }
+                    unset($order_ids);
+                }else{
+                    @fwrite($f_logs_feeds, "No Order to Update at: ".date("Y-m-d H:i:s")."\r\n");
+                }
+            }
+        }
+        @fwrite($f_logs_feeds, "Update Orders Complete at: ".date("Y-m-d H:i:s")."\r\n");
+        @fclose($f_logs_feeds);
+        die();
     }
 }

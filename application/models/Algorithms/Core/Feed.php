@@ -405,14 +405,14 @@ class Algorithms_Core_Feed
         if($file_array){
             $product_filter_model   =   new Databases_Joins_ProductFilter();
             $merchant_ftp_array     =   array(
-                'ftp_host'      =>  '5.152.218.218',//'interface.dealsdirect.com.au',
+                'ftp_host'      =>  'interface.dealsdirect.com.au',
                 'ftp_port'      =>  '21',
-                'ftp_user'      =>  'TimWu',//'tp_crazysales',
-                'ftp_pass'      =>  'wuhaijieYONG1987',//'3Ws5maLm',
+                'ftp_user'      =>  'tp_crazysales',
+                'ftp_pass'      =>  '3Ws5maLm',
                 'image_path'    =>  'outgoing/inventory/images/',
                 'txt_path'      =>  'outgoing/inventory/descriptions/',
                 'csv_path'      =>  'outgoing/inventory/datafeed/processing/',
-                'shipping_path' =>  'test/'//'outgoing/shipping/processing/',
+                'shipping_path' =>  'outgoing/shipping/processing/',
             );
             $ftp    =   new Algorithms_Core_Ftp($merchant_ftp_array['ftp_host'], $merchant_ftp_array['ftp_port'], $merchant_ftp_array['ftp_user'], $merchant_ftp_array['ftp_pass']);
             switch ($type){
