@@ -894,7 +894,7 @@ class ScheduledController extends Zend_Controller_Action
                         }
                         if($orders_status_result_array['OrderStatus']['CrazySalesOrderStatusType']){
                             foreach ($orders_status_result_array['OrderStatus']['CrazySalesOrderStatusType'] as $order_status_info){
-                                if($order_status_info['StatusID']==3 && $order_status_info['Status']=='Processing'){
+                                if($order_status_info['StatusID']==4 && $order_status_info['Status']=='Sent'){
                                     $orders_sent_array[$order_status_info['OrderNumber']]   =   $order_status_info['OrderNumber'];
                                 }
                             }
