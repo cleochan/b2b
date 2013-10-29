@@ -405,13 +405,14 @@ class Algorithms_Core_Feed
         if($file_array){
             $product_filter_model   =   new Databases_Joins_ProductFilter();
             $merchant_ftp_array     =   array(
-                'ftp_host'      =>  'interface.dealsdirect.com.au',
+                'ftp_host'      =>  '5.152.218.218',//'interface.dealsdirect.com.au',
                 'ftp_port'      =>  '21',
-                'ftp_user'      =>  'tp_crazysales',
-                'ftp_pass'      =>  '3Ws5maLm',
+                'ftp_user'      =>  'TimWu',//'tp_crazysales',
+                'ftp_pass'      =>  'wuhaijieYONG1987',//'3Ws5maLm',
                 'image_path'    =>  'outgoing/inventory/images/',
                 'txt_path'      =>  'outgoing/inventory/descriptions/',
                 'csv_path'      =>  'outgoing/inventory/datafeed/processing/',
+                'shipping_path' =>  'test/'//'outgoing/shipping/processing/',
             );
             $ftp    =   new Algorithms_Core_Ftp($merchant_ftp_array['ftp_host'], $merchant_ftp_array['ftp_port'], $merchant_ftp_array['ftp_user'], $merchant_ftp_array['ftp_pass']);
             switch ($type){
@@ -441,6 +442,16 @@ class Algorithms_Core_Feed
                         if($file){
                             $ftp_server_path    =   $merchant_ftp_array['csv_path'].'crazysales_datafeed.csv';
                             $log    =   $ftp->up_file($ftp_server_path, 'feeds/'.$file);
+                        }
+                    }
+                    $ftp->close();
+                    break;
+                case 'shipping':
+                    foreach ($file_array as $file){
+                    echo $file;
+                        if($file){
+                            $ftp_server_path    =   $merchant_ftp_array['shipping_path'].$file;
+                            $log    =   $ftp->up_file($ftp_server_path, 'DD_orders_new/'.$file);
                         }
                     }
                     $ftp->close();
