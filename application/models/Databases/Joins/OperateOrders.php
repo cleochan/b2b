@@ -87,6 +87,7 @@ class Databases_Joins_OperateOrders {
                 $crazySalesOrderType->ShipCountryCode        =   $purchase_order['shipping_country'];
                 $crazySalesOrderType->ShipPhone              =   $purchase_order['shipping_phone'];
                 $crazySalesOrderType->SiteID                 =   6;
+                $crazySalesOrderType->ShipEmail              =   '';
                 
                 $order_amount_money_type->Value    =   round($purchase_order['order_amount'],2);                                  
                 $order_discount->Value  =   round($purchase_order['discount_amount'],2);
