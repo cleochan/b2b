@@ -160,7 +160,7 @@ class Databases_Joins_ProductFilter
             $select = $this->db->select();
             $select->from($source_table, "*");
             /*for dealsdirect feed*/
-            if($user_id == 2)
+            if($user_id == 8)
             {
                 $select->join('b2b_dd_category', 'b2b_dd_category.category_id = '.$source_table.'.category_id', 'dd_category_id');
                 $select->where("supplier_sku not REGEXP '([\s\S]*)(\/)([\s\S]*)'");
