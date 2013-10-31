@@ -160,7 +160,7 @@ class Databases_Joins_ProductFilter
             $select = $this->db->select();
             $select->from($source_table, "*");
             /*for dealsdirect feed*/
-            if($user_id == 8)
+            if($user_id == 2)
             {
                 $select->join('b2b_dd_category', 'b2b_dd_category.category_id = '.$source_table.'.category_id', 'dd_category_id');
                 $select->where("supplier_sku not REGEXP '([\s\S]*)(\/)([\s\S]*)'");
@@ -232,6 +232,7 @@ class Databases_Joins_ProductFilter
                         $data[$d_key]['main_category']  =   @$category_array[0];
                         $data[$d_key]['sub_category']   =   @$category_array[1];
                         $data[$d_key]['bottom_category']=   @$category_array[2];
+                        $cal_result[1]  =   round(($cal_result[1] / 11) * 10, 2); //将Cost的GST去处，算法是在原值上除以11再乘以10
                     }
                     $data[$d_key]['original_supplier_price'] = $d_val['supplier_price']; //keep original price
                     $data[$d_key]['supplier_price'] = $cal_result[1]; //update price
