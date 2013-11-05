@@ -978,6 +978,11 @@ class AdminController extends Zend_Controller_Action
     
     function bpayImportPreviewAction()
     {
+        $valid_file_types = array('application/octet-stream',
+                                  'text/csv',
+                                  'application/vnd.ms-excel'
+                            );
+        
         $this->view->title = "Import BPay CSV Files Preview";
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "BPay Import"));
@@ -986,7 +991,7 @@ class AdminController extends Zend_Controller_Action
         {
             $this->view->notice = $_FILES["csvf"]["error"];
         }else{
-            if('text/csv' != $_FILES["csvf"]["type"])
+            if( in_array($_FILES["csvf"]["type"], $valid_file_types) )
             {
                 $this->view->notice = "File type is invalid.";
             }else{
@@ -1224,6 +1229,11 @@ class AdminController extends Zend_Controller_Action
          *  Column V: $data[21] = Pick Up // Y or N
          */
         
+        $valid_file_types = array('application/octet-stream',
+                                  'text/csv',
+                                  'application/vnd.ms-excel'
+                            );
+        
         $this->view->title = "Admin Order Import Preview";
         $menu_model = new Algorithms_Core_Menu;
         $product_filter_model   =   new Databases_Joins_ProductFilter();
@@ -1233,7 +1243,7 @@ class AdminController extends Zend_Controller_Action
         {
             $this->view->notice = $_FILES["csvf"]["error"];
         }else{	
-            if('text/csv' == $_FILES["csvf"]["type"] || 'application/vnd.ms-excel' == $_FILES["csvf"]["type"] )
+            if( in_array($_FILES["csvf"]["type"], $valid_file_types) )
             {                
                 //Action
                 $group_instance_balance_array = array();
