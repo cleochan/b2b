@@ -679,6 +679,10 @@ class MerchantController extends Zend_Controller_Action
          *  Column U: $data[20] = Merchant Company  // REQUIRED AND IMPORTANT !!!
          *  Column V: $data[21] = Pick Up // Y or N
          */
+        $valid_file_types = array('application/octet-stream',
+                                  'text/csv',
+                                  'application/vnd.ms-excel'
+                            );
         
         $this->view->title = "Order Import Preview";
         $menu_model = new Algorithms_Core_Menu;
@@ -762,7 +766,7 @@ class MerchantController extends Zend_Controller_Action
                 /**
                  * no paypal load order info from csv file
                  */
-                if('text/csv' == $_FILES["csvf"]["type"] || 'application/vnd.ms-excel' == $_FILES["csvf"]["type"] )
+                if( in_array($_FILES["csvf"]["type"], $valid_file_types) )
                 {
                     //Action
                     $data_array = array();
