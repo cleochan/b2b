@@ -349,7 +349,7 @@ class Databases_Joins_ProductFilter
             if($product['supplier_sku'])
             {
                 $offer_price_cal = $this->OfferPriceCalculation($product['supplier_price'], $product['wholesale_cost'], $discount, $cost_markup/100);
-                
+                print_r($offer_price_cal);die;
                 $result['supplier_price'] = $offer_price_cal[1];
                 $result['estimated_shipping_cost'] = $product['estimated_shipping_cost'];
                 $result['estimated_handling_fee'] = $product['estimated_handling_fee0'];

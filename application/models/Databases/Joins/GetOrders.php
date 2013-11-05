@@ -382,7 +382,6 @@ class Databases_Joins_GetOrders
                         $order_amount = ( $prices['supplier_price'] + $prices['estimated_shipping_cost'] ) * trim($this->quantity);
                         $shipping_cost  =   $prices['estimated_shipping_cost'] * trim($this->quantity);
                         $ship_cost  =   $shipping_cost;
-                        echo "<<<".$order_amount.">>><<<".$prices['supplier_price'].">>><<<".$prices['estimated_shipping_cost'].">>>";
                     }elseif($this->params_array['free_shipping']===1){   //free shipping
                         $estimated_shipping_cost    =   0;
                         $order_amount = ( $prices['supplier_price'] * trim($this->quantity) ) + $estimated_shipping_cost;
