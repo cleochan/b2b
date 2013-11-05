@@ -222,6 +222,16 @@ class Databases_Joins_ProductFilter
                 {
                     $cal_result = $this->OfferPriceCalculation($d_val['supplier_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
                     
+                    if($d_val['supplier_sku']=='FS2474')
+                    {
+                        echo "supplier_price = ".$d_val['supplier_price']."<br />";
+                        echo "wholesale_cost = ".$d_val['wholesale_cost']."<br />";
+                        echo "discount = ".$discount."<br />";
+                        echo "cost_markup = ".$cost_markup."<br />";
+                        echo "final_price = ".$cal_result[1]."<br />";
+                        die;
+                    }
+                    
                     if($d_val['category_id']){
                         if($user_id == 8){
                             $category_array = $this->getDDProductCategoryInfo($d_val['dd_category_id']);
