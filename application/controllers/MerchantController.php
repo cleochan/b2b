@@ -763,7 +763,7 @@ class MerchantController extends Zend_Controller_Action
                  * no paypal load order info from csv file
                  */
                 if('text/csv' == $_FILES["csvf"]["type"] || 'application/vnd.ms-excel' == $_FILES["csvf"]["type"] )
-                {   
+                {
                     //Action
                     $data_array = array();
                     if (($handle = fopen($_FILES["csvf"]["tmp_name"], "r")) !== FALSE) {
@@ -848,6 +848,7 @@ class MerchantController extends Zend_Controller_Action
                     }
                 }else{
                     $this->view->notice = "File type is invalid.";
+                    echo "<<<<< File Type: ".$_FILES["csvf"]["type"]." >>>>>";
                 }
             }
         }
