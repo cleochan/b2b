@@ -224,6 +224,7 @@ class Databases_Joins_ProductFilter
                     
                     if($d_val['category_id']){
                         if($user_id == 8){
+                            $cal_result[1]  =   round(($cal_result[1] / 11) * 10, 2); //将Cost的GST去处，算法是在原值上除以11再乘以10, just for dealsdirect
                             $category_array = $this->getDDProductCategoryInfo($d_val['dd_category_id']);
                         }else{
                             $category_array = $this->getProductCategoryInfo($d_val['category_id']);
@@ -232,7 +233,6 @@ class Databases_Joins_ProductFilter
                         $data[$d_key]['main_category']  =   @$category_array[0];
                         $data[$d_key]['sub_category']   =   @$category_array[1];
                         $data[$d_key]['bottom_category']=   @$category_array[2];
-                        $cal_result[1]  =   round(($cal_result[1] / 11) * 10, 2); //将Cost的GST去处，算法是在原值上除以11再乘以10
                     }
                     $data[$d_key]['original_supplier_price'] = $d_val['supplier_price']; //keep original price
                     $data[$d_key]['supplier_price'] = $cal_result[1]; //update price
