@@ -666,7 +666,7 @@ class ScheduledController extends Zend_Controller_Action
         $user_model =   new Databases_Joins_GetUserInfo();
         $params_model           =   new Databases_Tables_Params();
         $logs_feeds =   '';
-        $user_list  =   $user_model->GetUserList();
+        $user_list  =   $user_model->GetUserList(2,1);
         $logs_path              =   $params_model->GetVal('logs_path');
         $f_logs_feeds  =   @fopen($logs_path."feedslogs/refreshfeeds".date('YmdHis').".txt", "w+");
         @fwrite($f_logs_feeds, 'Refresh Feeds Begin at:'.date("Y-m-d H:i:s")."\n");

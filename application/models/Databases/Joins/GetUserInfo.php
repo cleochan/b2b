@@ -15,14 +15,16 @@ class Databases_Joins_GetUserInfo
      * @param int $user_type
      * @return array
      */
-    function GetUserList($user_type=2)
+    function GetUserList($user_type=2,$user_status=null)
     {
         $select = $this->db->select();
         $select->from("users as u", array("user_id", "email", "user_status"));
         $select->joinLeft("users_extension as e", "u.user_id=e.user_id", array("company", "contact_name", "contact_phone", "join_date", "balance", "credit", "discount", "bpay_ref","flat_rate_shipping"));
         $select->where("user_type = ?", $user_type);
-        $select->where("user_status = ?", 1);
-        $select->order(array("user_status DESC", "join_date DESC"));
+        if($user_status){
+            $select->where("user_status = ?", $user_status);
+        }
+        $select->order(array("join_date DESC"));
         
         $data = $this->db->fetchAll($select);
         
