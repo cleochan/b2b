@@ -357,10 +357,10 @@ class Databases_Joins_ProductFilter
                 if($user_id == 8){
                     if($product['length'] >= 105 || $product['height'] >= 105 || $product['depth'] >= 105 || $product['length'] >= 32){
                         $result['sc_class'] =   23;
-                        $result['shipping_courier'] =   'Alliex - DealsDirect';
+                        $result['shipping_courier'] =   'Allied Express - Deals Direct';
                     }else{
                         $result['sc_class'] =   22;
-                        $result['shipping_courier'] =   'eParcel - DealsDirect';
+                        $result['shipping_courier'] =   'eParcel - Deals Direct';
                     }
                 }else{
                     $result['sc_class']         = $product['sc_class'];
