@@ -355,7 +355,7 @@ class Databases_Joins_ProductFilter
                 $result['estimated_handling_fee'] = $product['estimated_handling_fee0'];
                 $result['quantity_available'] = $product['quantity_available'];
                 if($user_id == 8){
-                    if($product['length'] >= 105 || $product['height'] >= 105 || $product['depth'] >= 105 || $product['length'] >= 32){
+                    if($product['length'] >= 105 || $product['height'] >= 105 || $product['depth'] >= 105 || $product['weight'] >= 32){
                         $result['sc_class'] =   23;
                         $result['shipping_courier'] =   'Allied Express - Deals Direct';
                     }else{
