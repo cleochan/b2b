@@ -80,6 +80,8 @@ class Databases_Joins_GetOrders
     var $params_array =   array();
     
     var $shipping_date;
+    var $update_start_date;
+    var $update_end__date;
     
     function __construct(){
     	$this->db = Zend_Registry::get("db");
@@ -183,6 +185,16 @@ class Databases_Joins_GetOrders
         if($this->end_date)
         {
             $select->where("p.issue_time <= ?", $this->end_date." 23:59:59");
+            $cond[] = "end_date=".$this->end_date;
+        }
+        if($this->update_start_date)
+        {
+            $select->where("p.update_time >= ?", $this->start_date." 00:00:00");
+            $cond[] = "start_date=".$this->start_date;
+        }
+        if($this->update_end__date)
+        {
+            $select->where("p.update_time <= ?", $this->end_date." 23:59:59");
             $cond[] = "end_date=".$this->end_date;
         }
         if($this->user_id)
@@ -701,7 +713,10 @@ class Databases_Joins_GetOrders
             $logs_order_model->tracking_number      =   $this->tracking_number;
             $logs_order_model->item_status          =   $this->item_status;
             $result =   $logs_order_model->UpdateLogsOrderShippingInfo();
-            if($result){
+            if($result['status_change']){
+                $purchase_order_model->update(array('update_time'=>date('Y-m-d H:i:s')), ' purchase_order_id = '.$purchase_order_info['purchase_order_id']);
+            }
+            if($result['log']){
                 return $purchase_order_info['purchase_order_id'];
             }
         }else{

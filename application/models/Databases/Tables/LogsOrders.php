@@ -300,12 +300,15 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
     
     function UpdateLogsOrderShippingInfo()
     {
-        $result =   FALSE;
+        $result =   array();
         if($this->purchase_order_id && $this->supplier_sku){
             $where  =   " purchase_order_id = '".$this->purchase_order_id."' and  supplier_sku ='".$this->supplier_sku."'";
             $row = $this->fetchRow($where);
             if($row->logs_orders_id){
                 if($this->item_status){
+                    if($row->item_status != $this->item_status){
+                        $result['status_change']  =   true; 
+                    }
                     $row->item_status       =   $this->item_status;
                 }
                 if($this->shipping_courier){
@@ -317,10 +320,9 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
                 if($this->tracking_number){
                     $row->tracking_number   =   $this->tracking_number;
                 }
+                $result['status_change']  =   true; 
                 $row->save();
-                $result   =   "logs_orders_id: ".$this->logs_orders_id.' Shipping data update success at: '.date('Y-m-d H:i:s');
-            }else{
-                $result = FALSE;
+                $result['log']   =   "logs_orders_id: ".$this->logs_orders_id.' Shipping data update success at: '.date('Y-m-d H:i:s');
             }
         }
         return $result;
