@@ -1071,7 +1071,7 @@ class ScheduledController extends Zend_Controller_Action
             $orders_model->user_id      =   $user_id;
             $time                       =   strtotime($user_order_days_array[$user_id], $time_now);
             $orders_model->update_start_date   =   date('Y-m-d', $time);  
-            $orders_model->update_end__date    =   date('Y-m-d', $time_now);
+            $orders_model->update_end_date     =   date('Y-m-d', $time_now);
             @fwrite($f_logs_feeds, 'Get user_id :'.$user_id.' Shipping Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
             $user_shipping_orders       =   $orders_model->PushList();
             $f_order_new =   @fopen($order_new_path.$user_file_name_array[$user_id],'w');

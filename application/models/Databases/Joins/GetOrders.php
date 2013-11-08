@@ -81,7 +81,7 @@ class Databases_Joins_GetOrders
     
     var $shipping_date;
     var $update_start_date;
-    var $update_end__date;
+    var $update_end_date;
     
     function __construct(){
     	$this->db = Zend_Registry::get("db");
@@ -189,12 +189,12 @@ class Databases_Joins_GetOrders
         }
         if($this->update_start_date)
         {
-            $select->where("p.update_time >= ?", $this->start_date." 00:00:00");
+            $select->where("p.update_time >= ?", $this->update_start_date." 00:00:00");
             $cond[] = "start_date=".$this->start_date;
         }
-        if($this->update_end__date)
+        if($this->update_end_date)
         {
-            $select->where("p.update_time <= ?", $this->end_date." 23:59:59");
+            $select->where("p.update_time <= ?", $this->update_end_date." 23:59:59");
             $cond[] = "end_date=".$this->end_date;
         }
         if($this->user_id)
