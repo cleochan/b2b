@@ -1004,6 +1004,7 @@ class ScheduledController extends Zend_Controller_Action
             foreach ($user_orders as $order){
                 $order_ids[$order['purchase_order_id']]  =   $order['main_db_order_id'];
             }
+            $order_ids  =   array('41638314','41638298','41638256');
             if($order_ids && is_array($order_ids)){
                 @fwrite($f_logs_feeds, 'Get Orders Status With WSDL Begin at:'.date("Y-m-d-H:i:s")."\r\n");
                 $orders_webservice_model->OrderIDs      =   array_values($order_ids);
@@ -1029,7 +1030,7 @@ class ScheduledController extends Zend_Controller_Action
                                     $orders_model->main_order_id        =   $order_item['OrderNumber'];
                                     $orders_model->supplier_sku         =   $order_item['ItemSku'];
                                     $orders_model->tracking_number      =   $order_item['TrackingNumber'];
-                                    $orders_model->shipping_date        =   ($order_item['ShipDate']['Value']=='0001-01-01T00:00:00')?'':date('Y-m-d H:i:s',strtotime($order_item['ShipDate']['Value']));
+                                    $orders_model->shipping_date        =   ($order_item['ShipDate']['Value']=='0001-01-01T00:00:00')?null:date('Y-m-d H:i:s',strtotime($order_item['ShipDate']['Value']));
                                     $orders_model->shipping_courier     =   $order_item['ShipCarrier'];
                                     $orders_model->item_status          =   $orders_status_array[$order_item['OrderNumber']];
                                     $update_result   =   $orders_model->UpdateApprovedOrders();
