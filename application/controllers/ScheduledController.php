@@ -1067,7 +1067,7 @@ class ScheduledController extends Zend_Controller_Action
         @fwrite($f_logs_feeds, 'Create Orders Csv file Begin at:'.date("Y-m-d-H:i:s")."\r\n");
         foreach ($user_ids as $user_id){
             @fwrite($f_logs_feeds, 'Create Orders user_id :'.$user_id.' Csv file Begin at:'.date("Y-m-d-H:i:s")."\r\n");
-            $orders_model->item_status  =   3;
+            $orders_model->item_status  =   4;
             $orders_model->user_id      =   $user_id;
             $time                       =   strtotime($user_order_days_array[$user_id], $time_now);
             $orders_model->start_date   =   date('Y-m-d', $time);  
