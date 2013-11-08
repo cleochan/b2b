@@ -1044,7 +1044,7 @@ class ScheduledController extends Zend_Controller_Action
     function createOrdersCsvfileAction(){
         $user_ids   =   array('7');
         $user_file_name_array   =   array(
-            '7' =>  'crazysales_dispatched_order_7.csv',
+            '7' =>  'ss_59c9f765b.csv',
             '2' =>  'crazysales_dispatched_order_2.csv',
         );
         $order_new_path  =   'orders_new/';
