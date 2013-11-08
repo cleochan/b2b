@@ -220,7 +220,7 @@ class Databases_Joins_ProductFilter
             {
                 foreach($data as $d_key => $d_val)
                 {
-                    if($user_id == 8){
+                    if($user_id == 8){//dealsdirect's price is use street_price not supplier_price
                         $cal_result = $this->OfferPriceCalculation($d_val['street_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
                     }else{
                         $cal_result = $this->OfferPriceCalculation($d_val['supplier_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
@@ -352,7 +352,7 @@ class Databases_Joins_ProductFilter
             $product = $this->db->fetchRow($product_select);
             if($product['supplier_sku'])
             {
-                if($user_id == 8){
+                if($user_id == 8){ //dealsdirect's price is use street_price not supplier_price
                     $offer_price_cal = $this->OfferPriceCalculation($product['street_price'], $product['wholesale_cost'], $discount, $cost_markup/100);
                 }else{
                     $offer_price_cal = $this->OfferPriceCalculation($product['supplier_price'], $product['wholesale_cost'], $discount, $cost_markup/100);
