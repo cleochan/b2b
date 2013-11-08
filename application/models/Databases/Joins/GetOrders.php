@@ -196,7 +196,7 @@ class Databases_Joins_GetOrders
             
             $cond[] = "merchant_ref=".$this->merchant_ref;
         }
-        if(isset($this->item_status) && $this->item_status != '-1')
+        if(isset($this->item_status) && $this->item_status != '-1') //-1 == select all orders
         {
             $select->where("item_status = ?", $this->item_status);
             $cond[] = "item_status=".$this->item_status;
