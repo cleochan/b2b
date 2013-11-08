@@ -220,7 +220,11 @@ class Databases_Joins_ProductFilter
             {
                 foreach($data as $d_key => $d_val)
                 {
-                    $cal_result = $this->OfferPriceCalculation($d_val['supplier_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
+                    if($user_id == 8){
+                        $cal_result = $this->OfferPriceCalculation($d_val['street_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
+                    }else{
+                        $cal_result = $this->OfferPriceCalculation($d_val['supplier_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
+                    }
                     
                     if($d_val['category_id']){
                         if($user_id == 8){
