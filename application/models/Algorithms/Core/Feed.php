@@ -147,6 +147,7 @@ class Algorithms_Core_Feed
                     
                     $result = $export_model->Push();
                     if($user_id == 8 ){
+                        die;
                         if($collect_feed_info['users_feed']['feed_product_type'] == '2'){
                             $new_product_array    =   $product_filter_model->getNewProductInfo();
                             if($new_product_array){

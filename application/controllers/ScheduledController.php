@@ -673,12 +673,11 @@ class ScheduledController extends Zend_Controller_Action
         if($user_list){
             $model = new Algorithms_Core_Feed();            
             foreach($user_list as $user){
-                if($user['user_id']==8){
-                    die;
+                if($user['user_id']!=8){
+                    $model->user_id_array = array($user['user_id']);
+                    $result = $model->Publish();
+                    $logs_feeds   .=   ' Generate Feed:'.$result."\n";
                 }
-                $model->user_id_array = array($user['user_id']);
-                $result = $model->Publish();
-                $logs_feeds   .=   ' Generate Feed:'.$result."\n";
             }
             @fwrite($f_logs_feeds, $logs_feeds);
             @fclose($f_logs_feeds);
