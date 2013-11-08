@@ -349,16 +349,15 @@ class Databases_Joins_ProductFilter
             if($product['supplier_sku'])
             {
                 $offer_price_cal = $this->OfferPriceCalculation($product['supplier_price'], $product['wholesale_cost'], $discount, $cost_markup/100);
-                
                 $result['supplier_price'] = $offer_price_cal[1];
                 $result['estimated_shipping_cost'] = $product['estimated_shipping_cost'];
                 $result['estimated_handling_fee'] = $product['estimated_handling_fee0'];
                 $result['quantity_available'] = $product['quantity_available'];
                 if($user_id == 8){
                     if($product['length'] >= 105 || $product['height'] >= 105 || $product['depth'] >= 105 || $product['weight'] >= 32){
-                        if($product['sc_lcass']=='3' && $product['shipping_courier']=='eParcel'){
-                            $result['sc_class']         =   $product['sc_class'];
-                            $result['shipping_courier'] =   $product['shipping_courier'];
+                        if($product['sc_class']==3){
+                            $result['sc_class'] =   22;
+                            $result['shipping_courier'] =   'eParcel - Deals Direct';
                         }else{
                             $result['sc_class'] =   23;
                             $result['shipping_courier'] =   'Allied Express - Deals Direct';
@@ -371,6 +370,7 @@ class Databases_Joins_ProductFilter
                     $result['sc_class']         = $product['sc_class'];
                     $result['shipping_courier'] =   $product['shipping_courier'];
                 }
+                $result['supplier_sku']   =   $product['supplier_sku'];
                 $result['product_id']    = $product['product_id'];
                 $result['product_name']    = $product['product_name'];
             }
