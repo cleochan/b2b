@@ -988,7 +988,7 @@ class ScheduledController extends Zend_Controller_Action
         $params_model   =   new Databases_Tables_Params();
         $orders_webservice_model    =   new Algorithms_Core_OrderService();
         $logs_path     =   $params_model->GetVal('logs_path');
-        $f_logs_feeds  =   @fopen($logs_path."orderslogs/update-orders".date('YmdHis').".txt", "w+");
+        $f_logs_feeds  =   @fopen($logs_path."updateorderslogs/update-orders".date('YmdHis').".txt", "w+");
         @fwrite($f_logs_feeds, 'Update Approved Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
         $time_now   = time();
         /*
@@ -1062,7 +1062,7 @@ class ScheduledController extends Zend_Controller_Action
         $orders_model   =   new Databases_Joins_GetOrders();
         $params_model   =   new Databases_Tables_Params();
         $logs_path     =   $params_model->GetVal('logs_path');
-        $f_logs_feeds  =   @fopen($logs_path."orderslogs/create-orders-csvfile".date('YmdHis').".txt", "w+");
+        $f_logs_feeds  =   @fopen($logs_path."createoderscsvlogs/create-orders-csvfile".date('YmdHis').".txt", "w+");
         @fwrite($f_logs_feeds, 'Create Orders Csv file Begin at:'.date("Y-m-d-H:i:s")."\r\n");
         foreach ($user_ids as $user_id){
             @fwrite($f_logs_feeds, 'Create Orders user_id :'.$user_id.' Csv file Begin at:'.date("Y-m-d-H:i:s")."\r\n");
