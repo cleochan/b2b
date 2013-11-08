@@ -210,9 +210,9 @@ function hide_status(index)
                     <td class="center"><span class="small"><?=$recent_order['supplier_sku']?></span></td>
                     <td class="center"><span class="small"><?=$recent_order['merchant_sku']?></span></td>
                     <td class="center"><span class="small"><?=$recent_order['item_amount']?></span></td>
-                    <td class="center"><span class="small"><?=$list['shipping_courier']?></span></td>
-                    <td class="center"><span class="small"><?=$list['tracking_number']?></span></td>
-                    <td class="center"><span class="small"><?=$list['shipping_date']?></span></td>
+                    <td class="center"><span class="small"><?=$recent_order['shipping_courier']?></span></td>
+                    <td class="center"><span class="small"><?=$recent_order['tracking_number']?></span></td>
+                    <td class="center"><span class="small"><?=$recent_order['shipping_date']?></span></td>
                     <td class="center" onmouseover="show_status('<?php echo 'recent_'.$key; ?>');" onmouseout="hide_status('<?php echo 'recent_'.$key; ?>');"><span class="small">
                             <?php 
                             switch ($recent_order['item_status'])
