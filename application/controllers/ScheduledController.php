@@ -1004,7 +1004,7 @@ class ScheduledController extends Zend_Controller_Action
             foreach ($user_orders as $order){
                 $order_ids[$order['purchase_order_id']]  =   $order['main_db_order_id'];
             }
-            $order_ids  =   array('41638314','41638298','41638256');
+            
             if($order_ids && is_array($order_ids)){
                 @fwrite($f_logs_feeds, 'Get Orders Status With WSDL Begin at:'.date("Y-m-d-H:i:s")."\r\n");
                 $orders_webservice_model->OrderIDs      =   array_values($order_ids);
