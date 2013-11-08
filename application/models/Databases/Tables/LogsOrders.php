@@ -314,6 +314,9 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
                 if($this->shipping_date){
                     $row->shipping_date     =   $this->shipping_date;
                 }
+                if($this->tracking_number){
+                    $row->tracking_number   =   $this->tracking_number;
+                }
                 $row->save();
                 $result   =   "logs_orders_id: ".$this->logs_orders_id.' Shipping data update success at: '.date('Y-m-d H:i:s');
             }else{

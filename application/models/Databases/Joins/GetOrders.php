@@ -698,6 +698,7 @@ class Databases_Joins_GetOrders
             $logs_order_model->supplier_sku         =   $this->supplier_sku;
             $logs_order_model->shipping_courier     =   $this->shipping_courier;
             $logs_order_model->shipping_date        =   $this->shipping_date;
+            $logs_order_model->tracking_number      =   $this->tracking_number;
             $logs_order_model->item_status          =   $this->item_status;
             $result =   $logs_order_model->UpdateLogsOrderShippingInfo();
             if($result){
