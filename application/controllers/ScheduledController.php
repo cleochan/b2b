@@ -1075,8 +1075,8 @@ class ScheduledController extends Zend_Controller_Action
             @fwrite($f_logs_feeds, 'Get user_id :'.$user_id.' Shipping Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
             $user_shipping_orders       =   $orders_model->PushList();
             $f_order_new =   @fopen($order_new_path.$user_file_name_array[$user_id],'w');
+            @fputcsv($f_order_new, $user_titile_array[$user_id]);
             if($user_shipping_orders && is_array($user_shipping_orders)){
-                @fputcsv($f_order_new, $user_titile_array[$user_id]);
                 @fwrite($f_logs_feeds, 'Create user_id :'.$user_id.' Csv file Begin at:'.date("Y-m-d-H:i:s")."\r\n");
                 foreach ($user_shipping_orders as $user_shipping_order){
                     $shipping_order_data    =   array(
