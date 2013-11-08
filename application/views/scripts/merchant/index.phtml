@@ -142,7 +142,7 @@ function hide_status(index)
 		                <td class="center"><span class="small"><?=$list['item_amount']?></span></td>
                                 <td class="center"><span class="small"><?=$list['shipping_courier']?></span></td>
                                 <td class="center"><span class="small"><?=$list['tracking_number']?></span></td>
-                                <td class="center"><span class="small"><?=$list['shipping_date']?></span></td>
+                                <td class="center"><span class="small"><?=($list['shipping_date']!='0000-00-00 00:00:00')?$list['shipping_date']:''?></span></td>
 		                <td class="center" onmouseover="show_status('<?php echo 'pending_'.$key; ?>');" onmouseout="hide_status('<?php echo 'pending_'.$key; ?>');"><span class="small">
 		                        <?php 
 		                        switch ($list['item_status'])
