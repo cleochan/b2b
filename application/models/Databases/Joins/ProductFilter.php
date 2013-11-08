@@ -352,7 +352,11 @@ class Databases_Joins_ProductFilter
             $product = $this->db->fetchRow($product_select);
             if($product['supplier_sku'])
             {
-                $offer_price_cal = $this->OfferPriceCalculation($product['supplier_price'], $product['wholesale_cost'], $discount, $cost_markup/100);
+                if($user_id == 8){
+                    $offer_price_cal = $this->OfferPriceCalculation($product['street_price'], $product['wholesale_cost'], $discount, $cost_markup/100);
+                }else{
+                    $offer_price_cal = $this->OfferPriceCalculation($product['supplier_price'], $product['wholesale_cost'], $discount, $cost_markup/100);
+                }
                 $result['supplier_price'] = $offer_price_cal[1];
                 $result['estimated_shipping_cost'] = $product['estimated_shipping_cost'];
                 $result['estimated_handling_fee'] = $product['estimated_handling_fee0'];
