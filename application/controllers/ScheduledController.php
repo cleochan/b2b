@@ -1026,6 +1026,7 @@ class ScheduledController extends Zend_Controller_Action
                             if($orders_info['OrderItems']['CrazySalesOrderItemType']){
                                 foreach ($orders_info['OrderItems']['CrazySalesOrderItemType'] as $order_item){
                                     @fwrite($f_logs_feeds, 'Upadte '.$order_item['OrderNumber'].' at:'.date("Y-m-d-H:i:s")."\r\n");
+                                    print_r($order_item);
                                     $orders_model->main_order_id        =   $order_item['OrderNumber'];
                                     $orders_model->supplier_sku         =   $order_item['ItemSku'];
                                     $orders_model->tracking_number      =   $order_item['TrackingNumber'];
