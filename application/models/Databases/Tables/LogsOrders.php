@@ -48,6 +48,10 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
     var $purchase_order_id;
     var $logs_order_ids;
     
+    var $shipping_courier;
+    var $shipping_date;
+    var $item_status;
+    
     function Pagination()
     {
         //Get amount page qty
@@ -292,5 +296,30 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
             $where  =   $db->quoteInto("purchase_order_id = ?", $this->purchase_order_id); 
             $this->update($data, $where);
         }
+    }
+    
+    function UpdateLogsOrderShippingInfo()
+    {
+        $result =   FALSE;
+        if($this->purchase_order_id && $this->supplier_sku){
+            $where  =   " purchase_order_id = '".$this->purchase_order_id."' and  supplier_sku ='".$this->supplier_sku."'";
+            $row = $this->fetchRow($where);
+            if($row->logs_orders_id){
+                if($this->item_status){
+                    $row->item_status       =   $this->item_status;
+                }
+                if($this->shipping_courier){
+                    $row->shipping_courier  =   $this->shipping_courier;
+                }
+                if($this->shipping_date){
+                    $row->shipping_date     =   $this->shipping_date;
+                }
+                $row->save();
+                $result   =   "logs_orders_id: ".$this->logs_orders_id.' Shipping data update success at: '.date('Y-m-d H:i:s');
+            }else{
+                $result = FALSE;
+            }
+        }
+        return $result;
     }
 }

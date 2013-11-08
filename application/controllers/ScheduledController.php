@@ -745,7 +745,7 @@ class ScheduledController extends Zend_Controller_Action
                         $getorders_model->shipping_suburb       =   trim($da_val[5]);
                         $getorders_model->shipping_state        =   trim($da_val[6]);
                         $getorders_model->shipping_postcode     =   trim($da_val[7]);
-                        $getorders_model->shipping_country      =   'Australia';
+                        $getorders_model->shipping_country      =   'AU';
                         $getorders_model->shipping_phone        =   trim($da_val[8]);
                         $getorders_model->supplier_sku          =   $supplier_sku;
                         $getorders_model->quantity              =   trim($da_val[11]);
@@ -782,7 +782,7 @@ class ScheduledController extends Zend_Controller_Action
                             $getorders_model->shipping_suburb       =   trim($da_val[5]);
                             $getorders_model->shipping_state        =   trim($da_val[6]);
                             $getorders_model->shipping_postcode     =   trim($da_val[7]);
-                            $getorders_model->shipping_country      =   '';
+                            $getorders_model->shipping_country      =   'AU';
                             $getorders_model->shipping_phone        =   trim($da_val[8]);
                             $getorders_model->shipping_fax          =   '';
                             $getorders_model->supplier_sku          =   $supplier_sku;
@@ -806,6 +806,7 @@ class ScheduledController extends Zend_Controller_Action
                             $getorders_model->payment_type_id       =   9;
                             $getorders_model->item_amount           =   round($sku_prices_info['supplier_price'],2) + round($check_result['shipping_cost'],2);
                             $getorders_model->shipping_courier      =   trim($sku_prices_info['shipping_courier']);
+                            $getorders_model->sc_class              =   trim($sku_prices_info['sc_class']);
                             /**
                              * @todo PlaceOrder
                              */
@@ -862,9 +863,9 @@ class ScheduledController extends Zend_Controller_Action
         
     }
     
-    function updateOrdersAction()
+    function updateDdOrdersAction()
     {
-        $user_ids  =   array('2');
+        $user_ids  =   array('8');
         $time_now   = time();
         $time_24_before =   $time_now   -   86400;
         $start_time     =   date('Y-m-d', $time_24_before);
@@ -874,7 +875,7 @@ class ScheduledController extends Zend_Controller_Action
         $orders_webservice_model    =   new Algorithms_Core_OrderService();
         $feed_model                 =   new Algorithms_Core_Feed();
         //$orders_model->start_date   =   $start_time;
-        $orders_model->limit        =   2;
+        //$orders_model->limit        =   2;
         $orders_model->item_status  =   2;
         $logs_path     =   $params_model->GetVal('logs_path');
         $f_logs_feeds  =   @fopen($logs_path."feedslogs/updateddorders".date('YmdHis').".txt", "w+");
@@ -980,5 +981,118 @@ class ScheduledController extends Zend_Controller_Action
         @fwrite($f_logs_feeds, "Update Orders Complete at: ".date("Y-m-d H:i:s")."\r\n");
         @fclose($f_logs_feeds);
         die();
+    }
+    
+    function updateApprovedOrdersAction(){
+        $orders_model   =   new Databases_Joins_GetOrders();
+        $params_model   =   new Databases_Tables_Params();
+        $orders_webservice_model    =   new Algorithms_Core_OrderService();
+        $logs_path     =   $params_model->GetVal('logs_path');
+        $f_logs_feeds  =   @fopen($logs_path."orderslogs/update-orders".date('YmdHis').".txt", "w+");
+        @fwrite($f_logs_feeds, 'Update Approved Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
+        $time_now   = time();
+        $time           =   strtotime('-6 day', $time_now);//a week
+        $orders_model->item_status  =   1;
+        $orders_model->start_date   =   date('Y-m-d', $time);  
+        $orders_model->end_date     =   date('Y-m-d', $time_now);
+        @fwrite($f_logs_feeds, 'Get Approved Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
+        $user_orders    =   $orders_model->PushList();
+        if($user_orders && is_array($user_orders)){
+            foreach ($user_orders as $order){
+                $order_ids[$order['purchase_order_id']]  =   $order['main_db_order_id'];
+            }
+            if($order_ids && is_array($order_ids)){
+                @fwrite($f_logs_feeds, 'Get Orders Status With WSDL Begin at:'.date("Y-m-d-H:i:s")."\r\n");
+                $orders_webservice_model->OrderIDs      =   array_values($order_ids);
+                $orders_webservice_model->OrderStatus   =   array_values($order_ids);
+                $orders_status_result_array    =   $orders_webservice_model->WebServiceGetOrderStatus();
+                $orders_info_result_array      =   $orders_webservice_model->WebServiceGetOrderInfo();
+                if($orders_status_result_array['MessageType']){
+                    foreach ($orders_status_result_array['MessageType'] as $message_type){
+                        @fwrite($f_logs_feeds, $message_type['Description'].$message_type['Created']."\r\n");
+                    }
+                }
+                if($orders_status_result_array['OrderStatus']['CrazySalesOrderStatusType']){
+                    foreach ($orders_status_result_array['OrderStatus']['CrazySalesOrderStatusType'] as $order_status_info){
+                        $orders_status_array[$order_status_info['OrderNumber']]   =   $order_status_info['StatusID'];
+                    }
+                }
+                @fwrite($f_logs_feeds, "Update Order data at: ".date("Y-m-d H:i:s")."\r\n");
+                if($orders_info_result_array['Orders']['CrazySalesOrderType']){
+                    foreach ($orders_info_result_array['Orders']['CrazySalesOrderType'] as $orders_info){
+                            if($orders_info['OrderItems']['CrazySalesOrderItemType']){
+                                foreach ($orders_info['OrderItems']['CrazySalesOrderItemType'] as $order_item){
+                                    @fwrite($f_logs_feeds, 'Upadte '.$order_item['OrderNumber'].' at:'.date("Y-m-d-H:i:s")."\r\n");
+                                    $orders_model->main_order_id        =   $order_item['OrderNumber'];
+                                    $orders_model->supplier_sku         =   $order_item['ItemSku'];
+                                    $orders_model->tracking_number      =   $order_item['TrackingNumber'];
+                                    $orders_model->shipping_date        =   $order_item['ShipDate']['Value'];
+                                    $orders_model->shipping_courier     =   $order_item['ShipCarrier'];
+                                    $orders_model->item_status          =   $orders_status_array[$order_item['OrderNumber']];
+                                    $update_result   =   $orders_model->UpdateApprovedOrders();
+                                }
+                            }
+                    }
+                }
+            }
+        }
+        @fwrite($f_logs_feeds, 'Upadte Orders Finish at:'.date("Y-m-d-H:i:s")."\r\n");
+        die;
+    }
+    
+    function createOrdersCsvfileAction(){
+        $user_ids   =   array('7');
+        $user_file_name_array   =   array(
+            '7' =>  'crazysales_dispatched_order_7.csv',
+            '2' =>  'crazysales_dispatched_order_2.csv',
+        );
+        $order_new_path  =   'orders_new/';
+        $user_titile_array  =   array(
+            '7' =>   array('crazysales order id', 'apus_order', 'SKU', 'Qty', 'Tracking_Number', 'date dispatched', 'Courier', 'shipping_cost', 'order_amount'),
+            '2' =>   array('crazysales order id', 'apus_order', 'SKU', 'Qty', 'Tracking_Number', 'date dispatched', 'Courier', 'shipping_cost', 'order_amount'),
+        );
+        $time_now   = time();
+        $user_order_days_array    =   array(
+            '7' =>  '-2 day',
+            '2' =>  '-2 day',
+        );
+        $orders_model   =   new Databases_Joins_GetOrders();
+        $params_model   =   new Databases_Tables_Params();
+        $logs_path     =   $params_model->GetVal('logs_path');
+        $f_logs_feeds  =   @fopen($logs_path."orderslogs/create-orders-csvfile".date('YmdHis').".txt", "w+");
+        @fwrite($f_logs_feeds, 'Create Orders Csv file Begin at:'.date("Y-m-d-H:i:s")."\r\n");
+        foreach ($user_ids as $user_id){
+            @fwrite($f_logs_feeds, 'Create Orders user_id :'.$user_id.' Csv file Begin at:'.date("Y-m-d-H:i:s")."\r\n");
+            $orders_model->item_status  =   3;
+            $orders_model->user_id      =   $user_id;
+            $time                       =   strtotime($user_order_days_array[$user_id], $time_now);
+            $orders_model->start_date   =   date('Y-m-d', $time);  
+            $orders_model->end_date     =   date('Y-m-d', $time_now);
+            @fwrite($f_logs_feeds, 'Get user_id :'.$user_id.' Shipping Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
+            $user_shipping_orders       =   $orders_model->PushList();
+            $f_order_new =   @fopen($order_new_path.$user_file_name_array[$user_id],'w');
+            @fputcsv($f_order_new, $user_titile_array[$user_id]);
+            if($user_shipping_orders && is_array($user_shipping_orders)){
+                @fwrite($f_logs_feeds, 'Create user_id :'.$user_id.' Csv file Begin at:'.date("Y-m-d-H:i:s")."\r\n");
+                foreach ($user_shipping_orders as $user_shipping_order){
+                    $shipping_order_data    =   array(
+                        'crazysales order id'   =>  $user_shipping_order['main_db_order_id'],
+                        'apus_order'            =>  $user_shipping_order['merchant_ref'],
+                        'SKU'                   =>  $user_shipping_order['supplier_sku'],
+                        'Qty'                   =>  $user_shipping_order['quantity'],
+                        'Tracking_Number'       =>  $user_shipping_order['tracking_number'],
+                        'date dispatched'       =>  $user_shipping_order['shipping_date'],
+                        'Courier'               =>  $user_shipping_order['shipping_courier'],
+                        'shipping_cost'         =>  $user_shipping_order['final_ship_cost'],
+                        'order_amount'          =>  $user_shipping_order['order_amount'],
+                    );
+                    @fputcsv($f_order_new, $shipping_order_data);
+                }
+                @fclose($f_order_new);
+                @fwrite($f_logs_feeds, 'Create user_id :'.$user_id.' Csv file Finish at:'.date("Y-m-d-H:i:s")."\r\n");
+            }
+        }
+        @fwrite($f_logs_feeds, 'Create Orders Csv file Finish at:'.date("Y-m-d-H:i:s")."\r\n");
+        die;
     }
 }

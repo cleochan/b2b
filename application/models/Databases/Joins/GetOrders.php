@@ -76,7 +76,10 @@ class Databases_Joins_GetOrders
     var $limit;
     
     var $shipping_courier;
+    var $sc_class;
     var $params_array =   array();
+    
+    var $shipping_date;
     
     function __construct(){
     	$this->db = Zend_Registry::get("db");
@@ -96,7 +99,7 @@ class Databases_Joins_GetOrders
         //Get amount page qty
         $select = $this->db->select();
         $select->from("purchase_order as p", array("main_db_order_id", "issue_time", "user_id", "order_amount"));
-        $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("count(logs_orders_id) as ct", "merchant_ref", "item_status", "api_response", "item_amount", "supplier_sku", "merchant_sku", "quantity"));
+        $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("count(logs_orders_id) as ct", "merchant_ref", "item_status", "api_response", "item_amount", "supplier_sku", "merchant_sku", "quantity", "final_ship_cost"));
         $cond = array();
         if($this->start_date)
         {
@@ -170,7 +173,7 @@ class Databases_Joins_GetOrders
         //Get amount page qty
         $select = $this->db->select();
         $select->from("purchase_order as p", array("main_db_order_id","purchase_order_id", "issue_time", "user_id", "order_amount", "pickup"));
-        $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("merchant_ref", "item_status", "api_response", "item_amount", "supplier_sku", "merchant_sku", "quantity"));
+        $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("merchant_ref", "item_status", "api_response", "item_amount", "supplier_sku", "merchant_sku", "quantity","tracking_number", "shipping_courier", "sc_class", "shipping_date", "final_ship_cost"));
         $cond = array();
         if($this->start_date)
         {
@@ -193,7 +196,7 @@ class Databases_Joins_GetOrders
             
             $cond[] = "merchant_ref=".$this->merchant_ref;
         }
-        if(isset($this->item_status) && $this->item_status !=3)//3 == select all of the logs_order
+        if(isset($this->item_status))
         {
             $select->where("item_status = ?", $this->item_status);
             $cond[] = "item_status=".$this->item_status;
@@ -213,7 +216,7 @@ class Databases_Joins_GetOrders
             $select->limit($this->limit);
             $select->order("p.issue_time DESC");
         }
-        
+
         $result= $this->db->fetchAll($select);
         
         return $result;
@@ -498,6 +501,7 @@ class Databases_Joins_GetOrders
             "ship_cost" => $this->ship_cost, 
             "api_response"  =>  $this->api_response,    // add by Tim Wu 2013-5-2
             "shipping_courier"  =>$this->shipping_courier,
+            "sc_class"          =>  $this->sc_class,
         );
         
         //add by Tim Wu 2013-4-24 if item_status is not NULL
@@ -682,5 +686,25 @@ class Databases_Joins_GetOrders
         $purchase_order_model->main_db_order_id        =   $this->main_order_id;
         $purchase_order_model->UpdatePurchaseOrder();
         $logs_order_model->UpdateLogsOrder();
+    }
+    
+    function UpdateApprovedOrders(){
+        $purchase_order_model   =   new Databases_Tables_PurchaseOrder();
+        $logs_order_model       =   new Databases_Tables_LogsOrders();
+        $purchase_order_model->main_db_order_id =   $this->main_order_id;
+        $purchase_order_info    =   $purchase_order_model->GetPurchaseOrderInMainOrderId();
+        if($purchase_order_info){
+            $logs_order_model->purchase_order_id    =   $purchase_order_info['purchase_order_id'];
+            $logs_order_model->supplier_sku         =   $this->supplier_sku;
+            $logs_order_model->shipping_courier     =   $this->shipping_courier;
+            $logs_order_model->shipping_date        =   $this->shipping_date;
+            $logs_order_model->item_status          =   $this->item_status;
+            $result =   $logs_order_model->UpdateLogsOrderShippingInfo();
+            if($result){
+                return $purchase_order_info['purchase_order_id'];
+            }
+        }else{
+            return FALSE;
+        }
     }
 }
