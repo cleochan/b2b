@@ -121,6 +121,9 @@ function hide_status(index)
 		                <th class="form-title">Supplier SKU</th>
 		                <th class="form-title">Merchant SKU</th>
 		                <th class="form-title">Order Amount<p style="margin:0">(Include GST and postage)</p></th>
+                                <td class="form-title">Shipping Courier</td>
+                                <td class="form-title">Tracking #</td>
+                                <td class="form-title">Shipping Date</td>
 		                <th class="form-title">Status</th>
 		                <th class="form-title">Action</th>
 		            </tr>
@@ -137,6 +140,9 @@ function hide_status(index)
 		                <td class="center"><span class="small"><?=$list['supplier_sku']?></span></td>
 		                <td class="center"><span class="small"><?=$list['merchant_sku']?></span></td>
 		                <td class="center"><span class="small"><?=$list['item_amount']?></span></td>
+                                <td class="center"><span class="small"><?=$list['shipping_courier']?></span></td>
+                                <td class="center"><span class="small"><?=$list['tracking_number']?></span></td>
+                                <td class="center"><span class="small"><?=$list['shipping_date']?></span></td>
 		                <td class="center" onmouseover="show_status('<?php echo 'pending_'.$key; ?>');" onmouseout="hide_status('<?php echo 'pending_'.$key; ?>');"><span class="small">
 		                        <?php 
 		                        switch ($list['item_status'])
@@ -149,6 +155,12 @@ function hide_status(index)
 		                                break;
 		                            case 2:
 		                                echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div id='status_pending_".$key."' class='api_response' style='display: none;'>".$list['api_response']."</div>";
+		                                break;
+                                            case 3:
+                                                echo "<font color='green'>Processing</font>";
+		                                break;
+                                            case 4:
+                                                echo "<font color='green'>Sent </font>";
 		                                break;
 		                        }
 		                        ?>

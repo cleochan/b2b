@@ -20,6 +20,12 @@
                                             case 2:
                                                 echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div class='api_response'>".$this->list[0]['api_response']."</div>";
                                                 break;
+                                            case 3:
+                                                echo "<font color='green'>Processing</font>";
+		                                break;
+                                            case 4:
+                                                echo "<font color='green'>Sent </font>";
+		                                break;
                                         }
                                         ?></span></p>
         <p><span>Order Subtotal: </span><span>$<?=number_format($this->purchase_order['order_amount'],2)?></span></p>

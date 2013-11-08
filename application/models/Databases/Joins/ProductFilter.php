@@ -356,8 +356,13 @@ class Databases_Joins_ProductFilter
                 $result['quantity_available'] = $product['quantity_available'];
                 if($user_id == 8){
                     if($product['length'] >= 105 || $product['height'] >= 105 || $product['depth'] >= 105 || $product['weight'] >= 32){
-                        $result['sc_class'] =   23;
-                        $result['shipping_courier'] =   'Allied Express - Deals Direct';
+                        if($product['sc_lcass']=='3' && $product['shipping_courier']=='eParcel'){
+                            $result['sc_class']         =   $product['sc_class'];
+                            $result['shipping_courier'] =   $product['shipping_courier'];
+                        }else{
+                            $result['sc_class'] =   23;
+                            $result['shipping_courier'] =   'Allied Express - Deals Direct';
+                        }
                     }else{
                         $result['sc_class'] =   22;
                         $result['shipping_courier'] =   'eParcel - Deals Direct';

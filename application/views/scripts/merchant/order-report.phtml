@@ -75,6 +75,9 @@ function senfe(o,a,b,c,d){
                                 <td class="form-title">Supplier SKU</td>
                                 <td class="form-title">Merchant SKU</td>
                                 <td class="form-title">Order Amount<p style="margin:0">(Include GST and postage)</p></td>
+                                <td class="form-title">Shipping Courier</td>
+                                <td class="form-title">Tracking #</td>
+                                <td class="form-title">Shipping Date</td>
                                 <td class="form-title">Pick Up</td>
                                 <td class="form-title">Status</td>
                                 <td class="form-title">Action</td>
@@ -90,6 +93,9 @@ function senfe(o,a,b,c,d){
                                 <td class="center"><span class="small"><?=$list['supplier_sku']?></span></td>
                                 <td class="center"><span class="small"><?=$list['merchant_sku']?></span></td>
                                 <td class="center"><span class="small"><?=$list['item_amount']?></span></td>
+                                <td class="center"><span class="small"><?=$list['shipping_courier']?></span></td>
+                                <td class="center"><span class="small"><?=$list['tracking_number']?></span></td>
+                                <td class="center"><span class="small"><?=$list['shipping_date']?></span></td>
                                 <td class="center"><span class="small blue"><?=$list['pickup']?"<font color='red'>Yes</font>":"<font>No</font>"?></span></td>
                                 <td class="center" onmouseover="show_status(<?php echo $key; ?>);" onmouseout="hide_status(<?php echo $key; ?>);"><span class="small">
                                         <?php 
@@ -102,8 +108,14 @@ function senfe(o,a,b,c,d){
                                                 echo "<font color='green'>Approved</font>";
                                                 break;
                                             case 2:
-												echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div id='status_".$key."' class='api_response' style='display: none;'>".$list['api_response']."</div>";
+                                                echo "<font color='red' style='TEXT-DECORATION: underline'>Rejected</font><div id='status_".$key."' class='api_response' style='display: none;'>".$list['api_response']."</div>";
                                                 break;
+                                            case 3:
+                                                echo "<font color='green'>Processing</font>";
+		                                break;
+                                            case 4:
+                                                echo "<font color='green'>Sent </font>";
+		                                break;
                                         }
                                         ?>
                                     </span></td>
