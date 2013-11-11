@@ -1290,7 +1290,17 @@ class AdminController extends Zend_Controller_Action
                                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
                                 $quantity_array[$da_val[11]]    +=   $da_val[13];
                                 $getorders_model->quantity_array    =   $quantity_array;
-                                
+                                $users_extension_model = new Databases_Tables_UsersExtension();
+                                $users_extension_model->company =  $da_val[17];
+                                $user_info = $users_extension_model->CheckCompanyInCsv();
+                                if($user_info['user_id'])//free shiping for dealsdirect
+                                {
+                                    if($user_info['user_id']==2);
+                                    $params_array   =   array(
+                                        'free_shipping' => 1
+                                    );
+                                    $getorders_model->params_array  =   $params_array;
+                                }
                                 /**
                                  * @var $getorders_model Databases_Joins_GetOrders
                                  * @todo PlaceOrderCheck
@@ -1379,7 +1389,17 @@ class AdminController extends Zend_Controller_Action
                 $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
                 $getorders_model->pick_up = $params['pick_up'][$loop_key];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
-                
+                $users_extension_model = new Databases_Tables_UsersExtension();
+                $users_extension_model->company = $params['merchant_company'][$loop_key];
+                $user_info = $users_extension_model->CheckCompanyInCsv();
+                if($user_info['user_id'])//free shiping for dealsdirect
+                {
+                    if($user_info['user_id']==8);
+                    $params_array   =   array(
+                        'free_shipping' => 1
+                    );
+                    $getorders_model->params_array  =   $params_array;
+                }
                 /**
                  * @var $getorders_model Databases_Joins_GetOrders
                  * @todo Check Order 

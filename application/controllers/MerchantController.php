@@ -728,7 +728,14 @@ class MerchantController extends Zend_Controller_Action
                 $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
                 $quantity_array[$da_val[11]]    +=   $da_val[13];
                 $getorders_model->quantity_array    =   $quantity_array;
-                
+                if($user_info['user_id'])//free shiping for dealsdirect
+                {
+                    if($user_info['user_id']==8);
+                    $params_array   =   array(
+                        'free_shipping' => 1
+                    );
+                    $getorders_model->params_array  =   $params_array;
+                }
                 /**
                  * @var $getorders_model Databases_Joins_GetOrders
                  * @todo PlaceOrderCheck
@@ -939,6 +946,14 @@ class MerchantController extends Zend_Controller_Action
                 $user_info = $users_extension_model->CheckCompanyInCsv();
                 $getorders_model->flat_rate_shipping    =   $user_info['flat_rate_shipping'];
                 $getorders_model->group_instance_balance_array = $group_instance_balance_array;
+                if($user_info['user_id'])//free shiping for dealsdirect
+                {
+                    if($user_info['user_id']==8);
+                    $params_array   =   array(
+                        'free_shipping' => 1
+                    );
+                    $getorders_model->params_array  =   $params_array;
+                }
                 /**
                  * @var $getorders_model Databases_Joins_GetOrders
                  * @todo PlaceOrderCheck
