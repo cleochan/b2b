@@ -82,6 +82,7 @@ class Databases_Joins_GetOrders
     var $shipping_date;
     var $update_start_date;
     var $update_end_date;
+    var $item_statuses;
     
     function __construct(){
     	$this->db = Zend_Registry::get("db");
@@ -212,6 +213,10 @@ class Databases_Joins_GetOrders
         {
             $select->where("item_status = ?", $this->item_status);
             $cond[] = "item_status=".$this->item_status;
+        }
+        if($this->item_statuses && is_array($this->item_statuses)){
+            $in_item_status = implode(',', $this->item_statuses);
+            $select->where("o.item_status in (".$in_item_status.") ");
         }
         if($this->p_query_order)
         {

@@ -991,7 +991,8 @@ class ScheduledController extends Zend_Controller_Action
         @fwrite($f_logs_feeds, 'Update Approved Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
         $time_now   = time();
         $time           =   strtotime('-6 day', $time_now);//a week
-        $orders_model->item_status  =   1;
+        //$orders_model->item_status  =   1;
+        $orders_model->item_statuses    =   array(1,3);  
         $orders_model->start_date   =   date('Y-m-d', $time);  
         $orders_model->end_date     =   date('Y-m-d', $time_now);
         @fwrite($f_logs_feeds, 'Get Approved Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
