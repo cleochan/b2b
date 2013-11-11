@@ -214,6 +214,7 @@ class Databases_Joins_GetOrders
             $select->where("item_status = ?", $this->item_status);
             $cond[] = "item_status=".$this->item_status;
         }
+        
         if($this->item_statuses && is_array($this->item_statuses)){
             $in_item_status = implode(',', $this->item_statuses);
             $select->where("o.item_status in (".$in_item_status.") ");
