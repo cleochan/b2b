@@ -571,4 +571,49 @@ if($result)
         }
         return $new_category_array;
     }
+    
+    function improtDdProductAction(){
+        $dd_products_model   =   new Databases_Tables_DdProducts();
+        $product_filter_model   =   new Databases_Joins_ProductFilter();
+        $fp = fopen('feed_20131106_121418_crazysales_datafeed.csv', "r");
+        while (($data = fgetcsv($fp, 5000, ",")) !== FALSE) {
+            $data_array[] = $data;
+        }
+        fclose($fp);
+        foreach($data_array as $da_key => $da_val)
+        {
+            $product_code   =   $da_val[0];
+            $suppliert_sku  =   substr(trim( $da_val[0]), 0, -3);
+            $cc_product_info    =   $product_filter_model->getProductInfo($suppliert_sku);
+            $dd_products_model->product_id      =   $cc_product_info['product_id'];
+            $dd_products_model->product_code    =   rtrim($da_val[0],'"');
+            $dd_products_model->product_title   =   rtrim($da_val[1],'"');
+            $dd_products_model->brand           =   rtrim($da_val[2],'"');
+            $dd_products_model->category_1      =   rtrim($da_val[3],'"');
+            $dd_products_model->category_2      =   rtrim($da_val[4],'"');
+            $dd_products_model->description     =   rtrim($da_val[5],'"');
+            $dd_products_model->rrp             =   rtrim($da_val[6],'"');
+            $dd_products_model->sell            =   rtrim($da_val[7],'"');
+            $dd_products_model->freight         =   rtrim($da_val[8],'"');
+            $dd_products_model->cost            =   rtrim($da_val[9],'"');
+            $dd_products_model->weight          =   rtrim($da_val[10],'"');
+            $dd_products_model->available       =   rtrim($da_val[11],'"');
+            $dd_products_model->stock           =   rtrim($da_val[12],'"');
+            $dd_products_model->image_1         =   rtrim($da_val[13],'"');
+            $dd_products_model->image_2         =   rtrim($da_val[14],'"');
+            $dd_products_model->image_3         =   rtrim($da_val[15],'"');
+            $dd_products_model->image_4         =   rtrim($da_val[16],'"');
+            $dd_products_model->image_5         =   rtrim($da_val[17],'"');
+            $dd_products_model->image_6         =   rtrim($da_val[18],'"');
+            $dd_products_model->length          =   rtrim($da_val[19],'"');
+            $dd_products_model->width           =   rtrim($da_val[20],'"');
+            $dd_products_model->height          =   rtrim($da_val[21],'"');
+            $dd_products_model->despatch_pcode  =   rtrim($da_val[22],'"');
+            $dd_products_model->courier         =   rtrim($da_val[23],'"');
+            $dd_products_model->cc_supplier_sku =   $cc_product_info['supplier_sku'];
+            $dd_products_model->cc_price        =   $cc_product_info['supplier_price'];
+            $dd_products_model->addDdProduct();
+        }
+        die;
+    }
 }
