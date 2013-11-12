@@ -92,6 +92,8 @@ class Databases_Joins_ProductFilter
     var $all_category_data;
     var $dd_all_category_data;
     
+    var $dd_new_product_ids_array;
+    
     function __construct(){
         $this->db = Zend_Registry::get("db");
         $category_model     =   new Databases_Tables_ProductCategories();
@@ -688,13 +690,16 @@ class Databases_Joins_ProductFilter
         if($data_source && $sku) // 1 or 2
         {
             $product_select = $this->db->select();
-            $product_select->from("product_info_".$data_source, array("product_id","product_name","supplier_sku", "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","sc_class","imageURL0"));
+            $product_select->from("product_info_".$data_source, array("product_id","product_name","supplier_sku", 'supplier_price', "street_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","sc_class","imageURL0"));
             $product_select->where("supplier_sku = ?", $sku);
             $product = $this->db->fetchRow($product_select);
             if($product['supplier_sku'])
             {
-                $result['product_name']    = $product['product_name'];
-                $result['imageURL0']    = $product['imageURL0'];
+                $result['product_name']     =   $product['product_name'];
+                $result['imageURL0']        =   $product['imageURL0'];
+                $result['supplier_price']   =   $product['supplier_price'];
+                $result['product_id']       =   $product['product_id'];
+                $result['supplier_sku']     =   $product['supplier_sku'];
             }
         }
         
@@ -786,20 +791,43 @@ class Databases_Joins_ProductFilter
         }
         $source_table = "product_info_".$data_source;
         $old_source_table = "product_info_".$old_data_source;
-        $sql    =   'select * from '. $source_table. ' where not exists (select * from '. $old_source_table. ' where '. $source_table. '.product_id = '. $old_source_table. '.product_id and supplier_sku NOT REGEXP '. "'([\s\S]*)(\/)([\s\S]*)'".' ) and supplier_sku NOT REGEXP '."'([\s\S]*)(\/)([\s\S]*)'".' and (product_code_type <> '."'PART'".' or product_code_type is null) and quantity_available > 0 and country_of_origin IN ("CN") AND supplier_sku not REGEXP '."'([\s\S]*)[\+]([\s\S]*)'".' AND char_length(product_name) <= 55';
-        $data   =   $this->db->query($sql);
-        if($data){
-            $data_all   =   $data->fetchAll();
-            if ($data_all){
-                foreach ($data_all as $key => $data){
-                    $result['product_image'][$key]['imageURL0'] =   $data['imageURL0'];
-                    $result['product_image'][$key]['imageURL1'] =   $data['imageURL1'];
-                    $result['product_image'][$key]['imageURL2'] =   $data['imageURL2'];
-                    $result['product_image'][$key]['imageURL3'] =   $data['imageURL3'];
-                    $result['product_image'][$key]['imageURL4'] =   $data['imageURL4'];
-                    $result['product_image'][$key]['imageURL5'] =   $data['imageURL5'];
-                    $result['product_description'][$data['supplier_sku']] =   $data['supplier_sku'].'-TP.txt';
+        if($this->dd_new_product_ids_array){
+            $new_product_ids    = implode(',', $this->dd_new_product_ids_array);
+            if($new_product_ids){
+                $sql    =   'select * from '. $source_table. ' where product_id in ('.$new_product_ids.')';
+                $data   =   $this->db->query($sql);
+                if($data){
+                    $data_all   =   $data->fetchAll();
+                    if ($data_all){
+                        foreach ($data_all as $key => $data){
+                            $result['product_image'][$key]['imageURL0'] =   $data['imageURL0'];
+                            $result['product_image'][$key]['imageURL1'] =   $data['imageURL1'];
+                            $result['product_image'][$key]['imageURL2'] =   $data['imageURL2'];
+                            $result['product_image'][$key]['imageURL3'] =   $data['imageURL3'];
+                            $result['product_image'][$key]['imageURL4'] =   $data['imageURL4'];
+                            $result['product_image'][$key]['imageURL5'] =   $data['imageURL5'];
+                            $result['product_description'][$data['supplier_sku']] =   $data['supplier_sku'].'-TP.txt';
+                        }
+                    }
                 }
+            }
+        }
+        return $result;
+    }
+    
+    /**
+     * Get Count of source product table
+     */
+    function getCountProduct(){
+        $result =   FALSE;
+        $params_model   =   new Databases_Tables_Params();
+        $data_source    =   $params_model->GetVal("product_info_table");
+        $select         =   $this->db->select();
+        $select->from('product_info_'.$data_source,'count(*) as count');
+        $data_count     =   $this->db->fetchRow($select);
+        if($data_count){
+            if($data_count['count'] > 3000){
+                $result =   TRUE;
             }
         }
         return $result;

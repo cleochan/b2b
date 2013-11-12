@@ -17,11 +17,17 @@ class Algorithms_Core_Feed
         if(count($this->user_id_array))
         {
             $product_filter_model = new Databases_Joins_ProductFilter();
+            $dd_products_model      =   new Databases_Tables_DdProducts();
+            $new_product_ids_array  =   array();
             foreach($this->user_id_array as $user_id)
             {
                 $collect_feed_info = $this->CollectFeedInfo($user_id);
                 $product_list = $product_filter_model->Push($collect_feed_info, $user_id);
                 
+                //set all the DD products' stock 0
+                if($user_id ==  8 && $product_list){
+                    $dd_products_model->setStockZero();
+                }
                 $all_product_array  =   array();
                 if(!empty($collect_feed_info['users_feed_definition']) && !empty($product_list))
                 {
@@ -102,7 +108,39 @@ class Algorithms_Core_Feed
                                 
                                 $contents_tmp_array[] = $qualifier.$string_replacement_result.$qualifier;
                             }
-
+                            if($user_id == 8){
+                                $dd_products_model->product_id      =   $pl['product_id'];
+                                $dd_products_model->product_code    =   trim($contents_tmp_array[0],'"');
+                                $dd_products_model->product_title   =   trim($contents_tmp_array[1],'"');
+                                $dd_products_model->brand           =   trim($contents_tmp_array[2],'"');
+                                $dd_products_model->category_1      =   trim($contents_tmp_array[3],'"');
+                                $dd_products_model->category_2      =   trim($contents_tmp_array[4],'"');
+                                $dd_products_model->description     =   trim($contents_tmp_array[5],'"');
+                                $dd_products_model->rrp             =   trim($contents_tmp_array[6],'"');
+                                $dd_products_model->sell            =   trim($contents_tmp_array[7],'"');
+                                $dd_products_model->freight         =   trim($contents_tmp_array[8],'"');
+                                $dd_products_model->cost            =   trim($contents_tmp_array[9],'"');
+                                $dd_products_model->weight          =   trim($contents_tmp_array[10],'"');
+                                $dd_products_model->available       =   trim($contents_tmp_array[11],'"');
+                                $dd_products_model->stock           =   trim($contents_tmp_array[12],'"');
+                                $dd_products_model->image_1         =   trim($contents_tmp_array[13],'"');
+                                $dd_products_model->image_2         =   trim($contents_tmp_array[14],'"');
+                                $dd_products_model->image_3         =   trim($contents_tmp_array[15],'"');
+                                $dd_products_model->image_4         =   trim($contents_tmp_array[16],'"');
+                                $dd_products_model->image_5         =   trim($contents_tmp_array[17],'"');
+                                $dd_products_model->image_6         =   trim($contents_tmp_array[18],'"');
+                                $dd_products_model->length          =   trim($contents_tmp_array[19],'"');
+                                $dd_products_model->width           =   trim($contents_tmp_array[20],'"');
+                                $dd_products_model->height          =   trim($contents_tmp_array[21],'"');
+                                $dd_products_model->despatch_pcode  =   trim($contents_tmp_array[22],'"');
+                                $dd_products_model->courier         =   trim($contents_tmp_array[23],'"');
+                                $dd_products_model->cc_supplier_sku =   $pl['supplier_sku'];
+                                $dd_products_model->cc_price        =   $pl['supplier_price'];
+                                $product_id                         =   $dd_products_model->updateDdProduct();
+                                if($product_id){
+                                    $new_product_ids_array[]        =   $product_id;
+                                }          
+                            }
                             $contents .= implode($delimeter, $contents_tmp_array)."\r\n";
                         }
                         
@@ -137,28 +175,55 @@ class Algorithms_Core_Feed
                         $contents = $api_model->Array2Xml($xml_array);
                     }
                     
+                    if($user_id == 8){
+                        $all_dd_products    =   $dd_products_model->getAllDdProducts();
+                        if($all_dd_products){
+                            $contents   =   '';
+                            foreach ($all_dd_products as $dd_product){
+                                $contents_tmp_array = array();
+                                foreach ($dd_product as $key => $value){
+                                    if('"' === $qualifier)
+                                    {
+                                        $value = str_replace('"', '""', $value);
+                                    }elseif("'" === $qualifier)
+                                    {
+                                        $value = str_replace("'", '"', $value);
+                                    }
 
+                                    $contents_tmp_array[] = $qualifier.$value.$qualifier;
+                                }
+                                $contents .= implode($delimeter, $contents_tmp_array)."\r\n";
+                            }
+                        }
+                    }
                     
                     $export_model = new Algorithms_Core_Export();
                     $plugin_model = new Algorithms_Extensions_Plugin();
                     $export_model->file_name = $plugin_model->GetFeedPath($collect_feed_info['users_feed']['feed_name'], $collect_feed_info['users_feed']['feed_extension'], 1);
                     $export_model->contents = $contents;
                     //Create Feed
-                    
+                    $product_filter_model->dd_new_product_ids_array =   $new_product_ids_array;
+                                $new_product_array    =   $product_filter_model->getNewProductInfo();
+                                print_r($new_product_array);exit;
                     $result = $export_model->Push();
                     if($user_id == 8 ){
-                        die;
                         if($collect_feed_info['users_feed']['feed_product_type'] == '2'){
-                            $new_product_array    =   $product_filter_model->getNewProductInfo();
-                            if($new_product_array){
-                                $product_array  =   $new_product_array;
+                            if($new_product_ids_array){
+                                $product_filter_model->dd_new_product_ids_array =   $new_product_ids_array;
+                                $new_product_array    =   $product_filter_model->getNewProductInfo();
+                                if($new_product_array){
+                                    $product_array  =   $new_product_array;
+                                }
                             }
-                        }elseif($collect_feed_info['users_feed']['feed_product_type'] == '1'){
-                            $product_array      =   $all_product_array;
                         }
-                        $this->uploadFtpFile($product_array['product_image'], 'image');
-                        $this->uploadFtpFile($product_array['product_description'], 'txt');
-                        $this->uploadFtpFile(array($export_model->file_name), 'csv');
+                        //elseif($collect_feed_info['users_feed']['feed_product_type'] == '1'){
+                        //    $product_array      =   $all_product_array;
+                        //}
+                        if($product_array){
+                            $this->uploadFtpFile($product_array['product_image'], 'image');
+                            $this->uploadFtpFile($product_array['product_description'], 'txt');
+                            $this->uploadFtpFile(array($export_model->file_name), 'csv');
+                        }
                     }
                 }
             }
