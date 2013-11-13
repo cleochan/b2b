@@ -202,9 +202,6 @@ class Algorithms_Core_Feed
                     $export_model->file_name = $plugin_model->GetFeedPath($collect_feed_info['users_feed']['feed_name'], $collect_feed_info['users_feed']['feed_extension'], 1);
                     $export_model->contents = $contents;
                     //Create Feed
-                    $product_filter_model->dd_new_product_ids_array =   $new_product_ids_array;
-                                $new_product_array    =   $product_filter_model->getNewProductInfo();
-                                print_r($new_product_array);exit;
                     $result = $export_model->Push();
                     if($user_id == 8 ){
                         if($collect_feed_info['users_feed']['feed_product_type'] == '2'){
