@@ -747,16 +747,20 @@ class ScheduledController extends Zend_Controller_Action
                         $supplier_sku    =   substr(trim($da_val[9]), 0, -3);
                         @fwrite($f_logs_feeds, 'Process Orders:'.$da_val[0].' Begin at:'.date("Y-m-d H:i:s")."\r\n");
                         //Validation
+                        $post_code  =   trim($da_val[7]);
+                        if(strlen($post_code)==3){
+                            $post_code  =   '0'.$post_code;
+                        }
                         $full_name_array    = explode(' ', trim($da_val[1]));
                         $getorders_model->shipping_first_name   =   $full_name_array[0];
                         $getorders_model->shipping_last_name    =   $full_name_array[1];
                         $getorders_model->shipping_company      =   trim($da_val[18]);
-                        $getorders_model->merchant_company      =   'Test Company';
-                        //$getorders_model->merchant_company      =   'DealsDirect';
+                        //$getorders_model->merchant_company      =   'Test Company';
+                        $getorders_model->merchant_company      =   'DealsDirect';
                         $getorders_model->shipping_address_1    =   trim($da_val[3]).' '. trim($da_val[4]);
                         $getorders_model->shipping_suburb       =   trim($da_val[5]);
                         $getorders_model->shipping_state        =   trim($da_val[6]);
-                        $getorders_model->shipping_postcode     =   trim($da_val[7]);
+                        $getorders_model->shipping_postcode     =   $post_code;
                         $getorders_model->shipping_country      =   'AU';
                         $getorders_model->shipping_phone        =   trim($da_val[8]);
                         $getorders_model->supplier_sku          =   $supplier_sku;
@@ -778,10 +782,6 @@ class ScheduledController extends Zend_Controller_Action
                             $order_amount = $check_result['order_amount'];
                             $instant_balance = $check_result['instant_balance'];
                             $user_id = $check_result['user_id'];
-                            $post_code  =   trim($da_val[7]);
-                            if(strlen($post_code)==3){
-                                $post_code  =   '0'.$post_code;
-                            }
                             //update instant balance
                             $group_instance_balance_array[$user_id] = $instant_balance;
                             //Insert Into Orders
@@ -880,21 +880,20 @@ class ScheduledController extends Zend_Controller_Action
     
     function updateDdOrdersAction()
     {
-        $user_ids       =   array('2');
+        $user_ids       =   array('8');
         $orders_model   =   new Databases_Joins_GetOrders();
         $dd_order_model =   new Databases_Tables_DdOrders();
         $params_model   =   new Databases_Tables_Params();
-        $orders_webservice_model    =   new Algorithms_Core_OrderService();
-        $feed_model                 =   new Algorithms_Core_Feed();
-        $orders_model->item_status          =   1;
+        $orders_model->item_status          =   4;
+        //$orders_model->limit                =   23;
         $time_now                           =   time();
         $time                               =   strtotime( '-1 day', $time_now);
-        //$orders_model->update_start_date    =   date('Y-m-d', $time);  
-        //$orders_model->update_end_date      =   date('Y-m-d', $time_now);
+        $orders_model->update_start_date    =   date('Y-m-d', $time);  
+        $orders_model->update_end_date      =   date('Y-m-d', $time_now);
         $logs_path     =   $params_model->GetVal('logs_path');
         $f_logs_feeds  =   @fopen($logs_path."orderslogs/updateddorders".date('YmdHis').".txt", "w+");
         @fwrite($f_logs_feeds, 'Update DD Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
-        $dd_order_new_filename  =   'crazysales_shipping_'.date('YMd-HIS').'.csv';
+        $dd_order_new_filename  =   'crazysales_shipping_'.date('Ymd-His').'.csv';
         $dd_order_new_path  =   'DD_orders_new/';
         $titile_array   =   array(' oNum', ' Buyer_Full_Name', ' Company', ' Address_Line_1', ' Address_Line_2', ' Suburb', ' State', ' Post_Code', ' Phone_Num', ' Product_Code', ' Product_Title', ' Qty', ' Cart_ID', ' Ref_Num', ' Cost', ' Freight', ' Tracking_Number', ' Shipping_Date', ' Courier');
         if($user_ids && is_array($user_ids)){

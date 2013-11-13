@@ -616,4 +616,68 @@ if($result)
         }
         die;
     }
+    
+    function processOrderAction(){
+        $fp = fopen('crazysales_picking_20131113-111900.csv', "r");
+        while (($data = fgetcsv($fp, 5000, ",")) !== FALSE) {
+            $data_array[] = $data;
+        }
+        unset( $data_array[0]);
+        fclose($fp);
+        $titile_array   =   array("Your Record # (Optional)","Buyer First Name (Required when Pickup N)","Buyer Last Name (Required when Pickup N)","Buyer Company (Optional)","Buyer Address Line 1 (Required when Pickup N)","Buyer Address Line 2 (Optional)","Buyer Suburb (Required when Pickup N)","Buyer State (Required when Pickup N)","Buyer Postal Code (Required when Pickup N)","Buyer Country (Required when Pickup N)","Buyer Phone (Optional)","Supplier Item Code (Required)","Merchant SKU (Optional)","Qty (Required)","Shipping Method (Optional)","Shipping Instruction (Optional)","Comments (Optional)","Merchant Company (Required)","Pick Up (Required)");
+        $f_dd_order_new =   @fopen('dd-'.date('Y-m-d').'.csv','w');
+        @fputcsv($f_dd_order_new, $titile_array);
+        foreach($data_array as $da_key => $da_val)
+        {
+            $supplier_sku    =   substr(trim($da_val[9]), 0, -3);
+            //Validation
+            $full_name_array    = explode(' ', trim($da_val[1]));
+            /*
+            $getorders_model->shipping_first_name   =   $full_name_array[0];
+            $getorders_model->shipping_last_name    =   $full_name_array[1];
+            $getorders_model->shipping_company      =   trim($da_val[18]);
+            $getorders_model->merchant_company      =   'Test Company';
+            //$getorders_model->merchant_company      =   'DealsDirect';
+            $getorders_model->shipping_address_1    =   trim($da_val[3]).' '. trim($da_val[4]);
+            $getorders_model->shipping_suburb       =   trim($da_val[5]);
+            $getorders_model->shipping_state        =   trim($da_val[6]);
+            $getorders_model->shipping_postcode     =   trim($da_val[7]);
+            $getorders_model->shipping_country      =   'AU';
+            $getorders_model->shipping_phone        =   trim($da_val[8]);
+            $getorders_model->supplier_sku          =   $supplier_sku;
+            $getorders_model->quantity              =   trim($da_val[11]);
+            $getorders_model->operator_id           =   '1';
+            $getorders_model->pick_up               =   'N';
+             * 
+             */
+            $post_code  =   trim($da_val[7]);
+            if(strlen($post_code)==3){
+                $post_code  =   '0'.$post_code;
+            }
+            $csv_data   =   array(
+                trim($da_val[0]),
+                $full_name_array[0],
+                $full_name_array[1],
+                trim($da_val[2]),
+                trim($da_val[3]),
+                trim($da_val[4]),
+                trim($da_val[5]),
+                trim($da_val[6]),
+                $post_code,
+                'AU',
+                trim($da_val[8]),
+                $supplier_sku,
+                trim($da_val[9]),
+                trim($da_val[11]),
+                '',
+                '',
+                '',
+                'DealsDirect',
+                'N'
+            );
+            @fputcsv($f_dd_order_new, $csv_data);
+        }
+         fclose($f_dd_order_new);
+         die;
+    }
 }

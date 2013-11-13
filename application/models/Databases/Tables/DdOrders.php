@@ -90,8 +90,8 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
     
     function getDdOrderInfo(){
         $result   =   '';
-        if($this->cc_order_id){
-            $where  =   " cc_order_id = '".$this->cc_order_id."' and  product_code ='".$this->product_code."'";
+        if($this->b2b_order_id){
+            $where  =   " b2b_order_id = '".$this->b2b_order_id."' and  product_code ='".$this->product_code."'";
             $result  =   $this->fetchRow($where);
         }
         return $result;
