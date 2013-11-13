@@ -53,17 +53,36 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
         if($this->user_id)
         {
             $user = $this->fetchRow("user_id='".$this->user_id."'");
-            
-            $user->company = $this->company;
-            $user->contact_name = $this->contact_name;
-            $user->contact_phone = $this->contact_phone;
-            $user->credit = $this->credit;
-            $user->discount = $this->discount;
-            $user->address  =  $this->address;
-            $user->post_code     =  $this->post_code;
-            $user->suburb        =  $this->suburb;
-            $user->state         =  $this->state;
-            $user->flat_rate_shipping   =   $this->flat_rate_shipping;
+            if($this->company){
+                $user->company = $this->company;
+            }
+            if($this->contact_name){
+                $user->contact_name = $this->contact_name;
+            }
+            if($this->contact_phone){
+                $user->contact_phone = $this->contact_phone;
+            }
+            if($this->credit){
+                $user->credit = $this->credit;
+            }
+            if($this->discount){
+                $user->discount = $this->discount;
+            }
+            if($this->address){
+                $user->address  =  $this->address;
+            }
+            if($this->post_code){
+                $user->post_code     =  $this->post_code;
+            }
+            if($this->suburb){
+                $user->suburb        =  $this->suburb;
+            }
+            if($this->state){
+                $user->state         =  $this->state;
+            }
+            if($this->flat_rate_shipping){
+                $user->flat_rate_shipping   =   $this->flat_rate_shipping;
+            }
             $user->save();
         }
     }

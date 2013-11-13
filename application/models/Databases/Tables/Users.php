@@ -110,12 +110,16 @@ class Databases_Tables_Users extends Zend_Db_Table
         {
             $user = $this->fetchRow("user_id='".$this->user_id."'");
             
-            $user->email = $this->email;
+            if($this->email){
+                $user->email = $this->email;
+            }
             if($this->password)
             {
                 $user->password = $this->password;
             }
-            $user->user_status = $this->user_status;
+            if($this->user_status){
+                $user->user_status = $this->user_status;
+            }
             
             $user->save();
             //update extension

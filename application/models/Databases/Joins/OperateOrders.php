@@ -229,7 +229,7 @@ class Databases_Joins_OperateOrders {
                     $logs_financial->user_id = $crazy_sales_order->PurchaseOrderUserId;
                     $logs_financial->action_type = 1; //place order
                     $logs_financial->action_affect = 2; //deduct
-                    $logs_financial->action_value = $crazy_sales_order->order_amount;
+                    $logs_financial->action_value = $crazy_sales_order->OrderAmount;
                     // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
                     $logs_financial->AddLog();
                 }

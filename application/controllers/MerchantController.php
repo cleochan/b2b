@@ -1183,6 +1183,7 @@ class MerchantController extends Zend_Controller_Action
                     {
                         $check_user_string->password = $form->getValue('password');
                     }
+                    $check_user_string->user_id     =   $_SESSION["Zend_Auth"]["storage"]->user_id;
                     $check_user_string->contact_name = $form->getValue('contact_name');
                     $check_user_string->contact_phone = $form->getValue('contact_phone');
                     
