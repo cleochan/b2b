@@ -284,7 +284,7 @@ class ScheduledController extends Zend_Controller_Action
                     $TotalNumberOfEntries   =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfEntries'];
                     $TotalNumberOfPages     =   $reponse_data['GetProductsResult']['PaginationResult']['TotalNumberOfPages'];
                 }
-                $TotalNumberOfPages =   0;
+                
                 if ($has && $TotalNumberOfPages > 40)
                 {
                     $has=0;
@@ -689,10 +689,10 @@ class ScheduledController extends Zend_Controller_Action
                 if($user['user_id']!=8){
                     $model->user_id_array = array($user['user_id']);
                     $result = $model->Publish();
-                    $logs_feeds   .=   ' Generate Feed:'.$result."\n";
+                    $logs_feeds   =   ' Generate Feed:'.$result."\n";
+                    @fwrite($f_logs_feeds, $logs_feeds);
                 }
             }
-            @fwrite($f_logs_feeds, $logs_feeds);
             @fclose($f_logs_feeds);
         }
         $params_model->UpdateVal('merchant_feed_refresh_time',date('Y-m-d H:i:s'));

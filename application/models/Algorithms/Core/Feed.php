@@ -80,7 +80,7 @@ class Algorithms_Core_Feed
 
                         $contents .= implode($delimeter, $contents_tmp_array)."\r\n";
                         //==== Make Title Finished ====//
-                        @fwrite($f1, 'Start Replace Product datas Begin at:'.date("Y-m-d H:i:s")."\r\n");
+                        
                         foreach($product_list as $pl)
                         {
                             if($user_id == 8){
