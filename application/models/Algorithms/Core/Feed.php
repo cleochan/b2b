@@ -225,8 +225,8 @@ class Algorithms_Core_Feed
                         if($product_array){
                             $this->uploadFtpFile($product_array['product_image'], 'image');
                             $this->uploadFtpFile($product_array['product_description'], 'txt');
-                            $this->uploadFtpFile(array($export_model->file_name), 'csv');
                         }
+                        $this->uploadFtpFile(array($export_model->file_name), 'csv');
                     }
                 }
             }
