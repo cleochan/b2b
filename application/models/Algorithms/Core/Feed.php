@@ -179,6 +179,12 @@ class Algorithms_Core_Feed
                         $all_dd_products    =   $dd_products_model->getAllDdProducts();
                         if($all_dd_products){
                             $contents   =   '';
+                            //Make Title
+                            foreach($collect_feed_info['users_feed_definition'] as $users_feed_definition)
+                            {
+                                $contents_title_array[] = $qualifier.$users_feed_definition['column_alias'].$qualifier;
+                            }
+                            $contents .= implode($delimeter, $contents_title_array)."\r\n";
                             foreach ($all_dd_products as $dd_product){
                                 $contents_tmp_array = array();
                                 foreach ($dd_product as $key => $value){

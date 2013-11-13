@@ -361,7 +361,7 @@ class Databases_Joins_ProductFilter
                 }
                 $result['supplier_price'] = $offer_price_cal[1];
                 $result['estimated_shipping_cost'] = $product['estimated_shipping_cost'];
-                $result['estimated_handling_fee'] = $product['estimated_handling_fee0'];
+                $result['estimated_handling_fee'] = $product['estimated_handling_fee'];
                 $result['quantity_available'] = $product['quantity_available'];
                 if($user_id == 8){
                     if($product['length'] >= 105 || $product['height'] >= 105 || $product['depth'] >= 105 || $product['weight'] >= 32){

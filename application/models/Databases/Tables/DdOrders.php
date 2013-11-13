@@ -58,8 +58,8 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
     
     function updateDdorder(){
         $result   =   '';
-        if($this->cc_order_id){
-            $where  =   " cc_order_id = '".$this->cc_order_id."' and  product_code ='".$this->product_code."'";
+        if($this->b2b_order_id){
+            $where  =   " b2b_order_id = '".$this->b2b_order_id."' and  product_code ='".$this->product_code."'";
             $order  =   $this->fetchRow($where);
             if($order->order_id){
                 $order->tracking_number =   $this->tracking_number;
@@ -74,17 +74,18 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
     }
     
     function updateDdOrderCcOrderID(){
-        $order_id   =   '';
         if($this->b2b_order_id && $this->cc_order_id){
             $where  =   " b2b_order_id = '".$this->b2b_order_id."' ";
-            $order  =   $this->fetchRow($where);
-            if($order->order_id){
-                $order->cc_order_id =   $this->cc_order_id;
-                $order->save();
-                $order_id   =   $order->order_id;
+            $select =   $this->select();
+            $select->where($where);
+            $orders  =   $this->fetchAll($select);
+            if($orders){
+                $data   =   array(
+                    'cc_order_id'   =>  $this->cc_order_id,
+                );
+                $this->update($data, $where);
             }
         }
-        return $order_id;
     }
     
     function getDdOrderInfo(){
