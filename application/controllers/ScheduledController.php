@@ -265,7 +265,7 @@ class ScheduledController extends Zend_Controller_Action
             'normal_count'  =>  0,
             'repeat_count'  =>  0,
         );
-        $has=1;
+        $has=TRUE;
        
             do
             {
@@ -287,14 +287,13 @@ class ScheduledController extends Zend_Controller_Action
                 
                 if ($has && $TotalNumberOfPages > 40)
                 {
-                    $has=0;
+                    $has=FALSE;
                     $productFilter_model->truncateProduct();
                     @fwrite($f, 'Truncate Product Data : '.date("Y-m-d H:i:s")."\n");
                     @fwrite($f, 'TotalNumberOfPages : '.$TotalNumberOfPages."\n");
                     @fwrite($f, 'TotalNumberOfEntries : '.$TotalNumberOfEntries."\n");
                     @fwrite($f, 'EntriesPerPage : '.$paginationType['EntriesPerPage']."\n");
-                }else{
-                    @fwrite($f, 'Truncate Product Data : '.date("Y-m-d H:i:s")."\n");
+                }elseif($TotalNumberOfPages < 40){
                     @fwrite($f, 'TotalNumberOfPages : '.$TotalNumberOfPages."\n");
                     @fwrite($f, 'TotalNumberOfEntries : '.$TotalNumberOfEntries."\n");
                     @fwrite($f, 'EntriesPerPage : '.$paginationType['EntriesPerPage']."\n");
