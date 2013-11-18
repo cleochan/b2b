@@ -894,7 +894,7 @@ class ScheduledController extends Zend_Controller_Action
         $dd_order_model =   new Databases_Tables_DdOrders();
         $params_model   =   new Databases_Tables_Params();
         //$orders_model->item_status          =   4;
-        $orders_model->item_statuses    =   array(1,3); 
+        $orders_model->item_statuses    =   array(4,5); 
         //$orders_model->limit                =   23;
         $time_now                           =   time();
         $time                               =   strtotime( '-1 day', $time_now);
