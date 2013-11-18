@@ -1,0 +1,109 @@
+<br />
+<div align="center"><H2>Admin Order import preview</H2></div>
+<?php if($this->notice):?>
+<br />
+<div align="center"><font color="red"><?=$this->notice?></font></div>
+<?php else: ?>
+<br />
+<div align="center">
+    <form action="/admin/admin-import-dd-order-confirm" method="POST">
+        <table class="hide" border="0" cellpadding="0" cellspacing="1">
+            <tbody>
+                <tr>
+                    <td valign="top" width="100%">
+                        <table class="width100" cellspacing="1">
+                            <tbody>
+                                <tr>
+                                    <td class="form-title">Full Name</td>
+                                    <td class="form-title">Product Name</td>
+                                    <td class="form-title">Thumbnail</td>
+                                    <td class="form-title">Supplier SKU</td>
+                                    <td class="form-title">Merchant SKU</td>
+                                    <td class="form-title">Qty</td>
+                                    <td class="form-title">Amount</td>
+                                    <td class="form-title">Balance</td>
+                                    <td class="form-title">Credit</td>
+                                    <td class="form-title">Result</td>
+                                    <td class="form-title">Reason</td>
+				</tr>
+                                <?php if($this->list):
+                                        $n = 1;
+                                        foreach($this->list as $list_key => $list_val):
+				?>
+                                <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+                                    <td class="center"><?=$list_val[1]?></td>
+                                    <td class="center"><?=$list_val['product_name']?></td>
+                                    <td class="center"><image src="<?=$list_val['imageURL0'] ?>" height="50" /></td>
+                                    <td class="center"><?=$list_val['supplier_sku']?></td>
+                                    <td class="center"><?=$list_val[9]?></td>
+                                    <td class="center"><?=$list_val[11]?></td>
+                                    <td class="center"><?=number_format($list_val['order_amount'],2)?></td>
+                                    <td class="center"><?=number_format($list_val['instant_balance'],2)?></td>
+                                    <td class="center"><?=number_format($list_val['credit'],2)?></td>
+                                    <?php if("Y" == $list_val['result']):?>
+                                        <td class="center"><font color="green">Approved</font></td>
+                                        <td class="center">&nbsp;</td>
+                                    <?php else:?>
+                                        <td class="center"><font color="red">Rejected</font></td>
+                                        <td class="center"><?=$list_val['reason']?></td>
+                                        <?php $is_rejected = 1;?>
+                                    <?php endif;?>
+                                </tr>
+                                <input type="hidden" name="merchant_ref[<?=$list_key?>]" value="<?=$list_val[0]?>" />
+                                <input type="hidden" name="shipping_first_name[<?=$list_key?>]" value="<?=$list_val['shipping_first_name']?>" />
+                                <input type="hidden" name="shipping_last_name[<?=$list_key?>]" value="<?=$list_val['shipping_last_name']?>" />
+                                <input type="hidden" name="shipping_company[<?=$list_key?>]" value="<?=$list_val[18]?>" />
+                                <input type="hidden" name="merchant_company[<?=$list_key?>]" value="<?=$list_val['merchant_company']?>" />
+                                <input type="hidden" name="user_id[<?=$list_key?>]" value="<?=$list_val['user_id']?>" />
+                                <input type="hidden" name="shipping_address_1[<?=$list_key?>]" value="<?=$list_val[3]?>" />
+                                <input type="hidden" name="shipping_address_2[<?=$list_key?>]" value="<?=$list_val[4]?>" />
+                                <input type="hidden" name="shipping_suburb[<?=$list_key?>]" value="<?=$list_val[5]?>" />
+                                <input type="hidden" name="shipping_state[<?=$list_key?>]" value="<?=$list_val[6]?>" />
+                                <input type="hidden" name="shipping_postcode[<?=$list_key?>]" value="<?=$list_val[7]?>" />
+                                <input type="hidden" name="shipping_country[<?=$list_key?>]" value="<?=$list_val['shipping_country']?>" />
+                                <input type="hidden" name="shipping_phone[<?=$list_key?>]" value="<?=$list_val[8]?>" />
+                                <input type="hidden" name="supplier_sku[<?=$list_key?>]" value="<?=$list_val['supplier_sku']?>" />
+                                <input type="hidden" name="merchant_sku[<?=$list_key?>]" value="<?=$list_val[9]?>" />
+                                <input type="hidden" name="quantity[<?=$list_key?>]" value="<?=$list_val[11]?>" />
+                                <input type="hidden" name="shipping_method[<?=$list_key?>]" value="" />
+                                <input type="hidden" name="shipping_instruction[<?=$list_key?>]" value="" />
+                                <input type="hidden" name="comments[<?=$list_key?>]" value="" />
+                                <input type="hidden" name="pick_up[<?=$list_key?>]" value="<?=$list_val['pick_up']?>" />
+                                <input type="hidden" name="buyer_full_name[<?=$list_key?>]" value="<?=$list_val[1]?>"/>
+                                <input type="hidden" name="product_title[<?=$list_key?>]" value="<?=$list_val['product_title']?>"/>
+                                <input type="hidden" name="card_id[<?=$list_key?>]" value="<?=$list_val['card_id']?>"/>
+                                <input type="hidden" name="ref_num[<?=$list_key?>]" value="<?=$list_val['ref_num']?>"/>
+                                <input type="hidden" name="cost[<?=$list_key?>]" value="<?=$list_val['cost']?>"/>
+                                <input type="hidden" name="freight[<?=$list_key?>]" value="<?=$list_val['freight']?>"/>
+				<?php
+                                            endforeach;
+                                    endif;
+				?>
+                                <tr>
+                                    <td class="form-title" colspan="13">
+                                        <?php if($is_rejected):?>
+                                            <input type="button" id="backtoedit" value="Back to edit" />
+                                            <?php else:?>
+                                            <input type="button" id="submit_form" value="Confirm Update" /> <?php if($is_rejected){echo "<font color='red'>* THE FORM CAN NOT BE SUBMITED DUE TO THE INVALID INFORMATION.</font>";}?>
+                                            <?php endif?>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    <script type="application/javascript">
+		$("#submit_form").click(function(){
+			$("#submit_form").attr('disabled','disabled');
+			$("form").submit();
+		})
+                
+                $("#backtoedit").click(function (){
+                        location.href ="/admin/admin-import-dd-order";
+                })		
+	</script>
+</div>
+<?php endif;?>

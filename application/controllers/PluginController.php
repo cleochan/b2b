@@ -618,7 +618,7 @@ if($result)
     }
     
     function processOrderAction(){
-        $fp = fopen('crazysales_picking_20131113-111900.csv', "r");
+        $fp = fopen('crazysales_picking_20131118-112022.csv', "r");
         while (($data = fgetcsv($fp, 5000, ",")) !== FALSE) {
             $data_array[] = $data;
         }
@@ -631,7 +631,7 @@ if($result)
         {
             $supplier_sku    =   substr(trim($da_val[9]), 0, -3);
             //Validation
-            $full_name_array    = explode(' ', trim($da_val[1]));
+            $full_name_array    =   array_values(array_filter(explode(' ', trim($da_val[1]))));
             /*
             $getorders_model->shipping_first_name   =   $full_name_array[0];
             $getorders_model->shipping_last_name    =   $full_name_array[1];
@@ -679,5 +679,69 @@ if($result)
         }
          fclose($f_dd_order_new);
          die;
+    }
+    
+    function ddOrdersListAction(){
+        $dd_order_model =   new Databases_Tables_DdOrders();
+        $time_now                           =   time();
+        $time                               =   strtotime( '-1 day', $time_now);
+        $dd_order_model->update_start_date    =   date('Y-m-d', $time);  
+        $dd_order_model->update_end_date      =   date('Y-m-d', $time_now);
+        $dd_orders      =   $dd_order_model->getDdorders();
+        $html   =   '<table width="100%">'
+                .'<tr>
+                    <td width="5.2%">oNum</td>
+                    <td width="5.2%">Buyer_Full_Name</td>
+                    <td width="5.2%">Company</td>
+                    <td width="5.2%">Address_Line_1</td>
+                    <td width="5.2%">Address_Line_2</td>
+                    <td width="5.2%">Suburb</td>
+                    <td width="5.2%">State</td>
+                    <td width="5.2%">Post_Code</td>
+                    <td width="5.2%">Phone_Num</td>
+                    <td width="5.2%">Product_Code</td>
+                    <td width="5.2%">Product_Title</td>
+                    <td width="5.2%">Qty</td>
+                    <td width="5.2%">Cart_ID</td>
+                    <td width="5.2%">Ref_Num</td>
+                    <td width="5.2%">Cost</td>
+                    <td width="5.2%">Freight</td>
+                    <td width="5.2%">Tracking_Number</td>
+                    <td width="5.2%">Shipping_Date</td>
+                    <td width="5.2%">Courier</td>
+                 </tr>';
+        if($dd_orders){
+            foreach ($dd_orders as $dd_order){
+                $html   .=  '<tr>';
+                $html   .=  '<td width="5.2%">'.$dd_order['o_num'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['buyer_full_name'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['company'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['address_line_1'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['address_line_2'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['suburb'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['state'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['post_code'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['phone_num'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['product_code'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['product_title'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['qty'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['cart_id'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['ref_num'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['cost'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['freight'].'</td>';
+                $html   .=  '<td width="5.2%">'.($dd_order['tracking_number'])?$dd_order['tracking_number']:$dd_order['error_message'].'</td>';
+                $html   .=  '<td width="5.2%">'.$dd_order['shipping_date'].'</td>';
+                if($dd_order['status']=='5'){
+                    $courier    =   'Cancelled';
+                }else{
+                    $courier    =   $dd_order['courier'];
+                }
+                $html   .=  '<td width="5.2%">'.$courier.'</td>';
+                $html   .=  '</tr>';
+            }
+        }
+        $html   .=  '</table>';
+        echo $html;
+        die;
     }
 }

@@ -1295,7 +1295,7 @@ class AdminController extends Zend_Controller_Action
                                 $user_info = $users_extension_model->CheckCompanyInCsv();
                                 if($user_info['user_id'])//free shiping for dealsdirect
                                 {
-                                    if($user_info['user_id']==2);
+                                    if($user_info['user_id']==8);
                                     $params_array   =   array(
                                         'free_shipping' => 1
                                     );
@@ -1652,5 +1652,294 @@ class AdminController extends Zend_Controller_Action
         $this->view->purchase_order =   $purchase_order_info[0];
     }
     
+    function adminImportDdOrderAction()
+    {
+        $this->view->title = "Admin Import DealsDirect Order";
+        $menu_model = new Algorithms_Core_Menu;
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Admin Import DealsDirect Order"));
+    }
+    
+    /**
+     * Import DealsDirect Orders Preview
+     */
+    function adminImportDdOrderPreviewAction (){
+        $valid_file_types = array('application/octet-stream',
+                                  'text/csv',
+                                  'application/vnd.ms-excel'
+                            );
+        
+        $this->view->title = "Admin Order Import Preview";
+        $menu_model = new Algorithms_Core_Menu;
+        $product_filter_model   =   new Databases_Joins_ProductFilter();
+        $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Admin Import Order"));
+
+        $merchant_company   =   'Test Company';
+        //$merchant_company   =   'DealsDirect';
+        $pick_up            =   'N';
+        if ($_FILES["csvf"]["error"] > 0)
+        {
+            $this->view->notice = $_FILES["csvf"]["error"];
+        }else{	
+            if( in_array($_FILES["csvf"]["type"], $valid_file_types) )
+            {                
+                //Action
+                $group_instance_balance_array = array();
+                $getorders_model = new Databases_Joins_GetOrders();
+                $data_array = array();
+                if (($handle = fopen($_FILES["csvf"]["tmp_name"], "r")) !== FALSE) {
+                    while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
+                        $data_array[] = $data;
+                    }
+                    fclose($handle);
+                    
+                    if(!empty($data_array))
+                    {
+                        //ignore title
+                        unset($data_array[0]);
+                        
+                        foreach($data_array as $da_key => $da_val)
+                        {
+                            $count_column = count($da_val);
+                            
+                            if(19 != $count_column) //Reject due to the column amount
+                            {
+                                $data_array[$da_key]['result'] = "N";
+                                $data_array[$da_key]['reason'] = "Column Amount Error.";
+                            }else{ //check contents
+				$post_code  =   trim($da_val[7]);
+                                if(strlen($post_code)==3){
+                                    $post_code  =   '0'.$post_code;
+                                }
+                                $supplier_sku    =   substr(trim($da_val[9]), 0, -3);
+                                $full_name_array    = array_values(array_filter(explode(' ', trim($da_val[1]))));
+                                
+                                $getorders_model->shipping_first_name   =   $full_name_array[0];
+                                $getorders_model->shipping_last_name    =   $full_name_array[1];
+                                $getorders_model->shipping_company      =   trim($da_val[18]);
+                                $getorders_model->merchant_company      =   $merchant_company;
+                                $getorders_model->shipping_address_1    =   trim($da_val[3]).' '. trim($da_val[4]);
+                                $getorders_model->shipping_suburb       =   trim($da_val[5]);
+                                $getorders_model->shipping_state        =   trim($da_val[6]);
+                                $getorders_model->shipping_postcode     =   $post_code;
+                                $getorders_model->shipping_country      =   'AU';
+                                $getorders_model->shipping_phone        =   trim($da_val[8])?trim($da_val[8]):'1';
+                                $getorders_model->supplier_sku          =   $supplier_sku;
+                                $getorders_model->quantity              =   trim($da_val[11]);
+                                $getorders_model->operator_id           =   '1';
+                                $getorders_model->pick_up               =   $pick_up;
+                                $getorders_model->group_instance_balance_array = $group_instance_balance_array;
+                                $params_array   =   array(
+                                    'free_shipping' => 1
+                                );
+                                $getorders_model->params_array          =   $params_array;
+                                /**
+                                 * @var $getorders_model Databases_Joins_GetOrders
+                                 * @todo PlaceOrderCheck
+                                 */
+                                $check_result = $getorders_model->PlaceOrderCheck();
+
+                                $data_array[$da_key]['result'] = $check_result[1];
+                                $data_array[$da_key]['reason'] = $check_result[2];
+                                $data_array[$da_key]['order_amount'] = (float)$check_result['order_amount'];
+                                $data_array[$da_key]['instant_balance'] = (float)$check_result['instant_balance'];
+                                $data_array[$da_key]['credit'] = $check_result['credit'];
+                                $data_array[$da_key]['user_id'] = $check_result['user_id'];
+                                $data_array[$da_key][11]    =   $da_val[11];
+                                $data_array[$da_key]['supplier_sku']    =   $supplier_sku;
+                                $data_array[$da_key]['shipping_first_name'] =   $full_name_array[0];
+                                $data_array[$da_key]['shipping_last_name']  =   $full_name_array[1];
+                                $data_array[$da_key]['merchant_company']    =   $merchant_company;
+                                $data_array[$da_key]['shipping_country']    =   'AU';
+                                $data_array[$da_key]['pick_up']             =   $pick_up;
+                                $data_array[$da_key]['product_title']       =   $da_val[10];
+                                $data_array[$da_key]['card_id']             =   $da_val[12];
+                                $data_array[$da_key]['ref_num']             =   $da_val[13];
+                                $data_array[$da_key]['cost']                =   $da_val[14];
+                                $data_array[$da_key]['freight']             =   $da_val[15];
+                                /**
+                                 * @var $product_filter_model Databases_Joins_ProductFilter
+                                 * @todo Get Product Info
+                                 */
+                                $product_info   =   $product_filter_model->getProductInfo($supplier_sku);
+                                $data_array[$da_key]['product_name']    =   $product_info['product_name'];
+                                $data_array[$da_key]['imageURL0']       =   $product_info['imageURL0'];
+                                //update instant balance
+                                $group_instance_balance_array[$check_result['user_id']] = $check_result['instant_balance'];
+                            }
+                        }
+                    }
+                    $this->view->list = $data_array;
+                    
+                }else{
+                    $this->view->notice = "Error.";
+                }
+            }else{
+                $this->view->notice = "File type is invalid.";
+            }
+        }
+    }
+    
+    function adminImportDdOrderConfirmAction(){
+        $this->view->title = "Admin Order DealsDirect Import Confirmation";
+        $params = $this->_request->getParams();
+        //Algorithms_Extensions_Plugin::FormatArray($params);die;
+        $getorders_model = new Databases_Joins_GetOrders();
+        $plugin_model = new Algorithms_Extensions_Plugin();
+        $product_filter_model   =   new Databases_Joins_ProductFilter();
+        $dd_orders_model        =   new Databases_Tables_DdOrders();
+        $ip = $plugin_model->GetIp();
+        $notice = "S1"; //success
+        
+        if(count($params['supplier_sku']))
+        {
+            $group_instance_balance_array = array();
+            $merchant_ref_pool = array();
+            foreach($params['supplier_sku'] as $loop_key => $supplier_sku)
+            {
+                //Validation
+                $getorders_model->shipping_first_name = $params['shipping_first_name'][$loop_key];
+                $getorders_model->shipping_last_name = $params['shipping_last_name'][$loop_key];
+                $getorders_model->shipping_company = $params['shipping_company'][$loop_key];
+                $getorders_model->merchant_company = $params['merchant_company'][$loop_key];
+                $getorders_model->shipping_address_1 = $params['shipping_address_1'][$loop_key];
+                $getorders_model->shipping_suburb = trim($params['shipping_suburb'][$loop_key]);
+                $getorders_model->shipping_state = trim($params['shipping_state'][$loop_key]);
+                $getorders_model->shipping_postcode = trim($params['shipping_postcode'][$loop_key]);
+                $getorders_model->shipping_country = $params['shipping_country'][$loop_key];
+                $getorders_model->shipping_phone = $params['shipping_phone'][$loop_key];
+                $getorders_model->supplier_sku = $supplier_sku;
+                $getorders_model->quantity = $params['quantity'][$loop_key];
+                $getorders_model->operator_id = $_SESSION["Zend_Auth"]["storage"]->user_id;
+                $getorders_model->pick_up = $params['pick_up'][$loop_key];
+                $getorders_model->group_instance_balance_array = $group_instance_balance_array;
+                $users_extension_model = new Databases_Tables_UsersExtension();
+                $users_extension_model->company = $params['merchant_company'][$loop_key];
+                $params_array   =   array(
+                    'free_shipping' => 1
+                );
+                $getorders_model->params_array  =   $params_array;
+                /**
+                 * @var $getorders_model Databases_Joins_GetOrders
+                 * @todo Check Order 
+                 */
+                $check_result = $getorders_model->PlaceOrderCheck();
+                if("Y" == $check_result[1]) //passed the validation
+                {
+                    $order_amount = $check_result['order_amount'];
+                    $instant_balance = $check_result['instant_balance'];
+                    $user_id = $check_result['user_id'];
+
+                    //update instant balance
+                    $group_instance_balance_array[$user_id] = $instant_balance;
+                    
+                    //Insert Into Orders
+                    $getorders_model->merchant_ref = $params['merchant_ref'][$loop_key];
+                    $getorders_model->order_amount = $order_amount;
+                    $getorders_model->user_id = $user_id;
+                    $getorders_model->ip = $ip;
+                    $getorders_model->shipping_first_name = $params['shipping_first_name'][$loop_key];
+                    $getorders_model->shipping_last_name = $params['shipping_last_name'][$loop_key];
+                    $getorders_model->shipping_company = $params['shipping_company'][$loop_key];
+                    $getorders_model->shipping_address_1 = $params['shipping_address_1'][$loop_key];
+                    $getorders_model->shipping_address_2 = $params['shipping_address_2'][$loop_key];
+                    $getorders_model->shipping_suburb = $params['shipping_suburb'][$loop_key];
+                    $getorders_model->shipping_state = $params['shipping_state'][$loop_key];
+                    $getorders_model->shipping_postcode = $params['shipping_postcode'][$loop_key];
+                    $getorders_model->shipping_country = $params['shipping_country'][$loop_key];
+                    $getorders_model->shipping_phone = $params['shipping_phone'][$loop_key];
+                    $getorders_model->shipping_fax = $params['shipping_fax'][$loop_key];
+                    $getorders_model->supplier_sku = $params['supplier_sku'][$loop_key];
+                    $getorders_model->merchant_sku = $params['merchant_sku'][$loop_key];
+                    $getorders_model->quantity = $params['quantity'][$loop_key];
+                    $getorders_model->shipping_method = $params['shipping_method'][$loop_key];
+                    $getorders_model->shipping_instruction = $params['shipping_instruction'][$loop_key];
+                    $getorders_model->serial_no = $params['serial_no'][$loop_key];
+                    $getorders_model->comments = $params['comments'][$loop_key];
+                    $getorders_model->pick_up = $params['pick_up'][$loop_key];
+                    $getorders_model->merchant_ref_pool = $merchant_ref_pool;
+                    $getorders_model->discount_amount   =   round($check_result['discount_amount'],2);
+                    $getorders_model->shipping_cost   =   round($check_result['shipping_cost'],2);
+                    
+                    $sku_prices_info    =   $product_filter_model->GetSkuPrices($params['supplier_sku'][$loop_key], $user_id);
+                    
+                    $getorders_model->expected_item_cost    =   round($sku_prices_info['supplier_price'],2);
+                    $getorders_model->final_item_cost       =   round($sku_prices_info['supplier_price'],2);
+                    $getorders_model->final_ship_cost       =   round($check_result['shipping_cost'],2);
+                    $getorders_model->ship_cost             =   round($check_result['shipping_cost'],2);
+                    $getorders_model->payment_type_id       =   9;
+                    $getorders_model->item_amount           =   round($sku_prices_info['supplier_price'],2) + round($check_result['shipping_cost'],2);
+                    $getorders_model->shipping_courier      =   trim($sku_prices_info['shipping_courier']);
+                    $getorders_model->sc_class              =   trim($sku_prices_info['sc_class']);
+                    /**
+                     * @todo PlaceOrder
+                     */
+                    $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
+                    //update merchant ref pool
+                    $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
+                }else{
+                    $notice = "E2";
+                }
+                /**
+                * @todo Add DD order
+                */
+                $dd_orders_model->o_num             =   $params['merchant_ref'][$loop_key];
+                $dd_orders_model->buyer_full_name   =   $params['buyer_full_name'][$loop_key];
+                $dd_orders_model->company           =   $params['shipping_company'][$loop_key];
+                $dd_orders_model->address_line_1    =   $params['shipping_address_1'][$loop_key];
+                $dd_orders_model->address_line_2    =   $params['shipping_address_2'][$loop_key];
+                $dd_orders_model->suburb            =   $params['shipping_suburb'][$loop_key];
+                $dd_orders_model->state             =   $params['shipping_state'][$loop_key];
+                $dd_orders_model->post_code         =   $params['shipping_postcode'][$loop_key];
+                $dd_orders_model->phone_num         =   $params['shipping_phone'][$loop_key];
+                $dd_orders_model->product_code      =   $params['merchant_sku'][$loop_key];
+                $dd_orders_model->product_title     =   $params['product_title'][$loop_key];
+                $dd_orders_model->qty               =   $params['quantity'][$loop_key];
+                $dd_orders_model->cart_id           =   $params['card_id'][$loop_key];
+                $dd_orders_model->ref_num           =   $params['ref_num'][$loop_key];
+                $dd_orders_model->cost              =   $params['cost'][$loop_key];
+                $dd_orders_model->freight           =   $params['freight'][$loop_key];
+                if("Y" == $check_result[1]){
+                    $dd_orders_model->status            =   1;//Approved
+                    $dd_orders_model->error_message     =   '';
+                }else{
+                    $dd_orders_model->status            =   5;//Canceled
+                    $dd_orders_model->error_message     =   $check_result[2];
+                }
+                $dd_order_id    =   $dd_orders_model->addDdOrder();
+                /**
+                 * @todo updateDdOrderB2bOrderId
+                 */
+                //print_r( $place_order_return['purchase_order_id']);
+                if($place_order_return['purchase_order_id']){
+                    $dd_orders_model->b2b_order_id      =   $place_order_return['purchase_order_id'];
+                    $dd_orders_model->order_id          =   $dd_order_id;
+                    $dd_orders_model->updateDdOrderB2bOrderId();
+                }
+            }
+            
+            $purchase_order_ids =   implode(',',$merchant_ref_pool);
+            $operate_orders_model   =   new Databases_Joins_OperateOrders();
+            $operate_orders_model->purchase_order_ids   =   $purchase_order_ids;
+            $result = $operate_orders_model->PlaceOrder();
+            if($result['orders']){
+                foreach ($result['orders'] as $key => $order){
+                    $dd_orders_model->b2b_order_id  =   $order['purchase_order_id'];
+                    $dd_orders_model->cc_order_id   =   $order['main_order_id'];
+                    $dd_orders_model->status        =   1;  //Approved
+                    $dd_orders_model->updateDdOrderCcOrderID();
+                }
+            }
+        }else{
+            $notice = "E1";
+        }
+        $this->_redirect("/admin/admin-import-order/notice/".$notice);
+    }
+    
+    /**
+     * DealsDirect's orders list
+     */
+    function DdOrdersListAction(){
+        
+    }
 }
 

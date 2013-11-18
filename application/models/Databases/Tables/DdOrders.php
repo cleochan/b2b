@@ -26,6 +26,11 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
     var $courier;
     var $add_time;
     var $update_time;
+    var $status;
+    var $error_message;
+    var $update_start_date;
+    var $update_end_date;
+    var $p_qty_per_page;
     
     function addDdOrder(){
         $data   =   array(
@@ -50,6 +55,8 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
             'tracking_number'   =>  $this->tracking_number,
             'shipping_date'     =>  $this->shipping_date,
             'courier'           =>  $this->courier,
+            'status'            =>  $this->status,
+            'error_message'     =>  $this->error_message,         
             'add_time'          =>  date('Y-m-d H:i:s'),
         );
         $order_id   =   $this->insert($data);
@@ -66,6 +73,7 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
                 $order->shipping_date   =   $this->shipping_date;
                 $order->courier         =   $this->courier;
                 $order->update_time     =   date('Y-m-d H:i:s');
+                $order->status          =   $this->status;
                 $order->save();
                 $result   =   "Order: ".$this->cc_order_id.' Shipping data update success at: '.date('Y-m-d H:i:s');
             }
@@ -82,6 +90,7 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
             if($orders){
                 $data   =   array(
                     'cc_order_id'   =>  $this->cc_order_id,
+                    'status'        =>  $this->status,
                 );
                 $this->update($data, $where);
             }
@@ -96,4 +105,34 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
         }
         return $result;
     }
+    
+    function updateDdOrderB2bOrderId(){
+        $result =   '';
+        if($this->order_id){
+            $where  =   " order_id = '".$this->order_id."' ";
+            $result  =   $this->fetchRow($where);
+            if($result->order_id && $this->b2b_order_id){
+                $result->b2b_order_id   =   $this->b2b_order_id;
+                $result->save();
+            }
+        }
+    }
+    function getDdorders(){
+        $select =   $this->select();
+        if($this->update_start_date)
+        {
+            $select->where("update_time >= ?", $this->update_start_date." 00:00:00");
+        }
+        if($this->update_end_date)
+        {
+            $select->where("update_time <= ?", $this->update_end_date." 23:59:59");
+        }
+        $orders  =   $this->fetchAll($select);
+        if($orders){
+            return  $orders->toArray();
+        }else{
+            return  FALSE;
+        }
+    }
+    
 }

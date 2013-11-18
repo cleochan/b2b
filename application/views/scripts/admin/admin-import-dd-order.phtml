@@ -1,0 +1,19 @@
+<div class="info_tablebox" align="center">
+<div align="center"><H2>Admin Import Order</H2></div>
+<div align="center"><?php if($this->notice):?><?=$this->notice?><?php endif;?></div>
+<br />
+<div align="center">
+    <form action="/admin/admin-import-dd-order-preview" method="POST"  enctype="multipart/form-data">
+                        <table class="width100" cellspacing="1" >
+                            <tbody>
+                                <tr class="row-1">
+                                    <td align="right" width="50%"><input  type="file" name="csvf" id="csvf" /></td>
+                                    <td align="left"><input  class="info_botton" type="submit" value="Continue" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+        </table>
+    </form>
+</div>
+</div>
+<span class="red">&nbsp;* <a href="/samples/order_sample.csv" >Download a CSV sample</a></span>

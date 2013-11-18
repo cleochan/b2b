@@ -740,7 +740,7 @@ class ScheduledController extends Zend_Controller_Action
                 {
                     unset($data_array[0]);
                     foreach($data_array as $da_key => $da_val)
-                    {
+                    {                       
                         $supplier_sku    =   substr(trim($da_val[9]), 0, -3);
                         @fwrite($f_logs_feeds, 'Process Orders:'.$da_val[0].' Begin at:'.date("Y-m-d H:i:s")."\r\n");
                         //Validation
@@ -748,7 +748,7 @@ class ScheduledController extends Zend_Controller_Action
                         if(strlen($post_code)==3){
                             $post_code  =   '0'.$post_code;
                         }
-                        $full_name_array    = explode(' ', trim($da_val[1]));
+                        $full_name_array    =   array_values(array_filter(explode(' ', trim($da_val[1]))));
                         $getorders_model->shipping_first_name   =   $full_name_array[0];
                         $getorders_model->shipping_last_name    =   $full_name_array[1];
                         $getorders_model->shipping_company      =   trim($da_val[18]);
@@ -795,7 +795,7 @@ class ScheduledController extends Zend_Controller_Action
                             $getorders_model->shipping_state        =   trim($da_val[6]);
                             $getorders_model->shipping_postcode     =   $post_code;
                             $getorders_model->shipping_country      =   'AU';
-                            $getorders_model->shipping_phone        =   trim($da_val[8]);
+                            $getorders_model->shipping_phone        =   trim($da_val[8])?trim($da_val[8]):'1';
                             $getorders_model->shipping_fax          =   '';
                             $getorders_model->supplier_sku          =   $supplier_sku;
                             $getorders_model->merchant_sku          =   trim($da_val[9]);
@@ -824,32 +824,42 @@ class ScheduledController extends Zend_Controller_Action
                              */
                             $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
                             
-                            /**
-                             * @todo Add DD order
-                             */
-                            
-                            $dd_orders_model->b2b_order_id      =   $place_order_return['purchase_order_id'];
-                            $dd_orders_model->o_num             =   sprintf('%1.0f', $da_val[0]);
-                            $dd_orders_model->buyer_full_name   =   trim($da_val[1]);
-                            $dd_orders_model->company           =   trim($da_val[2]);
-                            $dd_orders_model->address_line_1    =   trim($da_val[3]);
-                            $dd_orders_model->address_line_2    =   trim($da_val[4]);
-                            $dd_orders_model->suburb            =   trim($da_val[5]);
-                            $dd_orders_model->state             =   trim($da_val[6]);
-                            $dd_orders_model->post_code         =   trim($da_val[7]);
-                            $dd_orders_model->phone_num         =   trim($da_val[8]);
-                            $dd_orders_model->product_code      =   trim($da_val[9]);
-                            $dd_orders_model->product_title     =   trim($da_val[10]);
-                            $dd_orders_model->qty               =   trim($da_val[11]);
-                            $dd_orders_model->cart_id           =   trim($da_val[12]);
-                            $dd_orders_model->ref_num           =   trim($da_val[13]);
-                            $dd_orders_model->cost              =   trim($da_val[14]);
-                            $dd_orders_model->freight           =   trim($da_val[15]);
-                            $dd_orders_model->addDdOrder();
                             //update merchant ref pool
                             $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
                         }else{
                             @fwrite($f_logs_feeds, $check_result[2].' at:'.date("Y-m-d H:i:s")."\r\n");
+                        }
+                        $dd_orders_model->o_num             =   sprintf('%1.0f', $da_val[0]);
+                        $dd_orders_model->buyer_full_name   =   $da_val[1];
+                        $dd_orders_model->company           =   $da_val[2];
+                        $dd_orders_model->address_line_1    =   $da_val[3];
+                        $dd_orders_model->address_line_2    =   $da_val[4];
+                        $dd_orders_model->suburb            =   $da_val[5];
+                        $dd_orders_model->state             =   $da_val[6];
+                        $dd_orders_model->post_code         =   $da_val[7];
+                        $dd_orders_model->phone_num         =   $da_val[8];
+                        $dd_orders_model->product_code      =   $da_val[9];
+                        $dd_orders_model->product_title     =   $da_val[10];
+                        $dd_orders_model->qty               =   $da_val[11];
+                        $dd_orders_model->cart_id           =   $da_val[12];
+                        $dd_orders_model->ref_num           =   $da_val[13];
+                        $dd_orders_model->cost              =   $da_val[14];
+                        $dd_orders_model->freight           =   $da_val[15];
+                        if("Y" == $check_result[1]){
+                            $dd_orders_model->status            =   1;//Approved
+                            $dd_orders_model->error_message     =   '';
+                        }else{
+                            $dd_orders_model->status            =   5;//Canceled
+                            $dd_orders_model->error_message     =   $check_result[2];
+                        }
+                        $dd_order_id    =   $dd_orders_model->addDdOrder();
+                        /**
+                         * @todo updateDdOrderB2bOrderId
+                         */
+                        if($place_order_return['purchase_order_id']){
+                            $dd_orders_model->b2b_order_id      =   $place_order_return['purchase_order_id'];
+                            $dd_orders_model->order_id          =   $dd_order_id;
+                            $dd_orders_model->updateDdOrderB2bOrderId();
                         }
                     }
                 }
@@ -861,6 +871,7 @@ class ScheduledController extends Zend_Controller_Action
                     foreach ($result['orders'] as $key => $order){
                         $dd_orders_model->b2b_order_id  =   $order['purchase_order_id'];
                         $dd_orders_model->cc_order_id   =   $order['main_order_id'];
+                        $dd_orders_model->status        =   1;  //Approved
                         $dd_orders_model->updateDdOrderCcOrderID();
                     }
                 }
@@ -881,7 +892,8 @@ class ScheduledController extends Zend_Controller_Action
         $orders_model   =   new Databases_Joins_GetOrders();
         $dd_order_model =   new Databases_Tables_DdOrders();
         $params_model   =   new Databases_Tables_Params();
-        $orders_model->item_status          =   4;
+        //$orders_model->item_status          =   4;
+        $orders_model->item_statuses    =   array(4,5); 
         //$orders_model->limit                =   23;
         $time_now                           =   time();
         $time                               =   strtotime( '-1 day', $time_now);
@@ -900,12 +912,13 @@ class ScheduledController extends Zend_Controller_Action
                 if($user_orders && is_array($user_orders)){
                     foreach ($user_orders as $order){
                         //$order_ids[$order['purchase_order_id']]  =   $order['main_db_order_id'];
-                        @fwrite($f_logs_feeds, "Update ".$order['main_db_order_id']."at: ".date("Y-m-d H:i:s")."\r\n");
+                        @fwrite($f_logs_feeds, "Update ".$order['main_db_order_id']." at: ".date("Y-m-d H:i:s")."\r\n");
                         $dd_order_model->b2b_order_id       =   $order['purchase_order_id'];
                         $dd_order_model->product_code       =   $order['merchant_sku'];
                         $dd_order_model->tracking_number    =   $order['tracking_number'];
                         $dd_order_model->shipping_date      =   $order['shipping_date'];
                         $dd_order_model->courier            =   $order['shipping_courier'];
+                        $dd_order_model->status             =   $order['item_status'];
                         $update_result   =   $dd_order_model->updateDdorder();
                         if($update_result){
                             //$update_success_data[$order_item['OrderNumber']]['product_code']    =   $order['merchant_sku'];
@@ -920,33 +933,45 @@ class ScheduledController extends Zend_Controller_Action
                     @fwrite($f_logs_feeds, "Create csv file and upload at: ".date("Y-m-d H:i:s")."\r\n");
                     $f_dd_order_new =   @fopen($dd_order_new_path.$dd_order_new_filename,'w');
                     @fputcsv($f_dd_order_new, $titile_array);
-                    foreach ($user_orders as $orde_key => $order_data){
-                        $dd_order_model->b2b_order_id    =   $order_data['purchase_order_id'];;
-                        $dd_order_model->product_code   =   $order_data['merchant_sku'];
-                        $result =   $dd_order_model->getDdOrderInfo();
-                        if($result){
-                            $order_upload_data  =   array(
-                                'oNum'              =>  $result['o_num'],
-                                'Buyer_Full_Name'   =>  $result['buyer_full_name'],
-                                'Company'           =>  $result['company'],
-                                'Address_Line_1'    =>  $result['address_line_1'],
-                                'Address_Line_2'    =>  $result['address_line_2'],
-                                'Suburb'            =>  $result['suburb'],
-                                'State'             =>  $result['state'],
-                                'Post_Code'         =>  $result['post_code'],
-                                'Phone_Num'         =>  $result['phone_num'],
-                                'Product_Code'      =>  $result['product_code'],
-                                'Product_Title'     =>  $result['product_title'],
-                                'Qty'               =>  $result['qty'],
-                                'Cart_ID'           =>  $result['cart_id'],
-                                'Ref_Num'           =>  $result['ref_num'],
-                                'Cost'              =>  $result['cost'],
-                                'Freight'           =>  $result['freight'],
-                                'Tracking_Number'   =>  $result['tracking_number'],
-                                'Shipping_Date'     =>  $result['shipping_date'],
-                                'Courier'           =>  $result['courier'],
-                            );
-                            @fputcsv($f_dd_order_new, $order_upload_data);
+                    $dd_order_model->update_start_date    =   date('Y-m-d', $time);  
+                    $dd_order_model->update_end_date      =   date('Y-m-d', $time_now);
+                    $dd_orders      =   $dd_order_model->getDdorders();
+                    if($dd_orders){
+                        foreach ($dd_orders as $orde_key => $result){
+                            if($result){
+                                if($result['status']=='5'){
+                                    $courier    =   'Cancelled';
+                                }else{
+                                    $courier    =   $result['courier'];
+                                }
+                                if($result['tracking_number']){
+                                    $tracking_number    =   $result['tracking_number'];
+                                }else{
+                                    $tracking_number    =   $result['error_message'];
+                                }
+                                $order_upload_data  =   array(
+                                    'oNum'              =>  $result['o_num'],
+                                    'Buyer_Full_Name'   =>  $result['buyer_full_name'],
+                                    'Company'           =>  $result['company'],
+                                    'Address_Line_1'    =>  $result['address_line_1'],
+                                    'Address_Line_2'    =>  $result['address_line_2'],
+                                    'Suburb'            =>  $result['suburb'],
+                                    'State'             =>  $result['state'],
+                                    'Post_Code'         =>  $result['post_code'],
+                                    'Phone_Num'         =>  $result['phone_num'],
+                                    'Product_Code'      =>  $result['product_code'],
+                                    'Product_Title'     =>  $result['product_title'],
+                                    'Qty'               =>  $result['qty'],
+                                    'Cart_ID'           =>  $result['cart_id'],
+                                    'Ref_Num'           =>  $result['ref_num'],
+                                    'Cost'              =>  $result['cost'],
+                                    'Freight'           =>  $result['freight'],
+                                    'Tracking_Number'   =>  $tracking_number,
+                                    'Shipping_Date'     =>  $result['shipping_date'],
+                                    'Courier'           =>  $courier,
+                                );
+                                @fputcsv($f_dd_order_new, $order_upload_data);
+                            }
                         }
                     }
                     //$feed_model->uploadFtpFile(array($dd_order_new_filename), 'shipping');
@@ -1006,7 +1031,7 @@ class ScheduledController extends Zend_Controller_Action
                                     $orders_model->tracking_number      =   $order_item['TrackingNumber'];
                                     $orders_model->shipping_date        =   ($order_item['ShipDate']['Value']=='0001-01-01T00:00:00')?'':date('Y-m-d H:i:s',strtotime($order_item['ShipDate']['Value']));
                                     $orders_model->shipping_courier     =   $order_item['ShipCarrier'];
-                                    $orders_model->item_status          =   $orders_status_array[$order_item['OrderNumber']];
+                                    $orders_model->item_status          =   ($orders_status_array[$order_item['OrderNumber']]=='1')?'5':$orders_status_array[$order_item['OrderNumber']];
                                     $update_result   =   $orders_model->UpdateApprovedOrders();
                                 }
                             }
