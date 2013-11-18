@@ -34,8 +34,8 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
     
     function addDdOrder(){
         $data   =   array(
-            'b2b_order_id'      =>  $this->b2b_order_id,
-            'cc_order_id'       =>  $this->cc_order_id,
+            //'b2b_order_id'      =>  $this->b2b_order_id,
+            //'cc_order_id'       =>  $this->cc_order_id,
             'o_num'             =>  $this->o_num,
             'buyer_full_name'   =>  $this->buyer_full_name,
             'company'           =>  $this->company,

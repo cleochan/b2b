@@ -752,14 +752,14 @@ class ScheduledController extends Zend_Controller_Action
                         $getorders_model->shipping_first_name   =   $full_name_array[0];
                         $getorders_model->shipping_last_name    =   $full_name_array[1];
                         $getorders_model->shipping_company      =   trim($da_val[18]);
-                        //$getorders_model->merchant_company      =   'Test Company';
-                        $getorders_model->merchant_company      =   'DealsDirect';
+                        $getorders_model->merchant_company      =   'Test Company';
+                        //$getorders_model->merchant_company      =   'DealsDirect';
                         $getorders_model->shipping_address_1    =   trim($da_val[3]).' '. trim($da_val[4]);
                         $getorders_model->shipping_suburb       =   trim($da_val[5]);
                         $getorders_model->shipping_state        =   trim($da_val[6]);
                         $getorders_model->shipping_postcode     =   $post_code;
                         $getorders_model->shipping_country      =   'AU';
-                        $getorders_model->shipping_phone        =   trim($da_val[8]);
+                        $getorders_model->shipping_phone        =   trim($da_val[8])?trim($da_val[8]):'1';
                         $getorders_model->supplier_sku          =   $supplier_sku;
                         $getorders_model->quantity              =   trim($da_val[11]);
                         $getorders_model->operator_id           =   '1';
@@ -829,7 +829,7 @@ class ScheduledController extends Zend_Controller_Action
                         }else{
                             @fwrite($f_logs_feeds, $check_result[2].' at:'.date("Y-m-d H:i:s")."\r\n");
                         }
-                        $dd_orders_model->o_num             =   sprintf('%1.0f', $da_val[0]);
+                        $dd_orders_model->o_num             =   $da_val[0];
                         $dd_orders_model->buyer_full_name   =   $da_val[1];
                         $dd_orders_model->company           =   $da_val[2];
                         $dd_orders_model->address_line_1    =   $da_val[3];
@@ -856,11 +856,12 @@ class ScheduledController extends Zend_Controller_Action
                         /**
                          * @todo updateDdOrderB2bOrderId
                          */
-                        if($place_order_return['purchase_order_id']){
+                        if("Y" == $check_result[1] && $place_order_return['purchase_order_id'] && $dd_order_id){
                             $dd_orders_model->b2b_order_id      =   $place_order_return['purchase_order_id'];
                             $dd_orders_model->order_id          =   $dd_order_id;
                             $dd_orders_model->updateDdOrderB2bOrderId();
                         }
+                        unset($place_order_return);
                     }
                 }
                 $purchase_order_ids =   implode(',',$merchant_ref_pool);
@@ -893,7 +894,7 @@ class ScheduledController extends Zend_Controller_Action
         $dd_order_model =   new Databases_Tables_DdOrders();
         $params_model   =   new Databases_Tables_Params();
         //$orders_model->item_status          =   4;
-        $orders_model->item_statuses    =   array(4,5); 
+        $orders_model->item_statuses    =   array(1,3); 
         //$orders_model->limit                =   23;
         $time_now                           =   time();
         $time                               =   strtotime( '-1 day', $time_now);
