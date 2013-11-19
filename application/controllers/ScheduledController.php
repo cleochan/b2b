@@ -752,8 +752,8 @@ class ScheduledController extends Zend_Controller_Action
                         $getorders_model->shipping_first_name   =   $full_name_array[0];
                         $getorders_model->shipping_last_name    =   $full_name_array[1];
                         $getorders_model->shipping_company      =   trim($da_val[18]);
-                        //$getorders_model->merchant_company      =   'Test Company';
-                        $getorders_model->merchant_company      =   'DealsDirect';
+                        $getorders_model->merchant_company      =   'Test Company';
+                        //$getorders_model->merchant_company      =   'DealsDirect';
                         $getorders_model->shipping_address_1    =   trim($da_val[3]).' '. trim($da_val[4]);
                         $getorders_model->shipping_suburb       =   trim($da_val[5]);
                         $getorders_model->shipping_state        =   trim($da_val[6]);
@@ -893,6 +893,7 @@ class ScheduledController extends Zend_Controller_Action
         $orders_model   =   new Databases_Joins_GetOrders();
         $dd_order_model =   new Databases_Tables_DdOrders();
         $params_model   =   new Databases_Tables_Params();
+        $feed_model     =   new Algorithms_Core_Feed();
         //$orders_model->item_status          =   4;
         $orders_model->item_statuses    =   array(4,5); 
         //$orders_model->limit                =   23;
@@ -936,6 +937,7 @@ class ScheduledController extends Zend_Controller_Action
                     @fputcsv($f_dd_order_new, $titile_array);
                     $dd_order_model->update_start_date    =   date('Y-m-d', $time);  
                     $dd_order_model->update_end_date      =   date('Y-m-d', $time_now);
+                    //$dd_order_model->item_statuses        =   array(4,5); 
                     $dd_orders      =   $dd_order_model->getDdorders();
                     if($dd_orders){
                         foreach ($dd_orders as $orde_key => $result){
@@ -975,7 +977,7 @@ class ScheduledController extends Zend_Controller_Action
                             }
                         }
                     }
-                    //$feed_model->uploadFtpFile(array($dd_order_new_filename), 'shipping');
+                    $feed_model->uploadFtpFile(array($dd_order_new_filename), 'shipping');
                 }else{
                     @fwrite($f_logs_feeds, "No csv file upload at: ".date("Y-m-d H:i:s")."\r\n");
                 }
@@ -1099,5 +1101,41 @@ class ScheduledController extends Zend_Controller_Action
         @fwrite($f_logs_feeds, 'Create Orders Csv file Finish at:'.date("Y-m-d-H:i:s")."\r\n");
         @fclose($f_logs_feeds);
         die;
+    }
+    
+    /**
+     * Create invoice csv file
+     */
+    function refreshInvoicesAction(){
+        $user_model     =   new Databases_Joins_GetUserInfo();
+        $params_model   =   new Databases_Tables_Params();
+        $orders_model   =   new Databases_Joins_GetOrders();
+        $user_list      =   $user_model->GetUserList(2,1);
+        print_r(date("Y-m-d",strtotime('-1 week')));exit;
+        $logs_path      =   $params_model->GetVal('logs_path');
+        $f_logs_feeds   =   @fopen($logs_path."invoiceslogs/refreshinvoices-".date('YmdHis').".txt", "w+");
+        @fwrite($f_logs_feeds, 'Refresh Invoices Begin at:'.date("Y-m-d H:i:s")."\n");
+        if($user_list){
+            foreach ($user_list as $user){
+                if($user['invoice_type']){
+                    switch ($user['invoice_type']){
+                        case 1:
+                            $week_day   =   date("N",time());
+                            if($week_day    ==  $user['invoice_value']){
+                                $week_before    =   date("Y-m-d",strtotime('-1 week'));
+                                $time_now       =   date("Y-m-d");
+                                $orders_model->update_start_date    =   $week_before;
+                                $orders_model->update_end_date      =   $time_now;
+                                $orders_list    =   $orders_model->getInvoicesProductsList();
+                                if($orders_list){
+                                    
+                                }
+                            }
+                            
+                    }
+                }
+            }
+        }
+        die('Refresh Feeds Complete.');
     }
 }

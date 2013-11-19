@@ -31,7 +31,7 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
     var $update_start_date;
     var $update_end_date;
     var $p_qty_per_page;
-    
+    var $item_statuses;
     function addDdOrder(){
         $data   =   array(
             //'b2b_order_id'      =>  $this->b2b_order_id,
@@ -126,6 +126,10 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
         if($this->update_end_date)
         {
             $select->where("update_time <= ?", $this->update_end_date." 23:59:59");
+        }
+        if($this->item_statuses && is_array($this->item_statuses)){
+            $in_item_status = implode(',', $this->item_statuses);
+            $select->where("status in (".$in_item_status.") ");
         }
         $orders  =   $this->fetchAll($select);
         if($orders){

@@ -524,7 +524,6 @@ class Algorithms_Core_Feed
                     break;
                 case 'shipping':
                     foreach ($file_array as $file){
-                    echo $file;
                         if($file){
                             $ftp_server_path    =   $merchant_ftp_array['shipping_path'].$file;
                             $log    =   $ftp->up_file($ftp_server_path, 'DD_orders_new/'.$file);
