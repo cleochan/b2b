@@ -889,18 +889,18 @@ class ScheduledController extends Zend_Controller_Action
     
     function updateDdOrdersAction()
     {
-        $user_ids       =   array('8');
+        $user_ids       =   array('2');
         $orders_model   =   new Databases_Joins_GetOrders();
         $dd_order_model =   new Databases_Tables_DdOrders();
         $params_model   =   new Databases_Tables_Params();
         $feed_model     =   new Algorithms_Core_Feed();
         //$orders_model->item_status          =   4;
-        $orders_model->item_statuses    =   array(4,5); 
-        //$orders_model->limit                =   23;
+        //$orders_model->item_statuses    =   array(4,5); 
+        $orders_model->limit                =   23;
         $time_now                           =   time();
         $time                               =   strtotime( '-1 day', $time_now);
-        $orders_model->update_start_date    =   date('Y-m-d', $time);  
-        $orders_model->update_end_date      =   date('Y-m-d', $time_now);
+        //$orders_model->update_start_date    =   date('Y-m-d', $time);  
+        //$orders_model->update_end_date      =   date('Y-m-d', $time_now);
         $logs_path     =   $params_model->GetVal('logs_path');
         $f_logs_feeds  =   @fopen($logs_path."orderslogs/updateddorders".date('YmdHis').".txt", "w+");
         @fwrite($f_logs_feeds, 'Update DD Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
@@ -916,7 +916,7 @@ class ScheduledController extends Zend_Controller_Action
                         //$order_ids[$order['purchase_order_id']]  =   $order['main_db_order_id'];
                         @fwrite($f_logs_feeds, "Update ".$order['main_db_order_id']." at: ".date("Y-m-d H:i:s")."\r\n");
                         $dd_order_model->b2b_order_id       =   $order['purchase_order_id'];
-                        $dd_order_model->product_code       =   $order['merchant_sku'];
+                        $dd_order_model->product_code       =   ' '.$order['merchant_sku'];
                         $dd_order_model->tracking_number    =   $order['tracking_number'];
                         $dd_order_model->shipping_date      =   $order['shipping_date'];
                         $dd_order_model->courier            =   $order['shipping_courier'];
