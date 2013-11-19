@@ -716,7 +716,14 @@ class ScheduledController extends Zend_Controller_Action
         $local_order_path       =   'DD_orders/';
         $ftp                    =   new Algorithms_Core_Ftp($merchant_ftp_array['ftp_host'], $merchant_ftp_array['ftp_port'], $merchant_ftp_array['ftp_user'], $merchant_ftp_array['ftp_pass']);
         @fwrite($f_logs_feeds, 'Download CSV file at:'.date("Y-m-d H:i:s")."\r\n");
-        $new_order_file_name    =   $ftp->getNewestFile($merchant_ftp_array['order_path']);
+        $new_order_file_name    =   $ftp->getNewestFile($merchant_ftp_array['order_path'].'*.csv');
+        /*
+        $file_time  =   preg_replace("/crazysales_picking_/", '',$new_order_file_name);
+        $file_time  =   preg_replace("/.csv/", '',$file_time);
+        $file_time  =   preg_replace("/-/", '',$file_time);
+        $time_now   =   time();
+        print_r($time_now - strtotime($file_time));exit;
+        */
         $local_order_path       .=  $new_order_file_name;
         $download_order_path    =   $merchant_ftp_array['order_path'].$new_order_file_name;
         $down_result            =   $ftp->copy_file($download_order_path, $local_order_path);
@@ -889,7 +896,7 @@ class ScheduledController extends Zend_Controller_Action
     
     function updateDdOrdersAction()
     {
-        $user_ids       =   array('2');
+        $user_ids       =   array('8');
         $orders_model   =   new Databases_Joins_GetOrders();
         $dd_order_model =   new Databases_Tables_DdOrders();
         $params_model   =   new Databases_Tables_Params();
@@ -1110,11 +1117,13 @@ class ScheduledController extends Zend_Controller_Action
         $user_model     =   new Databases_Joins_GetUserInfo();
         $params_model   =   new Databases_Tables_Params();
         $orders_model   =   new Databases_Joins_GetOrders();
+        $invoice_model  =   new Databases_Tables_InvoiceList();
         $user_list      =   $user_model->GetUserList(2,1);
-        print_r(date("Y-m-d",strtotime('-1 week')));exit;
+        
         $logs_path      =   $params_model->GetVal('logs_path');
         $f_logs_feeds   =   @fopen($logs_path."invoiceslogs/refreshinvoices-".date('YmdHis').".txt", "w+");
         @fwrite($f_logs_feeds, 'Refresh Invoices Begin at:'.date("Y-m-d H:i:s")."\n");
+        $product_list_array =   array();
         if($user_list){
             foreach ($user_list as $user){
                 if($user['invoice_type']){
@@ -1122,20 +1131,135 @@ class ScheduledController extends Zend_Controller_Action
                         case 1:
                             $week_day   =   date("N",time());
                             if($week_day    ==  $user['invoice_value']){
-                                $week_before    =   date("Y-m-d",strtotime('-1 week'));
-                                $time_now       =   date("Y-m-d");
-                                $orders_model->update_start_date    =   $week_before;
-                                $orders_model->update_end_date      =   $time_now;
-                                $orders_list    =   $orders_model->getInvoicesProductsList();
-                                if($orders_list){
-                                    
-                                }
+                                $day_before    =   date("Y-m-d",strtotime('-1 week'));
+                                $day_now       =   date("Y-m-d");
                             }
-                            
+                            break;
+                       case 2:
+                           
+                           $day =   date('d');
+                           if($user['invoice_value']){
+                               $invoice_value_array = explode(',', $user['invoice_value']);
+                               
+                               if($invoice_value_array){
+                                   sort($invoice_value_array);
+                                   $count   =   count($invoice_value_array);
+                                   
+                                   switch ($count){
+                                       case 1:
+                                           if($invoice_value_array[0] == $day){
+                                                $temp        =   strtotime("-1 month", time());
+                                                $day_before  =   date("Y-m", $temp).'-'.$day;
+                                                $day_now     =   date("Y-m").'-'.$day;
+                                           }
+                                           break;
+                                       case 2:
+                                           
+                                           $max_day =   max($invoice_value_array);
+                                           $min_day =   min($invoice_value_array);
+                                           if($day  ==  $min_day){
+                                               $temp        =   strtotime("-1 month", time());
+                                               $day_before =   date("Y-m", $temp).'-'.$max_day;
+                                               $day_now    =   date("Y-m").'-'.$min_day;
+                                           }elseif($day ==  $max_day){
+                                               $day_before =   date("Y-m").'-'.$min_day;
+                                               $day_now    =   date("Y-m").'-'.$max_day;
+                                           }
+                                           break;
+                                       default:
+                                           
+                                           $max_day =   max($invoice_value_array);
+                                           $min_day =   min($invoice_value_array);
+                                           if($day == $min_day){
+                                               $temp        =   strtotime("-1 month", time());
+                                               $day_before =   date("Y-m", $temp).'-'.$max_day;
+                                               $day_now    =   date("Y-m").'-'.$min_day;
+                                           }else{
+                                               foreach ($invoice_value_array as $key => $invoice_day){
+                                                   if($invoice_day == $day){
+                                                       $day_before  =   date("Y-m").'-'.$invoice_value_array[$key-1];
+                                                       $day_now     =   date("Y-m").'-'.$day;
+                                                   }
+                                               }
+                                           }
+                                           break;
+                                   }
+                               }
+                           }
+                           break;
+                    }
+                    
+                    
+                    $orders_model->update_start_date    =   $day_before;
+                    $orders_model->update_end_date      =   $day_now;
+                    $orders_list    =   $orders_model->getInvoicesProductsList();
+                    if($orders_list){
+                        foreach ($orders_list as $order){
+                            if($product_list_array[$order['supplier_sku']]){
+                                $product_list_array[$order['supplier_sku']]['Quantity'] +=  $order['quantity'];
+                                $product_list_array[$order['supplier_sku']]['Price'] +=  $order['item_amount'];
+                                $product_list_array[$order['supplier_sku']]['ship_cost'] +=  $order['final_ship_cost'];
+                            }else{
+                                $product_list_array[$order['supplier_sku']]['ItemCode'] =   $order['supplier_sku'];
+                                $product_list_array[$order['supplier_sku']]['Quantity'] =   $order['quantity'];
+                                $product_list_array[$order['supplier_sku']]['Price']    =   $order['item_amount'];
+                                $product_list_array[$order['supplier_sku']]['ship_cost']=   $order['final_ship_cost'];
+                            }
+                        }
+                    }
+                    if($product_list_array){
+                        $invocie_csv_filename   =   $user['company'].date('Y-m-d').'.csv';
+                        $this->mkdirm('invoice_csv_file/'.$user['company']);
+                        $f_dd_order_new =   @fopen('invoice_csv_file/'.$user['company'].'/'.$invocie_csv_filename,'w');
+                        $titile_array   =   array('ParentKey', 'ItemCode', 'Quantity', 'Price', 'VatGroup');
+                        @fputcsv($f_dd_order_new, $titile_array);
+                        $titile_array   =   array('DocNum', 'ItemCode', 'Quantity', 'Price', 'VatGroup');
+                        @fputcsv($f_dd_order_new, $titile_array);
+                        $freight        =   0;
+                        $price_total    =   0;
+                        foreach ($product_list_array as $product){
+                            $freight        +=   $product['ship_cost'];
+                            $price_total    +=   $product['Price'];
+                            $csv_data   =   array(
+                                '1',
+                                $product['ItemCode'],
+                                $product['Quantity'],
+                                $product['Price'],
+                                'S1',
+                            );
+                            @fputcsv($f_dd_order_new, $csv_data);
+                        }
+                        $freight_data   =   array(
+                            '1',
+                            'FREIGHT',
+                            '1',
+                            $freight,
+                            'S1',
+                        );
+                        $amount =   $price_total + $freight;
+                        @fputcsv($f_dd_order_new, $freight_data);
+                        fclose($f_dd_order_new);
+                        $invoice_model->company =   $user['company'];
+                        $invoice_model->contact =   $user['contact_name'];
+                        $invoice_model->email   =   $user['email'];
+                        $invoice_model->phone   =   $user['contact_phone'];
+                        $invoice_model->amount  =   $amount;
+                        $invoice_model->csv     =   $invocie_csv_filename;
+                        $invoice_model->comments=   'System Create Csv File.';
+                        $invoice_model->create_date =   date('Y-m-d');
+                        $invoice_model->addInvoiceData();
                     }
                 }
             }
         }
         die('Refresh Feeds Complete.');
     }
+    
+    function mkdirm($path)
+    {
+        if (!file_exists($path)){
+            $this->mkdirm(dirname($path));
+            mkdir($path, 0777);
+        }
+    } 
 }
