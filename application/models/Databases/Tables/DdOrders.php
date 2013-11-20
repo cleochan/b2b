@@ -32,6 +32,8 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
     var $update_end_date;
     var $p_qty_per_page;
     var $item_statuses;
+    var $batch_num;
+    var $order_by;
     function addDdOrder(){
         $data   =   array(
             //'b2b_order_id'      =>  $this->b2b_order_id,
@@ -58,6 +60,7 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
             'status'            =>  $this->status,
             'error_message'     =>  $this->error_message,         
             'add_time'          =>  date('Y-m-d H:i:s'),
+            'batch_num'         =>  $this->batch_num,
         );
         $order_id   =   $this->insert($data);
         return $order_id;
@@ -108,7 +111,7 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
         }
         return $result;
     }
-    
+     
     function updateDdOrderB2bOrderId(){
         $result =   '';
         if($this->order_id){
@@ -133,6 +136,9 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
         if($this->item_statuses && is_array($this->item_statuses)){
             $in_item_status = implode(',', $this->item_statuses);
             $select->where("status in (".$in_item_status.") ");
+        }
+        if($this->order_by){
+            $select->order($this->order_by);
         }
         $orders  =   $this->fetchAll($select);
         if($orders){

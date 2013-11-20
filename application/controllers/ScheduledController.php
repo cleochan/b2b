@@ -702,6 +702,7 @@ class ScheduledController extends Zend_Controller_Action
     {
         $params_model           =   new Databases_Tables_Params();
         $dd_orders_model        =   new Databases_Tables_DdOrders();
+        $order_file_model       =   new Databases_Tables_OrdersFiles();
         $logs_path              =   $params_model->GetVal('logs_path');
         $f_logs_feeds  =   @fopen($logs_path."orderslogs/processddorders".date('YmdHis').".txt", "w+");
         @fwrite($f_logs_feeds, 'Process DD Orders Begin at:'.date("Y-m-d H:i:s")."\r\n");
@@ -717,13 +718,14 @@ class ScheduledController extends Zend_Controller_Action
         $ftp                    =   new Algorithms_Core_Ftp($merchant_ftp_array['ftp_host'], $merchant_ftp_array['ftp_port'], $merchant_ftp_array['ftp_user'], $merchant_ftp_array['ftp_pass']);
         @fwrite($f_logs_feeds, 'Download CSV file at:'.date("Y-m-d H:i:s")."\r\n");
         $new_order_file_name    =   $ftp->getNewestFile($merchant_ftp_array['order_path'].'*.csv');
-        /*
-        $file_time  =   preg_replace("/crazysales_picking_/", '',$new_order_file_name);
-        $file_time  =   preg_replace("/.csv/", '',$file_time);
-        $file_time  =   preg_replace("/-/", '',$file_time);
-        $time_now   =   time();
-        print_r($time_now - strtotime($file_time));exit;
-        */
+        $batch_num  =   preg_replace("/.csv/", '',$new_order_file_name);
+        $order_file_model->user_id      =   '8';
+        $order_file_model->file_name    =   $new_order_file_name;
+        $order_file_data    =   $order_file_model->getOrderFile();
+        if($order_file_data){
+            @fwrite($f_logs_feeds, 'Order Already Imported at:'.date("Y-m-d H:i:s")."\r\n");
+            die('Order Already Import.');
+        }
         $local_order_path       .=  $new_order_file_name;
         $download_order_path    =   $merchant_ftp_array['order_path'].$new_order_file_name;
         $down_result            =   $ftp->copy_file($download_order_path, $local_order_path);
@@ -747,7 +749,7 @@ class ScheduledController extends Zend_Controller_Action
                 {
                     unset($data_array[0]);
                     foreach($data_array as $da_key => $da_val)
-                    {                       
+                    {     
                         $supplier_sku    =   substr(trim($da_val[9]), 0, -3);
                         @fwrite($f_logs_feeds, 'Process Orders:'.$da_val[0].' Begin at:'.date("Y-m-d H:i:s")."\r\n");
                         //Validation
@@ -852,6 +854,7 @@ class ScheduledController extends Zend_Controller_Action
                         $dd_orders_model->ref_num           =   $da_val[13];
                         $dd_orders_model->cost              =   $da_val[14];
                         $dd_orders_model->freight           =   $da_val[15];
+                        $dd_orders_model->batch_num         =   $batch_num;
                         if("Y" == $check_result[1]){
                             $dd_orders_model->status            =   1;//Approved
                             $dd_orders_model->error_message     =   '';
@@ -884,7 +887,7 @@ class ScheduledController extends Zend_Controller_Action
                     }
                 }
             }
-            
+            $order_file_model->addOrderFile();
         }else{
             @fwrite($f_logs_feeds, "Download $new_order_file_name Faild at: ".date("Y-m-d H:i:s")."\r\n");
         }

@@ -52,7 +52,7 @@ class Algorithms_Core_Ftp {
     }
     
     function getNewestFile($path){
-        $filelist   =   @ftp_rawlist($this->conn_id, $path);
+        $filelist   =   @ftp_rawlist($this->conn_id, $path, '-1t');
         if($filelist){
             preg_match("/crazysales_picking([\s\S]*)/",end($filelist),$matches);
             if($matches){

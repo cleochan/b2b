@@ -683,10 +683,7 @@ if($result)
     
     function ddOrdersListAction(){
         $dd_order_model =   new Databases_Tables_DdOrders();
-        $time_now                           =   time();
-        $time                               =   strtotime( '-1 day', $time_now);
-        $dd_order_model->update_start_date    =   date('Y-m-d', $time);  
-        $dd_order_model->update_end_date      =   date('Y-m-d', $time_now);
+        $dd_order_model->order_by   =   ' order_id DESC ';
         $dd_orders      =   $dd_order_model->getDdorders();
         $html   =   '<table width="100%">'
                 .'<tr>
@@ -729,7 +726,8 @@ if($result)
                 $html   .=  '<td width="5.2%">'.$dd_order['ref_num'].'</td>';
                 $html   .=  '<td width="5.2%">'.$dd_order['cost'].'</td>';
                 $html   .=  '<td width="5.2%">'.$dd_order['freight'].'</td>';
-                $html   .=  '<td width="5.2%">'.($dd_order['tracking_number'])?$dd_order['tracking_number']:$dd_order['error_message'].'</td>';
+                $tracking_num   =   ($dd_order['tracking_number'])?$dd_order['tracking_number']:$dd_order['error_message'];
+                $html   .=  '<td width="5.2%">'.$tracking_num.'</td>';
                 $html   .=  '<td width="5.2%">'.$dd_order['shipping_date'].'</td>';
                 if($dd_order['status']=='5'){
                     $courier    =   'Cancelled';
