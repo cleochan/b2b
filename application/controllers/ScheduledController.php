@@ -977,7 +977,7 @@ class ScheduledController extends Zend_Controller_Action
                                     'Cost'              =>  $result['cost'],
                                     'Freight'           =>  $result['freight'],
                                     'Tracking_Number'   =>  $tracking_number,
-                                    'Shipping_Date'     =>  $result['shipping_date'],
+                                    'Shipping_Date'     =>  date('d/m/Y', $result['shipping_date']),
                                     'Courier'           =>  $courier,
                                 );
                                 @fputcsv($f_dd_order_new, $order_upload_data);

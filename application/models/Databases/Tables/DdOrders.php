@@ -72,7 +72,7 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
                 $order->tracking_number =   $this->tracking_number;
                 $order->shipping_date   =   $this->shipping_date;
                 $order->courier         =   $this->courier;
-                $order->update_time     =   date('d/m/Y');
+                $order->update_time     =   date('Y-m-d H:i:s');
                 $order->status          =   $this->status;
                 $order->save();
                 $result   =   "Order: ".$this->cc_order_id.' Shipping data update success at: '.date('Y-m-d H:i:s');
