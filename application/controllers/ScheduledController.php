@@ -759,8 +759,8 @@ class ScheduledController extends Zend_Controller_Action
                         $getorders_model->shipping_first_name   =   $full_name_array[0];
                         $getorders_model->shipping_last_name    =   $full_name_array[1];
                         $getorders_model->shipping_company      =   trim($da_val[18]);
-                        $getorders_model->merchant_company      =   'Test Company';
-                        //$getorders_model->merchant_company      =   'DealsDirect';
+                        //$getorders_model->merchant_company      =   'Test Company';
+                        $getorders_model->merchant_company      =   'DealsDirect';
                         $getorders_model->shipping_address_1    =   trim($da_val[3]).' '. trim($da_val[4]);
                         $getorders_model->shipping_suburb       =   trim($da_val[5]);
                         $getorders_model->shipping_state        =   trim($da_val[6]);
