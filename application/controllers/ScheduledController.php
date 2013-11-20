@@ -952,7 +952,11 @@ class ScheduledController extends Zend_Controller_Action
                                 if($result['status']=='5'){
                                     $courier    =   'Cancelled';
                                 }else{
-                                    $courier    =   $result['courier'];
+                                    if($result['courier']   ==  'eParcel - Deals Direct'){
+                                       $courier    =   'Australia Post'; 
+                                    }elseif($result['courier']  ==  'Allied Express - Deals Direct'){
+                                       $courier    =   'Allied Expres'; 
+                                    }
                                 }
                                 if($result['tracking_number']){
                                     $tracking_number    =   $result['tracking_number'];
@@ -977,7 +981,7 @@ class ScheduledController extends Zend_Controller_Action
                                     'Cost'              =>  $result['cost'],
                                     'Freight'           =>  $result['freight'],
                                     'Tracking_Number'   =>  $tracking_number,
-                                    'Shipping_Date'     =>  date('d/m/Y', $result['shipping_date']),
+                                    'Shipping_Date'     =>  date('d/m/Y', strtotime($result['shipping_date'])),
                                     'Courier'           =>  $courier,
                                 );
                                 @fputcsv($f_dd_order_new, $order_upload_data);
@@ -992,7 +996,7 @@ class ScheduledController extends Zend_Controller_Action
         }
         @fwrite($f_logs_feeds, "Update Orders Complete at: ".date("Y-m-d H:i:s")."\r\n");
         @fclose($f_logs_feeds);
-        die();
+        die('Update DD Orders Complete.');
     }
     
     function updateApprovedOrdersAction(){
