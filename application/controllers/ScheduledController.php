@@ -1048,7 +1048,12 @@ class ScheduledController extends Zend_Controller_Action
                                     $orders_model->tracking_number      =   $order_item['TrackingNumber'];
                                     $orders_model->shipping_date        =   ($order_item['ShipDate']['Value']=='0001-01-01T00:00:00')?'':date('Y-m-d H:i:s',strtotime($order_item['ShipDate']['Value']));
                                     $orders_model->shipping_courier     =   $order_item['ShipCarrier'];
-                                    $orders_model->item_status          =   ($orders_status_array[$order_item['OrderNumber']]=='1')?'5':$orders_status_array[$order_item['OrderNumber']];
+                                    if(($orders_status_array[$order_item['OrderNumber']]=='1')){
+                                        $status_id  =   '5';
+                                    }else{
+                                        $status_id  =   $orders_status_array[$order_item['OrderNumber']];
+                                    }
+                                    $orders_model->item_status          =   $status_id;
                                     $update_result   =   $orders_model->UpdateApprovedOrders();
                                 }
                             }
