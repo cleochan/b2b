@@ -940,13 +940,13 @@ class ScheduledController extends Zend_Controller_Action
                 //get the data of update success and create a new csv file and upload
                 if($user_orders){
                     @fwrite($f_logs_feeds, "Create csv file and upload at: ".date("Y-m-d H:i:s")."\r\n");
-                    $f_dd_order_new =   @fopen($dd_order_new_path.$dd_order_new_filename,'w');
-                    @fputcsv($f_dd_order_new, $titile_array);
                     $dd_order_model->update_start_date    =   date('Y-m-d', $time);  
                     $dd_order_model->update_end_date      =   date('Y-m-d', $time_now);
                     $dd_order_model->item_statuses        =   array(4,5); 
                     $dd_orders      =   $dd_order_model->getDdorders();
                     if($dd_orders){
+                        $f_dd_order_new =   @fopen($dd_order_new_path.$dd_order_new_filename,'w');
+                        @fputcsv($f_dd_order_new, $titile_array);
                         foreach ($dd_orders as $orde_key => $result){
                             if($result){
                                 if($result['status']=='5'){
@@ -987,8 +987,8 @@ class ScheduledController extends Zend_Controller_Action
                                 @fputcsv($f_dd_order_new, $order_upload_data);
                             }
                         }
+                        $feed_model->uploadFtpFile(array($dd_order_new_filename), 'shipping');
                     }
-                    $feed_model->uploadFtpFile(array($dd_order_new_filename), 'shipping');
                 }else{
                     @fwrite($f_logs_feeds, "No csv file upload at: ".date("Y-m-d H:i:s")."\r\n");
                 }

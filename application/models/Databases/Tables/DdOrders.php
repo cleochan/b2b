@@ -69,13 +69,16 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
             $where  =   " b2b_order_id = '".$this->b2b_order_id."' and  product_code ='".$this->product_code."'";
             $order  =   $this->fetchRow($where);
             if($order->order_id){
-                $order->tracking_number =   $this->tracking_number;
-                $order->shipping_date   =   $this->shipping_date;
-                $order->courier         =   $this->courier;
-                $order->update_time     =   date('Y-m-d H:i:s');
-                $order->status          =   $this->status;
-                $order->save();
-                $result   =   "Order: ".$this->cc_order_id.' Shipping data update success at: '.date('Y-m-d H:i:s');
+                if($order->status != '4' && $order->status != '5')
+                {                
+                    $order->tracking_number =   $this->tracking_number;
+                    $order->shipping_date   =   $this->shipping_date;
+                    $order->courier         =   $this->courier;
+                    $order->update_time     =   date('Y-m-d H:i:s');
+                    $order->status          =   $this->status;
+                    $order->save();
+                    $result   =   "Order: ".$this->cc_order_id.' Shipping data update success at: '.date('Y-m-d H:i:s');
+                }
             }
         }
         return $result;
