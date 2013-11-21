@@ -898,7 +898,7 @@ class ScheduledController extends Zend_Controller_Action
     }
     
     function updateDdOrdersAction()
-    {
+    {   
         $user_ids       =   array('8');
         $orders_model   =   new Databases_Joins_GetOrders();
         $dd_order_model =   new Databases_Tables_DdOrders();
