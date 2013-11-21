@@ -904,13 +904,24 @@ class ScheduledController extends Zend_Controller_Action
         $dd_order_model =   new Databases_Tables_DdOrders();
         $params_model   =   new Databases_Tables_Params();
         $feed_model     =   new Algorithms_Core_Feed();
+        $params         =   $this->_request->getParams();
         //$orders_model->item_status          =   4;
         $orders_model->item_statuses    =   array(4,5); 
         //$orders_model->limit                =   23;
         $time_now                           =   time();
         $time                               =   strtotime( '-1 day', $time_now);
-        $orders_model->update_start_date    =   date('Y-m-d', $time);  
-        $orders_model->update_end_date      =   date('Y-m-d', $time_now);
+        if($params['startday']){
+            $time_start         =   $params['startday'];
+        }else{
+            $time_start         =   date('Y-m-d', $time_now);
+        }
+        if($params['endday']){
+            $time_end           =   $params['endday'];
+        }else{
+            $time_end           =   date('Y-m-d', $time_now);
+        }
+        $orders_model->update_start_date    =   $time_start;
+        $orders_model->update_end_date      =   $time_end;
         $logs_path     =   $params_model->GetVal('logs_path');
         $f_logs_feeds  =   @fopen($logs_path."orderslogs/updateddorders".date('YmdHis').".txt", "w+");
         @fwrite($f_logs_feeds, 'Update DD Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
@@ -941,57 +952,55 @@ class ScheduledController extends Zend_Controller_Action
                     @fwrite($f_logs_feeds, "No Order to Update at: ".date("Y-m-d H:i:s")."\r\n");
                 }
                 //get the data of update success and create a new csv file and upload
-                if($user_orders){
-                    @fwrite($f_logs_feeds, "Create csv file and upload at: ".date("Y-m-d H:i:s")."\r\n");
-                    $dd_order_model->update_start_date    =   date('Y-m-d', $time);  
-                    $dd_order_model->update_end_date      =   date('Y-m-d', $time_now);
-                    $dd_order_model->item_statuses        =   array(4,5); 
-                    $dd_orders      =   $dd_order_model->getDdorders();
-                    if($dd_orders){
-                        $f_dd_order_new =   @fopen($dd_order_new_path.$dd_order_new_filename,'w');
-                        @fputcsv($f_dd_order_new, $titile_array);
-                        foreach ($dd_orders as $orde_key => $result){
-                            if($result){
-                                if($result['status']=='5'){
-                                    $courier    =   'Cancelled';
-                                }else{
-                                    if($result['courier']   ==  'eParcel - Deals Direct'){
-                                       $courier    =   'Australia Post'; 
-                                    }elseif($result['courier']  ==  'Allied Express - Deals Direct'){
-                                       $courier    =   'Allied Expres'; 
-                                    }
+                @fwrite($f_logs_feeds, "Create csv file and upload at: ".date("Y-m-d H:i:s")."\r\n");
+                $dd_order_model->update_start_date    =   $time_start;  
+                $dd_order_model->update_end_date      =   $time_end;
+                $dd_order_model->item_statuses        =   array(4,5); 
+                $dd_orders      =   $dd_order_model->getDdorders();
+                if($dd_orders){
+                    $f_dd_order_new =   @fopen($dd_order_new_path.$dd_order_new_filename,'w');
+                    @fputcsv($f_dd_order_new, $titile_array);
+                    foreach ($dd_orders as $orde_key => $result){
+                        if($result){
+                            if($result['status']=='5'){
+                                $courier    =   'Cancelled';
+                            }else{
+                                if($result['courier']   ==  'eParcel - Deals Direct'){
+                                   $courier    =   'Australia Post'; 
+                                }elseif($result['courier']  ==  'Allied Express - Deals Direct'){
+                                   $courier    =   'Allied Expres'; 
                                 }
-                                if($result['tracking_number']){
-                                    $tracking_number    =   $result['tracking_number'];
-                                }else{
-                                    $tracking_number    =   $result['error_message'];
-                                }
-                                $order_upload_data  =   array(
-                                    'oNum'              =>  $result['o_num'],
-                                    'Buyer_Full_Name'   =>  $result['buyer_full_name'],
-                                    'Company'           =>  $result['company'],
-                                    'Address_Line_1'    =>  $result['address_line_1'],
-                                    'Address_Line_2'    =>  $result['address_line_2'],
-                                    'Suburb'            =>  $result['suburb'],
-                                    'State'             =>  $result['state'],
-                                    'Post_Code'         =>  $result['post_code'],
-                                    'Phone_Num'         =>  $result['phone_num'],
-                                    'Product_Code'      =>  $result['product_code'],
-                                    'Product_Title'     =>  $result['product_title'],
-                                    'Qty'               =>  $result['qty'],
-                                    'Cart_ID'           =>  $result['cart_id'],
-                                    'Ref_Num'           =>  $result['ref_num'],
-                                    'Cost'              =>  $result['cost'],
-                                    'Freight'           =>  $result['freight'],
-                                    'Tracking_Number'   =>  $tracking_number,
-                                    'Shipping_Date'     =>  date('d/m/Y', strtotime($result['shipping_date'])),
-                                    'Courier'           =>  $courier,
-                                );
-                                @fputcsv($f_dd_order_new, $order_upload_data);
                             }
+                            if($result['tracking_number']){
+                                $tracking_number    =   $result['tracking_number'];
+                            }else{
+                                $tracking_number    =   $result['error_message'];
+                            }
+                            $order_upload_data  =   array(
+                                'oNum'              =>  $result['o_num'],
+                                'Buyer_Full_Name'   =>  $result['buyer_full_name'],
+                                'Company'           =>  $result['company'],
+                                'Address_Line_1'    =>  $result['address_line_1'],
+                                'Address_Line_2'    =>  $result['address_line_2'],
+                                'Suburb'            =>  $result['suburb'],
+                                'State'             =>  $result['state'],
+                                'Post_Code'         =>  $result['post_code'],
+                                'Phone_Num'         =>  $result['phone_num'],
+                                'Product_Code'      =>  $result['product_code'],
+                                'Product_Title'     =>  $result['product_title'],
+                                'Qty'               =>  $result['qty'],
+                                'Cart_ID'           =>  $result['cart_id'],
+                                'Ref_Num'           =>  $result['ref_num'],
+                                'Cost'              =>  $result['cost'],
+                                'Freight'           =>  $result['freight'],
+                                'Tracking_Number'   =>  $tracking_number,
+                                'Shipping_Date'     =>  date('d/m/Y', strtotime($result['shipping_date'])),
+                                'Courier'           =>  $courier,
+                            );
+                            @fputcsv($f_dd_order_new, $order_upload_data);
                         }
-                        $feed_model->uploadFtpFile(array($dd_order_new_filename), 'shipping');
                     }
+                    //$feed_model->uploadFtpFile(array($dd_order_new_filename), 'shipping');
                 }else{
                     @fwrite($f_logs_feeds, "No csv file upload at: ".date("Y-m-d H:i:s")."\r\n");
                 }
