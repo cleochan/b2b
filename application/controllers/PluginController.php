@@ -698,14 +698,12 @@ if($result)
                     <td width="5.2%">Phone_Num</td>
                     <td width="5.2%">Product_Code</td>
                     <td width="5.2%">Product_Title</td>
-                    <td width="5.2%">Qty</td>
-                    <td width="5.2%">Cart_ID</td>
-                    <td width="5.2%">Ref_Num</td>
                     <td width="5.2%">Cost</td>
                     <td width="5.2%">Freight</td>
                     <td width="5.2%">Tracking_Number</td>
                     <td width="5.2%">Shipping_Date</td>
                     <td width="5.2%">Courier</td>
+                    <td width="5.2%">Action</td>
                  </tr>';
         if($dd_orders){
             foreach ($dd_orders as $dd_order){
@@ -721,9 +719,6 @@ if($result)
                 $html   .=  '<td width="5.2%">'.$dd_order['phone_num'].'</td>';
                 $html   .=  '<td width="5.2%">'.$dd_order['product_code'].'</td>';
                 $html   .=  '<td width="5.2%">'.$dd_order['product_title'].'</td>';
-                $html   .=  '<td width="5.2%">'.$dd_order['qty'].'</td>';
-                $html   .=  '<td width="5.2%">'.$dd_order['cart_id'].'</td>';
-                $html   .=  '<td width="5.2%">'.$dd_order['ref_num'].'</td>';
                 $html   .=  '<td width="5.2%">'.$dd_order['cost'].'</td>';
                 $html   .=  '<td width="5.2%">'.$dd_order['freight'].'</td>';
                 $tracking_num   =   ($dd_order['tracking_number'])?$dd_order['tracking_number']:$dd_order['error_message'];
@@ -735,11 +730,27 @@ if($result)
                     $courier    =   $dd_order['courier'];
                 }
                 $html   .=  '<td width="5.2%">'.$courier.'</td>';
+                if($dd_order['status']=='5'){
+                    $action_html    =   '<a href="/plugin/delete-dd-order/order_id/'.$dd_order['order_id'].'" onclick="return confirm('."'Sure to delete order ".$dd_order['o_num']."'".')">Delete</a>';
+                }else{
+                    $action_html    =   '';
+                }
+                $html   .=  '<td width="5.2%">'.$action_html.'</td>';
                 $html   .=  '</tr>';
             }
         }
         $html   .=  '</table>';
         echo $html;
         die;
+    }
+    
+    function deleteDdOrderAction(){
+        $dd_order_model =   new Databases_Tables_DdOrders();
+        $params =   $this->_request->getParams();
+        if($params['order_id']){
+            $dd_order_model->order_id   =   $params['order_id'];
+            $dd_order_model->deleteDdOrder();
+        }
+        $this->_redirect('/plugin/dd-orders-list');
     }
 }

@@ -148,4 +148,10 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
         }
     }
     
+    function deleteDdOrder() {
+        if($this->order_id){
+            $this->delete("order_id = '".$this->order_id."'");
+        }
+    }
+    
 }
