@@ -1000,7 +1000,7 @@ class ScheduledController extends Zend_Controller_Action
                             @fputcsv($f_dd_order_new, $order_upload_data);
                         }
                     }
-                    $feed_model->uploadFtpFile(array($dd_order_new_filename), 'shipping');
+                    //$feed_model->uploadFtpFile(array($dd_order_new_filename), 'shipping');
                 }else{
                     @fwrite($f_logs_feeds, "No csv file upload at: ".date("Y-m-d H:i:s")."\r\n");
                 }
