@@ -1262,6 +1262,7 @@ class ScheduledController extends Zend_Controller_Action
                         @fputcsv($f_invoice_new, $titile_array);
                         $freight        =   0;
                         $price_total    =   0;
+                        
                         if($product_list_array){
                             foreach ($product_list_array as $product){
                                 $prodeuct_price =   round($product['Price']/1.1, 2);
