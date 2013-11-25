@@ -71,7 +71,7 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
         if($this->b2b_order_id){
             $where  =   " b2b_order_id = '".$this->b2b_order_id."' and  product_code ='".$this->product_code."'";
             $order  =   $this->fetchRow($where);
-            print_r($order);
+            print_r($where);
             if($order->order_id){
                 if($order->status != '4' && $order->status != '5')
                 {                
