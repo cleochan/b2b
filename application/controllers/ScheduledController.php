@@ -1314,7 +1314,7 @@ class ScheduledController extends Zend_Controller_Action
                         $invoice_model->csv         =   $invocie_csv_filename;
                         $invoice_model->prepaid     =   $prepaid_total;
                         $invoice_model->prepaid_csv =   $prepaid_csv_filename;
-                        $invoice_model->comments    =   '                   ';
+                        $invoice_model->comments    =   '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                         $invoice_model->create_date =   date('Y-m-d');
                         $invoice_model->addInvoiceData();
                     }

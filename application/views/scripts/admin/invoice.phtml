@@ -32,7 +32,7 @@ function edit_comment(obj, invoice_id){
     $('#'+obj).html("");
     var _text = $("<input type=\"text\" >").css({ "width": "250px", "border": "1px lightgrey solid" }).appendTo($('#'+obj));
     _text.focus();
-    _text.attr('value',_old_comment);
+    _text.attr('value',_old_comment.replace(/\s*/,""));
     _text.blur(function (){
         var _comments   =   _text.attr('value');
         if(_comments == ''){
