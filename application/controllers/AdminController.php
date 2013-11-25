@@ -1712,8 +1712,8 @@ class AdminController extends Zend_Controller_Action
         $product_filter_model   =   new Databases_Joins_ProductFilter();
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Admin Import Order"));
 
-        $merchant_company   =   'Test Company';
-        //$merchant_company   =   'DealsDirect';
+        //$merchant_company   =   'Test Company';
+        $merchant_company   =   'DealsDirect';
         $pick_up            =   'N';
         if ($_FILES["csvf"]["error"] > 0)
         {
