@@ -107,28 +107,28 @@ class Databases_Joins_GetOrders
         if($this->start_date)
         {
             $select->where("p.issue_time >= ?", $this->start_date." 00:00:00");
-            $cond[] = "start_date=".$this->start_date;
+            $cond[] = "start_date/".$this->start_date;
         }
         if($this->end_date)
         {
             $select->where("p.issue_time <= ?", $this->end_date." 23:59:59");
-            $cond[] = "end_date=".$this->end_date;
+            $cond[] = "end_date/".$this->end_date;
         }
         if($this->user_id)
         {
             $select->where("p.user_id = ?", $this->user_id);
-            $cond[] = "user_id=".$this->user_id;
+            $cond[] = "user_id/".$this->user_id;
         }
         if($this->merchant_ref)
         {
             $select->where("o.merchant_ref = ?", $this->merchant_ref);
             
-            $cond[] = "merchant_ref=".$this->merchant_ref;
+            $cond[] = "merchant_ref/".$this->merchant_ref;
         }
         if($this->item_status)
         {
             $select->where("o.item_status = ?", $this->item_status);
-            $cond[] = "item_status=".$this->item_status;
+            $cond[] = "item_status/".$this->item_status;
         }
         
         $result = $this->db->fetchRow($select);
@@ -140,22 +140,22 @@ class Databases_Joins_GetOrders
         {
             if(1 == $this->p_current_page)
             {
-                $cond[] = "p_current_page=".($this->p_current_page+1);
-                $params = implode("&", $cond);
-                $html = "<a href='/admin/admin-order-report/user_id/".$this->user_id."?".$params."'>Next >></a>";
+                $cond[] = "p_current_page/".($this->p_current_page+1);
+                $params = implode("/", $cond);
+                $html = "<a href='/admin/admin-order-report/".$params."'>Next >></a>";
             }elseif($total_page == $this->p_current_page){
-                $cond[] = "p_current_page=".($this->p_current_page-1);
-                $params = implode("&", $cond);
-                $html = "<a href='/admin/admin-order-report/user_id/".$this->user_id."?".$params."'><< Previous</a>";
+                $cond[] = "p_current_page/".($this->p_current_page-1);
+                $params = implode("/", $cond);
+                $html = "<a href='/admin/admin-order-report/".$params."'><< Previous</a>";
             }else{
-                $cond[] = "p_current_page=".($this->p_current_page-1);
-                $params = implode("&", $cond);
-                $html = "<a href='/admin/admin-order-report/user_id/".$this->user_id."?".$params."'><< Previous</a>";
+                $cond[] = "p_current_page/".($this->p_current_page-1);
+                $params = implode("/", $cond);
+                $html = "<a href='/admin/admin-order-report/".$params."'><< Previous</a>";
                 $html .= "&nbsp;&nbsp;&nbsp;&nbsp;";
                 $cond = array_pop($cond);
-                $cond[] = "p_current_page=".($this->p_current_page+1);
-                $params_next = implode("&", $cond);
-                $html .= "<a href='/admin/admin-order-report/user_id/".$this->user_id."?".$params_next."'>Next >></a>";
+                $cond[] = "p_current_page/".($this->p_current_page+1);
+                $params_next = implode("/", $cond);
+                $html .= "<a href='/admin/admin-order-report/".$params_next."'>Next >></a>";
             }
         }else{
             $html = "";
