@@ -153,6 +153,7 @@ class Databases_Joins_GetOrders
                 $html = "<a href='/admin/admin-order-report/".$params."'><< Previous</a>";
                 $html .= "&nbsp;&nbsp;&nbsp;&nbsp;";
                 $cond = array_pop($cond);
+                var_dump($cond);die;
                 $cond[] = "p_current_page/".($this->p_current_page+1);
                 $params_next = implode("/", $cond);
                 $html .= "<a href='/admin/admin-order-report/".$params_next."'>Next >></a>";
