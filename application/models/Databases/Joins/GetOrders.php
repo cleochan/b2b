@@ -740,7 +740,7 @@ class Databases_Joins_GetOrders
         }
         if($this->update_end_date)
         {
-            $select->where("p.update_time <= ?", $this->update_end_date." 23:59:59");
+            $select->where("p.update_time <= ?", $this->update_end_date." 00:00:00");
         }
         if($this->user_id)
         {
