@@ -53,20 +53,20 @@ class Databases_Tables_LogsFinancial extends Zend_Db_Table
         {
             if(1 == $this->p_current_page)
             {
-                $cond[] = "p_current_page=".($this->p_current_page+1);
+                $cond[] = "p_current_page/".($this->p_current_page+1);
                 $params = implode("/", $cond);
                 $html = "<a href='/admin/admin-financial-report/".$params."'>Next >></a>";
             }elseif($total_page == $this->p_current_page){
-                $cond[] = "p_current_page=".($this->p_current_page-1);
+                $cond[] = "p_current_page/".($this->p_current_page-1);
                 $params = implode("/", $cond);
                 $html = "<a href='/admin/admin-financial-report/".$params."'><< Previous</a>";
             }else{
-                $cond[] = "p_current_page=".($this->p_current_page-1);
+                $cond[] = "p_current_page/".($this->p_current_page-1);
                 $params = implode("/", $cond);
                 $html = "<a href='/admin/admin-financial-report/".$params."'><< Previous</a>";
                 $html .= "&nbsp;&nbsp;&nbsp;&nbsp;";
                 array_pop($cond);
-                $cond[] = "p_current_page=".($this->p_current_page+1);
+                $cond[] = "p_current_page/".($this->p_current_page+1);
                 $params_next = implode("/", $cond);
                 $html .= "<a href='/admin/admin-financial-report/".$params_next."'>Next >></a>";
             }
