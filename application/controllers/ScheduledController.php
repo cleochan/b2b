@@ -1266,7 +1266,7 @@ class ScheduledController extends Zend_Controller_Action
                             foreach ($product_list_array as $product){
                                 $prodeuct_price =   round($product['Price']/1.1, 2);
                                 $freight        +=   $product['ship_cost'];
-                                $price_total    +=   $prodeuct_price;
+                                $price_total    +=   $prodeuct_price * $product['Quantity'];
                                 $csv_data   =   array(
                                     '1',
                                     $product['ItemCode'],
