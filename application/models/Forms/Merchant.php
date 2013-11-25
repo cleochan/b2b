@@ -53,8 +53,10 @@ class Forms_Merchant extends Zend_Form
                 $invoice_value_1        ->  setMultiOptions($week_array)
                                         ->  setRequired(true)
                                         ->  addValidator('NotEmpty', true);
+                $invoice_value_1-> setDecorators(array(array('ViewHelper'),));
                 
                 $invoice_value_2        =   new Zend_Form_Element_Text('invoice_value_2');
+                $invoice_value_2-> setDecorators(array(array('ViewHelper'),));
                 
                 $invoice_type_array     =   array(1=>'By Week', 2=>'By Month');
                 $invoice_type           =   new Zend_Form_Element_Radio('invoice_type');

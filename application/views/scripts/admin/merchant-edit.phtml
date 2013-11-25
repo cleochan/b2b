@@ -79,8 +79,8 @@
                                     <label for="invoice_type-2">
                                         <input id="invoice_type-2" <?php if($this->data['invoice_type']==2){?>checked="checked"<?php }?> type="radio" value="2" name="invoice_type">
                                         By Month
+                                        <?php echo $this->form->invoice_value_2;?> <font color="red">*</font>(Use comma as separator)
                                     </label>
-                                    <?php echo $this->form->invoice_value_2;?>
                                 </td>
 			</tr>
 			</tr>		

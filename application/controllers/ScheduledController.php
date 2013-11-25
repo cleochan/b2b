@@ -1214,7 +1214,7 @@ class ScheduledController extends Zend_Controller_Action
                         $orders_model->update_start_date        =   $day_before;
                         $orders_model->update_end_date          =   $day_now;
                         $orders_model->user_id                  =   $user['user_id'];
-                        $orders_model->item_status              =   array(1,3,4);
+                        $orders_model->item_statuses              =   array(1,3,4);
                         $logs_financials_model->start_date          =   $day_before;
                         $logs_financials_model->invoice_end_date    =   $day_now;
                         $logs_financials_model->user_id             =   $user['user_id'];
