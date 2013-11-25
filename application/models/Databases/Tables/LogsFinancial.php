@@ -25,23 +25,23 @@ class Databases_Tables_LogsFinancial extends Zend_Db_Table
         if($this->start_date)
         {
             $select->where("issue_time >= ?", $this->start_date." 00:00:00");
-            $cond[] = "start_date=".$this->start_date;
+            $cond[] = "start_date/".$this->start_date;
         }
         if($this->end_date)
         {
             $select->where("issue_time <= ?", $this->end_date." 23:59:59");
-            $cond[] = "end_date=".$this->end_date;
+            $cond[] = "end_date/".$this->end_date;
         }
         if($this->user_id)
         {
             $select->where("user_id = ?", $this->user_id);
-            $cond[] = "user_id=".$this->user_id;
+            $cond[] = "user_id/".$this->user_id;
         }
         if($this->action_type)
         {
             $select->where("action_type = ?", $this->action_type);
             
-            $cond[] = "action_type=".$this->action_type;
+            $cond[] = "action_type/".$this->action_type;
         }
         
         $result = $this->fetchRow($select);
@@ -54,21 +54,21 @@ class Databases_Tables_LogsFinancial extends Zend_Db_Table
             if(1 == $this->p_current_page)
             {
                 $cond[] = "p_current_page=".($this->p_current_page+1);
-                $params = implode("&", $cond);
-                $html = "<a href='/admin/admin-financial-report/user_id/".$this->user_id."?".$params."'>Next >></a>";
+                $params = implode("/", $cond);
+                $html = "<a href='/admin/admin-financial-report/".$params."'>Next >></a>";
             }elseif($total_page == $this->p_current_page){
                 $cond[] = "p_current_page=".($this->p_current_page-1);
-                $params = implode("&", $cond);
-                $html = "<a href='/admin/admin-financial-report/user_id/".$this->user_id."?".$params."'><< Previous</a>";
+                $params = implode("/", $cond);
+                $html = "<a href='/admin/admin-financial-report/".$params."'><< Previous</a>";
             }else{
                 $cond[] = "p_current_page=".($this->p_current_page-1);
-                $params = implode("&", $cond);
-                $html = "<a href='/admin/admin-financial-report/user_id/".$this->user_id."?".$params."'><< Previous</a>";
+                $params = implode("/", $cond);
+                $html = "<a href='/admin/admin-financial-report/".$params."'><< Previous</a>";
                 $html .= "&nbsp;&nbsp;&nbsp;&nbsp;";
-                $cond = array_pop($cond);
+                array_pop($cond);
                 $cond[] = "p_current_page=".($this->p_current_page+1);
-                $params_next = implode("&", $cond);
-                $html .= "<a href='/admin/admin-financial-report/user_id/".$this->user_id."?".$params_next."'>Next >></a>";
+                $params_next = implode("/", $cond);
+                $html .= "<a href='/admin/admin-financial-report/".$params_next."'>Next >></a>";
             }
         }else{
             $html = "";

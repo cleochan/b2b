@@ -26,7 +26,7 @@ $(function()
 <br />
 <div class="info_tablebox" align="center">
 <div align="center" class="info_searchbox">
-    <form action="/admin/admin-financial-report/user_id/<?=$this->user_id?>" method="GET">
+    <form action="/admin/admin-financial-report/user_id/<?=$this->user_id?>" method="POST">
         
 From <input type="text"class="input" name="start_date" id="start_date" size="5"  <?php if($this->start_date){echo "value= '".$this->start_date."'";} ?> />&nbsp;&nbsp;
        To <input type="text"class="input" name="end_date" id="end_date" size="5"  <?php if($this->end_date){echo "value= '".$this->end_date."'";} ?> />&nbsp;&nbsp;
