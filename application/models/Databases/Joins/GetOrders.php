@@ -226,6 +226,7 @@ class Databases_Joins_GetOrders
         }
         if($this->p_qty_per_page && $this->p_current_page)
         {
+            echo ">>>".$this->p_qty_per_page."<<<>>>".$this->p_current_page;die;
             $select->limit($this->p_qty_per_page, $this->p_qty_per_page*($this->p_current_page-1));
         }
         
