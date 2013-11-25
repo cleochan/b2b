@@ -761,8 +761,8 @@ class ScheduledController extends Zend_Controller_Action
                         $getorders_model->shipping_first_name   =   $full_name_array[0];
                         $getorders_model->shipping_last_name    =   $full_name_array[1];
                         $getorders_model->shipping_company      =   trim($da_val[18]);
-                        //$getorders_model->merchant_company      =   'Test Company';
-                        $getorders_model->merchant_company      =   'DealsDirect';
+                        $getorders_model->merchant_company      =   'Test Company';
+                        //$getorders_model->merchant_company      =   'DealsDirect';
                         $getorders_model->shipping_address_1    =   trim($da_val[3]).' '. trim($da_val[4]);
                         $getorders_model->shipping_suburb       =   trim($da_val[5]);
                         $getorders_model->shipping_state        =   trim($da_val[6]);
@@ -1214,6 +1214,7 @@ class ScheduledController extends Zend_Controller_Action
                         $orders_model->update_start_date        =   $day_before;
                         $orders_model->update_end_date          =   $day_now;
                         $orders_model->user_id                  =   $user['user_id'];
+                        $orders_model->item_status              =   array(1,3,4);
                         $logs_financials_model->start_date          =   $day_before;
                         $logs_financials_model->invoice_end_date    =   $day_now;
                         $logs_financials_model->user_id             =   $user['user_id'];
@@ -1223,9 +1224,9 @@ class ScheduledController extends Zend_Controller_Action
                         if($orders_list){
                             foreach ($orders_list as $order){
                                 if($product_list_array[$order['supplier_sku']]){
-                                    $product_list_array[$order['supplier_sku']]['Quantity'] +=  $order['quantity'];
-                                    $product_list_array[$order['supplier_sku']]['Price'] +=  $order['item_amount'];
-                                    $product_list_array[$order['supplier_sku']]['ship_cost'] +=  $order['final_ship_cost'];
+                                    $product_list_array[$order['supplier_sku']]['Quantity']     +=  $order['quantity'];
+                                    $product_list_array[$order['supplier_sku']]['Price']        =   $order['item_amount'];
+                                    $product_list_array[$order['supplier_sku']]['ship_cost']    +=  $order['final_ship_cost'];
                                 }else{
                                     $product_list_array[$order['supplier_sku']]['ItemCode'] =   $order['supplier_sku'];
                                     $product_list_array[$order['supplier_sku']]['Quantity'] =   $order['quantity'];
@@ -1312,7 +1313,7 @@ class ScheduledController extends Zend_Controller_Action
                         $invoice_model->csv         =   $invocie_csv_filename;
                         $invoice_model->prepaid     =   $prepaid_total;
                         $invoice_model->prepaid_csv =   $prepaid_csv_filename;
-                        $invoice_model->comments    =   'System Create Csv File.';
+                        $invoice_model->comments    =   '                   ';
                         $invoice_model->create_date =   date('Y-m-d');
                         $invoice_model->addInvoiceData();
                     }
