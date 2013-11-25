@@ -1263,13 +1263,14 @@ class ScheduledController extends Zend_Controller_Action
                         $price_total    =   0;
                         if($product_list_array){
                             foreach ($product_list_array as $product){
+                                $prodeuct_price =   round($product['Price']/1.1, 2);
                                 $freight        +=   $product['ship_cost'];
-                                $price_total    +=   $product['Price'];
+                                $price_total    +=   $prodeuct_price;
                                 $csv_data   =   array(
                                     '1',
                                     $product['ItemCode'],
                                     $product['Quantity'],
-                                    $product['Price'],
+                                    $prodeuct_price,
                                     'S1',
                                 );
                                 @fputcsv($f_invoice_new, $csv_data);
