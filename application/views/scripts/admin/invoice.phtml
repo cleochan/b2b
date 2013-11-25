@@ -1,0 +1,124 @@
+<script type="text/javascript">
+$(function() 
+{
+    $('#start_date').datepicker(
+    {
+        numberOfMonths: 1,
+        showButtonPanel: true,
+        dateFormat: 'yy-mm-dd'
+    });
+
+    $('#end_date').datepicker(
+    {
+        numberOfMonths: 1,
+        showButtonPanel: true,
+        dateFormat: 'yy-mm-dd'
+    });
+    
+    // BUGFIX: workaround for linux chrome browser
+    // datepicker div is not hidden during load, this fix it
+    if($('#ui-datepicker-div') && $('#ui-datepicker-div').css("display") != 'none')
+    {
+        $('#ui-datepicker-div').css("display", "none");
+    }
+});
+function edit_comment(obj, invoice_id){
+    var _tag = $('#' + obj ).find("input");
+    if (_tag.length>0)
+    {
+        return ;
+    }
+    var _old_comment    =   $('#'+obj).text();
+    $('#'+obj).html("");
+    var _text = $("<input type=\"text\" >").css({ "width": "250px", "border": "1px lightgrey solid" }).appendTo($('#'+obj));
+    _text.focus();
+    _text.attr('value',_old_comment);
+    _text.blur(function (){
+        var _comments   =   _text.attr('value');
+        if(_comments == ''){
+            alert('Comments is Required.');
+            return false;
+        }
+        $.ajax({
+            url: "/ajax/update-invoice-comments",
+            dataType:"json",
+            type:"POST",
+            data:{invoice_id:invoice_id,comments:_comments}, 
+            success:function(req){
+                var _new_comments;
+                if(req.result_data == '1'){
+                    _new_comments   =   req.comments;
+                }else{
+                    _new_comments   =   _old_comment;
+                }
+                $('#'+obj).html("");
+                $('#'+obj).html(req.comments);
+            },
+            error: function(msg) {
+                alert(msg);
+            }
+            
+        })
+    })
+}
+</script>
+<style>
+    .invoices_comments:hover{background: none repeat scroll 0 0 #278296;}
+</style>
+<br />
+<div class="info_tablebox" align="center">
+    <!--
+<div align="center" class="info_searchbox">
+    <form action="/admin/admin-financial-report/user_id/<?=$this->user_id?>" method="GET">
+        
+From <input type="text"class="input" name="start_date" id="start_date" size="5"  <?php if($this->start_date){echo "value= '".$this->start_date."'";} ?> />&nbsp;&nbsp;
+       To <input type="text"class="input" name="end_date" id="end_date" size="5"  <?php if($this->end_date){echo "value= '".$this->end_date."'";} ?> />&nbsp;&nbsp;
+       Action Type <select name="action_type" id="action_type">
+            <option value="">All</option>
+            <?php foreach($this->financial_action_type as $f_key => $f_val):?>
+               <option value="<?=$f_key?>"  <?php if($f_key == $this->action_type){echo "selected='selected'";} ?>><?=$f_val?></option>
+           <?php endforeach;?>
+       </select>
+       &nbsp;&nbsp;
+       <input class="info_search_botton" type="submit" value="Search" />
+      
+    </form>
+</div>
+    -->
+<div align="center">
+    <table class="hide" border="0" cellpadding="0" cellspacing="1">
+            <table class="width100" cellspacing="1">
+                <tbody>
+                    <tr>
+                        <td class="form-title">Create Date</td>
+                        <td class="form-title">Company</td>
+                        <td class="form-title">Contact</td>
+                        <td class="form-title">Email</td>
+                        <td class="form-title">Phone</td>
+                        <td class="form-title">Invoice</td>
+                        <td class="form-title">Prepaid</td>
+                        <td class="form-title" width="20%">Comments(Click to modify the Comments)</td>
+                    </tr>
+                    <?php if($this->list):
+                            $n = 1;
+                            foreach($this->list as $list):
+                    ?>
+                    <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+                        <td class="center"><span class="small"><?=$list['create_date']?></span></td>
+                        <td class="center"><span class="small"><?=$list['company']?></span></td>
+                        <td class="center"><span class="small"><?=$list['contact']?></span></td>
+                        <td class="center"><span class="small"><?=$list['email']?></span></td>
+                        <td class="center"><span class="small"><?=$list['phone']?></span></td>
+                        <td class="center"><span class="small"><a style="text-decoration:underline" href="/invoice_csv_file/<?=$list['company']?>/<?=$list['csv']?>">$<?=$list['amount']?$list['amount']:'0'?></a></span></td>
+                        <td class="center"><span class="small"><a style="text-decoration:underline" href="/prepaid_csv_file/<?=$list['company']?>/<?=$list['prepaid_csv']?>">$<?=$list['prepaid']?$list['prepaid']:'0'?></a></span></td>
+                        <td class="center"><span class="small invoices_comments" id="span_comment_<?=$list['invoice_id']?>" title="Click to modify the content" onclick="edit_comment('span_comment_<?=$list['invoice_id']?>',<?=$list['invoice_id']?>); return false;"><?=$list['comments']?></span></td>
+                    </tr>
+                    <?php
+                            endforeach;
+                        endif;
+                    ?>
+                </tbody>
+            </table>
+</div>
+<div align="right"><?=$this->pagination?>&nbsp;&nbsp;</div>
+</div>

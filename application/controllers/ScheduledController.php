@@ -1135,10 +1135,11 @@ class ScheduledController extends Zend_Controller_Action
      * Create invoice csv file
      */
     function refreshInvoicesAction(){
-        $user_model     =   new Databases_Joins_GetUserInfo();
-        $params_model   =   new Databases_Tables_Params();
-        $orders_model   =   new Databases_Joins_GetOrders();
-        $invoice_model  =   new Databases_Tables_InvoiceList();
+        $user_model         =   new Databases_Joins_GetUserInfo();
+        $params_model       =   new Databases_Tables_Params();
+        $orders_model       =   new Databases_Joins_GetOrders();
+        $invoice_model      =   new Databases_Tables_InvoiceList();
+        $logs_financials_model  =   new Databases_Tables_LogsFinancial();
         $user_list      =   $user_model->GetUserList(2,1);
         
         $logs_path      =   $params_model->GetVal('logs_path');
@@ -1209,67 +1210,113 @@ class ScheduledController extends Zend_Controller_Action
                            }
                            break;
                     }
-                    
-                    
-                    $orders_model->update_start_date    =   $day_before;
-                    $orders_model->update_end_date      =   $day_now;
-                    $orders_list    =   $orders_model->getInvoicesProductsList();
-                    if($orders_list){
-                        foreach ($orders_list as $order){
-                            if($product_list_array[$order['supplier_sku']]){
-                                $product_list_array[$order['supplier_sku']]['Quantity'] +=  $order['quantity'];
-                                $product_list_array[$order['supplier_sku']]['Price'] +=  $order['item_amount'];
-                                $product_list_array[$order['supplier_sku']]['ship_cost'] +=  $order['final_ship_cost'];
-                            }else{
-                                $product_list_array[$order['supplier_sku']]['ItemCode'] =   $order['supplier_sku'];
-                                $product_list_array[$order['supplier_sku']]['Quantity'] =   $order['quantity'];
-                                $product_list_array[$order['supplier_sku']]['Price']    =   $order['item_amount'];
-                                $product_list_array[$order['supplier_sku']]['ship_cost']=   $order['final_ship_cost'];
+                    if($day_now && $day_before){
+                        $orders_model->update_start_date        =   $day_before;
+                        $orders_model->update_end_date          =   $day_now;
+                        $orders_model->user_id                  =   $user['user_id'];
+                        $logs_financials_model->start_date          =   $day_before;
+                        $logs_financials_model->invoice_end_date    =   $day_now;
+                        $logs_financials_model->user_id             =   $user['user_id'];
+                        $logs_financials_model->action_affect       =   '1';
+                        $orders_list    =   $orders_model->getInvoicesProductsList();
+                        $financial_list =   $logs_financials_model->PushList();
+                        if($orders_list){
+                            foreach ($orders_list as $order){
+                                if($product_list_array[$order['supplier_sku']]){
+                                    $product_list_array[$order['supplier_sku']]['Quantity'] +=  $order['quantity'];
+                                    $product_list_array[$order['supplier_sku']]['Price'] +=  $order['item_amount'];
+                                    $product_list_array[$order['supplier_sku']]['ship_cost'] +=  $order['final_ship_cost'];
+                                }else{
+                                    $product_list_array[$order['supplier_sku']]['ItemCode'] =   $order['supplier_sku'];
+                                    $product_list_array[$order['supplier_sku']]['Quantity'] =   $order['quantity'];
+                                    $product_list_array[$order['supplier_sku']]['Price']    =   $order['item_amount'];
+                                    $product_list_array[$order['supplier_sku']]['ship_cost']=   $order['final_ship_cost'];
+                                }
                             }
                         }
-                    }
-                    if($product_list_array){
+
+                        $prepaid_csv_filename   =   $user['company'].'-Prepaid-'.date('Y-m-d').'.csv';
+                        $this->mkdirm('prepaid_csv_file/'.$user['company']);
+                        $f_prepaid =   @fopen('prepaid_csv_file/'.$user['company'].'/'.$prepaid_csv_filename,'w');
+                        $prepaid_title_array    =   array('Recharge Time','Recharge Value');
+                        fputcsv($f_prepaid, $prepaid_title_array);
+                        $prepaid_total  =   0;
+                        if($financial_list){
+                            foreach($financial_list as $financial_data){
+                                $prepaid_total  +=  $financial_data['action_value'];
+                                $prepaid_csv_data   =   array(
+                                    $financial_data['issue_time'],
+                                    $financial_data['action_value'],
+                                );
+                                @fputcsv($f_prepaid, $prepaid_csv_data);
+                            }
+                        }
+                        fclose($f_prepaid);
                         $invocie_csv_filename   =   $user['company'].date('Y-m-d').'.csv';
                         $this->mkdirm('invoice_csv_file/'.$user['company']);
-                        $f_dd_order_new =   @fopen('invoice_csv_file/'.$user['company'].'/'.$invocie_csv_filename,'w');
+                        $f_invoice_new =   @fopen('invoice_csv_file/'.$user['company'].'/'.$invocie_csv_filename,'w');
                         $titile_array   =   array('ParentKey', 'ItemCode', 'Quantity', 'Price', 'VatGroup');
-                        @fputcsv($f_dd_order_new, $titile_array);
+                        @fputcsv($f_invoice_new, $titile_array);
                         $titile_array   =   array('DocNum', 'ItemCode', 'Quantity', 'Price', 'VatGroup');
-                        @fputcsv($f_dd_order_new, $titile_array);
+                        @fputcsv($f_invoice_new, $titile_array);
                         $freight        =   0;
                         $price_total    =   0;
-                        foreach ($product_list_array as $product){
-                            $freight        +=   $product['ship_cost'];
-                            $price_total    +=   $product['Price'];
-                            $csv_data   =   array(
+                        if($product_list_array){
+                            foreach ($product_list_array as $product){
+                                $freight        +=   $product['ship_cost'];
+                                $price_total    +=   $product['Price'];
+                                $csv_data   =   array(
+                                    '1',
+                                    $product['ItemCode'],
+                                    $product['Quantity'],
+                                    $product['Price'],
+                                    'S1',
+                                );
+                                @fputcsv($f_invoice_new, $csv_data);
+                            }
+                            $freight_data   =   array(
                                 '1',
-                                $product['ItemCode'],
-                                $product['Quantity'],
-                                $product['Price'],
+                                'FREIGHT',
+                                '1',
+                                $freight,
                                 'S1',
                             );
-                            @fputcsv($f_dd_order_new, $csv_data);
+                            @fputcsv($f_invoice_new, $freight_data);
+                        }else{
+                            $csv_data   =   array(
+                                '1',
+                                '0',
+                                '0',
+                                '0',
+                                'S1',
+                            );
+                            @fputcsv($f_invoice_new, $csv_data);
+                            $freight_data   =   array(
+                                '1',
+                                'FREIGHT',
+                                '1',
+                                $freight,
+                                'S1',
+                            );
+                            @fputcsv($f_invoice_new, $freight_data);
                         }
-                        $freight_data   =   array(
-                            '1',
-                            'FREIGHT',
-                            '1',
-                            $freight,
-                            'S1',
-                        );
+
+                        fclose($f_invoice_new);
                         $amount =   $price_total + $freight;
-                        @fputcsv($f_dd_order_new, $freight_data);
-                        fclose($f_dd_order_new);
-                        $invoice_model->company =   $user['company'];
-                        $invoice_model->contact =   $user['contact_name'];
-                        $invoice_model->email   =   $user['email'];
-                        $invoice_model->phone   =   $user['contact_phone'];
-                        $invoice_model->amount  =   $amount;
-                        $invoice_model->csv     =   $invocie_csv_filename;
-                        $invoice_model->comments=   'System Create Csv File.';
+                        $invoice_model->company     =   $user['company'];
+                        $invoice_model->contact     =   $user['contact_name'];
+                        $invoice_model->email       =   $user['email'];
+                        $invoice_model->phone       =   $user['contact_phone'];
+                        $invoice_model->amount      =   $amount;
+                        $invoice_model->csv         =   $invocie_csv_filename;
+                        $invoice_model->prepaid     =   $prepaid_total;
+                        $invoice_model->prepaid_csv =   $prepaid_csv_filename;
+                        $invoice_model->comments    =   'System Create Csv File.';
                         $invoice_model->create_date =   date('Y-m-d');
                         $invoice_model->addInvoiceData();
                     }
+                    unset($day_now);
+                    unset($day_before);
                 }
             }
         }

@@ -14,7 +14,7 @@ class Databases_Tables_LogsFinancial extends Zend_Db_Table
     var $trans_id;
     var $action_value;
     var $instant_balance;
-    
+    var $invoice_end_date;
     
     function Pagination()
     {
@@ -91,6 +91,10 @@ class Databases_Tables_LogsFinancial extends Zend_Db_Table
             $select->where("issue_time <= ?", $this->end_date." 23:59:59");
             $cond[] = "end_date=".$this->end_date;
         }
+        if($this->invoice_end_date){
+            $select->where("issue_time <= ?", $this->invoice_end_date." 00:00:00");
+            $cond[] = "end_date=".$this->end_date;
+        }
         if($this->user_id)
         {
             $select->where("user_id = ?", $this->user_id);
@@ -101,6 +105,10 @@ class Databases_Tables_LogsFinancial extends Zend_Db_Table
             $select->where("action_type = ?", $this->action_type);
             
             $cond[] = "action_type=".$this->action_type;
+        }
+        if($this->action_affect){
+            $select->where("action_affect = ?", $this->action_affect);
+            $cond[] = "action_affect=".$this->action_affect;
         }
         if($this->p_query_order)
         {

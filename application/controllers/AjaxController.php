@@ -124,5 +124,22 @@ class AjaxController extends Zend_Controller_Action
         echo Zend_Json::encode($result);
         die();
     }
+    
+    /**
+     * Update Invoice Comments
+     */
+    function updateInvoiceCommentsAction(){
+        $params =   $this->_request->getParams();
+        $invoice_model  =   new Databases_Tables_InvoiceList();
+        $invoice_model->invoice_id  =   $params['invoice_id'];
+        $invoice_model->comments    =   $params['comments'];
+        $result =   $invoice_model->updateComments();
+        if($result){
+            echo json_encode(array('result_data'=>'1','invoice_id'=>$params['invoice_id'],'comments'=>$params['comments']));
+        }else{
+            echo json_encode(array('result_data'=>'0'));
+        }
+        die;
+    }
 }
 

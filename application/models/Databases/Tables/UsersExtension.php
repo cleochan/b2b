@@ -16,6 +16,9 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
     var $state;
     var $flat_rate_shipping;
     
+    var $invoice_type;
+    var $invoice_value;
+    
     function AddUserExtension()
     {
         if($this->user_id)
@@ -32,6 +35,8 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
                 'suburb'        =>  $this->suburb,
                 'state'         =>  $this->state,
                 'flat_rate_shipping'    =>  $this->flat_rate_shipping,
+                'invoice_type'          =>  $this->invoice_type,
+                'invoice_value'         =>  $this->invoice_value,
                 'join_date' => date("Y-m-d"),
                 'credit' => round($this->credit, 2),
                 'discount' => round($this->discount, 2),
@@ -82,6 +87,12 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
             }
             if($this->flat_rate_shipping){
                 $user->flat_rate_shipping   =   $this->flat_rate_shipping;
+            }
+            if($this->invoice_type){
+                $user->invoice_type   =   $this->invoice_type;
+            }
+            if($this->invoice_value){
+                $user->invoice_value   =   $this->invoice_value;
             }
             $user->save();
         }

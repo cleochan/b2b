@@ -729,4 +729,40 @@ class Databases_Joins_GetOrders
             return FALSE;
         }
     }
+    
+    function getInvoicesProductsList(){
+        $select = $this->db->select();
+        $select->from("purchase_order as p", array("main_db_order_id","purchase_order_id", "issue_time", "user_id", "order_amount", "pickup"));
+        $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("merchant_ref", "item_status", "api_response", "item_amount", "supplier_sku", "merchant_sku", "quantity","tracking_number", "shipping_courier", "sc_class", "shipping_date", "final_ship_cost"));
+        if($this->update_start_date)
+        {
+            $select->where("p.update_time >= ?", $this->update_start_date." 00:00:00");
+        }
+        if($this->update_end_date)
+        {
+            $select->where("p.update_time <= ?", $this->update_end_date." 23:59:59");
+        }
+        if($this->user_id)
+        {
+            $select->where("p.user_id = ?", $this->user_id);
+        }
+        if(isset($this->item_status) && $this->item_status != '-1') //-1 == select all orders
+        {
+            $select->where("item_status = ?", $this->item_status);
+        }
+        
+        if($this->item_statuses && is_array($this->item_statuses)){
+            $in_item_status = implode(',', $this->item_statuses);
+            $select->where("o.item_status in (".$in_item_status.") ");
+        }
+        if($this->limit)
+        {
+            $select->limit($this->limit);
+            $select->order("p.issue_time DESC");
+        }
+        
+        $result= $this->db->fetchAll($select);
+        
+        return $result;
+    }
 }

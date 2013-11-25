@@ -26,7 +26,7 @@
 				<td colspan="3" align="left"><?php echo $this->form->company;?><font color="red">*</font></td>
 			</tr>
                         
-                        <tr class="row-2">
+                        <tr class="row-1">
 				<td class="category">Address</td>
 				<td colspan="3" align="left"><?php echo $this->form->address;?><font color="red">*</font></td>
 			</tr>
@@ -34,7 +34,7 @@
 				<td class="category">Post Code</td>
 				<td colspan="3" align="left"><?php echo $this->form->post_code;?><font color="red">*</font></td>
 			</tr>
-                        <tr class="row-2">
+                        <tr class="row-1">
 				<td class="category">Suburb</td>
 				<td colspan="3" align="left"><?php echo $this->form->suburb;?><font color="red">*</font></td>
 			</tr>
@@ -67,6 +67,21 @@
                         <tr class="row-2">
 				<td class="category">Flat Rate Shipping</td>
 				<td colspan="3" align="left"><?php echo $this->form->flat_rate_shipping;?></td>
+			</tr>
+                        <tr class="row-1">
+				<td class="category">Invoice</td>
+				<td colspan="3" align="left">
+                                    <label for="invoice_type-1">
+                                        <input id="invoice_type-1" type="radio" checked="checked" value="1" name="invoice_type">
+                                        By Week
+                                    </label>
+                                    <?php echo $this->form->invoice_value_1;?>
+                                    <label for="invoice_type-2">
+                                        <input id="invoice_type-2" type="radio" value="2" name="invoice_type">
+                                        By Month
+                                    </label>
+                                    <?php echo $this->form->invoice_value_2;?>
+                                </td>
 			</tr>
 			</tr>		
 			<tr class="">

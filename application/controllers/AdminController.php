@@ -229,6 +229,18 @@ class AdminController extends Zend_Controller_Action
                     $form->populate($formData);
                     $error = 1;
                 }
+                //invoice
+                if(!$form->getValue('invoice_type')){
+                    $this->view->notice="Invoice Type is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                //invoice_value
+                if(!$form->getValue('invoice_type') && $form->getValue('invoice_value_'.$form->getValue('invoice_type'))){
+                    $this->view->notice="Invoice Type Value is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
                 
                 //new users
                 $check_user_string = new Databases_Tables_Users();
@@ -265,6 +277,8 @@ class AdminController extends Zend_Controller_Action
                     $check_user_string->state       =   $form->getValue('state');
                     $check_user_string->flat_rate_shipping       =   $form->getValue('flat_rate_shipping');
                     
+                    $check_user_string->invoice_type             =   $form->getValue('invoice_type');
+                    $check_user_string->invoice_value            =   $form->getValue('invoice_value_'.$form->getValue('invoice_type'));
                     
                     $check_user_string ->AddUser();
                     
@@ -360,7 +374,18 @@ class AdminController extends Zend_Controller_Action
                     $form->populate($formData);
                     $error = 1;
                 }
-
+                //invoice
+                if(!$$formData['invoice_type']){
+                    $this->view->notice="Invoice Type is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                //invoice_value
+                if(!$$formData['invoice_type'] && $$formData['invoice_value_'.$formData['invoice_type']]){
+                    $this->view->notice="Invoice Type Value is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
                 //check valid end
                 ///////////////////////////////////////////////////////////
 
@@ -405,7 +430,7 @@ class AdminController extends Zend_Controller_Action
             $formData = $this->_request->getPost();
             if($form->isValid($formData)){
                 $form->getValues();
-
+                
                 ///////////////////////////////////////////////////////////
                 //check valid start
 
@@ -527,6 +552,8 @@ class AdminController extends Zend_Controller_Action
                     $check_user_string->suburb      =   $form->getValue('suburb');
                     $check_user_string->state       =   $form->getValue('state');
                     $check_user_string->flat_rate_shipping       =   $form->getValue('flat_rate_shipping');
+                    $check_user_string->invoice_type             =   $form->getValue('invoice_type');
+                    $check_user_string->invoice_value            =   $form->getValue('invoice_value_'.$form->getValue('invoice_type'));
                     
                     $check_user_string->EditUser();
                     
@@ -610,7 +637,18 @@ class AdminController extends Zend_Controller_Action
                     $form->populate($formData);
                     $error = 1;
                 }
-
+                //invoice
+                if(!$form->getValue('invoice_type')){
+                    $this->view->notice="Invoice Type is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
+                //invoice_value
+                if(!$formData['invoice_type'] && $formData['invoice_value_'.$formData['invoice_type']]){
+                    $this->view->notice="Invoice Type Value is required.";
+                    $form->populate($formData);
+                    $error = 1;
+                }
                 //check valid end
                 ///////////////////////////////////////////////////////////
 
@@ -635,6 +673,7 @@ class AdminController extends Zend_Controller_Action
                 $theid = $params['user_id'];
                 $get_user_info = new Databases_Joins_GetUserInfo();
                 $user = $get_user_info -> GetUserInfo($theid);
+                $user['invoice_value_'.$user['invoice_type']]   =   $user['invoice_value'];
                 $form->populate($user);
                 $this->view->data = $user;
                 $_SESSION['user_contents'][$theid] = $user;
@@ -1673,8 +1712,8 @@ class AdminController extends Zend_Controller_Action
         $product_filter_model   =   new Databases_Joins_ProductFilter();
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Admin Import Order"));
 
-        //$merchant_company   =   'Test Company';
-        $merchant_company   =   'DealsDirect';
+        $merchant_company   =   'Test Company';
+        //$merchant_company   =   'DealsDirect';
         $pick_up            =   'N';
         if ($_FILES["csvf"]["error"] > 0)
         {
@@ -1937,10 +1976,22 @@ class AdminController extends Zend_Controller_Action
     }
     
     /**
-     * DealsDirect's orders list
+     * Invoice list
      */
-    function DdOrdersListAction(){
-        
+    function invoiceAction(){
+        $this->view->title = "Invoice";
+        $params = $this->_request->getParams();
+        $menu_model = new Algorithms_Core_Menu;
+        $invoice_model  =   new Databases_Tables_InvoiceList();
+        if($params['page']){
+            $invoice_model->page_now    =   $params['page'];
+        }else{
+            $invoice_model->page_now    =   1;
+        }
+        $result_data            =   $invoice_model->getInvoiceList();
+        $this->view->navigation =   $menu_model->GetNavigation(array("Dashboard", "Invoice"));
+        $this->view->list       =   $result_data['records'];
+        $this->view->pagination =   $result_data['page_html'];
     }
 }
 

@@ -9,6 +9,7 @@ class Algorithms_Core_Menu
             "Merchants List" => "/admin/merchants",
             "BPay Import" => "/admin/bpay-import",
             "Import Order" => "/admin/admin-import-order",
+            "Invoice" => "/admin/invoice",
             "Help Mgt" => "/admin/help-mgt"
         );
         
@@ -161,11 +162,14 @@ class Algorithms_Core_Menu
             case "admin-financial-report":
                 $link = "Merchants List";
                 break;
-			case "order-view":
+            case "order-view":
                 $link = "Order Report";
                 break;
-			case "admin-order-view":
+            case "admin-order-view":
                 $link = "Merchants List";
+                break;
+            case "invoice":
+                $link = "Invoice";
                 break;
             default:
                 $link = "Dashboard";

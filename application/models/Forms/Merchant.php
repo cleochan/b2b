@@ -39,7 +39,31 @@ class Forms_Merchant extends Zend_Form
                                         -> setRequired(True)
                                         -> setValue(1)
                                         -> addValidator('NotEmpty');
-        
+
+                $week_array             =   array(
+                                                1   =>  'Monday',
+                                                2   =>  'Tuesday',
+                                                3   =>  'Wednesday',
+                                                4   =>  'Thursday',
+                                                5   =>  'Friday',
+                                                6   =>  'Saturday',
+                                                7   =>  'Sunday',
+                                            );
+                $invoice_value_1        =   new Zend_Form_Element_Select('invoice_value_1');
+                $invoice_value_1        ->  setMultiOptions($week_array)
+                                        ->  setRequired(true)
+                                        ->  addValidator('NotEmpty', true);
+                
+                $invoice_value_2        =   new Zend_Form_Element_Text('invoice_value_2');
+                
+                $invoice_type_array     =   array(1=>'By Week', 2=>'By Month');
+                $invoice_type           =   new Zend_Form_Element_Radio('invoice_type');
+                $invoice_type           ->  setDecorators(array(array('ViewHelper'),))
+                                        ->  addMultiOptions($invoice_type_array)
+                                        ->  setSeparator(' ')
+                                        ->  setRequired(True)
+                                        ->  setValue(1)
+                                        ->  addValidator('NotEmpty');
 		$company = new Zend_Form_Element_Text('company');
 		$company -> setDecorators(array(array('ViewHelper'),));
         
@@ -89,6 +113,9 @@ class Forms_Merchant extends Zend_Form
                                                                 $discount,
 								$submitx,
                                                                 $flat_rate_shipping,
+                                                                $invoice_type,
+                                                                $invoice_value_1,
+                                                                $invoice_value_2,
 							)
 						);
 	}
