@@ -152,7 +152,7 @@ class Databases_Joins_GetOrders
                 $params = implode("/", $cond);
                 $html = "<a href='/admin/admin-order-report/".$params."'><< Previous</a>";
                 $html .= "&nbsp;&nbsp;&nbsp;&nbsp;";
-                $cond = array_pop($cond);
+                array_pop($cond);
                 var_dump($cond);die;
                 if(count($cond))
                 {
