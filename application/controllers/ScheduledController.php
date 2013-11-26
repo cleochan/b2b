@@ -937,7 +937,7 @@ class ScheduledController extends Zend_Controller_Action
                         //$order_ids[$order['purchase_order_id']]  =   $order['main_db_order_id'];
                         @fwrite($f_logs_feeds, "Update ".$order['main_db_order_id']." at: ".date("Y-m-d H:i:s")."\r\n");
                         $dd_order_model->b2b_order_id       =   $order['purchase_order_id'];
-                        $dd_order_model->product_code       =   ' '.$order['merchant_sku'];
+                        $dd_order_model->product_code       =   ' '.trim($order['merchant_sku']);
                         $dd_order_model->tracking_number    =   $order['tracking_number'];
                         $dd_order_model->shipping_date      =   $order['shipping_date'];
                         $dd_order_model->courier            =   $order['shipping_courier'];
