@@ -757,7 +757,7 @@ if($result)
         $purchase_order_model   =   new Databases_Tables_PurchaseOrder();
         $orders_model       =   new Databases_Joins_GetOrders();
         $orders_model->start_date               =   '2013-11-07';
-        $orders_model->end_date                 =   '2013-11-15';;
+        $orders_model->end_date                 =   '2013-11-15';
         $orders_model->user_id                  =   8;
         $orders_model->item_statuses            =   array(1,3,4);
         $orders                 =   $orders_model->PushList();
