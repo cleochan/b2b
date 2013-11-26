@@ -769,7 +769,6 @@ if($result)
         $purchase_order_ids = implode(',', $purchase_order_array);
         $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
         $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
-        print_r($purchase_orders);
         /*
             $logs_financial->action_type = 1; //place order
             $logs_financial->action_affect = 2; //deduct
