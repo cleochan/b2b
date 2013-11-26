@@ -771,15 +771,10 @@ if($result)
         $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
         $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
         $total  =   0;
+        print_r($purchase_orders);exit;
         foreach ($purchase_orders as $purchase_order){
             $total +=   $purchase_order['order_amount'];
             echo $purchase_order['order_amount'].'<br>';
-            $logs_financial->action_type = 1; //place order
-            $logs_financial->action_affect = 2; //deduct
-            $logs_financial->action_value = $purchase_order['order_amount'];
-            // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
-            $logs_financial->trans_id = $place_order_return['logs_orders_id'];
-            //$logs_financial->AddLog();
         }
         echo $total;
         /*
