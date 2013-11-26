@@ -953,15 +953,18 @@ class ScheduledController extends Zend_Controller_Action
                 }
                 //get the data of update success and create a new csv file and upload
                 @fwrite($f_logs_feeds, "Create csv file and upload at: ".date("Y-m-d H:i:s")."\r\n");
-                $dd_order_model->update_start_date    =   $time_start;  
-                $dd_order_model->update_end_date      =   $time_end;
-                $dd_order_model->item_statuses        =   array(4,5); 
+                //$dd_order_model->update_start_date    =   $time_start;  
+                //$dd_order_model->update_end_date      =   $time_end;
+                $dd_order_model->shipping_flag  =   '1';
+                $dd_order_model->item_statuses  =   array(4,5); 
+                $shiped_dd_orders_array         =   array();
                 $dd_orders      =   $dd_order_model->getDdorders();
                 if($dd_orders){
                     $f_dd_order_new =   @fopen($dd_order_new_path.$dd_order_new_filename,'w');
                     @fputcsv($f_dd_order_new, $titile_array);
                     foreach ($dd_orders as $orde_key => $result){
                         if($result){
+                            $shiped_dd_orders_array[$result['order_id']]   =   $result['order_id'];
                             if($result['status']=='5'){
                                 $courier    =   'Cancelled';
                             }else{
@@ -1001,6 +1004,12 @@ class ScheduledController extends Zend_Controller_Action
                         }
                     }
                     $feed_model->uploadFtpFile(array($dd_order_new_filename), 'shipping');
+                    if($shiped_dd_orders_array){
+                        @fwrite($f_logs_feeds, "Update Shipping Flag at: ".date("Y-m-d H:i:s")."\r\n");
+                        $dd_order_model->order_ids      = implode(',', $shiped_dd_orders_array);
+                        $dd_order_model->shipping_flag  =   '2';
+                        $dd_order_model->updateDdOrderShippingFlag();
+                    }
                 }else{
                     @fwrite($f_logs_feeds, "No csv file upload at: ".date("Y-m-d H:i:s")."\r\n");
                 }

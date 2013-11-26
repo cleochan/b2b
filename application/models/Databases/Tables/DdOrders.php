@@ -34,6 +34,8 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
     var $item_statuses;
     var $batch_num;
     var $order_by;
+    var $shipping_flag;     //1: unsent, 2: sent
+    var $order_ids;
     function addDdOrder(){
         $data   =   array(
             //'b2b_order_id'      =>  $this->b2b_order_id,
@@ -60,7 +62,9 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
             'status'            =>  $this->status,
             'error_message'     =>  $this->error_message,         
             'add_time'          =>  date('Y-m-d H:i:s'),
+            'update_time'       =>  date('Y-m-d H:i:s'),
             'batch_num'         =>  $this->batch_num,
+            'shipping_flag'     =>  '1',
         );
         $order_id   =   $this->insert($data);
         return $order_id;
@@ -76,11 +80,20 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
             if($order->order_id){
                 if($order->status != '4' && $order->status != '5')
                 {                
-                    $order->tracking_number =   $this->tracking_number;
-                    $order->shipping_date   =   $this->shipping_date;
-                    $order->courier         =   $this->courier;
+                    if($this->tracking_number){
+                        $order->tracking_number =   $this->tracking_number;
+                    }
+                    if($this->shipping_date){
+                        $order->shipping_date   =   $this->shipping_date;
+                    }
+                    if($this->courier){
+                        $order->courier         =   $this->courier;
+                    }
+                    if($this->status){
+                        $order->status          =   $this->status;
+                    }
+                    $order->shipping_flag   =   1;
                     $order->update_time     =   date('Y-m-d H:i:s');
-                    $order->status          =   $this->status;
                     $order->save();
                     $result   =   "Order: ".$this->cc_order_id.' Shipping data update success at: '.date('Y-m-d H:i:s');
                 }
@@ -99,6 +112,7 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
                 $data   =   array(
                     'cc_order_id'   =>  $this->cc_order_id,
                     'status'        =>  $this->status,
+                    'shipping_flag' =>  1,
                 );
                 $this->update($data, $where);
             }
@@ -139,6 +153,9 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
             $in_item_status = implode(',', $this->item_statuses);
             $select->where("status in (".$in_item_status.") ");
         }
+        if($this->shipping_flag && $this->shipping_flag == '1'){
+            $select->where("shipping_flag = ?", $this->shipping_flag);
+        }
         if($this->order_by){
             $select->order($this->order_by);
         }
@@ -156,4 +173,14 @@ class Databases_Tables_DdOrders extends Zend_Db_Table {
         }
     }
     
+    function updateDdOrderShippingFlag(){
+        if($this->order_ids && $this->shipping_flag){
+            $where  =   " order_id in (".$this->order_ids.")";
+            $data   =   array(
+                'shipping_flag' => $this->shipping_flag,
+            );
+            $this->update($data, $where);
+        }
+    }
+        
 }
