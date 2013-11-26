@@ -1223,15 +1223,15 @@ class ScheduledController extends Zend_Controller_Action
                         $financial_list =   $logs_financials_model->PushList();
                         if($orders_list){
                             foreach ($orders_list as $order){
-                                if($product_list_array[$order['supplier_sku']]){
-                                    $product_list_array[$order['supplier_sku']]['Quantity']     +=  $order['quantity'];
-                                    $product_list_array[$order['supplier_sku']]['Price']        =   $order['item_amount'];
-                                    $product_list_array[$order['supplier_sku']]['ship_cost']    +=  $order['final_ship_cost'];
+                                if($product_list_array[$order['supplier_sku'].'-'.$order['item_amount']]){
+                                    $product_list_array[$order['supplier_sku'].'-'.$order['item_amount']]['Quantity']     +=  $order['quantity'];
+                                    $product_list_array[$order['supplier_sku'].'-'.$order['item_amount']]['Price']        =   $order['item_amount'];
+                                    $product_list_array[$order['supplier_sku'].'-'.$order['item_amount']]['ship_cost']    +=  $order['final_ship_cost'];
                                 }else{
-                                    $product_list_array[$order['supplier_sku']]['ItemCode'] =   $order['supplier_sku'];
-                                    $product_list_array[$order['supplier_sku']]['Quantity'] =   $order['quantity'];
-                                    $product_list_array[$order['supplier_sku']]['Price']    =   $order['item_amount'];
-                                    $product_list_array[$order['supplier_sku']]['ship_cost']=   $order['final_ship_cost'];
+                                    $product_list_array[$order['supplier_sku'].'-'.$order['item_amount']]['ItemCode'] =   $order['supplier_sku'];
+                                    $product_list_array[$order['supplier_sku'].'-'.$order['item_amount']]['Quantity'] =   $order['quantity'];
+                                    $product_list_array[$order['supplier_sku'].'-'.$order['item_amount']]['Price']    =   $order['item_amount'];
+                                    $product_list_array[$order['supplier_sku'].'-'.$order['item_amount']]['ship_cost']=   $order['final_ship_cost'];
                                 }
                             }
                         }
