@@ -773,7 +773,12 @@ if($result)
         $total  =   0;
         foreach ($purchase_orders as $purchase_order){
             $total +=   $purchase_order['order_amount'];
-            echo $purchase_order['order_amount'].'<br>';
+            $logs_financial->action_type    =   1; //place order
+            $logs_financial->user_id        =   8;
+            $logs_financial->action_affect  =   2; //deduct
+            $logs_financial->action_value   =   $purchase_order['order_amount'];
+            // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
+            $logs_financial->AddLog();
         }
         echo $total;
         /*
