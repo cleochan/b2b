@@ -771,11 +771,9 @@ if($result)
         $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
         $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
         $total  =   0;
-        print_r($purchase_order_ids);
-        print_r($purchase_orders);exit;
         foreach ($purchase_orders as $purchase_order){
             $total +=   $purchase_order['order_amount'];
-            echo $purchase_order['order_amount'].'<br>';
+            echo 'purchase_order_id: '.$purchase_order['purchase_order_id'].' order_amoutn: '.$purchase_order['order_amount'].'<br>';
         }
         echo $total;
         /*
