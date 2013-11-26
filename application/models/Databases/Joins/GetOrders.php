@@ -235,7 +235,7 @@ class Databases_Joins_GetOrders
             $select->limit($this->limit);
             $select->order("p.issue_time DESC");
         }
-        print_r($select);
+
         $result= $this->db->fetchAll($select);
         
         return $result;

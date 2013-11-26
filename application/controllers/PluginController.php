@@ -765,7 +765,7 @@ if($result)
         foreach ($orders as $order){
             $purchase_order_array[$order['purchase_order_id']]  =   $order['purchase_order_id'];
         }
-        print_r($purchase_order_array);
+        print_r($orders);
         $purchase_order_ids = implode(',', $purchase_order_array);
         $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
         $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
