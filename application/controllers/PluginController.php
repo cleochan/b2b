@@ -770,7 +770,6 @@ if($result)
         $purchase_order_ids = implode(',', $purchase_order_array);
         $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
         $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
-        print_r($purchase_orders);exit;
         $total  =   0;
         foreach ($purchase_orders as $purchase_order){
             $total +=   $purchase_order['order_amount'];
