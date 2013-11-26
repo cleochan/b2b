@@ -753,4 +753,25 @@ if($result)
         }
         $this->_redirect('/plugin/dd-orders-list');
     }
+    function updateFinancialAction(){
+        $orders_model       =   new Databases_Joins_GetOrders();
+        $orders_model->start_date               =   '2013-11-07';
+        $orders_model->end_date                 =   '2013-11-15';;
+        $orders_model->user_id                  =   8;
+        $orders_model->item_statuses            =   array(1,3,4);
+        $orders                 =   $orders_model->PushList();
+        $logs_financial         =   new Databases_Tables_LogsFinancial();
+        foreach ($orders as $order){
+            $purchase_order_array[$order['purchase_order_id']]  =   $order['purchase_order_id'];
+        }
+        print_r($purchase_order_array);
+        /*
+            $logs_financial->action_type = 1; //place order
+            $logs_financial->action_affect = 2; //deduct
+            $logs_financial->action_value = $order;
+            // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
+            $logs_financial->AddLog();
+         * */
+        die();
+    }
 }
