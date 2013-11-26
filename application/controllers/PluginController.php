@@ -763,15 +763,14 @@ if($result)
         $this->db = Zend_Registry::get("db");
         $sql    =   "SELECT * from purchase_order p left join logs_orders o on o.purchase_order_id=p.purchase_order_id where (p.issue_time >= '2013-11-07 00:00:00') AND (p.issue_time <= '2013-11-15 23:59:59') AND (p.user_id = 8) AND (o.item_status in (1,3,4) )";
         $orders =  $this->db->fetchAll($sql);
-        print_r($orders);exit;
         $logs_financial         =   new Databases_Tables_LogsFinancial();
         foreach ($orders as $order){
             $purchase_order_array[$order['purchase_order_id']]  =   $order['purchase_order_id'];
         }
-        print_r($orders);
         $purchase_order_ids = implode(',', $purchase_order_array);
         $purchase_order_model->purchase_order_ids    =   $purchase_order_ids;
         $purchase_orders =   $purchase_order_model->GetPurchaseOrder();
+        print_r($purchase_orders);exit;
         /*
             $logs_financial->action_type = 1; //place order
             $logs_financial->action_affect = 2; //deduct
