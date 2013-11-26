@@ -753,6 +753,7 @@ if($result)
         }
         $this->_redirect('/plugin/dd-orders-list');
     }
+    /*
     function updateFinancialAction(){
         $purchase_order_model   =   new Databases_Tables_PurchaseOrder();
         $orders_model       =   new Databases_Joins_GetOrders();
@@ -780,14 +781,7 @@ if($result)
             // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
             $logs_financial->AddLog();
         }
-        echo $total;
-        /*
-            $logs_financial->action_type = 1; //place order
-            $logs_financial->action_affect = 2; //deduct
-            $logs_financial->action_value = $order;
-            // $logs_financial->trans_id = $place_order_return['logs_orders_id'];
-            $logs_financial->AddLog();
-         * */
         die();
     }
+    **/
 }
