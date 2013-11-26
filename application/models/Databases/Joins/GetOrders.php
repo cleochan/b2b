@@ -737,11 +737,11 @@ class Databases_Joins_GetOrders
         $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("merchant_ref", "item_status", "api_response", "item_amount", "supplier_sku", "merchant_sku", "quantity","tracking_number", "shipping_courier", "sc_class", "shipping_date", "final_ship_cost"));
         if($this->update_start_date)
         {
-            $select->where("p.update_time >= ?", $this->update_start_date." 00:00:00");
+            $select->where("p.issue_time >= ?", $this->update_start_date." 00:00:00");
         }
         if($this->update_end_date)
         {
-            $select->where("p.update_time <= ?", $this->update_end_date." 00:00:00");
+            $select->where("p.issue_time <= ?", $this->update_end_date." 00:00:00");
         }
         if($this->user_id)
         {
