@@ -119,7 +119,7 @@ class Databases_Tables_LogsFinancial extends Zend_Db_Table
         {
             $select->limit($this->p_qty_per_page, $this->p_qty_per_page*($this->p_current_page-1));
         }
-        $select->order('issue_time DESC');
+        $select->order('logs_financial_id DESC');
         $data = $this->fetchAll($select);
         $result = $data->toArray();
         
