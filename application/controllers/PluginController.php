@@ -773,7 +773,7 @@ if($result)
         $total  =   0;
         foreach ($purchase_orders as $purchase_order){
             $total +=   $purchase_order['order_amount'];
-            echo 'purchase_order_id: '.$purchase_order['purchase_order_id'].' order_amoutn: '.$purchase_order['order_amount'].'<br>';
+            echo $purchase_order['order_amount'].'<br>';
         }
         echo $total;
         /*
