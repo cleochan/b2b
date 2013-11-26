@@ -760,7 +760,10 @@ if($result)
         $orders_model->end_date                 =   '2013-11-15';
         $orders_model->user_id                  =   8;
         $orders_model->item_statuses            =   array(1,3,4);
-        $orders                 =   $orders_model->PushList();
+        $this->db = Zend_Registry::get("db");
+        $sql    =   "SELECT * from purchase_order p left join logs_orders o on o.purchase_order_id=p.purchase_order_id where (p.issue_time >= '2013-11-07 00:00:00') AND (p.issue_time <= '2013-11-15 23:59:59') AND (p.user_id = 8) AND (o.item_status in (1,3,4) )";
+        $orders =  $this->db->fetchAll($sql);
+        print_r($orders);exit;
         $logs_financial         =   new Databases_Tables_LogsFinancial();
         foreach ($orders as $order){
             $purchase_order_array[$order['purchase_order_id']]  =   $order['purchase_order_id'];
