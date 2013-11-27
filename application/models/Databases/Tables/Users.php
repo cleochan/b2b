@@ -22,6 +22,10 @@ class Databases_Tables_Users extends Zend_Db_Table
     var $invoice_type;
     var $invoice_value;
     
+    var $account_name;
+    var $account_email;
+    var $account_phone;
+    
 	function SetUser($obj)
 	{
 		$variables = array('user_id', 
@@ -98,6 +102,9 @@ class Databases_Tables_Users extends Zend_Db_Table
             $user_ext->flat_rate_shipping   =   $this->flat_rate_shipping;
             $user_ext->invoice_type         =   $this->invoice_type;
             $user_ext->invoice_value        =   $this->invoice_value;
+            $user_ext->account_name         =   $this->account_name;
+            $user_ext->account_phone        =   $this->account_phone;
+            $user_ext->account_email        =   $this->account_email;
             
              try{
                 $user_ext ->AddUserExtension();
@@ -143,6 +150,9 @@ class Databases_Tables_Users extends Zend_Db_Table
             $user_ext->flat_rate_shipping   =   $this->flat_rate_shipping;
             $user_ext->invoice_type         =   $this->invoice_type;
             $user_ext->invoice_value        =   $this->invoice_value;
+            $user_ext->account_name         =   $this->account_name;
+            $user_ext->account_phone        =   $this->account_phone;
+            $user_ext->account_email        =   $this->account_email;
             $user_ext->EditUserExtension();
             
         }

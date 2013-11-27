@@ -19,6 +19,10 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
     var $invoice_type;
     var $invoice_value;
     
+    var $account_name;
+    var $account_phone;
+    var $account_email;
+    
     function AddUserExtension()
     {
         if($this->user_id)
@@ -37,6 +41,9 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
                 'flat_rate_shipping'    =>  $this->flat_rate_shipping,
                 'invoice_type'          =>  $this->invoice_type,
                 'invoice_value'         =>  $this->invoice_value,
+                'account_name'          =>  $this->account_name,
+                'account_phone'         =>  $this->account_phone,
+                'account_email'         =>  $this->account_email,
                 'join_date' => date("Y-m-d"),
                 'credit' => round($this->credit, 2),
                 'discount' => round($this->discount, 2),
@@ -93,6 +100,15 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
             }
             if($this->invoice_value){
                 $user->invoice_value   =   $this->invoice_value;
+            }
+            if($this->account_name){
+                $user->account_name   =   $this->account_name;
+            }
+            if($this->account_email){
+                $user->account_email   =   $this->account_email;
+            }
+            if($this->account_phone){
+                $user->account_phone   =   $this->account_phone;
             }
             $user->save();
         }

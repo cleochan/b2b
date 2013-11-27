@@ -109,6 +109,19 @@ class Databases_Tables_InvoiceList extends Zend_Db_Table{
         
         return $html;
     }
+    
+    function getInvoices(){
+        if($this->create_date){
+            $select =   $this->select();
+            $select->where('create_date = ?', $this->create_date);
+            $result =   $this->fetchAll($select);
+            if($result){
+                return  $result->toArray();
+            }else{
+                return  FALSE;
+            }
+        }
+    }
 }
 
 ?>

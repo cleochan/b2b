@@ -753,6 +753,12 @@ if($result)
         }
         $this->_redirect('/plugin/dd-orders-list');
     }
+    
+    function sentEmailAction(){
+        $email_model    =   new Algorithms_Core_Email();
+        $email_model->sentEmail();
+        die;
+    }
     /*
     function updateFinancialAction(){
         $purchase_order_model   =   new Databases_Tables_PurchaseOrder();

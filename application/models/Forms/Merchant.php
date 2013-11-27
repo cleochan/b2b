@@ -87,6 +87,15 @@ class Forms_Merchant extends Zend_Form
         
                 $contact_phone = new Zend_Form_Element_Text('contact_phone');
 		$contact_phone -> setDecorators(array(array('ViewHelper'),));
+                
+                $account_name = new Zend_Form_Element_Text('account_name');
+		$account_name -> setDecorators(array(array('ViewHelper'),));
+                
+                $account_phone = new Zend_Form_Element_Text('account_phone');
+		$account_phone -> setDecorators(array(array('ViewHelper'),));
+                
+                $account_email = new Zend_Form_Element_Text('account_email');
+		$account_email -> setDecorators(array(array('ViewHelper'),));
         
                 $credit = new Zend_Form_Element_Text('credit');
 		$credit -> setDecorators(array(array('ViewHelper'),));
@@ -118,6 +127,9 @@ class Forms_Merchant extends Zend_Form
                                                                 $invoice_type,
                                                                 $invoice_value_1,
                                                                 $invoice_value_2,
+                                                                $account_name,
+                                                                $account_phone,
+                                                                $account_email,
 							)
 						);
 	}

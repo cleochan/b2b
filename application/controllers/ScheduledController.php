@@ -1149,12 +1149,14 @@ class ScheduledController extends Zend_Controller_Action
         $orders_model       =   new Databases_Joins_GetOrders();
         $invoice_model      =   new Databases_Tables_InvoiceList();
         $logs_financials_model  =   new Databases_Tables_LogsFinancial();
+        $email_model            =   new Algorithms_Core_Email();
         $user_list      =   $user_model->GetUserList(2,1);
         
         $logs_path      =   $params_model->GetVal('logs_path');
         $f_logs_feeds   =   @fopen($logs_path."invoiceslogs/refreshinvoices-".date('YmdHis').".txt", "w+");
         @fwrite($f_logs_feeds, 'Refresh Invoices Begin at:'.date("Y-m-d H:i:s")."\n");
         $product_list_array =   array();
+        $today_date       =   date("Y-m-d");
         if($user_list){
             foreach ($user_list as $user){
                 if($user['invoice_type']){
@@ -1316,9 +1318,9 @@ class ScheduledController extends Zend_Controller_Action
                         fclose($f_invoice_new);
                         $amount =   $price_total + $freight;
                         $invoice_model->company     =   $user['company'];
-                        $invoice_model->contact     =   $user['contact_name'];
-                        $invoice_model->email       =   $user['email'];
-                        $invoice_model->phone       =   $user['contact_phone'];
+                        $invoice_model->contact     =   $user['account_name'];
+                        $invoice_model->email       =   $user['account_email'];
+                        $invoice_model->phone       =   $user['account_phone'];
                         $invoice_model->amount      =   $amount;
                         $invoice_model->csv         =   $invocie_csv_filename;
                         $invoice_model->prepaid     =   $prepaid_total;
@@ -1330,6 +1332,12 @@ class ScheduledController extends Zend_Controller_Action
                     unset($day_now);
                     unset($day_before);
                 }
+            }
+            $invoice_model->create_date =   $today_date;
+            $today_invoice_list         =   $invoice_model->getInvoices();
+            if($today_invoice_list){
+                $email_model->merchant_company  =   $today_invoice_list;
+                $email_model->sentEmail();
             }
         }
         die('Refresh Feeds Complete.');

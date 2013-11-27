@@ -279,6 +279,9 @@ class AdminController extends Zend_Controller_Action
                     
                     $check_user_string->invoice_type             =   $form->getValue('invoice_type');
                     $check_user_string->invoice_value            =   $form->getValue('invoice_value_'.$form->getValue('invoice_type'));
+                    $check_user_string->account_name             =   $form->getValue('account_name');
+                    $check_user_string->account_email            =   $form->getValue('account_email');
+                    $check_user_string->account_phone            =   $form->getValue('account_phone');
                     
                     $check_user_string ->AddUser();
                     
@@ -554,6 +557,9 @@ class AdminController extends Zend_Controller_Action
                     $check_user_string->flat_rate_shipping       =   $form->getValue('flat_rate_shipping');
                     $check_user_string->invoice_type             =   $form->getValue('invoice_type');
                     $check_user_string->invoice_value            =   $form->getValue('invoice_value_'.$form->getValue('invoice_type'));
+                    $check_user_string->account_name             =   $form->getValue('account_name');
+                    $check_user_string->account_email            =   $form->getValue('account_email');
+                    $check_user_string->account_phone            =   $form->getValue('account_phone');
                     
                     $check_user_string->EditUser();
                     
