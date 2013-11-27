@@ -927,7 +927,7 @@ class ScheduledController extends Zend_Controller_Action
         @fwrite($f_logs_feeds, 'Update DD Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
         $dd_order_new_filename  =   'crazysales_shipping_'.date('Ymd-His').'.csv';
         $dd_order_new_path  =   'DD_orders_new/';
-        $titile_array   =   array(' oNum', ' Buyer_Full_Name', ' Company', ' Address_Line_1', ' Address_Line_2', ' Suburb', ' State', ' Post_Code', ' Phone_Num', ' Product_Code', ' Product_Title', ' Qty', ' Cart_ID', ' Ref_Num', ' Cost', ' Freight', ' Tracking_Number', ' Shipping_Date', ' Courier');
+        $titile_array   =   array('oNum', ' Buyer_Full_Name', ' Company', ' Address_Line_1', ' Address_Line_2', ' Suburb', ' State', ' Post_Code', ' Phone_Num', ' Product_Code', ' Product_Title', ' Qty', ' Cart_ID', ' Ref_Num', ' Cost', ' Freight', ' Tracking_Number', ' Shipping_Date', ' Courier');
         if($user_ids && is_array($user_ids)){
             foreach($user_ids as $user_id){
                 $orders_model->user_id  =   $user_id;
