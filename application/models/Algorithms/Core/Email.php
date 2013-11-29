@@ -26,21 +26,21 @@ class Algorithms_Core_Email {
         if($this->merchant_company){
             foreach ($this->merchant_company as $merchant_email_message){
                 $mail   =   new Zend_Mail();
-                $mail->addTo($merchant_email_message['email'], $merchant_email_message['company']);
                 if($invoice_email_array){
                     foreach ($invoice_email_array as $invoice_email_message){
                         $invoice_email_info =   explode('|', $invoice_email_message);
-                        $mail->addBcc($invoice_email_info[0], $invoice_email_info[1]);
+                        $mail->addTo($invoice_email_info[0], $invoice_email_info[1]);
                     }
                     
                 }
                 if($admin_email_array){
                     foreach ($admin_email_array as $admin_email_message){
                         $admin_email_info =   explode('|', $admin_email_message);
-                        $mail->setFrom($admin_email_info[0], $admin_email_info[1]);
+                        $mail->addBcc($admin_email_info[0], $admin_email_info[1]);
                     }
                     
                 }
+                $mail->setFrom('TimWu@crazysales.com.au','IT-TimWu');
                 $title  =   'Invoice of '.$merchant_email_message['company'].' is ready in the B2B System';
                 $email_txt  =   "Hi,\r\n"
                                 ."\r\n"
