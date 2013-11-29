@@ -591,25 +591,30 @@ class ScheduledController extends Zend_Controller_Action
     {
         if($_POST)
         {
-            $user_model =   new Databases_Joins_GetUserInfo();
-            $logs_financial = new Databases_Tables_LogsFinancial();
-            $bpay_ref   =   $_POST['Customer_reference_number'];
-            $user_info  =   $user_model->GetUserId($bpay_ref);
-            $user_id    =   $user_info['user_id'];
-            $logs_financial->user_id        =   $user_id;
-            $logs_financial->action_type    =   2; //Adjustment
-            $logs_financial->action_affect  =   1; //Recharge
-            $logs_financial->action_value   =   $_POST['Amount'];
-            $logs_financial->AddLog();
-            foreach ($_POST as $key => $value){
-                $value  =   stripslashes($value); 
-                $req    .=  "&$key=$value" ;
+            $ip =   $this->getIP();
+            if($_SERVER['SERVER_PORT']  ==  '83' && $ip ==  '118.127.17.155'){
+                $user_model =   new Databases_Joins_GetUserInfo();
+                $logs_financial = new Databases_Tables_LogsFinancial();
+                $bpay_ref   =   $_POST['Customer_reference_number'];
+                $user_info  =   $user_model->GetUserId($bpay_ref);
+                $user_id    =   $user_info['user_id'];
+                $logs_financial->user_id        =   $user_id;
+                $logs_financial->action_type    =   2; //Adjustment
+                $logs_financial->action_affect  =   1; //Recharge
+                $logs_financial->action_value   =   $_POST['Amount'];
+                $logs_financial->AddLog();
+                foreach ($_POST as $key => $value){
+                    $value  =   stripslashes($value); 
+                    $req    .=  "&$key=$value" ;
+                }
+                $logs_bpay_model   =   new Databases_Tables_LogsBpay();
+                $logs_bpay_model->params   =   $req;
+                $logs_bpay_model->add_time = date('Y-m-d H:i:s');
+                $logs_bpay_model->AddParams();
+                echo 1;
+            }else{
+                echo "Wrong IP or Port.";
             }
-            $logs_bpay_model   =   new Databases_Tables_LogsBpay();
-            $logs_bpay_model->params   =   $req;
-            $logs_bpay_model->add_time = date('Y-m-d H:i:s');
-            $logs_bpay_model->AddParams();
-            echo 1;
         }else 
         {
             echo 0;
