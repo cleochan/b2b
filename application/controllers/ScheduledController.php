@@ -979,6 +979,9 @@ class ScheduledController extends Zend_Controller_Action
                             }else{
                                 $tracking_number    =   $result['error_message'];
                             }
+                            if(!$result['shipping_date']){
+                                $result['shipping_date']    =   date('d/m/Y');
+                            }
                             $order_upload_data  =   array(
                                 'oNum'              =>  $result['o_num'],
                                 'Buyer_Full_Name'   =>  $result['buyer_full_name'],
