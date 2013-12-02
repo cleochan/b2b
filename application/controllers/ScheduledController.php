@@ -1323,7 +1323,7 @@ class ScheduledController extends Zend_Controller_Action
                                 '1',
                                 'FREIGHT',
                                 '1',
-                                $freight,
+                                round($freight/1.1, 2),
                                 'S1',
                             );
                             @fputcsv($f_invoice_new, $freight_data);
