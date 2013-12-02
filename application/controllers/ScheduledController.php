@@ -1341,6 +1341,7 @@ class ScheduledController extends Zend_Controller_Action
                     unset($day_before);
                     unset($csv_data);
                     unset($freight_data);
+                    unset($product_list_array);
                 }
             }
             $invoice_model->create_date =   $today_date;
