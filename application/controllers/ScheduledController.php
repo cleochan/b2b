@@ -1089,7 +1089,7 @@ class ScheduledController extends Zend_Controller_Action
                                 }
                             }
                     }
-                    if($canceled_order_array){
+                    if($canceled_order_array){//canceled will adjustment merchant's balance
                         foreach ($canceled_order_array as $canceled_order){
                             $purchase_order_model->main_db_order_id =   $canceled_order;
                             $purchase_order_info    =   $purchase_order_model->GetPurchaseOrderInMainOrderId();
