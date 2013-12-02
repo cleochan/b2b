@@ -1032,6 +1032,8 @@ class ScheduledController extends Zend_Controller_Action
     function updateApprovedOrdersAction(){
         $orders_model   =   new Databases_Joins_GetOrders();
         $params_model   =   new Databases_Tables_Params();
+        $logs_financial =   new Databases_Tables_LogsFinancial();
+        $purchase_order_model       =   new Databases_Tables_PurchaseOrder();
         $orders_webservice_model    =   new Algorithms_Core_OrderService();
         $logs_path     =   $params_model->GetVal('logs_path');
         $f_logs_feeds  =   @fopen($logs_path."updateorderslogs/update-orders".date('YmdHis').".txt", "w+");
@@ -1043,6 +1045,7 @@ class ScheduledController extends Zend_Controller_Action
         $orders_model->end_date     =   date('Y-m-d', $time_now);
         @fwrite($f_logs_feeds, 'Get Approved Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
         $user_orders    =   $orders_model->PushList();
+        $canceled_order_array   =   array();
         if($user_orders && is_array($user_orders)){
             foreach ($user_orders as $order){
                 $order_ids[$order['purchase_order_id']]  =   $order['main_db_order_id'];
@@ -1077,6 +1080,7 @@ class ScheduledController extends Zend_Controller_Action
                                     $orders_model->shipping_courier     =   $order_item['ShipCarrier'];
                                     if(($orders_status_array[$order_item['OrderNumber']]=='1')){
                                         $status_id  =   '5';
+                                        $canceled_order_array[$order_item['OrderNumber']] =   $order_item['OrderNumber'];
                                     }else{
                                         $status_id  =   $orders_status_array[$order_item['OrderNumber']];
                                     }
@@ -1084,6 +1088,20 @@ class ScheduledController extends Zend_Controller_Action
                                     $update_result   =   $orders_model->UpdateApprovedOrders();
                                 }
                             }
+                    }
+                    if($canceled_order_array){
+                        foreach ($canceled_order_array as $canceled_order){
+                            $purchase_order_model->main_db_order_id =   $canceled_order;
+                            $purchase_order_info    =   $purchase_order_model->GetPurchaseOrderInMainOrderId();
+                            if($purchase_order_info){
+                                $logs_financial->user_id        =   $purchase_order_info['user_id'];
+                                $logs_financial->action_type    =   3; //Adjustment
+                                $logs_financial->action_affect  =   1; //Recharge
+                                $logs_financial->action_value   =   $purchase_order_info['order_amount'];
+                                $logs_financial->AddLog();
+                            }
+                        }
+                        unset($canceled_order_array);
                     }
                 }
             }
