@@ -1353,7 +1353,7 @@ class ScheduledController extends Zend_Controller_Action
             $today_invoice_list         =   $invoice_model->getInvoices();
             if($today_invoice_list){
                 $email_model->merchant_company  =   $today_invoice_list;
-                //$email_model->sentEmail();
+                $email_model->sentEmail();
             }
         }
         die('Refresh Invoices Complete.');
