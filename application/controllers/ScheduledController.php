@@ -1339,13 +1339,15 @@ class ScheduledController extends Zend_Controller_Action
                     }
                     unset($day_now);
                     unset($day_before);
+                    unset($csv_data);
+                    unset($freight_data);
                 }
             }
             $invoice_model->create_date =   $today_date;
             $today_invoice_list         =   $invoice_model->getInvoices();
             if($today_invoice_list){
                 $email_model->merchant_company  =   $today_invoice_list;
-                $email_model->sentEmail();
+                //$email_model->sentEmail();
             }
         }
         die('Refresh Feeds Complete.');
