@@ -1237,7 +1237,8 @@ class ScheduledController extends Zend_Controller_Action
                         $logs_financials_model->start_date          =   $day_before;
                         $logs_financials_model->invoice_end_date    =   $day_now;
                         $logs_financials_model->user_id             =   $user['user_id'];
-                        $logs_financials_model->action_affect       =   '1';
+                        //$logs_financials_model->action_affect       =   '1';
+                        $logs_financials_model->action_type         =   '3';
                         $orders_list    =   $orders_model->getInvoicesProductsList();
                         $financial_list =   $logs_financials_model->PushList();
                         if($orders_list){
@@ -1263,6 +1264,9 @@ class ScheduledController extends Zend_Controller_Action
                         $prepaid_total  =   0;
                         if($financial_list){
                             foreach($financial_list as $financial_data){
+                                if($financial_data['action_affect'] == '2'){
+                                    $financial_data['action_value'] =   0 - $financial_data['action_value'];
+                                }
                                 $prepaid_total  +=  $financial_data['action_value'];
                                 $prepaid_csv_data   =   array(
                                     $financial_data['issue_time'],
@@ -1342,13 +1346,14 @@ class ScheduledController extends Zend_Controller_Action
                     unset($csv_data);
                     unset($freight_data);
                     unset($product_list_array);
+                    unset($prepaid_total);
                 }
             }
             $invoice_model->create_date =   $today_date;
             $today_invoice_list         =   $invoice_model->getInvoices();
             if($today_invoice_list){
                 $email_model->merchant_company  =   $today_invoice_list;
-                $email_model->sentEmail();
+                //$email_model->sentEmail();
             }
         }
         die('Refresh Invoices Complete.');
