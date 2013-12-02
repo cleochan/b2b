@@ -1238,7 +1238,7 @@ class ScheduledController extends Zend_Controller_Action
                         $logs_financials_model->invoice_end_date    =   $day_now;
                         $logs_financials_model->user_id             =   $user['user_id'];
                         //$logs_financials_model->action_affect       =   '1';
-                        $logs_financials_model->action_type         =   '3';
+                        $logs_financials_model->action_type_array   =   array(2,3);
                         $orders_list    =   $orders_model->getInvoicesProductsList();
                         $financial_list =   $logs_financials_model->PushList();
                         if($orders_list){

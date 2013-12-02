@@ -710,9 +710,17 @@ class Databases_Joins_GetOrders
     function UpdateApprovedOrders(){
         $purchase_order_model   =   new Databases_Tables_PurchaseOrder();
         $logs_order_model       =   new Databases_Tables_LogsOrders();
+        $logs_financial         =   new Databases_Tables_LogsFinancial();
         $purchase_order_model->main_db_order_id =   $this->main_order_id;
         $purchase_order_info    =   $purchase_order_model->GetPurchaseOrderInMainOrderId();
         if($purchase_order_info){
+            if($this->item_status && $this->item_status == '5'){//canceled will adjustment merchant's balance
+                $logs_financial->user_id        =   $purchase_order_info['user_id'];
+                $logs_financial->action_type    =   3; //Adjustment
+                $logs_financial->action_affect  =   1; //Recharge
+                $logs_financial->action_value   =   $purchase_order_info['order_amount'];
+                $logs_financial->AddLog();
+            }
             $logs_order_model->purchase_order_id    =   $purchase_order_info['purchase_order_id'];
             $logs_order_model->supplier_sku         =   $this->supplier_sku;
             $logs_order_model->shipping_courier     =   $this->shipping_courier;

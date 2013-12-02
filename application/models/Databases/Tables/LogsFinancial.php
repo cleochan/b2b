@@ -15,6 +15,7 @@ class Databases_Tables_LogsFinancial extends Zend_Db_Table
     var $action_value;
     var $instant_balance;
     var $invoice_end_date;
+    var $action_type_array;
     
     function Pagination()
     {
@@ -105,6 +106,12 @@ class Databases_Tables_LogsFinancial extends Zend_Db_Table
             $select->where("action_type = ?", $this->action_type);
             
             $cond[] = "action_type=".$this->action_type;
+        }
+        if($this->action_type_array)
+        {
+            $action_types   =   implode(',', $this->action_type_array);
+            $select->where("action_type in(". $action_types.")");
+            $cond[] = "action_type in (".$action_types.")";
         }
         if($this->action_affect){
             $select->where("action_affect = ?", $this->action_affect);
