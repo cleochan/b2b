@@ -3,6 +3,9 @@
 class ScheduledController extends Zend_Controller_Action
 {
     function preDispatch() {
+        if($_SERVER['SERVER_PORT']  !=  '83'){
+            exit("Invalid Actions.");
+        }
         $params_model   =   new Databases_Tables_Params();
         $permit_ip      =   $params_model->GetVal('permit_ip');
         $permit_ip_array    = explode(',', $permit_ip);
