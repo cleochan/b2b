@@ -3,9 +3,6 @@
 class ScheduledController extends Zend_Controller_Action
 {
     function preDispatch() {
-        if($_SERVER['SERVER_PORT']  !=  '83'){
-            exit("Invalid Actions.");
-        }
         $params_model   =   new Databases_Tables_Params();
         $permit_ip      =   $params_model->GetVal('permit_ip');
         $permit_ip_array    = explode(',', $permit_ip);
@@ -41,6 +38,9 @@ class ScheduledController extends Zend_Controller_Action
      */
     function refreshOrdersAction() 
     {
+        if($_SERVER['SERVER_PORT']  !=  '83'){
+            exit("Invalid Actions.");
+        }
         $getorder_model         =   new Databases_Joins_GetOrders();
         $order_webservice_model =   new Algorithms_Core_OrderService();
         $system_params_model    =   new Databases_Tables_Params();
@@ -238,6 +238,9 @@ class ScheduledController extends Zend_Controller_Action
      */
     function refreshProductsAction()
     {
+        if($_SERVER['SERVER_PORT']  !=  '83'){
+            exit("Invalid Actions.");
+        }
         $params_model   =   new Databases_Tables_Params();
         $logs_path              =   $params_model->GetVal('logs_path');
         $f  =   @fopen($logs_path."productslogs/refreshproducts".date('YmdHis').".txt", "w+");
@@ -460,6 +463,9 @@ class ScheduledController extends Zend_Controller_Action
      */
     function refreshCategoriesAction()
     {
+        if($_SERVER['SERVER_PORT']  !=  '83'){
+            exit("Invalid Actions.");
+        }
         $category_webservice_model  =   new Algorithms_Core_CategoryService();
         $params_model               =   new Databases_Tables_Params();
         $category_model             =   new Databases_Tables_ProductCategories();
@@ -677,6 +683,9 @@ class ScheduledController extends Zend_Controller_Action
      */
     function refreshFeedsAction()
     {
+        if($_SERVER['SERVER_PORT']  !=  '83'){
+            exit("Invalid Actions.");
+        }
         $user_model             =   new Databases_Joins_GetUserInfo();
         $params_model           =   new Databases_Tables_Params();
         $product_filter_model   =   new Databases_Joins_ProductFilter();
@@ -708,6 +717,9 @@ class ScheduledController extends Zend_Controller_Action
      */
     function processDdOrdersAction()
     {
+        if($_SERVER['SERVER_PORT']  !=  '83'){
+            exit("Invalid Actions.");
+        }
         $params_model           =   new Databases_Tables_Params();
         $dd_orders_model        =   new Databases_Tables_DdOrders();
         $order_file_model       =   new Databases_Tables_OrdersFiles();
@@ -908,6 +920,9 @@ class ScheduledController extends Zend_Controller_Action
     
     function updateDdOrdersAction()
     {   
+        if($_SERVER['SERVER_PORT']  !=  '83'){
+            exit("Invalid Actions.");
+        }
         $user_ids       =   array('8');
         $orders_model   =   new Databases_Joins_GetOrders();
         $dd_order_model =   new Databases_Tables_DdOrders();
@@ -1033,6 +1048,9 @@ class ScheduledController extends Zend_Controller_Action
     }
     
     function updateApprovedOrdersAction(){
+        if($_SERVER['SERVER_PORT']  !=  '83'){
+            exit("Invalid Actions.");
+        }
         $orders_model   =   new Databases_Joins_GetOrders();
         $params_model   =   new Databases_Tables_Params();
         $logs_financial =   new Databases_Tables_LogsFinancial();
@@ -1114,6 +1132,9 @@ class ScheduledController extends Zend_Controller_Action
     }
     
     function createOrdersCsvfileAction(){
+        if($_SERVER['SERVER_PORT']  !=  '83'){
+            exit("Invalid Actions.");
+        }
         $user_ids   =   array('7');
         $user_file_name_array   =   array(
             '7' =>  'ss_59c9f765b.csv',
@@ -1174,6 +1195,9 @@ class ScheduledController extends Zend_Controller_Action
      * Create invoice csv file
      */
     function refreshInvoicesAction(){
+        if($_SERVER['SERVER_PORT']  !=  '83'){
+            exit("Invalid Actions.");
+        }
         $user_model         =   new Databases_Joins_GetUserInfo();
         $params_model       =   new Databases_Tables_Params();
         $orders_model       =   new Databases_Joins_GetOrders();
