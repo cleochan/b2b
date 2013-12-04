@@ -1275,6 +1275,10 @@ class ScheduledController extends Zend_Controller_Action
                            }
                            break;
                     }
+                    if($user['user_id']=='7'){
+                        $day_now    =   '2013-12-02';
+                        $day_before    =   '2013-11-02';
+                    }
                     if($day_now && $day_before){
                         $orders_model->update_start_date        =   $day_before;
                         $orders_model->update_end_date          =   $day_now;
