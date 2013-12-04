@@ -735,7 +735,7 @@ class Databases_Joins_GetOrders
     function getInvoicesProductsList(){
         $select = $this->db->select();
         $select->from("purchase_order as p", array("main_db_order_id","purchase_order_id", "issue_time", "user_id", "order_amount", "pickup"));
-        $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("merchant_ref", "item_status", "api_response", "item_amount", "supplier_sku", "merchant_sku", "quantity","tracking_number", "shipping_courier", "sc_class", "shipping_date", "final_ship_cost"));
+        $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("merchant_ref", "item_status", "api_response", "item_amount", "supplier_sku", "merchant_sku", "quantity","tracking_number", "shipping_courier", "sc_class", "final_item_cost", "shipping_date", "final_ship_cost"));
         if($this->update_start_date)
         {
             $select->where("p.issue_time >= ?", $this->update_start_date." 00:00:00");
