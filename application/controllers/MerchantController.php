@@ -100,7 +100,7 @@ class MerchantController extends Zend_Controller_Action
     	$this->view->title = "Order Report";
         $menu_model = new Algorithms_Core_Menu;
         $this->view->navigation = $menu_model->GetNavigation(array("Dashboard", "Order Report"));
-        print_r($this->params);die;
+        
         $getorders_model = new Databases_Joins_GetOrders();
         $getorders_model->user_id = $this->params['user_id'];
         if($this->params['start_date'])
