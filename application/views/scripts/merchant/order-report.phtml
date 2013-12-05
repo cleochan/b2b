@@ -61,6 +61,9 @@ function senfe(o,a,b,c,d){
                     <option value="-1">All</option>
                     <option value="0" <?php if(is_numeric($this->item_status) && $this->item_status == 0){?> selected="selected"<?php }?>>Pending</option>
                     <option value="1" <?php if(is_numeric($this->item_status) && $this->item_status == 1){?> selected="selected"<?php }?>>Approved</option>
+                    <option value="3" <?php if(is_numeric($this->item_status) && $this->item_status == 3){?> selected="selected"<?php }?>>Processing</option>
+                    <option value="4" <?php if(is_numeric($this->item_status) && $this->item_status == 4){?> selected="selected"<?php }?>>Sent</option>
+                    <option value="5" <?php if(is_numeric($this->item_status) && $this->item_status == 5){?> selected="selected"<?php }?>>Canceled</option>
                     <option value="2" <?php if(is_numeric($this->item_status) && $this->item_status == 2){?> selected="selected"<?php }?>>Rejected</option>
                 </select>&nbsp;&nbsp;
         <input type="submit" class="info_search_botton" value="Search" />
