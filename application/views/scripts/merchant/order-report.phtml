@@ -58,7 +58,7 @@ function senfe(o,a,b,c,d){
         To: <input type="text" class="input"  name="end_date" id="end_date" size="10"  <?php if($this->end_date){echo "value= '".$this->end_date."'";} ?> />&nbsp;&nbsp;
         Merchant Ref: <input type="text" class="input"  name="merchant_ref" id="merchant_ref" size="10" <?php if($this->order_id){echo "value= '".$this->order_id."'";} ?> />&nbsp;&nbsp;
         Status: <select name="item_status" id="item_status">
-                    <option value="3">All</option>
+                    <option value="-1">All</option>
                     <option value="0" <?php if(is_numeric($this->item_status) && $this->item_status == 0){?> selected="selected"<?php }?>>Pending</option>
                     <option value="1" <?php if(is_numeric($this->item_status) && $this->item_status == 1){?> selected="selected"<?php }?>>Approved</option>
                     <option value="2" <?php if(is_numeric($this->item_status) && $this->item_status == 2){?> selected="selected"<?php }?>>Rejected</option>
