@@ -946,7 +946,8 @@ class ScheduledController extends Zend_Controller_Action
         }
         $orders_model->update_start_date    =   $time_start;
         $orders_model->update_end_date      =   $time_end;
-        $logs_path     =   $params_model->GetVal('logs_path');
+        $logs_path      =   $params_model->GetVal('logs_path');
+        $sent_email     =   $params_model->GetVal('sent_email');
         $f_logs_feeds  =   @fopen($logs_path."orderslogs/updateddorders".date('YmdHis').".txt", "w+");
         @fwrite($f_logs_feeds, 'Update DD Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
         $dd_order_new_filename  =   'crazysales_shipping_'.date('Ymd-His').'.csv';
@@ -1030,7 +1031,9 @@ class ScheduledController extends Zend_Controller_Action
                             @fputcsv($f_dd_order_new, $order_upload_data);
                         }
                     }
-                    $feed_model->uploadFtpFile(array($dd_order_new_filename), 'shipping');
+                    if($sent_email == '2'){
+                        $feed_model->uploadFtpFile(array($dd_order_new_filename), 'shipping');
+                    }
                     if($shiped_dd_orders_array){
                         @fwrite($f_logs_feeds, "Update Shipping Flag at: ".date("Y-m-d H:i:s")."\r\n");
                         $dd_order_model->order_ids      = implode(',', $shiped_dd_orders_array);
