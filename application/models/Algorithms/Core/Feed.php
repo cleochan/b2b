@@ -413,62 +413,64 @@ class Algorithms_Core_Feed
     function filterHtmlTags($html,$file_name,$user_id){
         $system_params_model    =   new Databases_Tables_Params();
         $logs_path                  =   $system_params_model->GetVal('merchant_feed_txt_path');
-        $encode =   'UTF-8';
-        preg_match("/WARRANTY:([\s\S]*)/i",$html,$warranties);
-        //$html   =   preg_replace("/WARRANTY:([\s\S]*)/i", "", $html);
-        //$warranty       =   $warranties[0];
-        preg_match("/SPECIFICATIONS:<table.*?>[\s\S]*?<\/table>/i",$html,$matches);
-        $html   =   preg_replace("/SPECIFICATIONS:([\s\S]*)/i", "", $html);
-        $specifications =   $matches[0];
-        $specifications =   preg_replace("/<tr>/i", "\t *", $specifications);
-        $specifications =   preg_replace("/<\/?tr>/i", "\r\n", $specifications);
-        $specifications =   preg_replace("/<br \s*\/?\/>/i", "\r\n\t\t", $specifications);
-        $specifications =   preg_replace("/<\/?li>/i", "\r\n\t\t", $specifications); 
-        $specifications =   preg_replace("/<\/?p>/i", "\r\n\t\t", $specifications);  
-        //$html   .=  $specifications.$warranty;
-        $html   .=  $specifications;
-        $html   =   preg_replace("/<br \s*\/?\/>/i", "\r\n", $html);  
-        $html   =   preg_replace("/<\/?p>/i", "\r\n", $html);  
-        $html   =   preg_replace("/<\/?div>/i", "\r\n", $html);
-        $html   =   preg_replace("/<\/?td>/i", " ", $html); 
-        $html   =   preg_replace("/<tr>/i", "\t *", $html);
-        $html   =   preg_replace("/<\/?tr>/i", "\r\n", $html);
-        $html   =   preg_replace("/<br \s*\/?\/>/i", "\r\n\t\t\t", $html);
-        $html   =   preg_replace("/FEATURES:/", "\r\nFEATURES:\r\n\r\n", $html);
-        $html   =   preg_replace("/SPECIFICATIONS:/", "\r\nSPECIFICATIONS:\r\n\r\n", $html);
-        //$html   =   preg_replace("/WARRANTY:/", "\r\nWARRANTY:\r\n", $html);
-        $html   =   preg_replace("/<\/?blockquote>/i", "\n", $html);
-        $html   =   preg_replace("/<li>/i", "\t * ", $html);
-        $html   =   preg_replace("/<\/?li>/i", "\r\n", $html);
-        $html   =   preg_replace("/\&nbsp\;/i", " ", $html);  
-        $html   =   preg_replace("/\&nbsp/i", " ", $html);  
-        $html   =   preg_replace("/\&amp\;/i", "&", $html);  
-        $html   =   preg_replace("/\&amp/i", "&", $html);    
-        $html   =   preg_replace("/\&lt\;/i", "<", $html);  
-        $html   =   preg_replace("/\&lt/i", "<", $html);  
-        $html   =   preg_replace("/\&ldquo\;/i", '"', $html);  
-        $html   =   preg_replace("/\&ldquo/i", '"', $html);  
-        $html   =   preg_replace("/\&lsquo\;/i", "'", $html);  
-        $html   =   preg_replace("/\&lsquo/i", "'", $html);  
-        $html   =   preg_replace("/\&rsquo\;/i", "'", $html);  
-        $html   =   preg_replace("/\&rsquo/i", "'", $html);  
-        $html   =   preg_replace("/\&gt\;/i", ">", $html);   
-        $html   =   preg_replace("/\&gt/i", ">", $html);   
-        $html   =   preg_replace("/\&rdquo\;/i", '"', $html);   
-        $html   =   preg_replace("/\&rdquo/i", '"', $html);
-        $html   =   preg_replace("/\*\s\s\s\s/i", "*", $html);
-        $html   =   strip_tags($html);  
-        $html   =   html_entity_decode($html, ENT_QUOTES, $encode);  
-        $html   =   preg_replace("/\&\#.*?\;/i", "", $html);
-        preg_match("/([\s\S]*)Warranty/",$html,$matches);
         $file_name  =   $file_name.".txt";
-        $f          =   fopen($logs_path."/".$file_name, "w+");
-        if($matches[0]){
-            @fwrite($f,$matches[0]);
-        }else{
-            @fwrite($f,$html);
+        if (!file_exists($logs_path."/".$file_name)){
+            $encode =   'UTF-8';
+            preg_match("/WARRANTY:([\s\S]*)/i",$html,$warranties);
+            //$html   =   preg_replace("/WARRANTY:([\s\S]*)/i", "", $html);
+            //$warranty       =   $warranties[0];
+            preg_match("/SPECIFICATIONS:<table.*?>[\s\S]*?<\/table>/i",$html,$matches);
+            $html   =   preg_replace("/SPECIFICATIONS:([\s\S]*)/i", "", $html);
+            $specifications =   $matches[0];
+            $specifications =   preg_replace("/<tr>/i", "\t *", $specifications);
+            $specifications =   preg_replace("/<\/?tr>/i", "\r\n", $specifications);
+            $specifications =   preg_replace("/<br \s*\/?\/>/i", "\r\n\t\t", $specifications);
+            $specifications =   preg_replace("/<\/?li>/i", "\r\n\t\t", $specifications); 
+            $specifications =   preg_replace("/<\/?p>/i", "\r\n\t\t", $specifications);  
+            //$html   .=  $specifications.$warranty;
+            $html   .=  $specifications;
+            $html   =   preg_replace("/<br \s*\/?\/>/i", "\r\n", $html);  
+            $html   =   preg_replace("/<\/?p>/i", "\r\n", $html);  
+            $html   =   preg_replace("/<\/?div>/i", "\r\n", $html);
+            $html   =   preg_replace("/<\/?td>/i", " ", $html); 
+            $html   =   preg_replace("/<tr>/i", "\t *", $html);
+            $html   =   preg_replace("/<\/?tr>/i", "\r\n", $html);
+            $html   =   preg_replace("/<br \s*\/?\/>/i", "\r\n\t\t\t", $html);
+            $html   =   preg_replace("/FEATURES:/", "\r\nFEATURES:\r\n\r\n", $html);
+            $html   =   preg_replace("/SPECIFICATIONS:/", "\r\nSPECIFICATIONS:\r\n\r\n", $html);
+            //$html   =   preg_replace("/WARRANTY:/", "\r\nWARRANTY:\r\n", $html);
+            $html   =   preg_replace("/<\/?blockquote>/i", "\n", $html);
+            $html   =   preg_replace("/<li>/i", "\t * ", $html);
+            $html   =   preg_replace("/<\/?li>/i", "\r\n", $html);
+            $html   =   preg_replace("/\&nbsp\;/i", " ", $html);  
+            $html   =   preg_replace("/\&nbsp/i", " ", $html);  
+            $html   =   preg_replace("/\&amp\;/i", "&", $html);  
+            $html   =   preg_replace("/\&amp/i", "&", $html);    
+            $html   =   preg_replace("/\&lt\;/i", "<", $html);  
+            $html   =   preg_replace("/\&lt/i", "<", $html);  
+            $html   =   preg_replace("/\&ldquo\;/i", '"', $html);  
+            $html   =   preg_replace("/\&ldquo/i", '"', $html);  
+            $html   =   preg_replace("/\&lsquo\;/i", "'", $html);  
+            $html   =   preg_replace("/\&lsquo/i", "'", $html);  
+            $html   =   preg_replace("/\&rsquo\;/i", "'", $html);  
+            $html   =   preg_replace("/\&rsquo/i", "'", $html);  
+            $html   =   preg_replace("/\&gt\;/i", ">", $html);   
+            $html   =   preg_replace("/\&gt/i", ">", $html);   
+            $html   =   preg_replace("/\&rdquo\;/i", '"', $html);   
+            $html   =   preg_replace("/\&rdquo/i", '"', $html);
+            $html   =   preg_replace("/\*\s\s\s\s/i", "*", $html);
+            $html   =   strip_tags($html);  
+            $html   =   html_entity_decode($html, ENT_QUOTES, $encode);  
+            $html   =   preg_replace("/\&\#.*?\;/i", "", $html);
+            preg_match("/([\s\S]*)Warranty/",$html,$matches);
+            $f          =   fopen($logs_path."/".$file_name, "w+");
+            if($matches[0]){
+                @fwrite($f,$matches[0]);
+            }else{
+                @fwrite($f,$html);
+            }
+            @fclose($f);
         }
-        @fclose($f);
         return $file_name;
         
     }
