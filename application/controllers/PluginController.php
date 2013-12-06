@@ -793,7 +793,7 @@ if($result)
     
     function testGetOrderWsdlAction(){
         $orders_webservice_model    =   new Algorithms_Core_OrderService();
-        $orders_webservice_model->OrderIDs      =   array_values('42383530','42383514','42383555');
+        $orders_webservice_model->OrderIDs      =   array('42383530','42383514','42383555');
         $orders_status_result_array    =   $orders_webservice_model->WebServiceGetOrderStatus();
         print_r($orders_status_result_array);
         die();
