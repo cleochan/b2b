@@ -726,6 +726,8 @@ class AdminController extends Zend_Controller_Action
         $this->view->list = $getorders_model->PushList();
         $this->view->pagination = $getorders_model->Pagination();
         $this->view->user_id = $params['user_id'];
+        $order_amount   =   $getorders_model->getAllOrderAmountTotal();
+        $this->view->order_total    =   $order_amount['order_total'];
     }
     
     /**
@@ -1890,13 +1892,13 @@ class AdminController extends Zend_Controller_Action
                     $getorders_model->shipping_address_2 = $params['shipping_address_2'][$loop_key];
                     $getorders_model->shipping_suburb = $params['shipping_suburb'][$loop_key];
                     $getorders_model->shipping_state = $params['shipping_state'][$loop_key];
-                    $getorders_model->shipping_postcode = $params['shipping_postcode'][$loop_key];
+                    $getorders_model->shipping_postcode = trim($params['shipping_postcode'][$loop_key]);
                     $getorders_model->shipping_country = $params['shipping_country'][$loop_key];
                     $getorders_model->shipping_phone = trim($params['shipping_phone'][$loop_key])?trim($params['shipping_phone'][$loop_key]):'1';
                     $getorders_model->shipping_fax = $params['shipping_fax'][$loop_key];
                     $getorders_model->supplier_sku = $params['supplier_sku'][$loop_key];
                     $getorders_model->merchant_sku = $params['merchant_sku'][$loop_key];
-                    $getorders_model->quantity = $params['quantity'][$loop_key];
+                    $getorders_model->quantity = trim($params['quantity'][$loop_key]);
                     $getorders_model->shipping_method = $params['shipping_method'][$loop_key];
                     $getorders_model->shipping_instruction = $params['shipping_instruction'][$loop_key];
                     $getorders_model->serial_no = $params['serial_no'][$loop_key];

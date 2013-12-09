@@ -767,4 +767,44 @@ class Databases_Joins_GetOrders
         
         return $result;
     }
+    
+    
+    function getAllOrderAmountTotal(){
+        $result =   FALSE;
+        if($this->user_id)
+        {
+            //Get amount page qty
+            $select = $this->db->select();
+            $select->from("purchase_order as p", array( "sum(o.item_amount) as order_total"));
+            $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id");
+            $cond = array();
+            if($this->start_date)
+            {
+                $select->where("p.issue_time >= ?", $this->start_date." 00:00:00");
+            }
+            if($this->end_date)
+            {
+                $select->where("p.issue_time <= ?", $this->end_date." 23:59:59");
+            }
+            if($this->user_id)
+            {
+                $select->where("p.user_id = ?", $this->user_id);
+            }
+            if($this->merchant_ref)
+            {
+                $select->where("o.merchant_ref = ?", $this->merchant_ref);
+            }
+            if(isset($this->item_status) && $this->item_status != '-1') //-1 == select all orders
+            {
+                $select->where("item_status = ?", $this->item_status);
+            }
+
+            if($this->item_statuses && is_array($this->item_statuses)){
+                $in_item_status = implode(',', $this->item_statuses);
+                $select->where("o.item_status in (".$in_item_status.") ");
+            }
+            $result= $this->db->fetchRow($select);
+        }
+        return $result;
+    }
 }

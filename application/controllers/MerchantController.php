@@ -130,6 +130,8 @@ class MerchantController extends Zend_Controller_Action
         }
         $this->view->list = $getorders_model->PushList();
         $this->view->pagination = $getorders_model->Pagination();
+        $order_amount   =   $getorders_model->getAllOrderAmountTotal();
+        $this->view->order_total    =   $order_amount['order_total'];
         
         if($this->params['notice'])
         {
