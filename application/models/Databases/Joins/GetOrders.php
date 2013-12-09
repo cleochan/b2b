@@ -789,6 +789,7 @@ class Databases_Joins_GetOrders
             if($this->user_id)
             {
                 $select->where("p.user_id = ?", $this->user_id);
+                $select->where("o.item_status in (1,3,4) ");
             }
             if($this->merchant_ref)
             {
@@ -797,11 +798,6 @@ class Databases_Joins_GetOrders
             if(isset($this->item_status) && $this->item_status != '-1') //-1 == select all orders
             {
                 $select->where("item_status = ?", $this->item_status);
-            }
-
-            if($this->item_statuses && is_array($this->item_statuses)){
-                $in_item_status = implode(',', $this->item_statuses);
-                $select->where("o.item_status in (".$in_item_status.") ");
             }
             $result= $this->db->fetchRow($select);
         }
