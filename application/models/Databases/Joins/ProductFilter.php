@@ -355,7 +355,7 @@ class Databases_Joins_ProductFilter
             $product = $this->db->fetchRow($product_select);
             if($product['supplier_sku'])
             {
-                if($user_id == 2){ //dealsdirect's price is use street_price not supplier_price
+                if($user_id == 8){ //dealsdirect's price is use street_price not supplier_price
                     $dd_product_model->product_code =   $sku;
                     $dd_product_info    =   $dd_product_model->getDdProductPrice();
                     if($dd_product_info){
