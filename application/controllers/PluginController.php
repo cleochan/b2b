@@ -798,4 +798,74 @@ if($result)
         print_r($orders_status_result_array);
         die();
     }
+    
+    function insertDdProductsAction(){
+        $f_logs_feeds  =   @fopen("logs/orderslogs/processddorders".date('YmdHis').".txt", "w+");
+        $dd_products_model      =   new Databases_Tables_DdProducts();
+        $product_filter_model   =   new Databases_Joins_ProductFilter();
+        $dir_array  =   array();
+        if (false != ($handle = opendir ( 'dd_feed' ))) {
+            $i=0;
+            while ( false !== ($file = readdir ( $handle )) ) {
+                if ($file != "." && $file != "..") {
+                    $dir_array[$i]  =   $file;
+                    $i++;
+                }
+            }
+            closedir ( $handle );
+        }
+        krsort($dir_array);
+        foreach ($dir_array as $file_name){
+            
+            if (($handle = fopen('dd_feed/'.$file_name, "r")) !== FALSE) {
+                while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
+                    $data_array[] = $data;
+                }
+                fclose($handle);
+            }
+            unset($data_array[0]);
+            @fwrite($f_logs_feeds, "\r\n".'Processing '.$file_name.':'.date("Y-m-d H:i:s")."\r\n");
+            foreach($data_array as $da_key => $da_val)
+            {
+                $supplier_sku    =   substr(trim($da_val[0]), 0, -3);
+                $product_info   =   $product_filter_model->GetSkuPrices($supplier_sku, 8);
+                $dd_products_model->product_id      =   $product_info['product_id'];
+                $dd_products_model->product_code    =   trim($da_val[0],'"');
+                $dd_products_model->product_title   =   trim($da_val[1],'"');
+                $dd_products_model->brand           =   trim($da_val[2],'"');
+                $dd_products_model->category_1      =   trim($da_val[3],'"');
+                $dd_products_model->category_2      =   trim($da_val[4],'"');
+                $dd_products_model->description     =   trim($da_val[5],'"');
+                $dd_products_model->rrp             =   trim($da_val[6],'"');
+                $dd_products_model->sell            =   trim($da_val[7],'"');
+                $dd_products_model->freight         =   trim($da_val[8],'"');
+                $dd_products_model->cost            =   trim($da_val[9],'"');
+                $dd_products_model->weight          =   trim($da_val[10],'"');
+                $dd_products_model->available       =   trim($da_val[11],'"');
+                $dd_products_model->stock           =   0;
+                $dd_products_model->image_1         =   trim($da_val[13],'"');
+                $dd_products_model->image_2         =   trim($da_val[14],'"');
+                $dd_products_model->image_3         =   trim($da_val[15],'"');
+                $dd_products_model->image_4         =   trim($da_val[16],'"');
+                $dd_products_model->image_5         =   trim($da_val[17],'"');
+                $dd_products_model->image_6         =   trim($da_val[18],'"');
+                $dd_products_model->length          =   trim($da_val[19],'"');
+                $dd_products_model->width           =   trim($da_val[20],'"');
+                $dd_products_model->height          =   trim($da_val[21],'"');
+                $dd_products_model->despatch_pcode  =   '3171';
+                if($da_val[19] > 105 || $da_val[20] > 105 || $da_val[121] > 105 || $da_val[10] > 32){
+                    $dd_products_model->courier         =   trim(3,'"');
+                }else{
+                    $dd_products_model->courier         =   trim(1,'"');
+                }
+                $dd_products_model->cc_supplier_sku =   $product_info['supplier_sku'];
+                $dd_products_model->cc_price        =   $product_info['supplier_price'];
+                $product_id                         =   $dd_products_model->updateDdProduct();
+                if($product_id){
+                    @fwrite($f_logs_feeds, 'add sku '.$supplier_sku.':'.date("Y-m-d H:i:s")."\r\n");
+                }
+            }
+        }
+        die();
+    }
 }

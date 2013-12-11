@@ -103,6 +103,18 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
         $data = $this->fetchAll($select);
         return $data;
     }
+    
+    function getDdProductPrice(){
+        $result =   array();
+        if($this->product_code){
+            $where      =   " product_code = '".$this->product_code."-TP' ";
+            $product    =   $this->fetchRow($where);
+            if($product){
+                $result =   $product;
+            }
+        }
+        return $result;
+    }
 }
 
 ?>

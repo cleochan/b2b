@@ -341,7 +341,7 @@ class Algorithms_Core_Feed
                     if(strlen($feed_column_value) > $cond[1])
                     {
                         //$feed_column_value  =   substr($feed_column_value, 0, $cond[1]);
-                        $feed_column_value = substr($feed_column_value, 0, strrpos(substr($feed_column_value, 0, $cond[1]), ' '));
+                        $feed_column_value = (strlen($feed_column_value)>$cond[1]) ? substr($feed_column_value, 0, strrpos(substr($feed_column_value, 0, $cond[1]), ' ')) : $feed_column_value;
                     }
                 }elseif ('EXPRESS'== $cond[0]) {
                     $express_info_array = explode('|', $feed_column_value);

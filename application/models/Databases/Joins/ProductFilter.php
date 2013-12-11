@@ -167,7 +167,7 @@ class Databases_Joins_ProductFilter
                 $select->join('b2b_dd_category', 'b2b_dd_category.category_id = '.$source_table.'.category_id', 'dd_category_id');
                 $select->where("supplier_sku not REGEXP '([\s\S]*)(\/)([\s\S]*)'");
                 $select->where("supplier_sku not REGEXP '([\s\S]*)[\+]([\s\S]*)'");
-                $select->where("char_length(product_name) <= 55 ");
+                //$select->where("char_length(product_name) <= 55 ");
                 $select->where('quantity_available >= ?',12);
                 $select->where("length > ?", 0);
                 $select->where("height > ?", 0);
@@ -338,6 +338,7 @@ class Databases_Joins_ProductFilter
         $result = array();
         
         $get_user_info = new Databases_Joins_GetUserInfo();
+        $dd_product_model   =   new Databases_Tables_DdProducts();
         $user_info = $get_user_info->GetUserInfo($user_id);
         
         $discount = (100 - $user_info['discount']) / 100; //get percentage
@@ -354,8 +355,15 @@ class Databases_Joins_ProductFilter
             $product = $this->db->fetchRow($product_select);
             if($product['supplier_sku'])
             {
-                if($user_id == 8){ //dealsdirect's price is use street_price not supplier_price
-                    $offer_price_cal = $this->OfferPriceCalculation($product['street_price'], $product['wholesale_cost'], $discount, $cost_markup/100);
+                if($user_id == 2){ //dealsdirect's price is use street_price not supplier_price
+                    $dd_product_model->product_code =   $sku;
+                    $dd_product_info    =   $dd_product_model->getDdProductPrice();
+                    if($dd_product_info){
+                        $offer_price_cal[0] =   0;
+                        $offer_price_cal[1] = round($dd_product_info['cost'] * 1.1, 2);
+                    }else{
+                        $offer_price_cal = $this->OfferPriceCalculation($product['street_price'], $product['wholesale_cost'], $discount, $cost_markup/100);
+                    }
                 }else{
                     $offer_price_cal = $this->OfferPriceCalculation($product['supplier_price'], $product['wholesale_cost'], $discount, $cost_markup/100);
                 }
