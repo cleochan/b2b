@@ -123,4 +123,24 @@ class Databases_Tables_PurchaseOrder extends Zend_Db_Table
         }
         return $result;
     }
+    /*
+    function UpdatePurchaseOrderAmount()
+    {
+        $result = FALSE;
+        
+        if($this->purchase_order_id)
+        {
+            $row = $this->fetchRow("purchase_order_id = '".$this->purchase_order_id."'");
+            if(!empty($row))
+            {
+                if($row->order_amount != $this->order_amount){
+                    $row->order_amount = $this->order_amount;                    
+                    $row->save();
+                }
+                $result = TRUE;
+            }
+        }
+        return $result;
+    }
+     * */
 }

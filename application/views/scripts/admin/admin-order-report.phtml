@@ -26,11 +26,16 @@ $(function()
 <br />
 <div class="info_tablebox" >
 <div align="center" class="info_searchbox" >
-    <form action="/admin/admin-order-report/user_id/<?=$this->user_id?>" method="POST">
+    <form method="POST" name="order_info_form" id="order_info_form">
         From <input type="text"class="input" name="start_date" id="start_date" size="10"  <?php if($this->start_date){echo "value= '".$this->start_date."'";} ?> />&nbsp;&nbsp;
         To <input type="text" class="input" name="end_date" id="end_date" size="10"  <?php if($this->end_date){echo "value= '".$this->end_date."'";} ?> />&nbsp;&nbsp;
-        Merchant Ref <input  class="input"type="text" name="merchant_ref" id="merchant_ref" size="10" <?php if($this->order_id){echo "value= '".$this->order_id."'";} ?> />&nbsp;&nbsp;
-        <input type="submit" class="info_search_botton" value="Search" />
+        <select name="search_colums">
+            <option <?php if($this->search_colums == 'merchant_ref'){echo "selected='selected'";} ?> value="merchant_ref">Merchant Ref</option>
+            <option <?php if($this->search_colums == 'order_id'){echo "selected='selected'";} ?> value="order_id">Order ID</option>
+        </select>
+        <input  class="input"type="text" name="search_colums_value" id="merchant_ref" size="10" <?php if($this->search_colums_value){echo "value= '".$this->search_colums_value."'";} ?> />&nbsp;&nbsp;
+        <input type="button" id="info_search_botton" class="info_search_botton" value="Search" />
+        <input type="button" id="info_export_botton" class="info_search_botton" value="Export" />
     </form>
 </div>
 <div align="center">
@@ -119,4 +124,14 @@ function hide_status(index)
 	 	$("#status_"+index).hide();
 	}
 }
+$('#info_search_botton').click(function (){
+    var _action =   '/admin/admin-order-report/user_id/<?=$this->user_id?>';
+    $("#order_info_form").attr('action',_action);
+    $("#order_info_form").submit();
+})
+$('#info_export_botton').click(function (){
+    var _action =   '/admin/admin-order-report-export/user_id/<?=$this->user_id?>';
+    $("#order_info_form").attr('action',_action);
+    $("#order_info_form").submit();
+})
 </script>

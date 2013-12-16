@@ -83,6 +83,7 @@ class Databases_Joins_GetOrders
     var $update_start_date;
     var $update_end_date;
     var $item_statuses;
+    var $main_db_order_id;
     
     function __construct(){
     	$this->db = Zend_Registry::get("db");
@@ -177,7 +178,7 @@ class Databases_Joins_GetOrders
         //Get amount page qty
         $select = $this->db->select();
         $select->from("purchase_order as p", array("main_db_order_id","purchase_order_id", "issue_time", "user_id", "order_amount", "pickup"));
-        $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("merchant_ref", "item_status", "api_response", "item_amount", "supplier_sku", "merchant_sku", "quantity","tracking_number", "shipping_courier", "sc_class", "shipping_date", "final_ship_cost"));
+        $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("merchant_ref", "item_status", "api_response", "item_amount", "supplier_sku", "merchant_sku", "quantity","tracking_number", "shipping_courier", "sc_class", "shipping_date", "final_ship_cost", "final_item_cost"));
         $cond = array();
         if($this->start_date)
         {
@@ -210,6 +211,12 @@ class Databases_Joins_GetOrders
             
             $cond[] = "merchant_ref=".$this->merchant_ref;
         }
+        if($this->main_db_order_id)
+        {
+            $select->where("p.main_db_order_id = ?", $this->main_db_order_id);
+            
+            $cond[] = "main_db_order_id=".$this->main_db_order_id;
+        }
         if(isset($this->item_status) && $this->item_status != '-1') //-1 == select all orders
         {
             $select->where("item_status = ?", $this->item_status);
@@ -220,7 +227,7 @@ class Databases_Joins_GetOrders
             $in_item_status = implode(',', $this->item_statuses);
             $select->where("o.item_status in (".$in_item_status.") ");
         }
-        if($this->p_query_order)
+       if($this->p_query_order)
         {
             $qorder = explode("|", $this->p_query_order);
             $select->order($qorder[0]." ".$qorder[1]);

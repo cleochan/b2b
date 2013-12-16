@@ -868,4 +868,80 @@ if($result)
         }
         die();
     }
+    
+    function updateOrderAmountAction(){
+        $getorders_model    =   new Databases_Joins_GetOrders();
+        $product_model   =   new Databases_Joins_ProductFilter();
+        $getorders_model->user_id   =   '8';
+        $getorders_model->item_statuses =   array(1,3,4);
+        $order_list         =   $getorders_model->PushList();
+        $order_amount       =   array();
+        $update_product_price_sql   =   '';
+        $f  =   @fopen("select_orders_info.sql", "w+");
+        foreach ($order_list as $key => $order){
+            $product_info   =   $product_model->getProductInfo($order['supplier_sku']);
+            $order_amount[$order['main_db_order_id']]  =  $order['order_amount'];
+            //$update_product_price_sql   =   'update ss_ordered_carts set Price='.$order['final_item_cost'].', final_price='.$order['item_amount']." where productID=(select productID from ss_products where product_code ='".$product_info['supplier_sku']."') and orderID='".$order['main_db_order_id']."';\r\n";
+            $select_product_price_sql   =   'select * from ss_ordered_carts'." where productID=(select productID from ss_products where product_code ='".$order['supplier_sku']."') and orderID='".$order['main_db_order_id']."';\r\n";
+            //@fwrite($f, $select_product_price_sql);
+        }
+        $update_order_amount_sql    =   '\r\n';
+        foreach ($order_amount as $key => $amount){
+            $update_order_amount_sql    =  'update ss_orders set order_amount = '.$amount." where OrderID = '".$key."';\r\n";
+            //@fwrite($f, $select_order_amount_sql);
+        }
+        foreach ($order_amount as $key => $amount){
+            $update_order_amount_sql    =  'update ss_orders_report set orderamount = '.$amount." where OrderID = '".$key."';\r\n";
+            //@fwrite($f, $select_order_report_amount_sql);
+        }
+        foreach ($order_amount as $key => $amount){
+            $update_order_amount_sql    =  "update ss_orders_report set profit = (orderamount - salescost)*10/11 where OrderID = '".$key."';\r\n";
+            //@fwrite($f, $update_order_amount_sql);
+        }
+        foreach ($order_amount as $key => $amount){
+            
+            $select_all_sql    .=  " '".$key."',";
+            //@fwrite($f, $update_order_amount_sql);
+        }
+        $select_all_sql = substr($select_all_sql,0,strlen($select_all_sql)-1); 
+        $select_product_price_sql   =   'select * from ss_ordered_carts where orderID in('."$select_all_sql".')';
+        $select_order_amount_sql   =   'select * from ss_orders where orderID in('."$select_all_sql".')';
+        $select_order_report_amount_sql   =   'select * from ss_orders_report where orderID in('."$select_all_sql".')';
+        @fwrite($f, $select_product_price_sql);
+        @fwrite($f, $select_order_amount_sql);
+        @fwrite($f, $select_order_report_amount_sql);
+        @fclose($f);
+        die();
+    }
+    
+    function getPriceDdProductAction(){
+        $product_filter_model   =   new Databases_Joins_ProductFilter();
+        $product_list           =   $product_filter_model->getProductsLowPrice();
+        $i  =   0;
+        $fp = fopen('low_price_sku_1.csv','w');
+        fputcsv($fp, array('dd sku','cs sku', 'Product name', 'cs cost','dd Original price(Include GST)','Original profit','Original Profit(%)'));
+        foreach ($product_list as $product){
+            $real_dd_price  =   $product['dd_price'];
+            $cost_markup    =   round(($real_dd_price-$product['wholesale_cost'])/$product['wholesale_cost'],2);
+            $original_profit    =   $real_dd_price  -   $product['wholesale_cost'];
+            if(!$product['supplier_sku']){
+                //$product_info   =   array($product['product_code'],$product['cc_supplier_sku'], $product['product_title'],$product['wholesale_cost'],$real_dd_price,$original_profit, $original_profit_per.'%');
+                       
+                //fputcsv($fp, $product_info);
+                continue;
+            }
+            if($cost_markup < 0.25){
+                $i++;
+                $new_price  =   $product_filter_model->OfferPriceCalculation($product['street_price'], $product['wholesale_cost'], 0.7, 0.25);
+                $new_profit =   $new_price[1]  -   $product['wholesale_cost'];
+                $original_profit_per    =   round(($original_profit/$product['wholesale_cost'])*100,2);
+                $new_profit_per         =   round(($new_profit / $product['wholesale_cost'])*100,2);
+                $product_info   =   array($product['product_code'],$product['supplier_sku'], $product['product_name'],$product['wholesale_cost'],$real_dd_price,$original_profit, $original_profit_per.'%');
+                fputcsv($fp, $product_info);
+            }
+        }
+        fclose($fp);
+        echo $i;
+        die;
+    }
 }

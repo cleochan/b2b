@@ -1,0 +1,129 @@
+<script type="text/javascript">
+$(function() 
+{
+    $('#start_date').datepicker(
+    {
+        numberOfMonths: 1,
+        showButtonPanel: true,
+        dateFormat: 'yy-mm-dd'
+    });
+
+    $('#end_date').datepicker(
+    {
+        numberOfMonths: 1,
+        showButtonPanel: true,
+        dateFormat: 'yy-mm-dd'
+    });
+
+	// BUGFIX: workaround for linux chrome browser
+	// datepicker div is not hidden during load, this fix it
+	if($('#ui-datepicker-div') && $('#ui-datepicker-div').css("display") != 'none')
+	{
+		$('#ui-datepicker-div').css("display", "none");
+	}
+});                                                        
+</script>
+<br />
+<div class="info_tablebox" >
+<div align="center" class="info_searchbox" >
+    <form action="/admin/admin-order-report/user_id/<?=$this->user_id?>" method="POST">
+        From <input type="text"class="input" name="start_date" id="start_date" size="10"  <?php if($this->start_date){echo "value= '".$this->start_date."'";} ?> />&nbsp;&nbsp;
+        To <input type="text" class="input" name="end_date" id="end_date" size="10"  <?php if($this->end_date){echo "value= '".$this->end_date."'";} ?> />&nbsp;&nbsp;
+        Merchant Ref <input  class="input"type="text" name="merchant_ref" id="merchant_ref" size="10" <?php if($this->order_id){echo "value= '".$this->order_id."'";} ?> />&nbsp;&nbsp;
+        <input type="submit" class="info_search_botton" value="Search" />
+    </form>
+</div>
+<div align="center">
+    <table class="hide" border="0" cellpadding="0" cellspacing="1">
+                    <table class="width100" cellspacing="1">
+                        <tbody>
+                            <tr>
+                                <td class="form-title">Product Code</td>
+                                <td class="form-title">Product Title</td>
+                                <td class="form-title">Category 1</td>
+                                <td class="form-title">Category 2</td>
+                                <td class="form-title">RRP</td>
+                                <td class="form-title">Sell</td>
+                                <td class="form-title">Cost<p style="margin:0">(NO GST)</p></td>
+                                <td class="form-title">Stock</td>
+                                <td class="form-title">Supplier Sku</td>
+                                <td class="form-title">Crazysales Price<p style="margin:0">(Include GST)</p></td>
+                                <td class="form-title">Status</td>
+                                <td class="form-title">Action</td>
+                            </tr>
+                            <?php if($this->list):
+                                    $n = 1;
+                                    foreach($this->list as $key => $list):
+                            ?>
+                            <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?>">
+                                <td class="center"><span class="small"><?=$list['product_code']?></span></td>
+                                <td class="center"><span class="small"><?=$list['product_title']?></span></td>
+                                <td class="center"><span class="small"><?=$list['category_1']?></span></td>
+                                <td class="center"><span class="small"><?=$list['category_2']?></span></td>
+                                <td class="center"><span class="small"><?=$list['rrp']?></span></td>
+                                <td class="center"><span class="small"><?=$list['sell']?></span></td>
+                                <td class="center"><span class="small"><?=$list['cost']?></span></td>
+                                <td class="center"><span class="small"><?=$list['stock']?></span></td>
+                                <td class="center"><span class="small"><?=$list['cc_supplier_sku']?></span></td>
+                                <td class="center"><span class="small"><?=$list['cc_price']?></span></td>
+                                <td class="center" onmouseover="show_status(<?php echo $key; ?>);" onmouseout="hide_status(<?php echo $key; ?>);"><span class="small">
+                                        <select name="status"  product-id="<?=$list['product_id']?>">
+                                            <option value="-1" >Please Select Status</option>
+                                            <option value="-1" >Reject</option>
+                                            <option value="1"  >Default</option>
+                                            <option value="2"  >Upload txt only</option>
+                                            <option value="3"  >Upload image only</option>
+                                            <option value="4"  >Upload txt and images</option>
+                                        </select>
+								<?php
+                                    switch ($list['status'])
+                                    {
+                                        case '-1':
+                                            echo "<font color='red'>Reject.</font>";
+                                            break;
+                                        case 1:
+                                            echo "<font color='green'>Default</font>";
+                                            break;
+                                        case 2:
+                                            echo "<font color='red'>Upload txt only</font>";
+                                            break;
+                                        case 3:
+                                                echo "<font color='red'>Upload image only</font>";
+		                                break;
+                                        case 4:
+                                                echo "<font color='green'>Upload txt and images</font>";
+		                                break;
+                                    }
+								?>      
+                                    </span></td>
+                                <td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/<?=$this->user_id?>/order_id/<?=$list['product_id']?>">View</a></span></td>
+                            </tr>
+                            <?php
+                                    endforeach;
+                                endif;
+                            ?>
+                        </tbody>
+                    </table>
+</div>
+<div align="right"><?=$this->pagination?>&nbsp;&nbsp;</div>
+</div>
+<script language="javascript">
+function show_status(index)
+{
+	if($("#status_"+index))
+	{
+	 	$("#status_"+index).show();
+	}
+}
+
+function hide_status(index)
+{
+    if($("#status_"+index))
+    {
+            $("#status_"+index).hide();
+    }
+}
+function update_status(product_id){
+    
+}
+</script>

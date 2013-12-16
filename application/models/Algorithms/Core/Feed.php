@@ -19,6 +19,10 @@ class Algorithms_Core_Feed
             $product_filter_model = new Databases_Joins_ProductFilter();
             $dd_products_model      =   new Databases_Tables_DdProducts();
             $new_product_ids_array  =   array();
+            $re_upload_txt_file     =   array();
+            $re_upload_image_file   =   array();
+            $re_upload_file_ids     =   array();
+            $update_product_ids     =   array();
             foreach($this->user_id_array as $user_id)
             {
                 $collect_feed_info = $this->CollectFeedInfo($user_id);
@@ -187,6 +191,21 @@ class Algorithms_Core_Feed
                             $contents .= implode($delimeter, $contents_title_array)."\r\n";
                             foreach ($all_dd_products as $dd_product){
                                 $contents_tmp_array = array();
+                                switch ($dd_product['status']){
+                                    //re upload description txt file
+                                    case 2:
+                                        $update_product_ids[]        =   $dd_product['product_id'];
+                                        $re_upload_txt_file[$dd_product['product_code']] =   $dd_product['description'];
+                                        break;
+                                    case 3:
+                                        $update_product_ids[]   =   $dd_product['product_id'];
+                                        $re_upload_image_file[] =   $dd_product['product_id'];
+                                        break;
+                                    case 4:
+                                        $update_product_ids[]       =   $dd_product['product_id'];
+                                        $re_upload_file_ids[]       =   $dd_product['product_id'];
+                                        break;
+                                }
                                 foreach ($dd_product as $key => $value){
                                     if('"' === $qualifier)
                                     {
@@ -225,6 +244,28 @@ class Algorithms_Core_Feed
                         if($product_array){
                             $this->uploadFtpFile($product_array['product_image'], 'image');
                             $this->uploadFtpFile($product_array['product_description'], 'txt');
+                        }
+                        if($re_upload_txt_file){
+                            $this->uploadFtpFile($re_upload_txt_file, 'txt');
+                        }
+                        if($re_upload_image_file){
+                            $product_filter_model->dd_new_product_ids_array =   $re_upload_image_file;
+                            $re_upload_image_product_array    =   $product_filter_model->getNewProductInfo();
+                            if($re_upload_image_product_array){
+                                $this->uploadFtpFile($re_upload_image_product_array['product_image'], 'image');
+                            }
+                        }
+                        if($re_upload_file_ids){
+                            $product_filter_model->dd_new_product_ids_array =   $re_upload_file_ids;
+                            $re_upload_file_product_array    =   $product_filter_model->getNewProductInfo();
+                            if($re_upload_file_product_array){
+                                $this->uploadFtpFile($re_upload_file_product_array['product_image'], 'image');
+                                $this->uploadFtpFile($re_upload_file_product_array['product_description'], 'txt');
+                            }
+                        }
+                        if($update_product_ids){
+                            $dd_products_model->product_id_array            =   $update_product_ids;
+                            $dd_products_model->updateProductStatus();
                         }
                         $this->uploadFtpFile(array($export_model->file_name), 'csv');
                     }
@@ -535,7 +576,7 @@ class Algorithms_Core_Feed
                     $ftp->close();
                     break;
             }
-            
+             
         }
     }
 }

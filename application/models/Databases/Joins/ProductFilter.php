@@ -840,4 +840,13 @@ class Databases_Joins_ProductFilter
         }
         return $result;
     }
+    
+    function getProductsLowPrice(){
+        $result =   FALSE;
+        $select =   $this->db->select();
+        $select->from('dd_products as d', array('d.product_code', 'd.cost as dd_price','d.stock','d.rrp','d.cc_supplier_sku','d.product_title'));
+        $select->joinLeft('product_info_2 as p', 'p.product_id = d.product_id', array('p.supplier_sku','p.wholesale_cost','p.street_price', 'p.product_name'));
+        $result =   $this->db->fetchAll($select);
+        return $result;
+    }
 }

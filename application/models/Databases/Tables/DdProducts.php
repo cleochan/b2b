@@ -32,8 +32,16 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
     var $cc_supplier_sku;
     var $add_time;
     var $update_time;
-    
+    var $status;
     var $product_update_array;
+    var $p_query_order  =   "add_time|DESC";
+    var $p_qty_per_page =   50; //50 data / page
+    var $p_current_page =   1; // start from the first page
+    var $start_date;
+    var $end_date;
+    var $item_statuses;
+    var $limit;
+    var $product_id_array;
     
     function addDdProduct(){
         $data   =   array(
@@ -98,7 +106,8 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
     function getAllDdProducts(){
         $data   =   array();
         $select = $this->select();
-        $select->from($this->_name, array("product_code","product_title","brand","category_1","category_2","description","rrp","sell","freight","cost","weight","available","stock","image_1","image_2","image_3","image_4","image_5","image_6","length","width","height","despatch_pcode","courier"));
+        $select->from($this->_name, array("product_id","product_code","product_title","brand","category_1","category_2","description","rrp","sell","freight","cost","weight","available","stock","image_1","image_2","image_3","image_4","image_5","image_6","length","width","height","despatch_pcode","courier", "status"));
+        $select->where('status <> ?','-1');
         $select->order("brand ASC");
         $data = $this->fetchAll($select);
         return $data;
@@ -114,6 +123,125 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
             }
         }
         return $result;
+    }
+    
+    function Pagination()
+    {
+        //Get amount page qty
+        $select = $this->select();
+        $select->from($this->_name, array("count(product_id) as ct"));
+        $cond = array();
+        if($this->start_date)
+        {
+            $select->where("add_time >= ?", $this->start_date." 00:00:00");
+            $cond[] = "start_date=".$this->start_date;
+        }
+        if($this->end_date)
+        {
+            $select->where("add_time <= ?", $this->end_date." 23:59:59");
+            $cond[] = "end_date=".$this->end_date;
+        }
+        if($this->product_code)
+        {
+            $select->where("product_code = ?", $this->merchant_ref);
+            
+            $cond[] = "product_code=".$this->merchant_ref;
+        }
+        if(isset($this->status)) //-1 == select all orders
+        {
+            $select->where("status = ?", $this->item_status);
+            $cond[] = "status=".$this->item_status;
+        }
+        
+        $result = $this->fetchRow($select);
+        
+        $total_page = ceil($result['ct'] / $this->p_qty_per_page);
+        
+        //Generate HTML
+        if($total_page > 1)
+        {
+            if(1 == $this->p_current_page)
+            {
+                $cond[] = "p_current_page/".($this->p_current_page+1);
+                $params = implode("/", $cond);
+                $html = "<a href='/admin/dd-product-list/".$params."'>Next >></a>";
+            }elseif($total_page == $this->p_current_page){
+                $cond[] = "p_current_page/".($this->p_current_page-1);
+                $params = implode("/", $cond);
+                $html = "<a href='/admin/dd-product-list/".$params."'><< Previous</a>";
+            }else{
+                $cond[] = "p_current_page/".($this->p_current_page-1);
+                $params = implode("/", $cond);
+                $html = "<a href='/admin/dd-product-list/".$params."'><< Previous</a>";
+                $html .= "&nbsp;&nbsp;&nbsp;&nbsp;";
+                array_pop($cond);
+                $cond[] = "p_current_page/".($this->p_current_page+1);
+                
+                $params_next = implode("/", $cond);
+                $html .= "<a href='/admin/dd-product-list/".$params_next."'>Next >></a>";
+            }
+        }else{
+            $html = "";
+        }
+        
+        return $html;
+    }
+    
+    function pushList(){
+        $select = $this->select();
+        $cond = array();
+        if($this->start_date)
+        {
+            $select->where("add_time >= ?", $this->start_date." 00:00:00");
+            $cond[] = "start_date=".$this->start_date;
+        }
+        if($this->end_date)
+        {
+            $select->where("add_time <= ?", $this->end_date." 23:59:59");
+            $cond[] = "end_date=".$this->end_date;
+        }
+        if($this->product_code)
+        {
+            $select->where("product_code = ?", $this->merchant_ref);
+            
+            $cond[] = "product_code=".$this->merchant_ref;
+        }
+        if(isset($this->status)) //-1 == select all orders
+        {
+            $select->where("status = ?", $this->item_status);
+            $cond[] = "status=".$this->item_status;
+        }
+        
+        if($this->item_statuses && is_array($this->item_statuses)){
+            $in_item_status = implode(',', $this->item_statuses);
+            $select->where("status in (".$in_item_status.") ");
+        }
+        if($this->p_query_order)
+        {
+            $qorder = explode("|", $this->p_query_order);
+            $select->order($qorder[0]." ".$qorder[1]);
+        }
+        if($this->p_qty_per_page && $this->p_current_page)
+        {
+            $select->limit($this->p_qty_per_page, $this->p_qty_per_page*($this->p_current_page-1));
+        }
+        if($this->limit)
+        {
+            $select->limit($this->limit);
+            $select->order("add_time DESC");
+        }
+        
+        $result= $this->fetchAll($select);
+        
+        return $result;
+    }
+    function updateProductStatus(){
+        $where  =   ' 1=1 ';
+        if($this->product_id_array){
+            $where  .=   ' and product_id in ('.implode(',', $this->product_id_array).')';
+        }
+        
+        $this->update(array('status'=>'0'), $where);
     }
 }
 

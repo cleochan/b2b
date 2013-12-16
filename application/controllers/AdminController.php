@@ -712,10 +712,16 @@ class AdminController extends Zend_Controller_Action
             $getorders_model->end_date = $params['end_date'];
             $this->view->end_date = $params['end_date'];
         }
-        if($params['merchant_ref'])
-        {
-            $getorders_model->merchant_ref = $params['merchant_ref'];
-            $this->view->merchant_ref = $params['merchant_ref'];
+        if($params['search_colums']){
+            if($params['search_colums'] == 'merchant_ref')
+            {
+                $getorders_model->merchant_ref = $params['search_colums_value'];
+                $this->view->search_colums_value = $params['search_colums_value'];
+            }elseif ($params['search_colums'] == 'order_id') {
+                $getorders_model->main_db_order_id = $params['search_colums_value'];
+                $this->view->search_colums_value = $params['search_colums_value'];
+            }
+            $this->view->search_colums = $params['search_colums'];
         }
         if($params['p_current_page'])
         {
@@ -2002,6 +2008,108 @@ class AdminController extends Zend_Controller_Action
         $this->view->navigation =   $menu_model->GetNavigation(array("Dashboard", "Invoice"));
         $this->view->list       =   $result_data['records'];
         $this->view->pagination =   $result_data['page_html'];
+    }
+    
+    function ddProductListAction()
+    {
+        $this->view->title  =   "Dealsdirect Product List";
+        $params =   $this->_request->getParams();
+        $menu_model =   new Algorithms_Core_Menu();
+        $this->view->navigation =   $menu_model->GetNavigation(array("Dashboard","Product Info"));
+        $dd_product_model  =   new Databases_Tables_DdProducts();
+        $search_types   =   array(
+            'supplier_sku'  =>  'supplier_sku',
+            'product_name'  =>  'product_name',
+            'product_id'    =>  'product_id',
+        );
+        $search_column    =   $params['search_column'];
+        $search_value    =   $params['search_value'];
+        if($params['search_column'])
+        {
+            $dd_product_model->search_column =  $params['search_column'];
+        }
+        if($params['search_value'])
+        {
+            $dd_product_model->search_value =  $params['search_value'];
+        }
+        if($params['p_current_page'])
+        {
+            $dd_product_model->p_current_page  =   $params['p_current_page'];
+        }else
+        {
+            $dd_product_model->p_current_page  =   1;
+        }
+        $this->view->search_column  =   $search_column;
+        $this->view->search_value   =   $search_value;
+        $this->view->search_types   =   $search_types;
+        $this->view->list           =   $dd_product_model->pushList();
+        $this->view->pagination     =   $dd_product_model->Pagination();
+    }
+    
+    function adminOrderReportExportAction(){
+        $params             =   $this->_request->getParams();        
+        $getorders_model    =   new Databases_Joins_GetOrders();
+        $status_str         =   '';
+        $data               =   '';
+        $getorders_model->user_id = $params['user_id'];
+        if($params['start_date'])
+        {
+            $getorders_model->start_date = $params['start_date'];
+            $this->view->start_date = $params['start_date'];
+        }
+        if($params['end_date'])
+        {
+            $getorders_model->end_date = $params['end_date'];
+            $this->view->end_date = $params['end_date'];
+        }
+        $getorders_model->p_qty_per_page    =   0;
+        $getorders_model->p_current_page    =   0;
+        if($params['search_colums']){
+            if($params['search_colums'] == 'merchant_ref')
+            {
+                $getorders_model->merchant_ref = $params['search_colums_value'];
+                $this->view->search_colums_value = $params['search_colums_value'];
+            }elseif ($params['search_colums'] == 'order_id') {
+                $getorders_model->main_db_order_id = $params['search_colums_value'];
+                $this->view->search_colums_value = $params['search_colums_value'];
+            }
+            $this->view->search_colums = $params['search_colums'];
+        }
+        $order_list =   $getorders_model->PushList();
+        $filename = $params['start_date'] . '_' . $params['end_date'] .'order_report';
+        header("Content-type: application/vnd.ms-excel; charset=utf-8");
+        header("Content-Disposition: attachment; filename=$filename.xls");
+        $data .= "Time\tOrder ID\tMerchant Ref\tSupplier SKU\tMerchant SKU\tOrder Amount(Include GST and postage)\tShipping Courier\tTracking #\tShipping Date\tStatus\n";
+
+        foreach ($order_list AS $k => $order)
+        {
+            $date_time      =   date('H:i:s, d M Y ',strtotime($order['issue_time']));
+            $shipping_date  =   ($order['shipping_date']!='0000-00-00 00:00:00')?$order['shipping_date']:'';
+            switch ($order['item_status'])
+            {
+                case 0:
+                    $status_str =   "Pending";
+                    break;
+                case 1:
+                    $status_str =   "Approved";
+                    break;
+                case 2:
+                    $status_str =   "Rejected";
+                    break;
+                case 3:
+                    $status_str =   "Processing";
+                    break;
+                case 4:
+                    $status_str =   "Sent";
+                    break;
+                case 5:
+                    $status_str =   "Cancelled";
+                    break;
+            }
+            $data .= "$date_time\t$order[main_db_order_id]\t$order[merchant_ref]\t$order[supplier_sku]\t$order[merchant_sku]\t$order[item_amount]\t$order[shipping_courier]\t$order[tracking_number]\t$shipping_date\t$status_str\n";
+        }
+        echo $data;
+        die;
     }
 }
 
