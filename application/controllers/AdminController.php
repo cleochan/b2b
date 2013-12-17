@@ -2022,18 +2022,8 @@ class AdminController extends Zend_Controller_Action
             'product_name'  =>  'product_name',
             'product_id'    =>  'product_id',
         );
-        $search_column    =   $params['search_column'];
-        $search_value    =   $params['search_value'];
-        if($params['search_column'])
-        {
-            $dd_product_model->search_column =  $params['search_column'];
-        }
         if($params['product_code']){
             $dd_product_model->product_code =  $params['product_code'];
-        }
-        if($params['search_value'])
-        {
-            $dd_product_model->search_value =  $params['search_value'];
         }
         if($params['p_current_page'])
         {
@@ -2042,8 +2032,6 @@ class AdminController extends Zend_Controller_Action
         {
             $dd_product_model->p_current_page  =   1;
         }
-        $this->view->search_column  =   $search_column;
-        $this->view->search_value   =   $search_value;
         $this->view->search_types   =   $search_types;
         $this->view->list           =   $dd_product_model->pushList();
         $this->view->pagination     =   $dd_product_model->Pagination();

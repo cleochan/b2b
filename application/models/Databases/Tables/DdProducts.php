@@ -143,14 +143,19 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
         }
         if($this->product_code)
         {
-            $select->where("product_code = ?", $this->merchant_ref);
+            $select->where("product_code = ?", $this->product_code);
             
-            $cond[] = "product_code=".$this->merchant_ref;
+            $cond[] = "product_code=".$this->product_code;
         }
         if(isset($this->status)) //-1 == select all orders
         {
             $select->where("status = ?", $this->item_status);
             $cond[] = "status=".$this->item_status;
+        }
+        
+        if($this->item_statuses && is_array($this->item_statuses)){
+            $in_item_status = implode(',', $this->item_statuses);
+            $select->where("status in (".$in_item_status.") ");
         }
         
         $result = $this->fetchRow($select);
