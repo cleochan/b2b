@@ -2028,6 +2028,9 @@ class AdminController extends Zend_Controller_Action
         {
             $dd_product_model->search_column =  $params['search_column'];
         }
+        if($params['product_code']){
+            $dd_product_model->product_code =  $params['product_code'];
+        }
         if($params['search_value'])
         {
             $dd_product_model->search_value =  $params['search_value'];

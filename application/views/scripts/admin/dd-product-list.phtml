@@ -27,9 +27,7 @@ $(function()
 <div class="info_tablebox" >
 <div align="center" class="info_searchbox" >
     <form action="/admin/admin-order-report/user_id/<?=$this->user_id?>" method="POST">
-        From <input type="text"class="input" name="start_date" id="start_date" size="10"  <?php if($this->start_date){echo "value= '".$this->start_date."'";} ?> />&nbsp;&nbsp;
-        To <input type="text" class="input" name="end_date" id="end_date" size="10"  <?php if($this->end_date){echo "value= '".$this->end_date."'";} ?> />&nbsp;&nbsp;
-        Merchant Ref <input  class="input"type="text" name="merchant_ref" id="merchant_ref" size="10" <?php if($this->order_id){echo "value= '".$this->order_id."'";} ?> />&nbsp;&nbsp;
+        Product Code <input  class="input"type="text" name="product_code" id="product_code" size="10" <?php if($this->product_code){echo "value= '".$this->product_code."'";} ?> />&nbsp;&nbsp;
         <input type="submit" class="info_search_botton" value="Search" />
     </form>
 </div>

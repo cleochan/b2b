@@ -202,9 +202,9 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
         }
         if($this->product_code)
         {
-            $select->where("product_code = ?", $this->merchant_ref);
+            $select->where("product_code = ?", $this->product_code);
             
-            $cond[] = "product_code=".$this->merchant_ref;
+            $cond[] = "product_code=".$this->product_code;
         }
         if(isset($this->status)) //-1 == select all orders
         {
