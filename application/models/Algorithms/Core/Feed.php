@@ -23,6 +23,7 @@ class Algorithms_Core_Feed
             $re_upload_image_file   =   array();
             $re_upload_file_ids     =   array();
             $update_product_ids     =   array();
+            $product_array          =   array();
             foreach($this->user_id_array as $user_id)
             {
                 $collect_feed_info = $this->CollectFeedInfo($user_id);
@@ -207,6 +208,9 @@ class Algorithms_Core_Feed
                                         break;
                                 }
                                 foreach ($dd_product as $key => $value){
+                                    if($key == 'product_id' || $key == 'status'){
+                                        continue;
+                                    }
                                     if('"' === $qualifier)
                                     {
                                         $value = str_replace('"', '""', $value);
@@ -214,7 +218,7 @@ class Algorithms_Core_Feed
                                     {
                                         $value = str_replace("'", '"', $value);
                                     }
-
+                                    
                                     $contents_tmp_array[] = $qualifier.$value.$qualifier;
                                 }
                                 $contents .= implode($delimeter, $contents_tmp_array)."\r\n";
@@ -534,6 +538,7 @@ class Algorithms_Core_Feed
                 'csv_path'      =>  'outgoing/inventory/datafeed/processing/',
                 'shipping_path' =>  'outgoing/shipping/processing/',
             );
+            /*
             $ftp    =   new Algorithms_Core_Ftp($merchant_ftp_array['ftp_host'], $merchant_ftp_array['ftp_port'], $merchant_ftp_array['ftp_user'], $merchant_ftp_array['ftp_pass']);
             switch ($type){
                 case 'image':
@@ -576,7 +581,7 @@ class Algorithms_Core_Feed
                     $ftp->close();
                     break;
             }
-             
+             */
         }
     }
 }
