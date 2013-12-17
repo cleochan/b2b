@@ -745,11 +745,11 @@ class Databases_Joins_GetOrders
         $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("merchant_ref", "item_status", "api_response", "item_amount", "supplier_sku", "merchant_sku", "quantity","tracking_number", "shipping_courier", "sc_class", "final_item_cost", "shipping_date", "final_ship_cost"));
         if($this->update_start_date)
         {
-            $select->where("p.issue_time >= ?", $this->update_start_date." 00:00:00");
+            $select->where("p.update_time >= ?", $this->update_start_date." 00:00:00");
         }
         if($this->update_end_date)
         {
-            $select->where("p.issue_time < ?", $this->update_end_date." 00:00:00");
+            $select->where("p.update_time < ?", $this->update_end_date." 00:00:00");
         }
         if($this->user_id)
         {
@@ -787,16 +787,16 @@ class Databases_Joins_GetOrders
             $cond = array();
             if($this->start_date)
             {
-                $select->where("p.issue_time >= ?", $this->start_date." 00:00:00");
+                $select->where("p.update_time >= ?", $this->start_date." 00:00:00");
             }
             if($this->end_date)
             {
-                $select->where("p.issue_time <= ?", $this->end_date." 23:59:59");
+                $select->where("p.update_time <= ?", $this->end_date." 23:59:59");
             }
             if($this->user_id)
             {
                 $select->where("p.user_id = ?", $this->user_id);
-                $select->where("o.item_status in (1,3,4) ");
+                $select->where("o.item_status in (4) ");
             }
             if($this->merchant_ref)
             {
