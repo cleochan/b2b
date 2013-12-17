@@ -243,6 +243,28 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
         
         $this->update(array('status'=>'0'), $where);
     }
+    
+    function updateProductStatusWithStatus(){
+        $result =   '';
+        $where  =   ' 1=1 ';
+        if($this->product_id_array){
+            $where  .=   ' and product_id in ('.implode(',', $this->product_id_array).')';
+            $result =   $this->update(array('status'=>$this->status), $where);
+        }
+        return $result;
+    }
+    
+    function getDdProductInfo(){
+        $result =   array();
+        if($this->product_id){
+            $where      =   " product_id = '".$this->product_id."' ";
+            $product    =   $this->fetchRow($where);
+            if($product){
+                $result =   $product;
+            }
+        }
+        return $result;
+    }
 }
 
 ?>

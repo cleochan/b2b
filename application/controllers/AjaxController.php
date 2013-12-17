@@ -141,5 +141,25 @@ class AjaxController extends Zend_Controller_Action
         }
         die;
     }
+    
+    function updateDdProductStatusAction(){
+        $update_product_ids =   array();
+        $params =   $this->_request->getParams();
+        $update_product_ids[]   =   $params['product_id'];
+        $dd_products_model  =   new Databases_Tables_DdProducts();
+        $dd_products_model->product_id_array    =   $update_product_ids;
+        $dd_products_model->status              =   $params['status'];
+        $result             =   $dd_products_model->updateProductStatusWithStatus();
+        if($result){
+            $dd_products_model->product_id  =   $params['product_id'];
+            $dd_product_info                =   $dd_products_model->getDdProductInfo();
+            if($dd_product_info){
+                echo json_encode(array('result'=>'1','product_id'=>$params['product_id'],'product_status'=>$dd_product_info['status']));
+            }else{
+                echo json_encode(array('result'=>'0'));
+            }
+        }
+        die;
+    }
 }
 

@@ -66,8 +66,8 @@ $(function()
                                 <td class="center"><span class="small"><?=$list['stock']?></span></td>
                                 <td class="center"><span class="small"><?=$list['cc_supplier_sku']?></span></td>
                                 <td class="center"><span class="small"><?=$list['cc_price']?></span></td>
-                                <td class="center" onmouseover="show_status(<?php echo $key; ?>);" onmouseout="hide_status(<?php echo $key; ?>);"><span class="small">
-                                        <select name="status"  product-id="<?=$list['product_id']?>">
+                                <td class="center"><span class="small">
+                                        <select name="status" id="status"  product-id="<?=$list['product_id']?>" onchange="javascript:update_status(<?=$list['product_id']?>,this);">
                                             <option value="-1" >Please Select Status</option>
                                             <option value="-1" >Reject</option>
                                             <option value="1"  >Default</option>
@@ -75,6 +75,7 @@ $(function()
                                             <option value="3"  >Upload image only</option>
                                             <option value="4"  >Upload txt and images</option>
                                         </select>
+                                        <span id="order_status_<?=$list['product_id']?>">
 								<?php
                                     switch ($list['status'])
                                     {
@@ -91,10 +92,11 @@ $(function()
                                                 echo "<font color='red'>Upload image only</font>";
 		                                break;
                                         case 4:
-                                                echo "<font color='green'>Upload txt and images</font>";
+                                                echo "<font color='red'>Upload txt and images</font>";
 		                                break;
                                     }
-								?>      
+								?> 
+                                        </span>
                                     </span></td>
                                 <td class="center"><span class="small"><a href="/admin/admin-order-view/user_id/<?=$this->user_id?>/order_id/<?=$list['product_id']?>">View</a></span></td>
                             </tr>
@@ -108,22 +110,47 @@ $(function()
 <div align="right"><?=$this->pagination?>&nbsp;&nbsp;</div>
 </div>
 <script language="javascript">
-function show_status(index)
-{
-	if($("#status_"+index))
-	{
-	 	$("#status_"+index).show();
-	}
-}
-
-function hide_status(index)
-{
-    if($("#status_"+index))
-    {
-            $("#status_"+index).hide();
-    }
-}
-function update_status(product_id){
-    
+function update_status(_product_id, _order_status){
+    var _html   =   '';
+    $.ajax({
+            url:"/ajax/update-dd-product-status",
+            dataType:"json",
+            type:"POST",
+            data:{
+                product_id: _product_id,
+                status:$(_order_status).children('option:selected').val(),
+            },
+            beforeSend:function(){
+                
+            },
+            success:function(req){
+                var obj = jQuery.parseJSON(req);
+                if(req != null){
+                    if(req.result == '1' && req.product_id != null && req.product_status != null){
+                        if(req.product_status){
+                            switch(req.product_status){
+                                case '-1':
+                                    _html   =   "<font color='red'>Reject.</font>";
+                                    break;
+                                case '1':
+                                    _html   =   "<font color='green'>Default</font>";
+                                    break;
+                                case '2':
+                                    _html   =   "<font color='red'>Upload txt only</font>";
+                                    break;
+                                case '3':
+                                    _html   =   "<font color='red'>Upload image only</font>";
+                                    break;
+                                case '4':
+                                    _html   =   "<font color='green'>Upload txt and images</font>";
+                                    break;
+                            }
+                            $('#order_status_' + req.product_id).html("");
+                            $('#order_status_' + req.product_id).html(_html);
+                        }
+                    }
+                }
+            }
+    })
 }
 </script>
