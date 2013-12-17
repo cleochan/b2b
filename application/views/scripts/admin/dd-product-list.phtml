@@ -26,7 +26,7 @@ $(function()
 <br />
 <div class="info_tablebox" >
 <div align="center" class="info_searchbox" >
-    <form action="/admin/admin-order-report/user_id/<?=$this->user_id?>" method="POST">
+    <form action="/admin/dd-product-list" method="POST">
         Product Code <input  class="input"type="text" name="product_code" id="product_code" size="10" <?php if($this->product_code){echo "value= '".$this->product_code."'";} ?> />&nbsp;&nbsp;
         <input type="submit" class="info_search_botton" value="Search" />
     </form>
