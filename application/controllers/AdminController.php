@@ -2023,7 +2023,7 @@ class AdminController extends Zend_Controller_Action
             'product_id'    =>  'product_id',
         );
         if($params['product_code']){
-            $dd_product_model->product_code =  $params['product_code'];
+            $dd_product_model->product_code =  trim($params['product_code']);
         }
         if($params['p_current_page'])
         {
