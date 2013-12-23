@@ -22,6 +22,8 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
     var $account_name;
     var $account_phone;
     var $account_email;
+    var $sale_total;
+    var $profit_total;
     
     function AddUserExtension()
     {
@@ -182,6 +184,22 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
             }
             
             return $result;
+        }
+    }
+    
+    /**
+     * Update user Sales and Profit
+     */
+    function UpdateUserSalesProfit(){
+        if($this->user_id){
+            $user = $this->fetchRow("user_id='".$this->user_id."'");
+            if($this->sale_total){
+                $user->sale_total   =   $this->sale_total;
+            }
+            if($this->profit_total){
+                $user->profit_total   =   $this->profit_total;
+            }
+            $user->save();
         }
     }
 }

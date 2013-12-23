@@ -810,4 +810,63 @@ class Databases_Joins_GetOrders
         }
         return $result;
     }
+    
+    function getAllOrders(){
+        $result['sale_total'] =   FALSE;
+        $result['profit_total'] =   FALSE;
+        $user_sale_total    =   0;
+        $user_profit_total  =   0;
+        $product_filter_model   =   new Databases_Joins_ProductFilter();
+        $skus_array =   array();
+        if($this->user_id)
+        {
+            //Get amount page qty
+            $select = $this->db->select();
+            $select->from("purchase_order as p", array("main_db_order_id","purchase_order_id", "issue_time", "user_id", "order_amount", "pickup"));
+            $select->joinLeft("logs_orders as o", "o.purchase_order_id=p.purchase_order_id", array("merchant_ref", "item_status", "api_response", "item_amount", "supplier_sku", "merchant_sku", "quantity","tracking_number", "shipping_courier", "sc_class", "shipping_date", "final_ship_cost", "final_item_cost"));
+            if($this->start_date)
+            {
+                $select->where("p.update_time >= ?", $this->start_date." 00:00:00");
+            }
+            if($this->end_date)
+            {
+                $select->where("p.update_time <= ?", $this->end_date." 23:59:59");
+            }
+            if($this->user_id)
+            {
+                $select->where("p.user_id = ?", $this->user_id);
+            }
+            if($this->merchant_ref)
+            {
+                $select->where("o.merchant_ref = ?", $this->merchant_ref);
+            }
+            if(isset($this->item_status) && $this->item_status != '-1') //-1 == select all orders
+            {
+                $select->where("item_status = ?", $this->item_status);
+            }
+            
+            $order_result   =   $this->db->fetchAll($select);
+            
+            if($order_result){
+                foreach ($order_result as $order_info){
+                    $skus_array[]       =   $order_info['supplier_sku'];
+                    //
+                    //$user_profit_total  +=  (($order_info['final_item_cost'] - $product_price_info['wholesale_cost']) * 10 / 11) * $order_info['quantity'];
+                }
+                $product_filter_model->order_skus_array =   $skus_array;
+                $product_price_info =   $product_filter_model->GetSkuPricesInfo();
+                if($product_price_info){
+                    foreach ($order_result as $order_info){
+                        $user_sale_total    +=  $order_info['item_amount'];
+                        $product_price_info[$order_info['supplier_sku']]['wholesale_cost']   =   $product_price_info[$order_info['supplier_sku']]['wholesale_cost']?$product_price_info[$order_info['supplier_sku']]['wholesale_cost']:0;
+                        $user_profit_total  +=  (($order_info['final_item_cost'] - $product_price_info[$order_info['supplier_sku']]['wholesale_cost']) * 10 / 11) * $order_info['quantity'];
+                    }
+                }
+            }
+            
+        }
+        $result['sale_total'] =   $user_sale_total;
+        $result['profit_total'] =   $user_profit_total;
+        return $result;
+    }
 }

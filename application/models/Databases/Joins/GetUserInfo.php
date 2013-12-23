@@ -19,7 +19,7 @@ class Databases_Joins_GetUserInfo
     {
         $select = $this->db->select();
         $select->from("users as u", array("user_id", "email", "user_status"));
-        $select->joinLeft("users_extension as e", "u.user_id=e.user_id", array("company", "contact_name", "contact_phone", "join_date", "balance", "credit", "discount", "bpay_ref","flat_rate_shipping", "invoice_type", "invoice_value", "account_name", "account_email", "account_phone"));
+        $select->joinLeft("users_extension as e", "u.user_id=e.user_id", array("company", "contact_name", "contact_phone", "join_date", "balance", "credit", "discount", "bpay_ref","flat_rate_shipping", "invoice_type", "invoice_value", "account_name", "account_email", "account_phone", "sale_total", "profit_total"));
         $select->where("user_type = ?", $user_type);
         if($user_status){
             $select->where("user_status = ?", $user_status);

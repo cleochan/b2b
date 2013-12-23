@@ -1414,5 +1414,25 @@ class ScheduledController extends Zend_Controller_Action
             $this->mkdirm(dirname($path));
             mkdir($path, 0777);
         }
-    } 
+    }
+    
+    function updateMerchantSalesProfitAction(){
+        if($_SERVER['SERVER_PORT']  !=  '83'){
+            exit("Invalid Actions.");
+        }
+        $data_model = new Databases_Joins_GetUserInfo();
+        $user_extension_model   =   new Databases_Tables_UsersExtension();
+        $getorders_model = new Databases_Joins_GetOrders();
+        $data = $data_model ->GetUserList();
+        foreach($data as $key => $user_info){
+            $getorders_model->user_id   =   $user_info['user_id'];
+            $user_extension_model->user_id  =   $user_info['user_id'];
+            $getorders_model->item_status   =   4;//sent only orders
+            $user_orders_sales_profit   =   $getorders_model->getAllOrders();
+            $user_extension_model->sale_total   =   round($user_orders_sales_profit['sale_total'], 2);
+            $user_extension_model->profit_total =   round($user_orders_sales_profit['profit_total'], 2);
+            $user_extension_model->UpdateUserSalesProfit();
+        }
+        die;
+    }
 }

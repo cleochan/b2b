@@ -94,6 +94,8 @@ class Databases_Joins_ProductFilter
     
     var $dd_new_product_ids_array;
     
+    var $order_skus_array;
+    
     function __construct(){
         $this->db = Zend_Registry::get("db");
         $category_model     =   new Databases_Tables_ProductCategories();
@@ -371,6 +373,7 @@ class Databases_Joins_ProductFilter
                 $result['estimated_shipping_cost'] = $product['estimated_shipping_cost'];
                 $result['estimated_handling_fee'] = $product['estimated_handling_fee'];
                 $result['quantity_available'] = $product['quantity_available'];
+                $result['wholesale_cost'] = $product['wholesale_cost'];
                 if($user_id == 8){
                     if($product['length'] >= 105 || $product['height'] >= 105 || $product['depth'] >= 105 || $product['weight'] >= 32){
                         if($product['sc_class']==3){
@@ -848,5 +851,26 @@ class Databases_Joins_ProductFilter
         $select->joinLeft('product_info_2 as p', 'p.product_id = d.product_id', array('p.supplier_sku','p.wholesale_cost','p.street_price', 'p.product_name'));
         $result =   $this->db->fetchAll($select);
         return $result;
+    }
+    function GetSkuPricesInfo()
+    {
+        $products_result    =   array();
+        //get markup
+        $params_model = new Databases_Tables_Params();
+        $data_source = $params_model->GetVal("product_info_table");
+        if($data_source && $this->order_skus_array) // 1 or 2
+        {
+            $product_select = $this->db->select();
+            $skus           = implode("','", $this->order_skus_array);
+            $product_select->from("product_info_".$data_source, array("product_id","product_name","supplier_sku", "street_price","supplier_price", "wholesale_cost", "estimated_shipping_cost", "estimated_handling_fee", "quantity_available","sc_class", "shipping_courier", "length", "height", "depth", "weight"));
+            $product_select->where("supplier_sku in ('". $skus."')");
+            $products = $this->db->fetchAll($product_select);
+            if($products){
+                foreach ($products as $product_info){
+                    $products_result[$product_info['supplier_sku']] =   $product_info;
+                }
+            }
+        }
+        return $products_result;
     }
 }
