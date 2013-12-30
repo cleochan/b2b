@@ -81,7 +81,8 @@ class Algorithms_Core_ProductService extends SoapClient{
             'soap_version'=>SOAP_1_1, 
             'exceptions'=>true, 
             'trace'=>1, 
-            'cache_wsdl'=>WSDL_CACHE_NONE 
+            'cache_wsdl'=>WSDL_CACHE_NONE,
+            "features" => SOAP_SINGLE_ELEMENT_ARRAYS,
          );
         parent::__construct($wsdl, $options);
     }
@@ -117,7 +118,7 @@ class Algorithms_Core_ProductService extends SoapClient{
      */
     function WebServicesGetProducts()
     {
-        set_time_limit(3600);
+        set_time_limit(7200);
         $this->ProductDetailsLevelType['AdditionalFlag']    =   1;
         $this->ProductDetailsLevelType['OptionFlag']        =   1;
         $this->ProductDetailsLevelType['PackageFlag']       =   1;

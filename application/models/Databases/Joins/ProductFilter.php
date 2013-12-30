@@ -89,6 +89,10 @@ class Databases_Joins_ProductFilter
     var $dimension;
     var $description;
     var $product_code_type;
+    var $images;
+    var $images_path;
+    var $express_post_2000;
+    var $postage2000;
     var $all_category_data;
     var $dd_all_category_data;
     
@@ -170,7 +174,7 @@ class Databases_Joins_ProductFilter
                 $select->where("supplier_sku not REGEXP '([\s\S]*)(\/)([\s\S]*)'");
                 $select->where("supplier_sku not REGEXP '([\s\S]*)[\+]([\s\S]*)'");
                 //$select->where("char_length(product_name) <= 55 ");
-                $select->where('quantity_available >= ?',12);
+                $select->where('quantity_available >= ?',40);
                 $select->where("length > ?", 0);
                 $select->where("height > ?", 0);
                 $select->where("depth > ?", 0);
@@ -224,6 +228,14 @@ class Databases_Joins_ProductFilter
             {
                 foreach($data as $d_key => $d_val)
                 {
+                    /*
+                    $images_array   = explode('|', $d_val['images']);
+                    $i =    0;
+                    foreach ($images_array as $image_info){
+                        $d_val['imageURL'.$i]   =   $d_val['images_path'].$image_info;
+                        $i++;
+                    }
+                     */
                     if($user_id == 8){//dealsdirect's price is use street_price not supplier_price
                         $cal_result = $this->OfferPriceCalculation($d_val['street_price'], $d_val['wholesale_cost'], $discount, ($cost_markup/100));
                     }else{
@@ -592,7 +604,11 @@ class Databases_Joins_ProductFilter
                 'imageURL3'                 =>  $this->imageURL3,
                 'imageURL4'                 =>  $this->imageURL4,
                 'imageURL5'                 =>  $this->imageURL5,
+                'images'                    =>  $this->images,
+                'images_path'               =>  $this->images_path,
                 'product_code_type'         =>  $this->product_code_type,
+                'express_post_2000'         =>  $this->express_post_2000,
+                'postage2000'               =>  $this->postage2000,
             );
             $this->normal_count++;
             $this->db->insert($source_table,$data);
