@@ -385,9 +385,7 @@ class ScheduledController extends Zend_Controller_Action
                     }
                     ksort($images_array);
                     $productFilter_model->images                =   implode('|', $images_array);
-                    if(!$productFilter_model->imageURL0){
-                        $productFilter_model->imageURL0         =   @$product_data['ProductImages']['CrazySalesProductPictureType'][0]['Path'];
-                    }
+                    $productFilter_model->imageURL0             =   @$product_data['ProductImages']['CrazySalesProductPictureType'][0]['Path'];
                     $productFilter_model->imageURL1             =   @$product_data['ProductImages']['CrazySalesProductPictureType'][1]['Path'];
                     $productFilter_model->imageURL2             =   @$product_data['ProductImages']['CrazySalesProductPictureType'][2]['Path'];
                     $productFilter_model->imageURL3             =   @$product_data['ProductImages']['CrazySalesProductPictureType'][3]['Path'];

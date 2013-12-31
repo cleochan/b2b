@@ -381,7 +381,17 @@ class Algorithms_Core_Feed
                 }elseif('FILENAME' == $cond[0])
                 {
                     $feed_column_value  =   $product_filter_model->getFileName($feed_column_value);
-                }elseif('SUBSTR' == $cond[0])
+                }elseif('VALDD'==$cond[0]){
+                    if("/" === substr($cond[1], 3, 1) && 0 !== substr($cond[1], 4))
+                    {
+                        if($feed_column_value >= 26 && $feed_column_value < 40){
+                            $feed_column_value  =   $feed_column_value - 20;
+                        }else{
+                            $feed_column_value = $feed_column_value / substr($cond[1], 4);
+                        }
+                    }
+                }
+                elseif('SUBSTR' == $cond[0])
                 {
                     if(strlen($feed_column_value) > $cond[1])
                     {
