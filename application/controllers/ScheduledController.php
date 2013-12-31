@@ -68,7 +68,8 @@ class ScheduledController extends Zend_Controller_Action
                 $order_discount             =   new MoneyType();
                 $order_amount_money_type    =   new MoneyType();
                 $user_info  =   $getuser_info_model->GetUserInfo($purchase_order['user_id']);
-                $crazySalesOrderType->PaymentTypeID          =   $purchase_order['payment_type_id']; 
+                $crazySalesOrderType->PaymentTypeID          =   $purchase_order['payment_type_id'];
+                $crazySalesOrderType->ActualPayment          =   $purchase_order['order_amount'];
                 $crazySalesOrderType->RetailerAccountEmail   =   $user_info['email'];
                 $crazySalesOrderType->ShipFirstName          =   $purchase_order['shipping_first_name'];
                 $crazySalesOrderType->ShipAddress_1          =   $purchase_order['shipping_address_1'];
