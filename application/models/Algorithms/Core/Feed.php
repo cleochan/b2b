@@ -470,7 +470,7 @@ class Algorithms_Core_Feed
         $system_params_model    =   new Databases_Tables_Params();
         $logs_path                  =   $system_params_model->GetVal('merchant_feed_txt_path');
         $file_name  =   $file_name.".txt";
-        if (!file_exists($logs_path."/".$file_name)){
+        //if (!file_exists($logs_path."/".$file_name)){
             $encode =   'UTF-8';
             preg_match("/WARRANTY:([\s\S]*)/i",$html,$warranties);
             //$html   =   preg_replace("/WARRANTY:([\s\S]*)/i", "", $html);
@@ -518,6 +518,9 @@ class Algorithms_Core_Feed
             $html   =   strip_tags($html);  
             $html   =   html_entity_decode($html, ENT_QUOTES, $encode);  
             $html   =   preg_replace("/\&\#.*?\;/i", "", $html);
+            $html   =   preg_replace("/(\s*?\r?\n\s*?)+/i", "\r\n", $html);
+            $html   =   preg_replace("/FEATURES:/", "\r\nFEATURES:\r\n", $html);
+            $html   =   preg_replace("/SPECIFICATIONS:/", "\t * Statutory consumer guarantees also apply under Australian Consumer Law.\r\n\r\nSPECIFICATIONS:\r\n", $html);
             preg_match("/([\s\S]*)Warranty/",$html,$matches);
             $f          =   fopen($logs_path."/".$file_name, "w+");
             if($matches[0]){
@@ -526,7 +529,7 @@ class Algorithms_Core_Feed
                 @fwrite($f,$html);
             }
             @fclose($f);
-        }
+        //}
         return $file_name;
         
     }
