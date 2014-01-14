@@ -470,7 +470,7 @@ class Algorithms_Core_Feed
         $system_params_model    =   new Databases_Tables_Params();
         $logs_path                  =   $system_params_model->GetVal('merchant_feed_txt_path');
         $file_name  =   $file_name.".txt";
-        //if (!file_exists($logs_path."/".$file_name)){
+        if (!file_exists($logs_path."/".$file_name)){
             $encode =   'UTF-8';
             preg_match("/WARRANTY:([\s\S]*)/i",$html,$warranties);
             //$html   =   preg_replace("/WARRANTY:([\s\S]*)/i", "", $html);
@@ -529,7 +529,7 @@ class Algorithms_Core_Feed
                 @fwrite($f,$html);
             }
             @fclose($f);
-        //}
+        }
         return $file_name;
         
     }
