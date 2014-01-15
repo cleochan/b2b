@@ -174,7 +174,7 @@ class Databases_Joins_ProductFilter
                 $select->where("supplier_sku not REGEXP '([\s\S]*)(\/)([\s\S]*)'");
                 $select->where("supplier_sku not REGEXP '([\s\S]*)[\+]([\s\S]*)'");
                 //$select->where("char_length(product_name) <= 55 ");
-                $select->where('quantity_available >= ?',26);
+                $select->where('quantity_available >= ?',12);
                 $select->where("length > ?", 0);
                 $select->where("height > ?", 0);
                 $select->where("depth > ?", 0);
