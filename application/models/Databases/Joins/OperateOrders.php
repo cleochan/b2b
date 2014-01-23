@@ -77,7 +77,6 @@ class Databases_Joins_OperateOrders {
                 $user_info  =   $user_info_model->GetUserInfo($purchase_order['user_id']);
                 
                 $crazySalesOrderType->PaymentTypeID          =   $purchase_order['payment_type_id'];
-                $crazySalesOrderType->ActualPayment          =   $purchase_order['order_amount'];
                 $crazySalesOrderType->RetailerAccountEmail   =   $user_info['email'];
                 $crazySalesOrderType->ShipFirstName          =   $purchase_order['shipping_first_name'];
                 $crazySalesOrderType->ShipAddress_1          =   $purchase_order['shipping_address_1'];
@@ -97,6 +96,7 @@ class Databases_Joins_OperateOrders {
                     //$crazySalesOrderType->OrderDiscount =   $order_discount;
                     $crazySalesOrderType->PointsRate    =   0.00;
                     $crazySalesOrderType->OrderAmount            =   $order_amount_money_type;
+                    $crazySalesOrderType->ActualPayment          =   $order_amount_money_type;
                     $moeney_type->Value =   round($purchase_order['shipping_cost'],2);
                     $crazySalesOrderType->ShippingCost           =   $moeney_type;
                     $crazySalesOrderType->BillingAddress_1       =   $user_info['address'];
