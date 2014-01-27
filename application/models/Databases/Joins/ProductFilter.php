@@ -169,7 +169,6 @@ class Databases_Joins_ProductFilter
             $select->from($source_table, "*");
             /*for dealsdirect feed*/
             
-            $user_id = 8;
             if($user_id == 8)
             {
                 $select->join('b2b_dd_category', 'b2b_dd_category.category_id = '.$source_table.'.category_id', 'dd_category_id');
@@ -224,7 +223,7 @@ class Databases_Joins_ProductFilter
             $select->order("brand ASC");
             
             $data = $this->db->fetchAll($select);
-            
+
             //update for discount/cost protection
             if(!empty($data))
             {
