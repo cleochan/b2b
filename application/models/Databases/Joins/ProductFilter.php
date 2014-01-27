@@ -168,6 +168,8 @@ class Databases_Joins_ProductFilter
             $select = $this->db->select();
             $select->from($source_table, "*");
             /*for dealsdirect feed*/
+            
+            $user_id = 8;
             if($user_id == 8)
             {
                 $select->join('b2b_dd_category', 'b2b_dd_category.category_id = '.$source_table.'.category_id', 'dd_category_id');
@@ -182,27 +184,27 @@ class Databases_Joins_ProductFilter
             
             if(!empty($category_array))
             {
-                $select->where("category_id IN (?)", $category_array);
+                $select->where($source_table.".category_id IN (?)", $category_array);
             }
             if(!empty($sku_included_array))
             {
-                $select->where("supplier_sku IN (?)", $sku_included_array);
+                $select->where($source_table.".supplier_sku IN (?)", $sku_included_array);
             }
             if(!empty($sku_excluded_array))
             {
-                $select->where("supplier_sku NOT IN (?)", $sku_excluded_array);
+                $select->where($source_table.".supplier_sku NOT IN (?)", $sku_excluded_array);
             }
             
             if($sc_class)
             {
                 $sc_class_array =   explode(",", $sc_class);
-                $select->where("sc_class IN (?)", $sc_class_array);
+                $select->where($source_table.".sc_class IN (?)", $sc_class_array);
             }
             
             if($supplier_type)
             {
                 $supplier_type_array    =   explode(",", $supplier_type);
-                $select->where("country_of_origin IN (?)", $supplier_type_array);
+                $select->where($source_table.".country_of_origin IN (?)", $supplier_type_array);
             }
             
             switch ($stock)
@@ -222,7 +224,7 @@ class Databases_Joins_ProductFilter
             $select->order("brand ASC");
             
             $data = $this->db->fetchAll($select);
-
+            
             //update for discount/cost protection
             if(!empty($data))
             {
