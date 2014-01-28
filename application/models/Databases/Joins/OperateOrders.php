@@ -73,9 +73,13 @@ class Databases_Joins_OperateOrders {
                 $moeney_type                =   new MoneyType();
                 $order_discount             =   new MoneyType();
                 $order_amount_money_type    =   new MoneyType();
+                $actual_payment_money_type  =   new MoneyType();
 
                 $user_info  =   $user_info_model->GetUserInfo($purchase_order['user_id']);
                 
+                $order_amount_money_type->Value    =   round($purchase_order['order_amount'],2);  
+                $actual_payment_money_type->Value  =   round($purchase_order['order_amount'],2);
+                $crazySalesOrderType->ActualPayment          =   $actual_payment_money_type;
                 $crazySalesOrderType->PaymentTypeID          =   $purchase_order['payment_type_id'];
                 $crazySalesOrderType->RetailerAccountEmail   =   $user_info['email'];
                 $crazySalesOrderType->ShipFirstName          =   $purchase_order['shipping_first_name'];
@@ -88,15 +92,13 @@ class Databases_Joins_OperateOrders {
                 $crazySalesOrderType->ShipPhone              =   $purchase_order['shipping_phone'];
                 $crazySalesOrderType->SiteID                 =   6;
                 $crazySalesOrderType->ShipEmail              =   '';
-                
-                $order_amount_money_type->Value    =   round($purchase_order['order_amount'],2);                                  
+                                                
                 $order_discount->Value  =   round($purchase_order['discount_amount'],2);
                 if($crazySalesOrderType)
                 {
                     //$crazySalesOrderType->OrderDiscount =   $order_discount;
                     $crazySalesOrderType->PointsRate    =   0.00;
                     $crazySalesOrderType->OrderAmount            =   $order_amount_money_type;
-                    $crazySalesOrderType->ActualPayment          =   $order_amount_money_type;
                     $moeney_type->Value =   round($purchase_order['shipping_cost'],2);
                     $crazySalesOrderType->ShippingCost           =   $moeney_type;
                     $crazySalesOrderType->BillingAddress_1       =   $user_info['address'];
