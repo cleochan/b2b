@@ -981,7 +981,7 @@ class ScheduledController extends Zend_Controller_Action
                 }else{
                     @fwrite($f_logs_feeds, "No Order to Update at: ".date("Y-m-d H:i:s")."\r\n");
                 }
-                exit;
+                
                 //get the data of update success and create a new csv file and upload
                 @fwrite($f_logs_feeds, "Create csv file and upload at: ".date("Y-m-d H:i:s")."\r\n");
                 //$dd_order_model->update_start_date    =   $time_start;  
