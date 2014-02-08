@@ -941,7 +941,7 @@ class ScheduledController extends Zend_Controller_Action
         if($params['startday']){
             $time_start         =   $params['startday'];
         }else{
-            $time_start         =   date('Y-m-d', $time_now);
+            $time_start         =   date('Y-m-d', $time);
         }
         if($params['endday']){
             $time_end           =   $params['endday'];
@@ -950,6 +950,7 @@ class ScheduledController extends Zend_Controller_Action
         }
         $orders_model->update_start_date    =   $time_start;
         $orders_model->update_end_date      =   $time_end;
+        $orders_model->p_qty_per_page       =   '';
         $logs_path      =   $params_model->GetVal('logs_path');
         $sent_email     =   $params_model->GetVal('sent_email');
         $f_logs_feeds  =   @fopen($logs_path."orderslogs/updateddorders".date('YmdHis').".txt", "w+");
@@ -980,6 +981,7 @@ class ScheduledController extends Zend_Controller_Action
                 }else{
                     @fwrite($f_logs_feeds, "No Order to Update at: ".date("Y-m-d H:i:s")."\r\n");
                 }
+                exit;
                 //get the data of update success and create a new csv file and upload
                 @fwrite($f_logs_feeds, "Create csv file and upload at: ".date("Y-m-d H:i:s")."\r\n");
                 //$dd_order_model->update_start_date    =   $time_start;  
@@ -1071,6 +1073,7 @@ class ScheduledController extends Zend_Controller_Action
         $orders_model->item_statuses    =   array(1,3);  
         $orders_model->start_date   =   date('Y-m-d', $time);  
         $orders_model->end_date     =   date('Y-m-d', $time_now);
+        $orders_model->p_qty_per_page       =   '';
         @fwrite($f_logs_feeds, 'Get Approved Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
         $user_orders    =   $orders_model->PushList();
         $canceled_order_array   =   array();
@@ -1169,6 +1172,7 @@ class ScheduledController extends Zend_Controller_Action
             $time                       =   strtotime($user_order_days_array[$user_id], $time_now);
             $orders_model->update_start_date   =   date('Y-m-d', $time);  
             $orders_model->update_end_date     =   date('Y-m-d', $time_now);
+            $orders_model->p_qty_per_page      =   '';
             @fwrite($f_logs_feeds, 'Get user_id :'.$user_id.' Shipping Orders Begin at:'.date("Y-m-d-H:i:s")."\r\n");
             $user_shipping_orders       =   $orders_model->PushList();
             $f_order_new =   @fopen($order_new_path.$user_file_name_array[$user_id],'w');
@@ -1290,6 +1294,7 @@ class ScheduledController extends Zend_Controller_Action
                         $logs_financials_model->start_date          =   $day_before;
                         $logs_financials_model->invoice_end_date    =   $day_now;
                         $logs_financials_model->user_id             =   $user['user_id'];
+                        $logs_financials_model->p_qty_per_page      =   '';
                         //$logs_financials_model->action_affect       =   '1';
                         $logs_financials_model->action_type_array   =   array(2,3);
                         $orders_list    =   $orders_model->getInvoicesProductsList();
