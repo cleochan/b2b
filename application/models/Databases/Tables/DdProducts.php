@@ -84,6 +84,25 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
             $where      =   " product_id = '".$this->product_id."' ";
             $product    =   $this->fetchRow($where);
             if($product->product_id){
+                switch ($product->product_id){
+                    case '73509':
+                        $this->stock    =   6;
+                        break;
+                    case '73527':
+                        $this->stock    =   12;
+                        break;
+                    case '73533':
+                        $this->stock    =   8;
+                        break;
+                    case '73573':
+                        $this->stock    =   8;
+                        break;
+                    case '73577':
+                        $this->stock    =   10;
+                        break;
+                    default :
+                        break;
+                }
                 $product->stock         =   $this->stock;
                 $product->update_time   =   date('Y-m-d H:i:s');
                 $product->save();
