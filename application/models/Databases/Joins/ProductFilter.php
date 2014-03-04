@@ -187,7 +187,7 @@ class Databases_Joins_ProductFilter
             }
             if(!empty($sku_included_array))
             {
-                $select->where($source_table.".supplier_sku IN (?)", $sku_included_array);
+                $select->orWhere($source_table.".supplier_sku IN (?)", $sku_included_array);
             }
             if(!empty($sku_excluded_array))
             {
@@ -889,5 +889,15 @@ class Databases_Joins_ProductFilter
             }
         }
         return $products_result;
+    }
+    
+    function GetAllCategory(){
+        $result =   FALSE;
+        $select =   $this->db->select();
+        $select->from('dd_categories as dc',array('dc.category_id'));
+        $select->join('b2b_dd_category as bdc', 'dc.category_id = bdc.dd_category_id',array('dc.category_name as dd_category_name','bdc.category_id as b2b_category_id'));
+        $select->join('product_categories as bc', 'bc.category_id = bdc.category_id',array('bc.category_name as b2b_category_name'));
+        $result =   $this->db->fetchAll($select);
+        return $result;
     }
 }
