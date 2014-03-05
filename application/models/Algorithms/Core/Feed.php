@@ -551,7 +551,6 @@ class Algorithms_Core_Feed
                 'csv_path'      =>  'outgoing/inventory/datafeed/processing/',
                 'shipping_path' =>  'outgoing/shipping/processing/',
             );
-            /*
             $ftp    =   new Algorithms_Core_Ftp($merchant_ftp_array['ftp_host'], $merchant_ftp_array['ftp_port'], $merchant_ftp_array['ftp_user'], $merchant_ftp_array['ftp_pass']);
             switch ($type){
                 case 'image':
@@ -594,8 +593,6 @@ class Algorithms_Core_Feed
                     $ftp->close();
                     break;
             }
-             * 
-             */
         }
     }
 }
