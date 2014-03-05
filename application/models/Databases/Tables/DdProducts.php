@@ -282,9 +282,6 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
             $product    =   $this->fetchRow($where);
             if($product->product_id){
                 switch ($this->data_name){
-                    case 'product_code':
-                        $product->product_code  =   $this->data_value;
-                        break;
                     case 'product_title':
                         $product->product_title =   $this->data_value;
                         break;
@@ -306,15 +303,35 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
                     case 'stock':
                         $product->stock         =   $this->data_value;
                         break;
-                    case 'cc_supplier_sku':
-                        $product->cc_supplier_sku    =   $this->data_value;
-                        break;
                     case 'cc_price':
                         $product->cc_price    =   $this->data_value;
                         break;
                 }
                 $product_id             =   $this->product_id;
                 $product->update_time   =   date('Y-m-d H:i:s');
+                $product->save();
+            }
+        }
+        return  $product_id;
+    }
+    
+    /**
+     * 
+     * @param type $qty
+     * @param type $status 1 = add ,2 = subtract
+     */
+    function updateQty($qty,$status = 1){
+        $product_id =   null;
+        if($this->cc_supplier_sku){
+            $where      =   " cc_supplier_sku = '".$this->cc_supplier_sku."' ";
+            $product    =   $this->fetchRow($where);
+            if($product->product_id){
+                if($status == 1){
+                    $product->stock =   $product->stock + $qty;
+                }
+                if($status == 2 && $product->stock >= 0){
+                    $product->stock =   $product->stock - $qty;
+                }
                 $product->save();
             }
         }

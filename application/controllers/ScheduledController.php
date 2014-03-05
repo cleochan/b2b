@@ -760,6 +760,7 @@ class ScheduledController extends Zend_Controller_Action
         if($down_result){
             $product_filter_model   =   new Databases_Joins_ProductFilter();
             $getorders_model        =   new Databases_Joins_GetOrders();
+            $dd_product_model       =   new Databases_Tables_DdProducts();
             $group_instance_balance_array = array();
             $data_array = array();
             $merchant_ref_pool = array();
@@ -857,7 +858,8 @@ class ScheduledController extends Zend_Controller_Action
                              * @todo PlaceOrder
                              */
                             $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
-                            
+                            $dd_product_model->cc_supplier_sku  =   $supplier_sku;
+                            $dd_product_model->updateQty(trim($da_val[11]), 2);
                             //update merchant ref pool
                             $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
                         }else{

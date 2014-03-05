@@ -1841,6 +1841,7 @@ class AdminController extends Zend_Controller_Action
         $plugin_model = new Algorithms_Extensions_Plugin();
         $product_filter_model   =   new Databases_Joins_ProductFilter();
         $dd_orders_model        =   new Databases_Tables_DdOrders();
+        $dd_product_model       =   new Databases_Tables_DdProducts();
         $ip = $plugin_model->GetIp();
         $notice = "S1"; //success
         
@@ -1929,6 +1930,8 @@ class AdminController extends Zend_Controller_Action
                      * @todo PlaceOrder
                      */
                     $place_order_return = $getorders_model->PlaceOrder(); // Transaction ID for financial table
+                    $dd_product_model->cc_supplier_sku  =   $params['supplier_sku'][$loop_key];
+                    $dd_product_model->updateQty($params['quantity'][$loop_key], 2);
                     //update merchant ref pool
                     $merchant_ref_pool = $place_order_return['merchant_ref_pool'];
                 }else{

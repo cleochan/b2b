@@ -54,16 +54,16 @@ $(function()
                                     foreach($this->list as $key => $list):
                             ?>
                             <tr class="row-<?php if(1==$n){echo $n;$n+=1;}else{echo $n;$n-=1;}?> productinfo"  product-id='<?=$list['product_id']?>'>
-                                <td class="center product_code" data='product_code_<?=$list['product_id']?>' data-name='product_code'><span class="small" id='product_code_<?=$list['product_id']?>'><?=$list['product_code']?></span></td>
-                                <td class="center product_title" data='product_title_<?=$list['product_id']?>' data-name='product_title'><span class="small" id='product_title_<?=$list['product_id']?>'><?=$list['product_title']?></span></td>
-                                <td class="center category_1" data='category_1_<?=$list['product_id']?>' data-name='category_1'><span class="small" id='category_1_<?=$list['product_id']?>'><?=$list['category_1']?></span></td>
-                                <td class="center category_2" data='category_2_<?=$list['product_id']?>' data-name='category_2'><span class="small" id='category_2_<?=$list['product_id']?>'><?=$list['category_2']?></span></td>
-                                <td class="center rrp" data='rrp_<?=$list['product_id']?>' data-name='rrp'><span class="small" id='rrp_<?=$list['product_id']?>'><?=$list['rrp']?></span></td>
-                                <td class="center sell" data='sell_<?=$list['product_id']?>' data-name='sell'><span class="small" id='sell_<?=$list['product_id']?>'><?=$list['sell']?></span></td>
-                                <td class="center cost" data='cost_<?=$list['product_id']?>' data-name='cost'><span class="small" id='cost_<?=$list['product_id']?>'><?=$list['cost']?></span></td>
-                                <td class="center stock" data='stock_<?=$list['product_id']?>' data-name='stock'><span class="small" id='stock_<?=$list['product_id']?>'><?=$list['stock']?></span></td>
-                                <td class="center cc_supplier_sku" data='cc_supplier_sku_<?=$list['product_id']?>' data-name='cc_supplier_sku'><span class="small" id='cc_supplier_sku_<?=$list['product_id']?>'><?=$list['cc_supplier_sku']?></span></td>
-                                <td class="center cc_price" data='cc_price_<?=$list['product_id']?>' data-name='cc_price'><span class="small" id='cc_price_<?=$list['product_id']?>'><?=$list['cc_price']?></span></td>
+                                <td class="center product_code" data='product_code_<?=$list['product_id']?>' data-name='product_code'><span class="small" id='product_code_<?=$list['product_id']?>' value='<?=$list['product_code']?>'><?=$list['product_code']?></span></td>
+                                <td class="center product_title" data='product_title_<?=$list['product_id']?>' data-name='product_title'><span class="small" id='product_title_<?=$list['product_id']?>' value='<?=$list['product_title']?>'><?=$list['product_title']?></span></td>
+                                <td class="center category_1" data='category_1_<?=$list['product_id']?>' data-name='category_1'><span class="small" id='category_1_<?=$list['product_id']?>' value='<?=$list['category_1']?>'><?=$list['category_1']?></span></td>
+                                <td class="center category_2" data='category_2_<?=$list['product_id']?>' data-name='category_2'><span class="small" id='category_2_<?=$list['product_id']?>' value='<?=$list['category_2']?>'><?=$list['category_2']?></span></td>
+                                <td class="center rrp" data='rrp_<?=$list['product_id']?>' data-name='rrp'><span class="small" id='rrp_<?=$list['product_id']?>' value='<?=$list['rrp']?>'><?=$list['rrp']?></span></td>
+                                <td class="center sell" data='sell_<?=$list['product_id']?>' data-name='sell'><span class="small" id='sell_<?=$list['product_id']?>' value='<?=$list['sell']?>'><?=$list['sell']?></span></td>
+                                <td class="center cost" data='cost_<?=$list['product_id']?>' data-name='cost'><span class="small" id='cost_<?=$list['product_id']?>' value='<?=$list['cost']?>'><?=$list['cost']?></span></td>
+                                <td class="center stock" data='stock_<?=$list['product_id']?>' data-name='stock'><span class="small" id='stock_<?=$list['product_id']?>' value='<?=$list['stock']?>'><?=$list['stock']?></span></td>
+                                <td class="center cc_supplier_sku" data='cc_supplier_sku_<?=$list['product_id']?>' data-name='cc_supplier_sku'><span class="small" id='cc_supplier_sku_<?=$list['product_id']?>' value='<?=$list['cc_supplier_sku']?>'><?=$list['cc_supplier_sku']?></span></td>
+                                <td class="center cc_price" data='cc_price_<?=$list['product_id']?>' data-name='cc_price'><span class="small" id='cc_price_<?=$list['product_id']?>' value='<?=$list['cc_price']?>'><?=$list['cc_price']?></span></td>
                                 <td class="center"><span class="small">
                                         <select name="status" id="status"  product-id="<?=$list['product_id']?>" onchange="javascript:update_status(<?=$list['product_id']?>,this);">
                                             <option value="-1" >Please Select Status</option>
@@ -160,13 +160,13 @@ function update_status(_product_id, _order_status){
 }
 $('.productinfo td').click(function (){
     var _product_id     =   $(this).parent().attr('product-id');
-    var obj         =   '#' + $(this).attr('data');
-    var _data_name   =   $(this).attr('data-name');
-    var _old_comment    =   $(obj).text();
+    var obj             =   '#' + $(this).attr('data');
+    var _data_name      =   $(this).attr('data-name');
+    var _old_comment    =   $(obj).attr('value');
     $(obj).html("");
-    var _text = $("<input type=\"text\" >").css({ "width": $(this).width(), "border": "1px lightgrey solid" }).appendTo($(obj));
-    _text.focus();
-    _text.attr('value',_old_comment.replace(/\s*/,""));
+    var _text = $("<input type=\"text\" >").css({ "width": $(this).width(), "border": "1px lightgrey solid" }).attr('value',_old_comment.replace(/\s*/,"")).appendTo($(obj));
+    _text.focusEnd();
+    //_text.attr('value',_old_comment.replace(/\s*/,""));
     _text.blur(function (){
         var _comments   =   _text.attr('value');
         if(_comments == ''){
@@ -187,6 +187,7 @@ $('.productinfo td').click(function (){
                 }
                 $(obj).html("");
                 $(obj).html(_new_comments);
+                $(obj).attr('value',_new_comments);
             },
             error: function(msg) {
                 alert(msg);
@@ -197,4 +198,30 @@ $('.productinfo td').click(function (){
         })
     })
 })
+$.fn.setCursorPosition = function(position){
+    if(this.lengh == 0) return this;
+    return $(this).setSelection(position, position);
+}
+
+$.fn.setSelection = function(selectionStart, selectionEnd) {
+    if(this.lengh == 0) return this;
+    input = this[0];
+
+    if (input.createTextRange) {
+        var range = input.createTextRange();
+        range.collapse(true);
+        range.moveEnd('character', selectionEnd);
+        range.moveStart('character', selectionStart);
+        range.select();
+    } else if (input.setSelectionRange) {
+        input.focus();
+        input.setSelectionRange(selectionStart, selectionEnd);
+    }
+
+    return this;
+}
+
+$.fn.focusEnd = function(){
+    this.setCursorPosition(this.val().length);
+}
 </script>
