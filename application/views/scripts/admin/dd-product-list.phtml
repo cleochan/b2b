@@ -60,8 +60,8 @@ $(function()
                                 <td class="center"><span class="small"><?=$list['category_2']?></span></td>
                                 <td class="center"><span class="small"><?=$list['rrp']?></span></td>
                                 <td class="center"><span class="small"><?=$list['sell']?></span></td>
-                                <td class="center"><span class="small"><?=$list['cost']?></span></td>
-                                <td class="center"><span class="small"><?=$list['stock']?></span></td>
+                                <td class="center cost" product-id='<?=$list['product_id']?>'><span class="small" id='cost_<?=$list['product_id']?>'><?=$list['cost']?></span></td>
+                                <td class="center stock" product-id='<?=$list['product_id']?>'><span class="small" id='stock_<?=$list['product_id']?>'><?=$list['stock']?></span></td>
                                 <td class="center"><span class="small"><?=$list['cc_supplier_sku']?></span></td>
                                 <td class="center"><span class="small"><?=$list['cc_price']?></span></td>
                                 <td class="center"><span class="small">
@@ -72,6 +72,7 @@ $(function()
                                             <option value="2"  >Upload txt only</option>
                                             <option value="3"  >Upload image only</option>
                                             <option value="4"  >Upload txt and images</option>
+                                            <option value="5"  >Static Stock</option>
                                         </select>
                                         <span id="order_status_<?=$list['product_id']?>">
 								<?php
@@ -91,6 +92,9 @@ $(function()
 		                                break;
                                         case 4:
                                                 echo "<font color='red'>Upload txt and images</font>";
+		                                break;
+                                        case 5:
+                                                echo "<font color='red'>Static Stock</font>";
 		                                break;
                                     }
 								?> 
@@ -140,7 +144,10 @@ function update_status(_product_id, _order_status){
                                     _html   =   "<font color='red'>Upload image only</font>";
                                     break;
                                 case '4':
-                                    _html   =   "<font color='green'>Upload txt and images</font>";
+                                    _html   =   "<font color='red'>Upload txt and images</font>";
+                                    break;
+                                case '5':
+                                    _html   =   "<font color='red'>Static Stock</font>";
                                     break;
                             }
                             $('#order_status_' + req.product_id).html("");
@@ -151,4 +158,80 @@ function update_status(_product_id, _order_status){
             }
     })
 }
+$('.cost').click(function (){
+    var _product_id     =   $(this).attr('product-id');
+    var _old_comment    =   $('#cost_'+_product_id).text();
+    var obj             =   '#cost_'+_product_id;
+    $(obj).html("");
+    var _text = $("<input type=\"text\" >").css({ "width": "40px", "border": "1px lightgrey solid" }).appendTo($(obj));
+    _text.focus();
+    _text.attr('value',_old_comment.replace(/\s*/,""));
+    _text.blur(function (){
+        var _comments   =   _text.attr('value');
+        if(_comments == ''){
+            alert('Comments is Required.');
+            return false;
+        }
+        $.ajax({
+            url: "/ajax/update-dd-product-data",
+            dataType:"json",
+            type:"POST",
+            data:{product_id:_product_id,cost:_comments}, 
+            success:function(req){
+                var _new_comments;
+                if(req.result == '1'){
+                    _new_comments   =   req.product_data.cost;
+                }else{
+                    _new_comments   =   _old_comment;
+                }
+                $(obj).html("");
+                $(obj).html(_new_comments);
+            },
+            error: function(msg) {
+                alert(msg);
+                $(obj).html("");
+                $(obj).html(_comments);
+            }
+            
+        })
+    })
+})
+$('.stock').click(function (){
+    var _product_id     =   $(this).attr('product-id');
+    var _old_comment    =   $('#stock_'+_product_id).text();
+    var obj             =   '#stock_'+_product_id;
+    $(obj).html("");
+    var _text = $("<input type=\"text\" >").css({ "width": "40px", "border": "1px lightgrey solid" }).appendTo($(obj));
+    _text.focus();
+    _text.attr('value',_old_comment.replace(/\s*/,""));
+    _text.blur(function (){
+        var _comments   =   _text.attr('value');
+        if(_comments == ''){
+            alert('Comments is Required.');
+            return false;
+        }
+        $.ajax({
+            url: "/ajax/update-dd-product-data",
+            dataType:"json",
+            type:"POST",
+            data:{product_id:_product_id,stock:_comments}, 
+            success:function(req){
+                var _new_comments;
+                if(req.result == '1'){
+                    _new_comments   =   req.product_data.stock;
+                }else{
+                    _new_comments   =   _old_comment;
+                }
+                $(obj).html("");
+                $(obj).html(_new_comments);
+            },
+            error: function(msg) {
+                alert(msg);
+                $(obj).html("");
+                $(obj).html(_comments);
+            }
+            
+        })
+    })
+})
 </script>

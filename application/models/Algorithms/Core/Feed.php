@@ -140,7 +140,7 @@ class Algorithms_Core_Feed
                                 $dd_products_model->despatch_pcode  =   trim($contents_tmp_array[22],'"');
                                 $dd_products_model->courier         =   trim($contents_tmp_array[23],'"');
                                 $dd_products_model->cc_supplier_sku =   $pl['supplier_sku'];
-                                $dd_products_model->cc_price        =   $pl['supplier_price'];
+                                $dd_products_model->cc_price        =   $pl['original_supplier_price'];
                                 $product_id                         =   $dd_products_model->updateDdProduct();
                                 if($product_id){
                                     $new_product_ids_array[]        =   $product_id;
@@ -551,7 +551,7 @@ class Algorithms_Core_Feed
                 'csv_path'      =>  'outgoing/inventory/datafeed/processing/',
                 'shipping_path' =>  'outgoing/shipping/processing/',
             );
-            
+            /*
             $ftp    =   new Algorithms_Core_Ftp($merchant_ftp_array['ftp_host'], $merchant_ftp_array['ftp_port'], $merchant_ftp_array['ftp_user'], $merchant_ftp_array['ftp_pass']);
             switch ($type){
                 case 'image':
@@ -594,6 +594,8 @@ class Algorithms_Core_Feed
                     $ftp->close();
                     break;
             }
+             * 
+             */
         }
     }
 }

@@ -84,29 +84,12 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
             $where      =   " product_id = '".$this->product_id."' ";
             $product    =   $this->fetchRow($where);
             if($product->product_id){
-                switch ($product->product_id){
-                    case '73509':
-                        $this->stock    =   6;
-                        break;
-                    case '73527':
-                        $this->stock    =   12;
-                        break;
-                    case '73533':
-                        $this->stock    =   8;
-                        break;
-                    case '73573':
-                        $this->stock    =   8;
-                        break;
-                    case '73577':
-                        $this->stock    =   10;
-                        break;
-                    default :
-                        break;
+                if($product->status == '5'){
+                    $this->stock    =   $product->stock;
                 }
                 $product->stock         =   $this->stock;
                 $product->update_time   =   date('Y-m-d H:i:s');
                 $product->save();
-                //$product_id   =   $product->product_id;
             }else{
                 $product_id   =   $this->addDdProduct();
             }
@@ -118,7 +101,7 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
         $data   =   array(
             'stock' =>  0,
         );
-        $where  =   ' 1=1 ';
+        $where  =   ' 1=1 and status <> 5 ';
         $this->update($data, $where);
     }
     
@@ -288,6 +271,26 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
             }
         }
         return $result;
+    }
+    
+    function updateDdProductData(){
+        $product_id =   null;
+        if($this->product_id){
+            $where      =   " product_id = '".$this->product_id."' ";
+            $product    =   $this->fetchRow($where);
+            if($product->product_id){
+                $product_id             =   $this->product_id;
+                if($this->stock){
+                    $product->stock         =   $this->stock;
+                }
+                if($this->cost){
+                    $product->cost          =   $this->cost;
+                }
+                $product->update_time   =   date('Y-m-d H:i:s');
+                $product->save();
+            }
+        }
+        return  $product_id;
     }
 }
 
