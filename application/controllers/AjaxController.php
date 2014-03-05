@@ -168,12 +168,8 @@ class AjaxController extends Zend_Controller_Action
         $update_product_ids[]   =   $params['product_id'];
         $dd_products_model  =   new Databases_Tables_DdProducts();
         $dd_products_model->product_id    =   $params['product_id'];
-        if($params['stock']){
-            $dd_products_model->stock         =   $params['stock'];
-        }
-        if($params['cost']){
-            $dd_products_model->cost         =   $params['cost'];
-        }
+        $dd_products_model->data_name         =   $params['data_name'];
+        $dd_products_model->data_value        =   $params['data_value'];
         $result             =   $dd_products_model->updateDdProductData();
         if($result){
             $dd_products_model->product_id  =   $params['product_id'];

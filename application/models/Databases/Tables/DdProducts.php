@@ -42,6 +42,8 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
     var $item_statuses;
     var $limit;
     var $product_id_array;
+    var $data_name;
+    var $data_value;
     
     function addDdProduct(){
         $data   =   array(
@@ -279,13 +281,39 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
             $where      =   " product_id = '".$this->product_id."' ";
             $product    =   $this->fetchRow($where);
             if($product->product_id){
+                switch ($this->data_name){
+                    case 'product_code':
+                        $product->product_code  =   $this->data_value;
+                        break;
+                    case 'product_title':
+                        $product->product_title =   $this->data_value;
+                        break;
+                    case 'category_1':
+                        $product->category_1    =   $this->data_value;
+                        break;
+                    case 'category_2':
+                        $product->category_2    =   $this->data_value;
+                        break;
+                    case 'rrp':
+                        $product->rrp           =   $this->data_value;
+                        break;
+                    case 'sell':
+                        $product->sell          =   $this->data_value;
+                        break;
+                    case 'cost':
+                        $product->cost          =   $this->data_value;
+                        break;
+                    case 'stock':
+                        $product->stock         =   $this->data_value;
+                        break;
+                    case 'cc_supplier_sku':
+                        $product->cc_supplier_sku    =   $this->data_value;
+                        break;
+                    case 'cc_price':
+                        $product->cc_price    =   $this->data_value;
+                        break;
+                }
                 $product_id             =   $this->product_id;
-                if($this->stock){
-                    $product->stock         =   $this->stock;
-                }
-                if($this->cost){
-                    $product->cost          =   $this->cost;
-                }
                 $product->update_time   =   date('Y-m-d H:i:s');
                 $product->save();
             }
