@@ -184,5 +184,51 @@ class AjaxController extends Zend_Controller_Action
         }
         die;
     }
+    
+    public function saveFileAction(){
+        $params     =   $this->_request->getParams();
+        $search_sku =   $params['sku_file'];
+        $contents   =   $params['desc_contents'];
+        $system_params_model    =   new Databases_Tables_Params();
+        $logs_path  =   $system_params_model->GetVal('merchant_feed_txt_path');
+        $file_path  =   $logs_path.$search_sku.".txt";
+        $contents   =   preg_replace("/\n/i", "\r\n", $contents);
+        $contents   =   iconv('UTF-8', 'ISO-8859-1', $contents);
+        //exit($contents);
+        if(file_put_contents($file_path, $contents)>0){
+            echo json_encode(array('result'=>1));        
+        }else{
+            echo json_encode(array('result'=>10));   
+        }
+        die;
+    }
+    
+    public function publishFileAction(){
+        $params     =   $this->_request->getParams();
+        $search_sku =   $params['sku_file'];
+        $contents   =   $params['desc_contents'];
+        $system_params_model    =   new Databases_Tables_Params();
+        $logs_path  =   $system_params_model->GetVal('merchant_feed_txt_path');
+        $file_path  =   $logs_path.$search_sku.".txt";
+        $contents   =   preg_replace("/\n/i", "\r\n", $contents);
+        $contents   =   iconv('UTF-8', 'ISO-8859-1', $contents);
+        if(file_put_contents($file_path, $contents)>0){
+            echo json_encode(array('result'=>1));        
+        }else{
+            echo json_encode(array('result'=>0));   
+        }
+        $merchant_ftp_array     =   array(
+            'ftp_host'      =>  'interface.dealsdirect.com.au',
+            'ftp_port'      =>  '21',
+            'ftp_user'      =>  'tp_crazysales',
+            'ftp_pass'      =>  '3Ws5maLm',
+            'txt_path'      =>  'outgoing/inventory/descriptions/',
+        );
+        $ftp                =   new Algorithms_Core_Ftp($merchant_ftp_array['ftp_host'], $merchant_ftp_array['ftp_port'], $merchant_ftp_array['ftp_user'], $merchant_ftp_array['ftp_pass']);
+        $ftp_server_path    =   $merchant_ftp_array['txt_path'].$search_sku.".txt";
+        $ftp->up_file($ftp_server_path, $file_path);
+        $ftp->close();
+        die;
+    }
 }
 

@@ -2105,5 +2105,26 @@ class AdminController extends Zend_Controller_Action
         echo $data;
         die;
     }
+    
+    public function descFileAction(){
+        header("Content-Type:text/html;charset=ISO-8859-1");
+        $params     =   $this->_request->getParams();
+        $search_sku =   $params['sku_file'];
+        $page_title =   ($search_sku)?'Description File - '.$search_sku:'Description File ';
+        $this->view->title = $page_title;
+        $contents   =   '';
+        if($search_sku){
+            $system_params_model    =   new Databases_Tables_Params();
+            $logs_path  =   $system_params_model->GetVal('merchant_feed_txt_path');
+            $file_path  =   $logs_path.$search_sku.".txt";
+            $file       =   fopen($file_path, 'r') or exit("Unable to open file!");
+            $contents   =   fread($file, filesize($file_path));
+            fclose($file); 
+        }else{
+            $search_sku =   '';
+        }
+        $this->view->desc_contents  =   $contents;
+        $this->view->search_sku     =   $search_sku;
+    }
 }
 

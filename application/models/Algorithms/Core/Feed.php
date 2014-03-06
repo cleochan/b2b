@@ -524,8 +524,10 @@ class Algorithms_Core_Feed
             preg_match("/([\s\S]*)Warranty/",$html,$matches);
             $f          =   fopen($logs_path."/".$file_name, "w+");
             if($matches[0]){
-                @fwrite($f,$matches[0]);
+                $contents   =   iconv('UTF-8', 'ISO-8859-1', $matches[0]);
+                @fwrite($f,$contents);
             }else{
+                $contents   =   iconv('UTF-8', 'ISO-8859-1', $html);
                 @fwrite($f,$html);
             }
             @fclose($f);

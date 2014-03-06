@@ -1,0 +1,75 @@
+<script>
+jQuery(function($){
+    $('#Save').click(function (){
+        var ajaxUrl = '/ajax/save-file';
+        var queryData = {
+            sku_file: $('#sku_file').attr('value'),
+            desc_contents: $('#desc_contents').val(),
+        };
+        $.ajax({
+            type: 'POST',
+            data: queryData,
+            url: ajaxUrl,
+            success: function(res) {
+                if(res.result == 1){
+                    alert('Save File Successed.');
+                }else{
+                    alert('Save File Faild.');
+                }
+            },
+            error: function(res) {
+            },
+            dataType: 'json'
+        });
+    })
+    
+    $('#Publish').click(function (){
+        var ajaxUrl = '/ajax/publish-file';
+        var queryData = {
+            sku_file: $('#sku_file').attr('value'),
+            desc_contents: $('#desc_contents').val(),
+        };
+        $.ajax({
+            type: 'POST',
+            data: queryData,
+            url: ajaxUrl,
+            success: function(res) {
+                if(res.result == 1){
+                    alert('Publish Successed.');
+                }
+            },
+            error: function(res) {
+            },
+            dataType: 'json'
+        });
+    })
+});
+</script>
+<br />
+<?php if($this->notice):?>
+<?php echo $this->notice;?><br /><br />
+<?php endif;?>
+<div align="center" class="info_tablebox" >
+<form action="/admin/desc-file" method="post">
+	<table class="width100" cellspacing="1">
+		<tbody>
+                        <tr class="row-1">
+				<td class="category">File(Sku): </td>
+                                <td colspan="3"><input name="sku_file" id="sku_file" size ='25' type='text'  value='<?=$this->search_sku?>' />&nbsp;&nbsp;&nbsp;<input type='submit' class="special_button_style_green" value='Search' /></td>
+			</tr>
+			<tr class="row-2">
+				<td class="category">File Contents: </td>
+                                <td colspan="3"><textarea name="desc_contents" id="desc_contents" cols="100" rows="35"><?=$this->desc_contents?></textarea></td></pre>
+			</tr>
+			<tr >
+                                <td ></td>
+				<td colspan="3" class="info_botton2">
+                                    <input type="button" id='Save' class="special_button_style_green" value="Save" />&nbsp;&nbsp;&nbsp;<input id='Publish' class="special_button_style_green"type="button" id="Publish" value="Publish" />
+                                </td>
+			</tr>
+		</tbody>
+	</table>
+    
+    
+</form>
+</div>
