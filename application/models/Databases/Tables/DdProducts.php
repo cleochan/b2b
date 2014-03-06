@@ -211,7 +211,7 @@ class Databases_Tables_DdProducts extends Zend_Db_Table
         }
         if($this->product_code)
         {
-            $select->where("product_code = ?", $this->product_code);
+            $select->where("product_code like '%". $this->product_code."%'");
             
             $cond[] = "product_code=".$this->product_code;
         }
