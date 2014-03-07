@@ -45,7 +45,7 @@ function senfe(o,a,b,c,d){
                                                                 <td class="form-title">Sales</td>
 								<td class="form-title">Profit</td>
 							</tr>
-							<?php if($this->list):
+							<?php print_r($this->user_info['email']); if($this->list):
 									$n = 1;
 									foreach($this->list as $list):
 							?>
@@ -57,7 +57,7 @@ function senfe(o,a,b,c,d){
 								<td class="center"><span class="small"><?=$list['credit']?></span></td>
 								<td class="center"><span class="small"><?=$list['discount']?>%</span></td>
 								<td class="center"><span class="small " style="color:#086d9d" ><?=$list['user_status']?"<font >Active</font>":"<font >Inactive</font>"?></span></td>
-								<td class="center"><span class="small"><a href="/admin/merchant-edit/user_id/<?=$list['user_id']?>">Edit</a> | <a href="/admin/merchant-recharge/user_id/<?=$list['user_id']?>">Recharge</a> | <a href="/admin/merchant-feed-generation/user_id/<?=$list['user_id']?>">Feed</a></span></td>
+                                                                <td class="center"><span class="small"><?php  if($this->user_info['email'] == 'admin@gmail.com'){?><a href="/admin/merchant-edit/user_id/<?=$list['user_id']?>">Edit</a> | <a href="/admin/merchant-recharge/user_id/<?=$list['user_id']?>">Recharge</a> | <?php }?><a href="/admin/merchant-feed-generation/user_id/<?=$list['user_id']?>">Feed</a></span></td>
 								<td class="center"><span class="small"><a href="/admin/admin-order-report/user_id/<?=$list['user_id']?>">Orders</a> | <a href="/admin/admin-financial-report/user_id/<?=$list['user_id']?>">Financial</a></span></td>
                                                                 <td class="center"><span class="small"><?=$list['sale_total']?></span></td>
 								<td class="center"><span class="small"><?=$list['profit_total']?></span></td>

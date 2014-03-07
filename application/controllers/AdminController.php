@@ -32,6 +32,13 @@ class AdminController extends Zend_Controller_Action
             //make top menu
             $menu = new Algorithms_Core_Menu();
             $top_menu = $menu->MenuForAdmin();
+            if(in_array($user_info['email'],array('listing@crazysales.com.au','unmind@gmail.com'))){
+                unset($top_menu['BPay Import']);
+                unset($top_menu['Import Order']);
+                unset($top_menu['Invoice']);
+                unset($top_menu['Help Mgt']);
+            }
+            $this->view->user_info  =   $user_info;
             $this->view->top_menu = $menu -> FormatMenu($top_menu, $this->getRequest()->getActionName());
     }
     
