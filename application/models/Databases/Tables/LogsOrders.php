@@ -326,4 +326,16 @@ class Databases_Tables_LogsOrders extends Zend_Db_Table
         }
         return $result;
     }
+    
+    function GetLogsOrderInfo()
+    {
+        $result =   FALSE;
+        if($this->purchase_order_id && $this->supplier_sku)
+        {
+             $row    =   $this->fetchRow(" purchase_order_id = '".$this->purchase_order_id."' and  supplier_sku ='".$this->supplier_sku."'");
+             $result    =   $row->toArray();
+        }
+        
+        return $result;
+    }
 }

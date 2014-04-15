@@ -728,6 +728,9 @@ class Databases_Joins_GetOrders
             $logs_order_model->tracking_number      =   $this->tracking_number;
             $logs_order_model->item_status          =   $this->item_status;
             $result =   $logs_order_model->UpdateLogsOrderShippingInfo();
+            if($this->item_status == '4'){
+                $this->updateOrderSalesProfit($purchase_order_info['purchase_order_id'], $this->supplier_sku, $purchase_order_info['user_id']);
+            }
             if($result['status_change']){
                 $purchase_order_model->update(array('update_time'=>date('Y-m-d H:i:s')), ' purchase_order_id = '.$purchase_order_info['purchase_order_id']);
             }
@@ -868,5 +871,26 @@ class Databases_Joins_GetOrders
         $result['sale_total'] =   $user_sale_total;
         $result['profit_total'] =   $user_profit_total;
         return $result;
+    }
+    
+    function updateOrderSalesProfit($purchase_order_id, $sku, $user_id){
+        $product_filter_model   =   new Databases_Joins_ProductFilter();
+        $log_order_model        =   new Databases_Tables_LogsOrders();
+        $product_info           =   $product_filter_model->getProductInfo($sku);
+        $user_extension_model   =   new Databases_Tables_UsersExtension();
+        $log_order_model->purchase_order_id =   $purchase_order_id;
+        $log_order_model->supplier_sku      =   $sku;
+        $log_order_info =   $log_order_model->GetLogsOrderInfo();
+        if($log_order_info && $product_info){
+             $user_sale    =  $log_order_info['item_amount'];
+             $product_info['wholesale_cost']   =   $product_info['wholesale_cost']?$product_info['wholesale_cost']:0;
+             $user_profit  =  (($log_order_info['final_item_cost'] - $product_info['wholesale_cost']) * 10 / 11) * $log_order_info['quantity'];
+             if($user_sale >= 0 && $user_profit >= 0){
+                 $user_extension_model->user_id      =   $user_id;
+                 $user_extension_model->sale_total      =   $user_sale;
+                 $user_extension_model->profit_total    =   $user_profit;
+                 $user_extension_model->UpdateMerchantSalesProfit();
+             }
+        }
     }
 }

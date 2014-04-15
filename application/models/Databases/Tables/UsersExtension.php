@@ -202,4 +202,19 @@ class Databases_Tables_UsersExtension extends Zend_Db_Table
             $user->save();
         }
     }
+    
+    function UpdateMerchantSalesProfit(){
+        if($this->user_id){
+            $user = $this->fetchRow("user_id='".$this->user_id."'");
+            if($user->toArray()){
+                if($this->sale_total){
+                    $user->sale_total   +=   $this->sale_total;
+                }
+                if($this->profit_total){
+                    $user->profit_total   +=   $this->profit_total;
+                }
+                $user->save();
+            }
+        }
+    }
 }

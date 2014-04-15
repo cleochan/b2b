@@ -728,6 +728,7 @@ class Databases_Joins_ProductFilter
                 $result['supplier_price']   =   $product['supplier_price'];
                 $result['product_id']       =   $product['product_id'];
                 $result['supplier_sku']     =   $product['supplier_sku'];
+                $result['wholesale_cost']     =   $product['wholesale_cost'];
             }
         }
         
@@ -861,11 +862,14 @@ class Databases_Joins_ProductFilter
         return $result;
     }
     
-    function getProductsLowPrice(){
+    function getProductsLowPrice($value = null){
         $result =   FALSE;
         $select =   $this->db->select();
-        $select->from('dd_products as d', array('d.product_code', 'd.cost as dd_price','d.stock','d.rrp','d.cc_supplier_sku','d.product_title'));
-        $select->joinLeft('product_info_2 as p', 'p.product_id = d.product_id', array('p.supplier_sku','p.wholesale_cost','p.street_price', 'p.product_name'));
+        $select->from('dd_products as d', array('d.product_code', 'd.cost as dd_price','d.stock','d.rrp','d.cc_supplier_sku','d.product_title','d.category_1'));
+        $select->joinLeft('product_info_1 as p', 'p.product_id = d.product_id', array('p.supplier_sku','p.wholesale_cost','p.street_price', 'p.product_name'));
+        if($value){
+            $select->where($value);
+        }
         $result =   $this->db->fetchAll($select);
         return $result;
     }
