@@ -187,6 +187,9 @@ class Databases_Joins_OperateOrders {
                     $getorders_model->item_status   =   2;
                     $getorders_model->api_response  =   $response_data['MessageType']['Description'];
                 }
+                if($response_data['MessageType']['Description']){
+                    $getorders_model->api_response  =   $response_data['MessageType']['Description'];
+                }
                 $getorders_model->logs_order_ids    =  $logs_order_ids;
                 $getorders_model->purchase_order_id   =   $purchase_order['purchase_order_id'];
                 $getorders_model->UpdateOrder();
